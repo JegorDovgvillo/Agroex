@@ -1,0 +1,92 @@
+{
+  "apples": [
+    {
+      "title": "Apple idared",
+      "id": "ID423-09325",
+      "price": 1.2,
+      "location": "Uzbekistan, Bukhara region",
+      "creationDate": "25.06.2022, 13:44",
+      "packaging": "bins",
+      "variety": "idared",
+      "quantity": 10,
+      "size": 80
+    },
+    {
+      "title": "Apple golden",
+      "id": "ID423-09326",
+      "price": 1.4,
+      "location": "France, Normandy regions",
+      "creationDate": "25.06.2022, 11:02",
+      "packaging": "bins",
+      "variety": "golden",
+      "quantity": 10,
+      "size": 70
+    },
+    {
+      "title": "Apple black prince",
+      "id": "ID423-09327",
+      "price": 1.2,
+      "location": "Poland, Mazovia region",
+      "creationDate": "26.06.2022, 12:38",
+      "packaging": "bins",
+      "variety": "black prince",
+      "quantity": 10,
+      "size": 70
+    },
+    {
+      "title": "Apple caramel",
+      "id": "ID423-09328",
+      "price": 1.1,
+      "location": "France, Provence region",
+      "creationDate": "23.06.2022, 9:45",
+      "packaging": "bins",
+      "variety": "caramel",
+      "quantity": 10,
+      "size": 60
+    },
+    {
+      "title": "Apple fuji",
+      "id": "ID423-09329",
+      "price": 1.3,
+      "location": "France, Alsace region",
+      "creationDate": "22.06.2022, 18:12",
+      "packaging": "bins",
+      "variety": "fuji",
+      "quantity": 10,
+      "size": 60
+    },
+    {
+      "title": "Apple gala",
+      "id": "ID423-09330",
+      "price": 1.0,
+      "location": "France, Limousin region",
+      "creationDate": "20.06.2022, 19:13",
+      "packaging": "bins",
+      "variety": "gala",
+      "quantity": 10,
+      "size": 60
+    },
+    {
+      "title": "Apple spartan",
+      "id": "ID423-09331",
+      "price": 1.2,
+      "location": "Germany, state of Saxony",
+      "creationDate": "1.06.2022, 14:51",
+      "packaging": "bins",
+      "variety": "spartan",
+      "quantity": 10,
+      "size": 65
+    },
+    {
+      "title": "Apple honeycrisp",
+      "id": "ID423-09332",
+      "price": 1.1,
+      "location": "Germany, state of North Rhine-Westphalia",
+      "packaging": "bins",
+      "creationDate": "24.06.2022, 15:15",
+      "variety": "honeycrisp",
+      "quantity": 10,
+      "size": 70
+    }
+  ]
+}
