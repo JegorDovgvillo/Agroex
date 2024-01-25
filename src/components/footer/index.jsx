@@ -1,5 +1,5 @@
-import AgroexLogo from '../../images/AgroexLogoFooter.svg';
-import styles from './footer.module.scss';
+import AgroexLogo from "../../assets/icons/AgroexLogoFooter.svg";
+import styles from "./footer.module.scss";
 
 const Footer = () => {
   return (
