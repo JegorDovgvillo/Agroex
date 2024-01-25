@@ -1,16 +1,7 @@
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Layout from './components/layout';
+import Router from './helpers/router';
 
 function App() {
-  return (
-    <Router>
-      <Layout>
-        <Routes>
-          <Route path="/lots" element={'lots'}></Route>
-          <Route path="/lots/details" element={'lot-details'}></Route>
-        </Routes>
-      </Layout>
-    </Router>
-  );
+  return <Router />;
 }
+
 export default App;
