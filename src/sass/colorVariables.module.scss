@@ -1,0 +1,77 @@
+$agroexMain: #183c48;
+$redBasic: #eb3d26;
+$redHover: #d72c00;
+$grayLight2: #f2f5f5;
+$grayLight1: #dde7e7;
+
+$monoBlack: #131314;
+$monoGrayDark50: #bcc3c3;
+$monoGraySelect: #e6e6e6;
+$monoGray: #798787;
+$monoWhite: #ffffff;
+
+$mainBase: #51acae;
+$mainDark: #38999b;
+$mainLight: #dff4f4;
+$mainExtraLight: #eef8f8;
+$activated: #519dae;
+
+$successBase: #12ab74;
+$successDark: #009761;
+$successLight: #a8dcc9;
+$successExtraLight: #ecf9f4;
+
+$warningBase: #f87e25;
+$warningDark: #fb6d1d;
+$warningLight: #ffc9a1;
+$warningExtraLight: #fff1e7;
+
+$systemBase: #368ace;
+$systemDark: #2978b8;
+$systemLight: #a8d6fc;
+$systemExtraLight: #eef7ff;
+
+$errorBase: #dc3737;
+$errorDark: #d40000;
+$errorLight: #ff9590;
+$errorExtraLight: #ffe7e7;
+
+:export {
+  agroexMain: $agroexMain;
+  redBasic: $redBasic;
+  redHover: $redHover;
+  grayLight2: $grayLight2;
+  grayLight1: $grayLight1;
+
+  monoBlack: $monoBlack;
+  monoGrayDark50: $monoGrayDark50;
+  monoGraySelect: $monoGraySelect;
+  monoGray: $monoGray;
+  monoWhite: $monoWhite;
+
+  mainBase: $mainBase;
+  mainDark: $mainDark;
+  mainLight: $mainLight;
+  mainExtraLight: $mainExtraLight;
+  activated: $activated;
+
+  uccessBase: $successBase;
+  successDark: $successDark;
+  successLight: $successLight;
+  successExtraLight: $successExtraLight;
+
+  warningBase: $warningBase;
+  warningDark: $warningDark;
+  warningLight: $warningLight;
+  warningExtraLight: $warningExtraLight;
+
+  systemBase: $systemBase;
+  systemDark: $systemDark;
+  systemLight: $systemLight;
+  ystemExtraLight: $systemExtraLight;
+
+  errorBase: $errorBase;
+  errorDark: $errorDark;
+  errorLight: $errorLight;
+  errorExtraLight: $errorExtraLight;
+}
