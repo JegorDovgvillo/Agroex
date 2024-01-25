@@ -1,0 +1,16 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  max-width: 1920px;
+  margin: 0 auto;
+
+  .mainContent {
+    max-width: 1752px;
+    width: 1752px;
+    margin: 0 auto;
+    flex: 1;
+    background-color: white;
+    margin-bottom: 110px;
+  }
+}

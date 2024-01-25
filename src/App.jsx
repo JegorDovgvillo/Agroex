@@ -1,7 +1,7 @@
-import styles from "./App.module.scss";
+import Router from './helpers/router';
 
 function App() {
-  return <h1 className={styles.title}>AGROEX</h1>;
+  return <Router />;
 }
 
 export default App;
