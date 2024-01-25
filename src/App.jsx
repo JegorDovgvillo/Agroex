@@ -1,6 +1,6 @@
-import Router from "./helpers/router";
-import { ThemeProvider } from "@mui/material/styles";
-import { customTheme } from "./theme";
+import Router from './helpers/router';
+import { ThemeProvider } from '@mui/material/styles';
+import { customTheme } from './theme';
 
 function App() {
   return (
