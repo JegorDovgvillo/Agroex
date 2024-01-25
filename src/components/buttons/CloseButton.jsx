@@ -1,64 +1,36 @@
-import Button from "@mui/material/Button";
-import CloseIcon from "@mui/icons-material/Close";
+import Button from '@mui/material/Button';
+import CloseIcon from '@mui/icons-material/Close';
+import { getVariant } from './buttonsUtils';
+import styles from './buttons.module.scss';
 
-const commonButtonStyles = {
-  boxSizing: "border-box",
-  minWidth: "32px",
-  display: "flex",
-  borderRadius: "2px",
-  textTransform: "none",
-};
-
-const getCloseStyles = (size) => {
-  if (size === "L") {
-    return {
-      width: "48px",
-      height: "48px",
-      padding: "12px",
-    };
-  }
-
-  if (size === "M") {
-    return {
-      width: "40px",
-      height: "40px",
-      padding: "10px",
-    };
-  }
-
-  if (size === "S") {
-    return {
-      width: "32px",
-      height: "32px",
-      padding: "8px",
-    };
+const getCloseClassName = (size) => {
+  switch (size) {
+    case 'L':
+      return styles.closeLarge;
+    case 'M':
+      return styles.closeMedium;
+    case 'S':
+      return styles.closeSmall;
+    default:
+      return styles.closeLarge;
   }
 };
 
 export const CloseButton = ({
-  size = "L",
-  type = "primary",
+  size = 'L',
+  type = 'primary',
   disabled = false,
 }) => {
-  const buttonStyles = getCloseStyles(size);
-  const style = { ...commonButtonStyles, ...buttonStyles };
+  const buttonStyles = getCloseClassName(size);
+  const variant = getVariant(type);
 
   return (
     <Button
-      variant={
-        (type === "primary" && "contained") ||
-        (type === "secondary" && "outlined") ||
-        (type === "clear" && "text")
-      }
+      variant={variant}
       disabled={disabled}
-      style={style}
+      className={`${styles.commonButtonStyles} ${buttonStyles}`}
     >
-      <CloseIcon
-        style={
-          (size === "M" && { width: "20px", height: "20px" }) ||
-          (size === "S" && { width: "16px", height: "16px" })
-        }
-      />
+      <CloseIcon className={styles.icon} />
     </Button>
   );
 };

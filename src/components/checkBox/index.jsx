@@ -1,8 +1,8 @@
-import Checkbox from "@mui/material/Checkbox";
-import iconChecked from "../../assets/icons/Checkbox_fill.svg";
-import uncheckedIcon from "../../assets/icons/Checkbox_empty.svg";
-import indeterminateIcon from "../../assets/icons/Checkbox_int.svg";
-import disabledIcon from "../../assets/icons/Checkbox_disabled.svg";
+import Checkbox from '@mui/material/Checkbox';
+import iconChecked from '../../assets/icons/Checkbox_fill.svg';
+import uncheckedIcon from '../../assets/icons/Checkbox_empty.svg';
+import indeterminateIcon from '../../assets/icons/Checkbox_int.svg';
+import disabledIcon from '../../assets/icons/Checkbox_disabled.svg';
 
 const CheckBoxIcon = () => {
   return <img src={iconChecked} alt="Checkbox icon" />;
@@ -31,8 +31,8 @@ export const CheckBoxInput = ({ disabled = false, checked = false }) => {
       disabled={disabled}
       defaultChecked={checked}
       sx={{
-        width: "24px",
-        height: "24px",
+        width: '24px',
+        height: '24px',
       }}
     />
   );

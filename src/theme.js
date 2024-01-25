@@ -1,5 +1,5 @@
-import { createTheme } from "@mui/material/styles";
-import varibles from "./sass/colorVariables.module.scss";
+import { createTheme } from '@mui/material/styles';
+import varibles from './scss/colorVariables.module.scss';
 
 const {
   mainDark,
@@ -51,5 +51,9 @@ export const customTheme = createTheme({
       light: errorLight,
       contrastText: monoBlack,
     },
+  },
+
+  typography: {
+    fontFamily: ['IBM Plex Sans', 'sans-serif'].join(','),
   },
 });

@@ -1,74 +1,38 @@
-import React from "react";
-import Button from "@mui/material/Button";
+import Button from '@mui/material/Button';
+import { getVariant } from './buttonsUtils';
+import styles from './buttons.module.scss';
 
-const commonButtonStyles = {
-  display: "flex",
-  borderRadius: "2px",
-  textTransform: "none",
-};
-
-const getStyles = (size, width) => {
-  if (size === "L") {
-    return {
-      fontSize: "1.125rem",
-      lineHeight: "1.75rem",
-      fontWeight: "500",
-      letterSpasing: "0.4px",
-      padding: "10px, 20px",
-      width: width || "170px",
-      height: "48px",
-      rowGap: "12px",
-    };
-  }
-
-  if (size === "M") {
-    return {
-      fontSize: "1rem",
-      lineHeight: "1.5rem",
-      fontWeight: "500",
-      letterSpasing: "0.3px",
-      padding: "8px, 16px",
-      width: width || "148px",
-      height: "40px",
-      rowGap: "12px",
-    };
-  }
-
-  if (size === "S") {
-    return {
-      fontSize: "0.875rem",
-      lineHeight: "1.25rem",
-      fontWeight: "500",
-      letterSpasing: "0.3px",
-      padding: "6px, 12px",
-      width: width || "121px",
-      height: "32px",
-      rowGap: "10px",
-    };
+const getStyles = (size) => {
+  switch (size) {
+    case 'L':
+      return styles.customLarge;
+    case 'M':
+      return styles.customMedium;
+    case 'S':
+      return styles.customSmall;
+    default:
+      return styles.customLarge;
   }
 };
 
 export const CustomButton = ({
-  text = "",
-  size = "L",
-  type = "primary",
+  text = '',
+  size = 'L',
+  type = 'primary',
   disabled = false,
   icon = null,
   width = null,
 }) => {
-  const buttonStyles = getStyles(size, width);
-  const style = { ...commonButtonStyles, ...buttonStyles };
+  const buttonStyles = getStyles(size);
+  const variant = getVariant(type);
 
   return (
     <Button
       startIcon={icon || undefined}
-      variant={
-        (type === "primary" && "contained") ||
-        (type === "secondary" && "outlined") ||
-        (type === "clear" && "text")
-      }
+      variant={variant}
       disabled={disabled}
-      style={style}
+      style={width && { width: width }}
+      className={`${styles.commonButtonStyles} ${buttonStyles}`}
     >
       {text}
     </Button>
