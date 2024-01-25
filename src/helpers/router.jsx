@@ -1,7 +1,7 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import ROUTES from './routeNames';
 import Layout from '../components/layout';
-
+import LotList from '../pages/LotList/LotList';
 const Router = () => {
   const router = createBrowserRouter([
     {
@@ -10,7 +10,7 @@ const Router = () => {
       children: [
         {
           path: ROUTES.LOTS,
-          element: 'Lots',
+          element: <LotList/>,
         },
         {
           path: ROUTES.LOTS_DETAILS,
