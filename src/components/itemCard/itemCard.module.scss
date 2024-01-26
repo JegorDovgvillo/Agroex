@@ -1,4 +1,4 @@
-@import "../../index.scss";
+@import "../../scss/colorVariables.module.scss";
 
 .cardWrapp {
   display: flex;
@@ -32,7 +32,7 @@
       letter-spacing: 0.15px;
       gap: 6px;
       .creationDate {
-        color: $MonoGray;
+        color: $monoGray;
         font-size: 12px;
         line-height: 16px;
         letter-spacing: 0.2px;
@@ -48,15 +48,15 @@
       font-weight: 400;
       line-height: 20px;
       letter-spacing: 0.15px;
-      color: $SystemDark;
-      background-color: $ExtraLight;
+      color: $systemDark;
+      background-color: $systemExtraLight;
       padding: 4px 8px;
       border-radius: 4px;
       margin-right: 6px;
     }
 
     .itemId {
-      color: $MonoGray;
+      color: $monoGray;
       font-size: 14px;
       font-style: normal;
       font-weight: 400;
@@ -85,10 +85,10 @@
       font-weight: 400;
       line-height: 20px;
       letter-spacing: 0.15px;
-      color: $MonoGray;
+      color: $monoGray;
     }
     .auctionSum {
-      color: $WarningBase;
+      color: $warningBase;
     }
   }
   .info {

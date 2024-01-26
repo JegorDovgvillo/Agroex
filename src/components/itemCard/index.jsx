@@ -1,4 +1,4 @@
-import img from '../../images/image15.png';
+import img from '../../assets/icons/image15.png';
 import styles from './itemCard.module.scss';
 
 const ItemCard = () => {
