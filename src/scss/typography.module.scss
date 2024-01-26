@@ -43,35 +43,35 @@ $fontSizeMain: 16px;
   font-size: 1.25rem;
   font-weight: 500;
   line-height: 140%;
-  letter-spasing: 0.15px;
+  letter-spacing: 0.15px;
 }
 
 @mixin inputText {
   font-size: 1rem;
   font-weight: 400;
   line-height: 150%;
-  letter-spasing: 0.2px;
+  letter-spacing: 0.2px;
 }
 
 @mixin body1 {
   font-size: 1rem;
   font-weight: 400;
   line-height: 150%;
-  letter-spasing: 0.15px;
+  letter-spacing: 0.15px;
 }
 
 @mixin body2 {
   font-size: 0.875rem;
   font-weight: 400;
   line-height: 142.857%;
-  letter-spasing: 0.15px;
+  letter-spacing: 0.15px;
 }
 
 @mixin caption {
   font-size: 0.75rem;
   font-weight: 400;
   line-height: 133.3%;
-  letter-spasing: 0.2px;
+  letter-spacing: 0.2px;
 }
 
 @mixin helperText {
@@ -84,5 +84,5 @@ $fontSizeMain: 16px;
   font-size: 0.75rem;
   font-weight: 300;
   line-height: 133.3%;
-  letter-spasing: 0.2px;
+  letter-spacing: 0.2px;
 }

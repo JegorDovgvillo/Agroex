@@ -1,5 +1,5 @@
 @import "../../scss/colorVariables.module.scss";
-@import "../../scss/typogpaphy.module.scss";
+@import "../../scss/typography.module.scss";
 
 .footer {
   max-width: 1752px;
@@ -11,7 +11,7 @@
 
   p {
     @include body2;
-    color: $monoGray; 
+    color: $monoGray;
   }
 
   .logo {
