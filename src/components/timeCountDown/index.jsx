@@ -1,22 +1,21 @@
+import { DateTime } from "luxon";
 import timeIcon from "../../assets/icons/time.svg";
 import styles from "./time.module.scss";
 
-export const TimeCountDown = ({ creationDateStr, expirationDateStr }) => {
-  const creationDate = new Date(creationDateStr);
-  const expirationDate = new Date(expirationDateStr);
-  const durationMs = expirationDate - creationDate;
-  const days = Math.floor(durationMs / (24 * 60 * 60 * 1000));
-  const hours = Math.floor(
-    (durationMs % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000)
-  );
+export const TimeCountDown = ({ startDate, endDate }) => {
+  const end = DateTime.fromISO(endDate);
+  const start = DateTime.fromISO(startDate);
 
-  const getTimeStr = () => (days >= 1 ? `${days}d ${hours}h` : `${hours}h`);
-  const time = getTimeStr();
+  const duration = end.diff(start, ["days", "hours"]).toObject();
+  const { days, hours } = duration;
 
   return (
     <div className={styles.container}>
       <img src={timeIcon} alt="Watch icon"></img>
-      {time && <span className={styles.time}>{time}</span>}
+      {days >= 1 && <span className={styles.time}>{`${days}d `}</span>}
+      {hours >= 1 && (
+        <span className={styles.time}>{`${Math.floor(hours)}h `}</span>
+      )}
     </div>
   );
 };
