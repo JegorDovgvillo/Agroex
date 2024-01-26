@@ -1,0 +1,17 @@
+@import "../../scss/colorVariables.module.scss";
+@import "../../scss/typography.module.scss";
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  column-gap: 8px;
+  max-width: 104px;
+  padding: 6px 12px;
+  background-color: $systemExtraLight;
+}
+
+.time {
+  color: $systemDark;
+  @include body2;
+}
