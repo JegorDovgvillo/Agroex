@@ -1,9 +1,9 @@
-@import "../../index.scss";
+@import "../../scss/colorVariables.module.scss";
 
 .footer {
   max-width: 1752px;
   display: flex;
-  background-color: $AgroexMain;
+  background-color: $agroexMain;
   height: 192px;
   align-items: center;
   padding: 0 84px;
@@ -11,7 +11,7 @@
   p {
     font-size: 14px;
     line-height: 20px;
-    color: $MonoGray;
+    color: $monoGray;
   }
 
   .logo {

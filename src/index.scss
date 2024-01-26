@@ -1,7 +1,69 @@
-$MonoGray: #798787;
-$AgroexMain: #183c48;
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500&display=swap");
+@import "./scss/colorVariables.module.scss";
+
+html {
+  font-size: 16px;
+}
+
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0;
+  text-align: center;
+}
 
 body {
   margin: 0;
-  background-color: #e6e6e6;
+  font-family: "IBM Plex Sans", sans-serif;
+  font-weight: 400;
+  line-height: 150%;
+  letter-spacing: 0.2px;
+  box-sizing: border-box;
+  background-color: $monoGraySelect;
+
+  #root {
+    max-width: 1920px;
+    min-height: 100vh;
+    margin: 0 auto;
+  }
+}
+
+h1 {
+  font-size: 6rem;
+  font-weight: 300;
+  line-height: 125%;
+  letter-spacing: -1.5px;
+}
+
+h2 {
+  font-size: 4rem;
+  font-weight: 300;
+  line-height: 112.5%;
+  letter-spacing: -0.5px;
+}
+
+h3 {
+  font-size: 3rem;
+  font-weight: 400;
+  line-height: 116.67%;
+}
+
+h4 {
+  font-size: 2rem;
+  font-weight: 400;
+  line-height: 131.25%;
+  letter-spacing: 0.25px;
+}
+
+h5 {
+  font-size: 1.5rem;
+  font-weight: 500;
+  line-height: 133.33%;
+}
+
+h6 {
+  font-size: 1.25rem;
+  font-weight: 500;
+  line-height: 140%;
+  letter-spacing: 0.15px;
 }
