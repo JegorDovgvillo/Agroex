@@ -1,5 +1,6 @@
-import img from '../../images/image15.png';
-import styles from './itemCard.module.scss';
+import img from "../../assets/icons/image15.png";
+import PriceBlock from "../priceBlock";
+import styles from "./itemCard.module.scss";
 
 const ItemCard = () => {
   return (
@@ -18,14 +19,8 @@ const ItemCard = () => {
         </div>
       </div>
       <div className={styles.costsWrapp}>
-        <div className={styles.bet}>
-          <h6 className={styles.auctionSum}>$11,000.00</h6>
-          <span>$1.1/kg</span>
-        </div>
-        <div className="sum">
-          <h6>$11,000.00</h6>
-          <span>$1.1/kg</span>
-        </div>
+        <PriceBlock className={'auctionSum'}/>
+        <PriceBlock />
       </div>
     </div>
   );
