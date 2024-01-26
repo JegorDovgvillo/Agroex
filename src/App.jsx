@@ -3,6 +3,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import { customTheme } from './theme';
 import { Provider } from 'react-redux';
 import store from './store/store';
+
 function App() {
   return (
     <ThemeProvider theme={customTheme}>
