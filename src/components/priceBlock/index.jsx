@@ -1,10 +1,15 @@
-import styles from "./priceBlock.module.scss";
+import getNumberWithCurrency from '../../helpers/getNumberWithCurrency';
+import styles from './priceBlock.module.scss';
 
-const PriceBlock = ({ className }) => {
+const PriceBlock = ({ totalCost, unitCost, currency, className }) => {
+  const classNames = className.map((c) => styles[c]).join(' ');
+  const costWithCurrency = getNumberWithCurrency(totalCost, currency);
+  const unitCostWithCurrency = getNumberWithCurrency(unitCost, currency);
+
   return (
-    <div className={styles[className]}>
-      <h6>$11,000.00</h6>
-      <span>$1.1/kg</span>
+    <div className={`${styles.container} ${classNames}`}>
+      <p>{costWithCurrency}</p>
+      <span>{unitCostWithCurrency}</span>
     </div>
   );
 };

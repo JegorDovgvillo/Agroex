@@ -1,7 +1,46 @@
 @import "../../scss/colorVariables.module.scss";
+@import "../../scss/typography.module.scss";
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  color: $monoBlack;
+  width: 50%;
+  margin-bottom: 24px;
+}
+
+.detailed {
+  row-gap: 4px;
+
+  p {
+    margin: 0;
+    @include h4;
+  }
+
+  span {
+    text-align: left;
+    @include body1;
+  }
+}
+
+.list {
+  row-gap: 8px;
+
+  p {
+    color: $monoBlack;
+    margin: 0;
+    @include h6;
+  }
+
+  span {
+    text-align: left;
+    @include body2;
+  }
+}
 
 .auctionSum {
-  h6 {
+  p {
     color: $warningBase;
   }
 }
