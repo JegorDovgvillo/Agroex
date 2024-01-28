@@ -23,11 +23,11 @@ export const CustomButton = ({
   disabled = false,
   icon = null,
   width = null,
-  handleClick
+  handleClick,
 }) => {
   const buttonStyles = getStyles(size);
   const variant = getVariant(type);
-  
+
   return (
     <Button
       startIcon={icon || undefined}

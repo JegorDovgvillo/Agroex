@@ -20,30 +20,21 @@ module.exports = {
     'array-bracket-spacing': 'off',
     'object-curly-spacing': ['warn', 'always'],
     'block-spacing': ['warn', 'always'],
-    'quotes': [
-      'error',
-      'single',
-      { allowTemplateLiterals: true }
-    ],
+    quotes: ['error', 'single', { allowTemplateLiterals: true }],
     'quote-props': ['warn', 'consistent-as-needed'],
-    'semi': ['error', 'always'],
+    semi: ['error', 'always'],
     'comma-dangle': ['error', 'only-multiline'],
     'no-unused-vars': [
       'warn',
-      { vars: 'all', args: 'after-used', ignoreRestSiblings: false }
+      { vars: 'all', args: 'after-used', ignoreRestSiblings: false },
     ],
-    'no-multiple-empty-lines': [
-      'error',
-      { max: 2 }
-    ],
+    'no-multiple-empty-lines': ['error', { max: 2 }],
     'no-console': 'warn',
     'padding-line-between-statements': [
       'error',
-      { blankLine: 'always', prev: '*', next: 'return' }
+      { blankLine: 'always', prev: '*', next: 'return' },
+      { blankLine: 'always', prev: '*', next: 'block-like' },
     ],
-    'react/prop-types': [
-      'error',
-      { skipUndeclared: true }
-    ],
+    'react/prop-types': ['error', { skipUndeclared: true }],
   },
-}
+};
