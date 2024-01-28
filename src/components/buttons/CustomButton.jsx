@@ -1,5 +1,5 @@
-import Button from '@mui/material/Button';
 import { getVariant } from './buttonsUtils';
+import Button from '@mui/material/Button';
 import styles from './buttons.module.scss';
 
 const getStyles = (size) => {
@@ -22,10 +22,11 @@ export const CustomButton = ({
   disabled = false,
   icon = null,
   width = null,
+  handleButtonClick
 }) => {
   const buttonStyles = getStyles(size);
   const variant = getVariant(type);
-
+  
   return (
     <Button
       startIcon={icon || undefined}
@@ -33,6 +34,7 @@ export const CustomButton = ({
       disabled={disabled}
       style={width && { width: width }}
       className={`${styles.commonButtonStyles} ${buttonStyles}`}
+      onClick={handleButtonClick}
     >
       {text}
     </Button>

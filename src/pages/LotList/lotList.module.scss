@@ -1,0 +1,9 @@
+.lotListWrapp {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  
+  @media only all and (max-width: 1500px) {
+      flex-direction: row;
+  }
+}
