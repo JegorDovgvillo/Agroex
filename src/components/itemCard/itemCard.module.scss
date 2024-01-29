@@ -1,5 +1,6 @@
-@import "../../scss/colorVariables.module.scss";
-@import "../../scss/typography.module.scss";
+@import "@scss/colorVariables.module.scss";
+@import "@scss/typography.module.scss";
+
 .cardWrapp {
   display: flex;
   flex-direction: row;

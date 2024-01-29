@@ -3,12 +3,11 @@
   min-width: 32px !important;
   display: flex;
   border-radius: 2px !important;
-  text-transform: none !important;
+  text-transform: capitalize !important;
   font-weight: 500 !important;
 }
 
-.close {
-
+.commonButtonStyles .close {
   &Large {
     width: 48px;
     height: 48px;
@@ -44,7 +43,6 @@
 }
 
 .custom {
-  
   &Large {
     font-size: 1.125rem !important;
     line-height: 1.75rem !important;

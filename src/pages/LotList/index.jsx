@@ -1,10 +1,12 @@
-import Filters from '../../components/filters';
-import ItemCard from '../../components/itemCard';
-import { fetchLots } from '../../store/slices/lotListSlice';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { lotListSelector } from '../../store/slices/lotListSlice';
+
+import Filters from '@components/filters';
+import ItemCard from '@components/itemCard';
+
+import { fetchLots } from '@store/slices/lotListSlice';
+import { lotListSelector } from '@store/slices/lotListSlice';
+
 import styles from './lotList.module.scss';
 
 const LotList = ({ lotType }) => {

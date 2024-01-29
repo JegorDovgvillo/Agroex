@@ -6,6 +6,9 @@ import {
 } from '@reduxjs/toolkit';
 import axios from 'axios';
 
+import ENDPOINTS from '@helpers/endpoints';
+import { BASE_URL } from '@helpers/endpoints';
+
 const lotListAdapter = createEntityAdapter();
 
 const initialState = lotListAdapter.getInitialState({
@@ -13,7 +16,7 @@ const initialState = lotListAdapter.getInitialState({
 });
 
 export const fetchLots = createAsyncThunk('lotList/fetchLots', async () => {
-  const response = await axios.get('http://localhost:8080/lots');
+  const response = await axios.get(`${BASE_URL}${ENDPOINTS.LOTS}`);
 
   return response.data;
 });
@@ -29,7 +32,7 @@ const lotListSlice = createSlice({
       })
       .addCase(fetchLots.fulfilled, (state, action) => {
         (state.loadingStatus = 'fulfilled'),
-          lotListAdapter.addMany(state, action.payload);
+        lotListAdapter.addMany(state, action.payload);
       })
       .addCase(fetchLots.rejected, (state) => {
         state.loadingStatus = 'rejected';

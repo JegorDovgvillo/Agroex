@@ -1,24 +1,24 @@
 import { DateTime } from 'luxon';
-
-
 import { CustomButton } from '../buttons/CustomButton';
 import { useNavigate } from 'react-router-dom';
-import ROUTES from '../../helpers/routeNames';
-import img from '../../assets/icons/image15.png';
-import PriceBlock from '../priceBlock';
-import styles from './itemCard.module.scss';
+
 import Timer from '../timer';
-import shoppingIcon from '../../assets/icons/shopping.svg';
-import betIcon from '../../assets/icons/bet.svg';
+import PriceBlock from '../priceBlock';
+import ROUTES from '@helpers/routeNames';
+
+import styles from './itemCard.module.scss';
+
+import shoppingIcon from '@assets/icons/shopping.svg';
+import betIcon from '@assets/icons/bet.svg';
+import img from '@assets/icons/image15.png';
 
 const ItemCard = (item) => {
-
   const navigate = useNavigate();
   const viewDetailsCard = () => {
     navigate(ROUTES.LOTS_DETAILS);
   };
   
-  const handleButtonClick = (event) => {
+  const handleClick = (event) => {
     event.stopPropagation();
   };
 
@@ -56,7 +56,7 @@ const ItemCard = (item) => {
             text="My bet"
             type="secondary"
             icon={<img src={betIcon} />}
-            handleButtonClick={handleButtonClick}
+            handleButtonClick={handleClick}
           />
         </div>
         <div className={styles.priceBlock}>
@@ -68,9 +68,9 @@ const ItemCard = (item) => {
           />
           <CustomButton
             size="M"
-            text="Buy now"
+            text={`${item.lotType} now`}
             icon={<img src={shoppingIcon} />}
-            handleButtonClick={handleButtonClick}
+            handleButtonClick={handleClick}
           />
         </div>
       </div>
