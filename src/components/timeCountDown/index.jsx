@@ -1,12 +1,12 @@
-import { DateTime } from "luxon";
-import timeIcon from "../../assets/icons/time.svg";
-import styles from "./time.module.scss";
+import { DateTime } from 'luxon';
+import timeIcon from '../../assets/icons/time.svg';
+import styles from './time.module.scss';
 
 export const TimeCountDown = ({ startDate, endDate }) => {
   const end = DateTime.fromISO(endDate);
   const start = DateTime.fromISO(startDate);
 
-  const duration = end.diff(start, ["days", "hours"]).toObject();
+  const duration = end.diff(start, ['days', 'hours']).toObject();
   const { days, hours } = duration;
 
   return (
