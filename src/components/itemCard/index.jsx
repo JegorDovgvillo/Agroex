@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon';
-import { useDispatch } from 'react-redux';
-import { updateId } from '../../store/slices/lotDetailsSlice';
+
+
 import { CustomButton } from '../buttons/CustomButton';
 import { useNavigate } from 'react-router-dom';
 import ROUTES from '../../helpers/routeNames';
@@ -12,11 +12,9 @@ import shoppingIcon from '../../assets/icons/shopping.svg';
 import betIcon from '../../assets/icons/bet.svg';
 
 const ItemCard = (item) => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
 
+  const navigate = useNavigate();
   const viewDetailsCard = () => {
-    dispatch(updateId(item.id));
     navigate(ROUTES.LOTS_DETAILS);
   };
   

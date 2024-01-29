@@ -1,9 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit';
 import lotList from './slices/lotListSlice';
-import lotDetails from './slices/lotDetailsSlice';
+
 
 const store = configureStore({
-  reducer: { lotList, lotDetails },
+  reducer: { lotList },
   devTools: process.env.NODE_ENV !== 'production',
 });
 
