@@ -1,5 +1,8 @@
+export const BASE_URL = 'http://localhost:8080';
+
 const ENDPOINTS = {
-  BASE_URL: 'http://localhost:8080',
+  LOTS: '/lots',
+  LOTS_DETAILS: '/lots/details',
 };
 
 export default ENDPOINTS;
