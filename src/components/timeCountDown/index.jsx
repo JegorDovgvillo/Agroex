@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon';
-import timeIcon from '../../assets/icons/time.svg';
+import timeIcon from '@assets/icons/time.svg';
 import styles from './time.module.scss';
 
 export const TimeCountDown = ({ startDate, endDate }) => {
@@ -11,7 +11,7 @@ export const TimeCountDown = ({ startDate, endDate }) => {
 
   return (
     <div className={styles.container}>
-      <img src={timeIcon} alt="Watch icon"></img>
+      <img src={timeIcon} alt='Watch icon'></img>
       {days >= 1 && <span className={styles.time}>{`${days}d `}</span>}
       {hours >= 1 && (
         <span className={styles.time}>{`${Math.floor(hours)}h `}</span>
