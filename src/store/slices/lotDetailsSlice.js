@@ -4,6 +4,8 @@ import {
   createAsyncThunk,
 } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { BASE_URL } from '@helpers/endpoints';
+import ENDPOINTS from '@helpers/endpoints';
 
 const lotDetailsAdapter = createEntityAdapter();
 
@@ -13,10 +15,12 @@ const initialState = lotDetailsAdapter.getInitialState({
   lotData: null,
 });
 
+const url = `${BASE_URL}${ENDPOINTS.LOTS}`;
+
 export const fetchLotDetails = createAsyncThunk(
   'lotDetails/fetchLotDetails',
   async (id) => {
-    const response = await axios.get(`http://localhost:8080/lots/${id}`);
+    const response = await axios.get(`${url}/${id}`);
 
     return response.data;
   }
@@ -37,8 +41,8 @@ const lotDetailsSlice = createSlice({
         state.loadingStatus = 'pending';
       })
       .addCase(fetchLotDetails.fulfilled, (state, action) => {
-        (state.loadingStatus = 'fulfilled'),
-          lotDetailsAdapter.addOne(state, action.payload);
+        state.loadingStatus = 'fulfilled';
+        lotDetailsAdapter.addOne(state, action.payload);
       })
       .addCase(fetchLotDetails.rejected, (state) => {
         state.loadingStatus = 'rejected';

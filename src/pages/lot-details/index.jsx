@@ -2,17 +2,20 @@ import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import CircularProgress from '@mui/material/CircularProgress';
 import ImageListItem from '@mui/material/ImageListItem';
-import PriceBlock from '../../components/priceBlock';
-import getNumberWithCurrency from '../../helpers/getNumberWithCurrency';
-import getFormattedDate from '../../helpers/getFormattedDate ';
-import { fetchLotDetails } from '../../store/slices/lotDetailsSlice';
-import { lotDetailedSelector } from '../../store/slices/lotDetailsSlice';
-import { CustomButton } from '../../components/buttons/CustomButton';
-import Timer from '../../components/timer';
-import attentionIcon from '../../assets/icons/attention.svg';
-import cartIcon from '../../assets/icons/cartIcon.svg';
-import mapIcon from '../../assets/icons/mapIcon.svg';
-import sliderImage from '../../assets/images/77d4dc59-3013-41aa-8a7b-cb27cb6fa425.jpg';
+import PriceBlock from '@components/priceBlock';
+
+import getNumberWithCurrency from '@helpers/getNumberWithCurrency';
+import getFormattedDate from '@helpers/getFormattedDate';
+import { fetchLotDetails } from '@store/slices/lotDetailsSlice';
+import { lotDetailedSelector } from '@store/slices/lotDetailsSlice';
+import { CustomButton } from '@components/buttons/CustomButton';
+import Timer from '@components/timer';
+
+import attentionIcon from '@assets/icons/attention.svg';
+import cartIcon from '@assets/icons/cartIcon.svg';
+import mapIcon from '@assets/icons/mapIcon.svg';
+import sliderImage from '@assets/images/77d4dc59-3013-41aa-8a7b-cb27cb6fa425.jpg';
+
 import styles from './lotDetails.module.scss';
 
 export const LotDetails = () => {
@@ -44,9 +47,9 @@ export const LotDetails = () => {
     pricePerTon,
     quantity,
     location,
-    variety = 'idared',
-    size = '70+',
-    packaging = 'bins',
+    variety,
+    size,
+    packaging,
   } = lotData;
 
   const totalPrice = quantity * pricePerTon;
@@ -79,7 +82,7 @@ export const LotDetails = () => {
   ];
 
   return (
-    <>
+    <div className={styles.pageContainer}>
       <div className={styles.breadCrumbs} />
       <div className={styles.container}>
         {loadingStatus === 'fulfilled' && (
@@ -100,7 +103,7 @@ export const LotDetails = () => {
                 <h4 className={styles.title}>{title}</h4>
                 <div className={styles.dateCounter}>
                   <Timer endDate={expirationDate} />
-                  <div className={styles.id}>{id}</div>
+                  <div className={styles.id}>{`ID ${id}`}</div>
                 </div>
               </div>
               <div className={styles.descriptionContainer}>
@@ -147,6 +150,6 @@ export const LotDetails = () => {
           </>
         )}
       </div>
-    </>
+    </div>
   );
 };
