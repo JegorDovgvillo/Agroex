@@ -1,5 +1,6 @@
 import Button from '@mui/material/Button';
 import CloseIcon from '@mui/icons-material/Close';
+
 import { getVariant } from './buttonsUtils';
 import styles from './buttons.module.scss';
 

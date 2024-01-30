@@ -1,8 +1,9 @@
-import Router from './helpers/router';
-import { ThemeProvider } from '@mui/material/styles';
-import { customTheme } from './theme';
 import { Provider } from 'react-redux';
+import { ThemeProvider } from '@mui/material/styles';
+
 import store from './store/store';
+import Router from './helpers/router';
+import { customTheme } from './theme';
 
 function App() {
   return (
@@ -12,6 +13,6 @@ function App() {
       </Provider>
     </ThemeProvider>
   );
-}
+} 
 
 export default App;

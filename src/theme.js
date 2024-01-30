@@ -1,4 +1,5 @@
 import { createTheme } from '@mui/material/styles';
+
 import varibles from './scss/colorVariables.module.scss';
 
 const {

@@ -1,5 +1,5 @@
-const getNumberWithCurrency = (number, currency, locale = 'en') => {
-  return new Intl.NumberFormat(locale, {
+const getNumberWithCurrency = (number, currency) => {
+  return new Intl.NumberFormat('en', {
     style: 'currency',
     currency: currency,
   }).format(number);

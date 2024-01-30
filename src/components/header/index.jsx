@@ -1,4 +1,5 @@
-import AgroexLogo from '../../assets/icons/AgroexLogoHeader.svg';
+import AgroexLogo from '@assets/icons/AgroexLogoHeader.svg';
+
 import styles from './header.module.scss';
 
 const Header = () => {

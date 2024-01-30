@@ -1,15 +1,8 @@
-@import "./scss/colorVariables.module.scss";
-@import "./scss/typography.module.scss";
+@import "@scss/colorVariables.module.scss";
+@import "@scss/typography.module.scss";
 
 html {
   font-size: $fontSizeMain;
-}
-
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 0;
-  text-align: center;
 }
 
 body {

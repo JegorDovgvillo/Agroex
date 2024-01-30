@@ -1,4 +1,5 @@
 import getNumberWithCurrency from '@helpers/getNumberWithCurrency';
+
 import styles from './priceBlock.module.scss';
 
 const PriceBlock = ({ totalCost, unitCost, currency, className }) => {

@@ -1,6 +1,10 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+
+import LotList from '@pages/LotList';
+
+import Layout from '@components/layout';
+
 import ROUTES from './routeNames';
-import Layout from '../components/layout';
 
 const Router = () => {
   const router = createBrowserRouter([
@@ -10,7 +14,15 @@ const Router = () => {
       children: [
         {
           path: ROUTES.LOTS,
-          element: 'Lots',
+          element: <LotList />,
+        },
+        {
+          path: ROUTES.LOTS_BUY,
+          element: <LotList lotType={'buy'}/>,
+        },
+        {
+          path: ROUTES.LOTS_SELL,
+          element: <LotList lotType={'sell'}/>,
         },
         {
           path: ROUTES.LOTS_DETAILS,
