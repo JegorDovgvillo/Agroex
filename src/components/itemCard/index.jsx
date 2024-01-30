@@ -1,11 +1,14 @@
 import { DateTime } from 'luxon';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
 import { CustomButton } from '../buttons/CustomButton';
 import PriceBlock from '../priceBlock';
 import Timer from '../timer';
 
 import ROUTES from '@helpers/routeNames';
+
+import { updateId } from '@store/slices/lotDetailsSlice';
 
 import shoppingIcon from '@assets/icons/shopping.svg';
 import betIcon from '@assets/icons/bet.svg';
@@ -14,19 +17,21 @@ import img from '@assets/icons/image15.png';
 import styles from './itemCard.module.scss';
 
 const ItemCard = (item) => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  
+
   const viewDetailsCard = () => {
+    dispatch(updateId(item.id));
     navigate(ROUTES.LOTS_DETAILS);
   };
-  
+
   const handleClick = (event) => {
     event.stopPropagation();
   };
 
   return (
     <div className={styles.cardWrapp} onClick={viewDetailsCard}>
-      <img src={img} className={styles.image} alt="item image"></img>
+      <img src={img} className={styles.image} alt='item image'></img>
       <div className={styles.infoWrap}>
         <h6 className={styles.title}>{item.title}</h6>
         <div className={styles.technicalInfo}>
@@ -54,9 +59,9 @@ const ItemCard = (item) => {
             currency={item.currency}
           />
           <CustomButton
-            size="M"
-            text="My bet"
-            type="secondary"
+            size='M'
+            text='My bet'
+            type='secondary'
             icon={<img src={betIcon} />}
             handleClick={handleClick}
           />
@@ -69,7 +74,7 @@ const ItemCard = (item) => {
             currency={item.currency}
           />
           <CustomButton
-            size="M"
+            size='M'
             text={`${item.lotType} now`}
             icon={<img src={shoppingIcon} />}
             handleClick={handleClick}

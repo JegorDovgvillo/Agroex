@@ -3,7 +3,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import LotList from '@pages/LotList';
 
 import Layout from '@components/layout';
-import { LotDetails } from '@pages/lot-details';
+import { LotDetails } from '@pages/LotDetails';
 
 import ROUTES from './routeNames';
 

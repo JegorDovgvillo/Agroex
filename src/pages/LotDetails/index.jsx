@@ -2,14 +2,19 @@ import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import CircularProgress from '@mui/material/CircularProgress';
 import ImageListItem from '@mui/material/ImageListItem';
+
 import PriceBlock from '@components/priceBlock';
+import { CustomButton } from '@components/buttons/CustomButton';
+import Timer from '@components/timer';
 
 import getNumberWithCurrency from '@helpers/getNumberWithCurrency';
 import getFormattedDate from '@helpers/getFormattedDate';
-import { fetchLotDetails } from '@store/slices/lotDetailsSlice';
-import { lotDetailedSelector } from '@store/slices/lotDetailsSlice';
-import { CustomButton } from '@components/buttons/CustomButton';
-import Timer from '@components/timer';
+
+import {
+  selectLotDetailById,
+  updateLoadingStatus,
+} from '@store/slices/lotDetailsSlice';
+import { fetchLotDetails } from '@store/thunks/fetchLotDetails';
 
 import attentionIcon from '@assets/icons/attention.svg';
 import cartIcon from '@assets/icons/cartIcon.svg';
@@ -20,12 +25,15 @@ import styles from './lotDetails.module.scss';
 
 export const LotDetails = () => {
   const dispatch = useDispatch();
-  const lotDetails = useSelector((state) => state.lotDetails);
-  const { loadingStatus, lotID } = lotDetails;
-  const lotData = useSelector((state) => lotDetailedSelector(state, lotID));
+  const { loadingStatus, lotID } = useSelector((state) => state.lotDetails);
+  const selectedLot = useSelector((state) => selectLotDetailById(state, lotID));
 
   useEffect(() => {
     dispatch(fetchLotDetails(lotID));
+
+    return () => {
+      dispatch(updateLoadingStatus({ loadingStatus: 'idle' }));
+    };
   }, [dispatch, lotID]);
 
   if (loadingStatus !== 'fulfilled') {
@@ -50,7 +58,7 @@ export const LotDetails = () => {
     variety,
     size,
     packaging,
-  } = lotData;
+  } = selectedLot;
 
   const totalPrice = quantity * pricePerTon;
 
