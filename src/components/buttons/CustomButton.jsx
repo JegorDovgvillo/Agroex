@@ -22,7 +22,7 @@ export const CustomButton = ({
   disabled = false,
   icon = null,
   width = null,
-  handleButtonClick
+  handleClick
 }) => {
   const buttonStyles = getStyles(size);
   const variant = getVariant(type);
@@ -34,7 +34,7 @@ export const CustomButton = ({
       disabled={disabled}
       style={width && { width: width }}
       className={`${styles.commonButtonStyles} ${buttonStyles}`}
-      onClick={handleButtonClick}
+      onClick={handleClick}
     >
       {text}
     </Button>

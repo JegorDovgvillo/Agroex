@@ -14,6 +14,7 @@ import img from '@assets/icons/image15.png';
 
 const ItemCard = (item) => {
   const navigate = useNavigate();
+  
   const viewDetailsCard = () => {
     navigate(ROUTES.LOTS_DETAILS);
   };
@@ -56,7 +57,7 @@ const ItemCard = (item) => {
             text="My bet"
             type="secondary"
             icon={<img src={betIcon} />}
-            handleButtonClick={handleClick}
+            handleClick={handleClick}
           />
         </div>
         <div className={styles.priceBlock}>
@@ -70,7 +71,7 @@ const ItemCard = (item) => {
             size="M"
             text={`${item.lotType} now`}
             icon={<img src={shoppingIcon} />}
-            handleButtonClick={handleClick}
+            handleClick={handleClick}
           />
         </div>
       </div>
