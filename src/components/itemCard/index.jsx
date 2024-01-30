@@ -1,16 +1,17 @@
 import { DateTime } from 'luxon';
-import { CustomButton } from '../buttons/CustomButton';
 import { useNavigate } from 'react-router-dom';
 
-import Timer from '../timer';
+import { CustomButton } from '../buttons/CustomButton';
 import PriceBlock from '../priceBlock';
-import ROUTES from '@helpers/routeNames';
+import Timer from '../timer';
 
-import styles from './itemCard.module.scss';
+import ROUTES from '@helpers/routeNames';
 
 import shoppingIcon from '@assets/icons/shopping.svg';
 import betIcon from '@assets/icons/bet.svg';
 import img from '@assets/icons/image15.png';
+
+import styles from './itemCard.module.scss';
 
 const ItemCard = (item) => {
   const navigate = useNavigate();

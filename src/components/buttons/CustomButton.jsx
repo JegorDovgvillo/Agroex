@@ -1,5 +1,6 @@
-import { getVariant } from './buttonsUtils';
 import Button from '@mui/material/Button';
+
+import { getVariant } from './buttonsUtils';
 import styles from './buttons.module.scss';
 
 const getStyles = (size) => {

@@ -1,24 +1,15 @@
 import {
   createSlice,
   createEntityAdapter,
-  createAsyncThunk,
   createSelector,
 } from '@reduxjs/toolkit';
-import axios from 'axios';
 
-import ENDPOINTS from '@helpers/endpoints';
-import { BASE_URL } from '@helpers/endpoints';
+import { fetchLots } from '../thunks/fetchLots';
 
 const lotListAdapter = createEntityAdapter();
 
 const initialState = lotListAdapter.getInitialState({
   loadingStatus: 'idle',
-});
-
-export const fetchLots = createAsyncThunk('lotList/fetchLots', async () => {
-  const response = await axios.get(`${BASE_URL}${ENDPOINTS.LOTS}`);
-
-  return response.data;
 });
 
 const lotListSlice = createSlice({
@@ -45,6 +36,7 @@ const { selectAll } = lotListAdapter.getSelectors((state) => state.lotList);
 export const lotListSelector = createSelector([selectAll], (lotList) =>
   Object.values(lotList)
 );
+
 const { reducer } = lotListSlice;
 
 export default reducer;

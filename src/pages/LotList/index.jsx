@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import Filters from '@components/filters';
 import ItemCard from '@components/itemCard';
 
-import { fetchLots } from '@store/slices/lotListSlice';
+import { fetchLots } from '@store/thunks/fetchLots';
 import { lotListSelector } from '@store/slices/lotListSlice';
 
 import styles from './lotList.module.scss';
@@ -19,9 +19,7 @@ const LotList = ({ lotType }) => {
 
   const filteringLotsByLotType = () => {
     const filteredLots = lots
-      .filter((item) =>
-        lotType === undefined ? true : item.lotType === lotType
-      )
+    .filter((item) => !lotType || item.lotType === lotType)
       .map((item) => {
         return <ItemCard {...item} key={item.id} />;
       });

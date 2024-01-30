@@ -1,6 +1,9 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+
 import LotList from '@pages/LotList';
+
 import Layout from '@components/layout';
+
 import ROUTES from './routeNames';
 
 const Router = () => {

@@ -1,6 +1,8 @@
 import { DateTime } from 'luxon';
-import styles from './time.module.scss';
+
 import timeIcon from '@assets/icons/time.svg';
+
+import styles from './time.module.scss';
 
 export const TimeCountDown = ({ startDate, endDate }) => {
   const end = DateTime.fromISO(endDate);
