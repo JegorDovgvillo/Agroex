@@ -12,7 +12,7 @@ import ROUTES from './routeNames';
 const Router = () => {
   const router = createBrowserRouter([
     {
-      path: '/',
+      path: "/",
       element: <Layout />,
       children: [
         {
