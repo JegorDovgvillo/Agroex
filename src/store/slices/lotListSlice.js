@@ -22,7 +22,7 @@ const lotListSlice = createSlice({
         state.loadingStatus = 'pending';
       })
       .addCase(fetchLots.fulfilled, (state, action) => {
-        (state.loadingStatus = 'fulfilled'),
+        state.loadingStatus = 'fulfilled';
         lotListAdapter.addMany(state, action.payload);
       })
       .addCase(fetchLots.rejected, (state) => {

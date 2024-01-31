@@ -13,8 +13,16 @@
     flex-direction: column;
   }
 
-  .image {
-    margin-right: 24px;
+  .imageContainer {
+    overflow: hidden;
+    width: 340px;
+    height: 176px;
+
+    .image {
+      max-width: 100%;
+      height: auto;
+      margin-right: 24px;
+    }
   }
 
   .infoWrap {

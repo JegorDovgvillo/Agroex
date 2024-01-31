@@ -13,12 +13,12 @@ export const TimeCountDown = ({ startDate, endDate }) => {
 
   return (
     <div className={styles.container}>
-      <img src={timeIcon} alt="Watch icon"></img>
+      <img src={timeIcon} alt='Watch icon'></img>
       {days >= 1 && <span className={styles.time}>{`${days}d `}</span>}
       {hours >= 1 && (
         <span className={styles.time}>{`${Math.floor(hours)}h `}</span>
       )}
-      {minutes >= 1 && (
+      {hours >= 0 && (
         <span className={styles.time}>{`${Math.floor(minutes)}m `}</span>
       )}
     </div>
