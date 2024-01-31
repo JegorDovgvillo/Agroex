@@ -1,19 +1,31 @@
 import { Select, MenuItem } from "@mui/material";
-
-const CustomSelect = ({margin='0 0 24px 0',units}) => {
+import { Field } from "formik";
+import { useState } from "react";
+const CustomSelect = ({
+  margin = "0 0 24px 0",
+  units,
+  name,
+  width,
+  disabled = true,
+}) => {
   return (
-    <Select
-      value=''
-      // onChange={handleChange}
-      disabled
+    <Field
+      as={Select}
+      name={name}
       displayEmpty
       inputProps={{ "aria-label": "Without label" }}
-      sx={{m:{margin}}}
+      sx={{ m: { margin }, width: { width } }}
+      disabled={disabled}
     >
-      <MenuItem value="">
-        <em>{units}</em>
-      </MenuItem>
-    </Select>
+      {units.map((item, index) => {
+        const value = typeof item === 'object' ? item : item;
+        return (
+          <MenuItem key={index} value={value}>
+            {typeof item === 'object' ? item.username : item}
+          </MenuItem>
+        );
+      })}
+    </Field>
   );
 };
 

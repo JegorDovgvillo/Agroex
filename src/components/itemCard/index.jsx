@@ -64,9 +64,9 @@ const ItemCard = (item) => {
             currency={item.currency}
           />
           <CustomButton
-            size='M'
-            text='My bet'
-            type='secondary'
+            size="M"
+            text="My bet"
+            style="secondary"
             icon={<img src={betIcon} />}
             handleClick={handleClick}
           />
