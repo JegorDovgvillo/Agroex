@@ -1,0 +1,10 @@
+@import "@scss/typography.module.scss";
+
+.title {
+  @include h2;
+  text-align: center;
+}
+.text {
+  @include body1;
+  text-align: center;
+}

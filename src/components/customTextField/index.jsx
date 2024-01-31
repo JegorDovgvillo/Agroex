@@ -1,16 +1,19 @@
-import TextField from "@mui/material/TextField";
-import styles from "./customTextField.module.scss";
-import { Field } from "formik";
+import TextField from '@mui/material/TextField';
+import { Field } from 'formik';
+
+import styles from './customTextField.module.scss';
 
 const CustomTextField = ({
-  label = "",
+  label = '',
   id,
-  width = "322px",
-  margin = "0 16px 24px 0",
-  placeholder = "",
+  width = '210px',
+  margin = '0 16px 24px 0',
+  placeholder = '',
   name,
+  multiline = null,
+  rows,
+  required = true,
 }) => {
-  
   return (
     <div className={styles.wrapp}>
       <label htmlFor={id}>{label}</label>
@@ -20,6 +23,9 @@ const CustomTextField = ({
         id={id}
         sx={{ m: margin, width: { width } }}
         placeholder={placeholder}
+        multiline={multiline}
+        rows={rows}
+        required={required}
       />
     </div>
   );

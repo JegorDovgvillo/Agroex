@@ -44,8 +44,7 @@ const ItemCard = (item) => {
         </div>
         <div className={styles.info}>
           <span>
-            {item.productCategory.title}, idared,{' '}
-            {getNumberWithCurrency(item.quantity)} ton, 70+, bins
+            {item.productCategory.title}, {item.variety}, {item.quantity}ton, {item.size}, {item.packaging}
           </span>
           <span>
             {item.location.country}, {item.location.region}
