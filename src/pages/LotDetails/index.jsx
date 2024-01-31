@@ -23,6 +23,29 @@ import sliderImage from '@assets/images/77d4dc59-3013-41aa-8a7b-cb27cb6fa425.jpg
 
 import styles from './lotDetails.module.scss';
 
+const {
+  body2,
+  breadCrumbs,
+  pageContainer,
+  container,
+  leftSide,
+  rightSide,
+  imageContainer,
+  heading,
+  dateCounter,
+  descriptionContainer,
+  betPriceContainer,
+  betContainer,
+  priceContainer,
+  priceTotalContainer,
+  locationContainer,
+  lotDetailsContainer,
+  lotDetailsRow,
+  lotDetailsValue,
+  lotDetailsKey,
+  lotDetailsRow_bordered,
+} = styles;
+
 export const LotDetails = () => {
   const dispatch = useDispatch();
   const { loadingStatus, lotID } = useSelector((state) => state.lotDetails);
@@ -38,7 +61,7 @@ export const LotDetails = () => {
 
   if (loadingStatus !== 'fulfilled') {
     return (
-      <div className={styles.container}>
+      <div className={container}>
         <CircularProgress />
       </div>
     );
@@ -73,7 +96,7 @@ export const LotDetails = () => {
 
   const getLocation = () => {
     return (
-      <div className={styles.locationContainer}>
+      <div className={locationContainer}>
         <img src={mapIcon} alt='Map icon' />
         <h6>{`${location.country}, ${location.region}`}</h6>
       </div>
@@ -90,13 +113,13 @@ export const LotDetails = () => {
   ];
 
   return (
-    <div className={styles.pageContainer}>
-      <div className={styles.breadCrumbs} />
-      <div className={styles.container}>
+    <div className={pageContainer}>
+      <div className={breadCrumbs} />
+      <div className={container}>
         {loadingStatus === 'fulfilled' && (
           <>
-            <div className={styles.leftSide}>
-              <div className={styles.imageContainer}>
+            <div className={leftSide}>
+              <div className={imageContainer}>
                 <ImageListItem key={sliderImage}>
                   <img
                     src={`${sliderImage}?w=164&h=164&fit=crop&auto=format`}
@@ -106,24 +129,24 @@ export const LotDetails = () => {
                 </ImageListItem>
               </div>
             </div>
-            <div className={styles.rightSide}>
-              <div className={styles.heading}>
-                <h4 className={styles.title}>{title}</h4>
-                <div className={styles.dateCounter}>
+            <div className={rightSide}>
+              <div className={heading}>
+                <h4 className={title}>{title}</h4>
+                <div className={dateCounter}>
                   <Timer endDate={expirationDate} />
-                  <div className={styles.id}>{`ID ${id}`}</div>
+                  <div className={id}>{`ID ${id}`}</div>
                 </div>
               </div>
-              <div className={styles.descriptionContainer}>
+              <div className={descriptionContainer}>
                 <img src={attentionIcon} alt='Attention icon' />
-                <p className={styles.description}>{description}</p>
+                <p className={description}>{description}</p>
               </div>
-              <div className={styles.betPriceContainer}>
-                <div className={styles.betContainer} />
+              <div className={betPriceContainer}>
+                <div className={betContainer} />
 
-                <div className={styles.priceContainer}>
-                  <div className={styles.priceTotalContainer}>
-                    <p className={styles.body2}>Total price</p>
+                <div className={priceContainer}>
+                  <div className={priceTotalContainer}>
+                    <p className={body2}>Total price</p>
                     <div>
                       <PriceBlock
                         totalCost={totalPrice}
@@ -141,16 +164,16 @@ export const LotDetails = () => {
                   />
                 </div>
               </div>
-              <div className={styles.lotDetailsContainer}>
+              <div className={lotDetailsContainer}>
                 {lotDescription.map((i, index) => (
                   <div
                     key={i.key}
-                    className={`${styles.lotDetailsRow} ${
-                      index < 4 && styles.lotDetailsRow_bordered
+                    className={`${lotDetailsRow} ${
+                      index < 4 && lotDetailsRow_bordered
                     }`}
                   >
-                    <h6 className={styles.lotDetailsKey}>{i.key}</h6>
-                    <h6 className={styles.lotDetailsValue}>{i.value}</h6>
+                    <h6 className={lotDetailsKey}>{i.key}</h6>
+                    <h6 className={lotDetailsValue}>{i.value}</h6>
                   </div>
                 ))}
               </div>
