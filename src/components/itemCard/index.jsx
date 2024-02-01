@@ -7,6 +7,7 @@ import Timer from '../timer';
 
 import ROUTES from '@helpers/routeNames';
 import getFormattedDate from '@helpers/getFormattedDate';
+import getNumberWithCurrency from '@helpers/getNumberWithCurrency';
 
 import { updateId } from '@store/slices/lotDetailsSlice';
 
@@ -15,8 +16,7 @@ import betIcon from '@assets/icons/bet.svg';
 import img from '@assets/images/77d4dc59-3013-41aa-8a7b-cb27cb6fa425.jpg';
 
 import styles from './itemCard.module.scss';
-import getNumberWithCurrency from '@helpers/getNumberWithCurrency';
-import getFormattedDate from '@helpers/getFormattedDate';
+
 
 const ItemCard = (item) => {
   const dispatch = useDispatch();
@@ -46,8 +46,8 @@ const ItemCard = (item) => {
         <div className={styles.info}>
           <span>
             {/* {item.productCategory.title} */}
-            Apples, {item.variety}, {item.quantity} ton, {item.size},{' '}
-            {item.packaging}
+            Apples, {item.variety}, {getNumberWithCurrency(item.quantity)} ton,{' '}
+            {item.size}, {item.packaging}
           </span>
           <span>
             {/* {item.location.country} */}

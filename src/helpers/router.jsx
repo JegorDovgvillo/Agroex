@@ -5,8 +5,8 @@ import AdminPage from '@pages/Admin';
 import { LotDetails } from '@pages/LotDetails';
 import CreateNewLot from '@pages/createNewLot';
 
+import UsersList from '@components/admin/usersList';
 import Layout from '@components/layout';
-import { LotDetails } from '@pages/LotDetails';
 
 import ROUTES from './routeNames';
 
@@ -33,6 +33,10 @@ const Router = () => {
           element: <LotDetails />,
         },
         {
+          path: ROUTES.CREATE_NEW_LOT,
+          element: <CreateNewLot />,
+        },
+        {
           path: ROUTES.ADMIN,
           element: <AdminPage />,
           children: [
@@ -49,9 +53,8 @@ const Router = () => {
               element: 'AdminLots',
             },
           ],
-          path: ROUTES.CREATE_NEW_LOT,
-          element: <CreateNewLot />,
         },
+        
       ],
     },
   ]);

@@ -9,7 +9,7 @@ import CustomDatePicker from '@components/customDatePicker';
 import CustomModal from '@components/customModal';
 
 import { fetchUsers } from '@store/thunks/fetchUsers';
-import { usersSelector } from '@store/slices/usersSlice';
+import { usersListSelector } from '@store/slices/usersListSlice';
 import { openModal } from '@store/slices/modalSlice';
 import { fetchCategories } from '@store/thunks/fetchCategories';
 import { categoriesSelector } from '@store/slices/categoriesSlice';
@@ -23,7 +23,7 @@ import styles from './createNewLot.module.scss';
 
 const CreateNewLot = () => {
   const dispatch = useDispatch();
-  const users = useSelector(usersSelector);
+  const users = useSelector(usersListSelector);
   const categories = useSelector(categoriesSelector);
   const country = useSelector(countrySelector);
 
