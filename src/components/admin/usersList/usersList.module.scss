@@ -1,5 +1,10 @@
 @import "../../../scss/colorVariables.module.scss";
 
+.tableRow th,
+.tableRow td {
+  text-align: center;
+}
+
 .tableRow th:last-of-type,
 .tableRow td:last-of-type {
   text-align: right;
@@ -7,6 +12,10 @@
 
 .tableRow th:last-of-type {
   padding: 0 40px 0 0;
+}
+
+.tableRow td:last-of-type {
+  padding: 0 30px 0 0;
 }
 
 .verifiedIconContainer {

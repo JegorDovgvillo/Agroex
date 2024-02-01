@@ -24,7 +24,7 @@ export const MainListItems = () => {
 
   useEffect(() => {
     const activeItemRoute = adminListItems.find(
-      (i) => i.id === activeItemId
+      (el) => el.id === activeItemId
     ).route;
     navigate(activeItemRoute);
   }, [activeItemId, navigate]);
@@ -36,14 +36,14 @@ export const MainListItems = () => {
 
   return (
     <>
-      {adminListItems.map((i) => (
+      {adminListItems.map((el) => (
         <ListItemButton
-          key={i.id}
-          onClick={() => handleClick(i.id, i.route)}
-          selected={activeItemId === i.id && true}
+          key={el.id}
+          onClick={() => handleClick(el.id, el.route)}
+          selected={activeItemId === el.id && true}
         >
-          <ListItemIcon>{i.icon}</ListItemIcon>
-          <ListItemText primary={i.name} />
+          <ListItemIcon>{el.icon}</ListItemIcon>
+          <ListItemText primary={el.name} />
         </ListItemButton>
       ))}
     </>

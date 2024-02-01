@@ -59,7 +59,7 @@ export default function UsersList() {
             <TableCell>Phone Number</TableCell>
             <TableCell>Registration Date</TableCell>
             <TableCell>Email Verified</TableCell>
-            <TableCell>Edit</TableCell>
+            <TableCell>Actions</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -87,18 +87,14 @@ export default function UsersList() {
                 </TableCell>
                 <TableCell>
                   <div className={editBlock}>
-                    {
-                      <DeleteForeverOutlinedIcon
-                        className={deleteIcon}
-                        onClick={handleDeleteClick}
-                      />
-                    }
-                    {
-                      <BorderColorIcon
-                        className={editIcon}
-                        onClick={handleEditClick}
-                      />
-                    }
+                    <DeleteForeverOutlinedIcon
+                      className={deleteIcon}
+                      onClick={handleDeleteClick}
+                    />
+                    <BorderColorIcon
+                      className={editIcon}
+                      onClick={handleEditClick}
+                    />
                   </div>
                 </TableCell>
               </TableRow>
