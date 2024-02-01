@@ -33,7 +33,7 @@ const ItemCard = (item) => {
   return (
     <div className={styles.cardWrapp} onClick={viewDetailsCard}>
       <div className={styles.imageContainer}>
-        <img src={img} className={styles.image} alt='item image' />
+        <img src={img} className={styles.image} alt="item image" />
       </div>
 
       <div className={styles.infoWrap}>
@@ -44,7 +44,8 @@ const ItemCard = (item) => {
         </div>
         <div className={styles.info}>
           <span>
-            {item.productCategory.title}, {item.variety}, {item.quantity}ton, {item.size}, {item.packaging}
+            {item.productCategory.title}, {item.variety}, {item.quantity}ton,{' '}
+            {item.size}, {item.packaging}
           </span>
           <span>
             {item.location.country}, {item.location.region}
@@ -63,9 +64,9 @@ const ItemCard = (item) => {
             currency={item.currency}
           />
           <CustomButton
-            size="M"
-            text="My bet"
-            style="secondary"
+            size={'M'}
+            text={'My bet'}
+            style={'secondary'}
             icon={<img src={betIcon} />}
             handleClick={handleClick}
           />
@@ -78,7 +79,7 @@ const ItemCard = (item) => {
             currency={item.currency}
           />
           <CustomButton
-            size='M'
+            size={'M'}
             text={`${item.lotType} now`}
             icon={<img src={shoppingIcon} />}
             handleClick={handleClick}

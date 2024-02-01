@@ -10,7 +10,7 @@ import users from './slices/usersSlice';
 import modal from './slices/modalSlice';
 
 const store = configureStore({
-  reducer: { lotList, lotDetails,users,modal },
+  reducer: { lotList, lotDetails, users, modal },
   devTools: process.env.NODE_ENV !== 'production',
 });
 
