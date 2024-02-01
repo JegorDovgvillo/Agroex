@@ -5,7 +5,8 @@ import AdminPage from '@pages/Admin';
 import { LotDetails } from '@pages/LotDetails';
 
 import Layout from '@components/layout';
-import UsersList from '@components/admin/usersList';
+import { LotDetails } from '@pages/LotDetails';
+import CreateNewAd from '@pages/createNewAd';
 
 import ROUTES from './routeNames';
 
