@@ -1,0 +1,62 @@
+@import "@scss/colorVariables.module.scss";
+
+.userPageContainer {
+  position: relative;
+  width: 100%;
+}
+
+.hidden {
+  display: none;
+}
+
+.toolBarHeader {
+  padding: 0 24px;
+  color: $monoWhite;
+
+  .toolBarBtn {
+    margin: 0 36px 0 0;
+    color: $monoWhite;
+  }
+
+  .toolBarTitle {
+    flex-grow: 1;
+  }
+}
+
+.appBarContainer {
+  display: flex;
+
+  .appBar {
+    position: absolute;
+  }
+}
+
+.toolBar {
+  .toolBarRightHeader {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0 8px;
+  }
+}
+
+.contentContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-grow: 1;
+}
+
+.contentContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-grow: 1;
+
+  .content {
+    width: 100%;
+    padding: 16px;
+  }
+}

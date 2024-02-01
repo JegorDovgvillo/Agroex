@@ -99,7 +99,7 @@ export const LotDetails = () => {
     return (
       <div className={locationContainer}>
         <img src={mapIcon} alt='Map icon' />
-        <h6>{`${location.country}, ${location.region}`}</h6>
+        <h6>{`${location.countryId}, ${location.region}`}</h6>
       </div>
     );
   };
