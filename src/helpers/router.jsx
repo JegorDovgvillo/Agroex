@@ -1,9 +1,11 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import LotList from '@pages/LotList';
+import AdminPage from '@pages/Admin';
+import { LotDetails } from '@pages/LotDetails';
 
 import Layout from '@components/layout';
-import { LotDetails } from '@pages/LotDetails';
+import UsersList from '@components/admin/usersList';
 
 import ROUTES from './routeNames';
 
@@ -28,6 +30,24 @@ const Router = () => {
         {
           path: ROUTES.LOTS_DETAILS,
           element: <LotDetails />,
+        },
+        {
+          path: ROUTES.ADMIN,
+          element: <AdminPage />,
+          children: [
+            {
+              path: ROUTES.ADMIN_CATEGORIES,
+              element: 'AdminCategories',
+            },
+            {
+              path: ROUTES.ADMIN_USERS,
+              element: <UsersList />,
+            },
+            {
+              path: ROUTES.ADMIN_LOTS,
+              element: 'AdminLots',
+            },
+          ],
         },
       ],
     },

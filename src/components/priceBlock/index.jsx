@@ -10,7 +10,7 @@ const PriceBlock = ({ totalCost, unitCost, currency, className }) => {
   return (
     <div className={`${styles.container} ${classNames}`}>
       <p>{costWithCurrency}</p>
-      <span>{unitCostWithCurrency}</span>
+      <span>{`${unitCostWithCurrency}/ton`}</span>
     </div>
   );
 };
