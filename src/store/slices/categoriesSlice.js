@@ -15,17 +15,7 @@ const initialState = categoriesAdapter.getInitialState({
 const categoriesSlice = createSlice({
   name: 'categories',
   initialState,
-
-  reducers: {
-    updateId: (state, action) => {
-      state.lotID = action.payload;
-    },
-
-    updateLoadingStatus: (state, action) => {
-      state.loadingStatus = action.payload;
-    },
-  },
-
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchCategories.pending, (state) => {
