@@ -1,6 +1,8 @@
 import { Select, MenuItem } from '@mui/material';
 import { Field } from 'formik';
 
+import styles from '../customTextField/customTextField.module.scss';
+
 const CustomSelect = ({
   margin = '0 0 24px 0',
   units,
@@ -9,30 +11,32 @@ const CustomSelect = ({
   disabled = true,
   placeholder,
   required = true,
+  itemFieldName,
+  label = '',
 }) => {
   return (
-    <Field
-      as={Select}
-      name={name}
-      displayEmpty
-      inputProps={{ 'aria-label': 'Without label' }}
-      sx={{ m: { margin }, width: { width } }}
-      disabled={disabled}
-      required={required}
-    >
-      <MenuItem disabled value="">
-        <em>{placeholder}</em>
-      </MenuItem>
-      {units.map((item, index) => {
-        const value = typeof item === 'object' ? item : item;
-
-        return (
-          <MenuItem key={index} value={value}>
-            {typeof item === 'object' ? item.username : item}
-          </MenuItem>
-        );
-      })}
-    </Field>
+    <div className={styles.wrapp}>
+      <label htmlFor={name}>{label}</label>
+      <Field
+        as={Select}
+        name={name}
+        displayEmpty
+        sx={{ m: { margin }, width: { width } }}
+        disabled={disabled}
+        required={required}
+      >
+        <MenuItem disabled value="">
+          <em>{placeholder}</em>
+        </MenuItem>
+        {units.map((item, index) => {
+          return (
+            <MenuItem key={index} value={item.id || item}>
+              {item[itemFieldName] || item}
+            </MenuItem>
+          );
+        })}
+      </Field>
+    </div>
   );
 };
 

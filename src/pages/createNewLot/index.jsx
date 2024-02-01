@@ -11,27 +11,36 @@ import CustomModal from '@components/customModal';
 import { fetchUsers } from '@store/thunks/fetchUsers';
 import { usersSelector } from '@store/slices/usersSlice';
 import { openModal } from '@store/slices/modalSlice';
+import { fetchCategories } from '@store/thunks/fetchCategories';
+import { categoriesSelector } from '@store/slices/categoriesSlice';
+import { countrySelector } from '@store/slices/countriesSlice';
+import { fetchCountries } from '@store/thunks/fetchCountries';
 
 import axiosInstance from '@helpers/axiosInstance';
 import ENDPOINTS from '@helpers/endpoints';
 
-import styles from './createNewAd.module.scss';
+import styles from './createNewLot.module.scss';
 
-const CreateNewAd = () => {
+
+const CreateNewLot = () => {
   const dispatch = useDispatch();
   const users = useSelector(usersSelector);
+  const categories = useSelector(categoriesSelector);
+  const country = useSelector(countrySelector);
 
   useEffect(() => {
     dispatch(fetchUsers());
+    dispatch(fetchCategories());
+    dispatch(fetchCountries());
   }, [dispatch]);
 
   return (
     <Formik
       initialValues={{
-        user: '',
+        userId: '',
         title: '',
         country: '',
-        city: '',
+        region: '',
         category: '',
         subcategory: '',
         variety: '',
@@ -55,14 +64,12 @@ const CreateNewAd = () => {
           pricePerTon: (values.price / values.quantity).toFixed(2),
           currency: values.priceUnits,
           expirationDate: values.expirationDate,
-          productCategory: {
-            title: values.subcategory,
-          },
+          productCategoryId: values.category,
           lotType: values.lotType,
-          user: values.user,
+          userId: values.userId,
           location: {
-            country: values.country,
-            region: values.city,
+            countryId: values.country,
+            region: values.region,
           },
         };
         await axiosInstance.post(ENDPOINTS.LOTS, obj);
@@ -80,23 +87,28 @@ const CreateNewAd = () => {
               name={'title'}
             />
             <CustomSelect
-              units={users.map((item) => item)}
-              name="user"
+              units={users}
+              itemFieldName={'username'}
+              name={'userId'}
               width={'210px'}
               disabled={false}
               margin={'0 16px 24px 0'}
               placeholder={'Choose user'}
             />
-            <CustomTextField
+            <CustomSelect
               label={'Location'}
-              id={'country'}
-              placeholder={'Enter the country'}
+              units={country}
+              itemFieldName={'title'}
               name={'country'}
+              width={'210px'}
+              disabled={false}
+              margin={'0 16px 24px 0'}
+              placeholder={'Choose country'}
             />
             <CustomTextField
-              id={'city'}
-              placeholder={'Enter the city'}
-              name={'city'}
+              id={'region'}
+              placeholder={'Enter the region'}
+              name={'region'}
             />
           </div>
           <CustomTextField
@@ -108,11 +120,15 @@ const CreateNewAd = () => {
             rows={4}
           />
           <div className={styles.inputBlock}>
-            <CustomTextField
-              label={'Category'}
-              id={'category'}
-              placeholder={'Enter the category'}
-              name={'category'}
+            <CustomSelect
+              label={'Categories'}
+              units={categories}
+              itemFieldName={'title'}
+              name="category"
+              width={'210px'}
+              disabled={false}
+              margin={'0 16px 24px 0'}
+              placeholder={'Choose category'}
             />
             <CustomTextField
               id={'subcategory'}
@@ -155,7 +171,7 @@ const CreateNewAd = () => {
             />
             <CustomSelect
               units={['USD']}
-              name="priceUnits"
+              name={'priceUnits'}
               disabled={false}
               placeholder={'Currency'}
               width={'210px'}
@@ -184,4 +200,4 @@ const CreateNewAd = () => {
   );
 };
 
-export default CreateNewAd;
+export default CreateNewLot;

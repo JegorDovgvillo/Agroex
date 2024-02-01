@@ -6,6 +6,7 @@ import PriceBlock from '../priceBlock';
 import Timer from '../timer';
 
 import ROUTES from '@helpers/routeNames';
+import getFormattedDate from '@helpers/getFormattedDate';
 
 import { updateId } from '@store/slices/lotDetailsSlice';
 
@@ -44,11 +45,13 @@ const ItemCard = (item) => {
         </div>
         <div className={styles.info}>
           <span>
-            {item.productCategory.title}, {item.variety}, {item.quantity}ton,{' '}
-            {item.size}, {item.packaging}
+            {/* {item.productCategory.title} */}
+            Apples, {item.variety}, {item.quantity} ton, {item.size},{' '}
+            {item.packaging}
           </span>
           <span>
-            {item.location.country}, {item.location.region}
+            {/* {item.location.country} */}
+            Belarus, {item.location.region}
           </span>
           <span className={styles.creationDate}>
             {getFormattedDate(item.creationDate)}

@@ -21,7 +21,7 @@ const CustomDatePicker = ({ onChange }) => {
         <DateTimePicker
           value={value}
           onChange={handleDateChange}
-          referenceDate={DateTime.fromISO('2022-04-17T15:30')}
+          referenceDate={DateTime.fromISO('2024-01-01T15:30')}
         />
       </Stack>
     </LocalizationProvider>

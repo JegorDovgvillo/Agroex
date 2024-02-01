@@ -3,10 +3,10 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import LotList from '@pages/LotList';
 import AdminPage from '@pages/Admin';
 import { LotDetails } from '@pages/LotDetails';
+import CreateNewLot from '@pages/createNewLot';
 
 import Layout from '@components/layout';
 import { LotDetails } from '@pages/LotDetails';
-import CreateNewAd from '@pages/createNewAd';
 
 import ROUTES from './routeNames';
 
@@ -49,6 +49,8 @@ const Router = () => {
               element: 'AdminLots',
             },
           ],
+          path: ROUTES.CREATE_NEW_LOT,
+          element: <CreateNewLot />,
         },
       ],
     },
