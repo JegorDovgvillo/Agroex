@@ -32,6 +32,7 @@ const CreateNewLot = () => {
     dispatch(fetchCategories());
     dispatch(fetchCountries());
   }, [dispatch]);
+
   const initialValues = {
     userId: '',
     title: '',
@@ -51,7 +52,7 @@ const CreateNewLot = () => {
   };
 
   const handleSubmitClick = async (values, resetForm) => {
-    const obj = {
+    const lotData = {
       title: values.title,
       description: values.description,
       variety: values.variety,
@@ -69,7 +70,8 @@ const CreateNewLot = () => {
         region: values.region,
       },
     };
-    await axiosInstance.post(ENDPOINTS.LOTS, obj);
+
+    await axiosInstance.post(ENDPOINTS.LOTS, lotData);
     dispatch(openModal());
     resetForm();
   };
@@ -85,101 +87,101 @@ const CreateNewLot = () => {
         <Form>
           <div className={styles.inputBlock}>
             <CustomTextField
-              label={'Title'}
-              id={'title'}
-              placeholder={'Enter the title'}
-              name={'title'}
+              label="Title"
+              id="title"
+              placeholder="Enter the title"
+              name="title"
             />
             <CustomSelect
               units={users}
-              itemFieldName={'username'}
-              name={'userId'}
-              width={'210px'}
+              itemFieldName="username"
+              name="userId"
+              width="210px"
               disabled={false}
-              margin={'0 16px 24px 0'}
-              placeholder={'Choose user'}
+              margin="0 16px 24px 0"
+              placeholder="Choose user"
             />
             <CustomSelect
-              label={'Location'}
+              label="Location"
               units={country}
-              itemFieldName={'title'}
-              name={'country'}
-              width={'210px'}
+              itemFieldName="title"
+              name="country"
+              width="210px"
               disabled={false}
-              margin={'0 16px 24px 0'}
-              placeholder={'Choose country'}
+              margin="0 16px 24px 0"
+              placeholder="Choose country"
             />
             <CustomTextField
-              id={'region'}
-              placeholder={'Enter the region'}
-              name={'region'}
+              id="region"
+              placeholder="Enter the region"
+              name="region"
             />
           </div>
           <CustomTextField
-            label={'Description'}
-            width={'888px'}
-            placeholder={'Enter the description'}
-            name={'description'}
+            label="Description"
+            width="888px"
+            placeholder="Enter the description"
+            name="description"
             multiline
             rows={4}
           />
           <div className={styles.inputBlock}>
             <CustomSelect
-              label={'Categories'}
+              label="Categories"
               units={categories}
-              itemFieldName={'title'}
+              itemFieldName="title"
               name="category"
-              width={'210px'}
+              width="210px"
               disabled={false}
-              margin={'0 16px 24px 0'}
-              placeholder={'Choose category'}
+              margin="0 16px 24px 0"
+              placeholder="Choose category"
             />
             <CustomTextField
-              id={'subcategory'}
-              placeholder={'Enter the subcategory'}
-              name={'subcategory'}
+              id="subcategory"
+              placeholder="Enter the subcategory"
+              name="subcategory"
             />
             <CustomTextField
-              label={'Variety'}
-              id={'variety'}
-              placeholder={'Enter the variety'}
-              name={'variety'}
+              label="Variety"
+              id="variety"
+              placeholder="Enter the variety"
+              name="variety"
             />
             <CustomTextField
-              label={'Size'}
-              id={'size'}
-              placeholder={'Enter the size'}
+              label="Size"
+              id="size"
+              placeholder="Enter the size"
               required={false}
-              name={'size'}
+              name="size"
             />
           </div>
           <div className={styles.inputBlock}>
             <CustomTextField
-              label={'Packaging'}
-              id={'packaging'}
-              placeholder={'Enter the packaging'}
-              name={'packaging'}
+              label="Packaging"
+              id="packaging"
+              placeholder="Enter the packaging"
+              name="packaging"
               required={false}
             />
             <CustomTextField
-              label={'Quantity'}
-              id={'quantity'}
-              placeholder={'Enter the quantity'}
-              name={'quantity'}
+              label="Quantity"
+              id="quantity"
+              placeholder="Enter the quantity"
+              name="quantity"
             />
             <CustomTextField
-              label={'Price'}
-              id={'price'}
-              name={'price'}
-              placeholder={'Enter the price'}
+              label="Price"
+              id="price"
+              name="price"
+              placeholder="Enter the price"
             />
             <CustomSelect
               units={['USD']}
-              name={'priceUnits'}
+              name="priceUnits"
               disabled={false}
-              placeholder={'Currency'}
-              width={'210px'}
-              margin={'0 16px 24px 0'}
+              placeholder="Currency"
+              width="210px"
+              margin="0 16px 24px 0"
             />
           </div>
           <div className={styles.inputBlock}>
@@ -188,20 +190,20 @@ const CreateNewLot = () => {
               onChange={(date) => setFieldValue('expirationDate', date)}
             />
             <CustomSelect
-              id={'lotType'}
-              name={'lotType'}
+              id="lotType"
+              name="lotType"
               units={['sell', 'buy']}
               disabled={false}
-              placeholder={'Lot type'}
-              width={'210px'}
+              placeholder="Lot type"
+              width="210px"
             />
           </div>
           <CustomButton
-            text={'Place an item'}
-            width={'auto'}
-            typeOfButton={'submit'}
+            text="Place an item"
+            width="auto"
+            typeOfButton="submit"
           />
-          <CustomModal title={'Success!'} text={'Your ad has been published'} />
+          <CustomModal title="Success!" text="Your ad has been published" />
         </Form>
       )}
     </Formik>

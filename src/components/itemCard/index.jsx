@@ -17,7 +17,6 @@ import img from '@assets/images/77d4dc59-3013-41aa-8a7b-cb27cb6fa425.jpg';
 
 import styles from './itemCard.module.scss';
 
-
 const ItemCard = (item) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -67,9 +66,9 @@ const ItemCard = (item) => {
             currency={item.currency}
           />
           <CustomButton
-            size={'M'}
-            text={'My bet'}
-            type={'secondary'}
+            size="M"
+            text="My bet"
+            type="secondary"
             icon={<img src={betIcon} />}
             handleClick={handleClick}
           />
@@ -82,7 +81,7 @@ const ItemCard = (item) => {
             currency={item.currency}
           />
           <CustomButton
-            size={'M'}
+            size="M"
             text={`${item.lotType} now`}
             icon={<img src={shoppingIcon} />}
             handleClick={handleClick}

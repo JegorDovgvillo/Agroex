@@ -8,18 +8,18 @@ import { useState } from 'react';
 import './customDatePicker.module.scss';
 
 const CustomDatePicker = ({ onChange }) => {
-  const [value, setValue] = useState(null);
+  const [date, setDate] = useState(null);
 
-  const handleDateChange = (newValue) => {
-    setValue(newValue);
-    onChange(newValue);
+  const handleDateChange = (newDate) => {
+    setDate(setDate);
+    onChange(newDate);
   };
 
   return (
     <LocalizationProvider dateAdapter={AdapterLuxon}>
       <Stack spacing={10} sx={{ minWidth: 436, m: '0 16px 24px 0' }}>
         <DateTimePicker
-          value={value}
+          value={date}
           onChange={handleDateChange}
           referenceDate={DateTime.fromISO('2024-01-01T15:30')}
         />
