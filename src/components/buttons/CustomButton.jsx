@@ -19,15 +19,15 @@ const getStyles = (size) => {
 export const CustomButton = ({
   text = '',
   size = 'L',
-  style = 'primary',
-  type = 'button',
+  type = 'primary',
+  typeOfButton = 'button',
   disabled = false,
   icon = null,
   width = null,
   handleClick,
 }) => {
   const buttonStyles = getStyles(size);
-  const variant = getVariant(style);
+  const variant = getVariant(type);
 
   return (
     <Button
@@ -37,7 +37,7 @@ export const CustomButton = ({
       style={width && { width: width }}
       className={`${styles.commonButtonStyles} ${buttonStyles}`}
       onClick={handleClick}
-      type={type}
+      type={typeOfButton}
     >
       {text}
     </Button>

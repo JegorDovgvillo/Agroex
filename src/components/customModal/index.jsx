@@ -24,14 +24,14 @@ const CustomModal = ({
   },
 }) => {
   const dispatch = useDispatch();
-  const status = useSelector((state) => state.modal.status);
+  const isOpen = useSelector((state) => state.modal.isOpen);
 
   return (
     <div>
       <Modal
-        open={status}
+        open={isOpen}
         onClose={() => {
-          dispatch(closeModal(false));
+          dispatch(closeModal());
         }}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"

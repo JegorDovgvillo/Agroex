@@ -21,7 +21,6 @@ import ENDPOINTS from '@helpers/endpoints';
 
 import styles from './createNewLot.module.scss';
 
-
 const CreateNewLot = () => {
   const dispatch = useDispatch();
   const users = useSelector(usersSelector);
@@ -33,48 +32,53 @@ const CreateNewLot = () => {
     dispatch(fetchCategories());
     dispatch(fetchCountries());
   }, [dispatch]);
+  const initialValues = {
+    userId: '',
+    title: '',
+    country: '',
+    region: '',
+    category: '',
+    subcategory: '',
+    variety: '',
+    description: '',
+    packaging: '',
+    quantity: '',
+    price: '',
+    priceUnits: '',
+    lotType: '',
+    size: '',
+    expirationDate: '',
+  };
+
+  const handleSubmitClick = async (values, resetForm) => {
+    const obj = {
+      title: values.title,
+      description: values.description,
+      variety: values.variety,
+      size: values.size,
+      packaging: values.packaging,
+      quantity: values.quantity,
+      pricePerTon: (values.price / values.quantity).toFixed(2),
+      currency: values.priceUnits,
+      expirationDate: values.expirationDate,
+      productCategoryId: values.category,
+      lotType: values.lotType,
+      userId: values.userId,
+      location: {
+        countryId: values.country,
+        region: values.region,
+      },
+    };
+    await axiosInstance.post(ENDPOINTS.LOTS, obj);
+    dispatch(openModal());
+    resetForm();
+  };
 
   return (
     <Formik
-      initialValues={{
-        userId: '',
-        title: '',
-        country: '',
-        region: '',
-        category: '',
-        subcategory: '',
-        variety: '',
-        description: '',
-        packaging: '',
-        quantity: '',
-        price: '',
-        priceUnits: '',
-        lotType: '',
-        size: '',
-        expirationDate: '',
-      }}
-      onSubmit={async (values, { resetForm }) => {
-        const obj = {
-          title: values.title,
-          description: values.description,
-          variety: values.variety,
-          size: values.size,
-          packaging: values.packaging,
-          quantity: values.quantity,
-          pricePerTon: (values.price / values.quantity).toFixed(2),
-          currency: values.priceUnits,
-          expirationDate: values.expirationDate,
-          productCategoryId: values.category,
-          lotType: values.lotType,
-          userId: values.userId,
-          location: {
-            countryId: values.country,
-            region: values.region,
-          },
-        };
-        await axiosInstance.post(ENDPOINTS.LOTS, obj);
-        dispatch(openModal(true));
-        resetForm();
+      initialValues={initialValues}
+      onSubmit={(values, { resetForm }) => {
+        handleSubmitClick(values, resetForm);
       }}
     >
       {({ values, setFieldValue }) => (
@@ -192,7 +196,11 @@ const CreateNewLot = () => {
               width={'210px'}
             />
           </div>
-          <CustomButton text={'Place an item'} width={'auto'} type={'submit'} />
+          <CustomButton
+            text={'Place an item'}
+            width={'auto'}
+            typeOfButton={'submit'}
+          />
           <CustomModal title={'Success!'} text={'Your ad has been published'} />
         </Form>
       )}

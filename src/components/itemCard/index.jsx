@@ -69,7 +69,7 @@ const ItemCard = (item) => {
           <CustomButton
             size={'M'}
             text={'My bet'}
-            style={'secondary'}
+            type={'secondary'}
             icon={<img src={betIcon} />}
             handleClick={handleClick}
           />
