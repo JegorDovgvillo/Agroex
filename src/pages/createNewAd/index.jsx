@@ -101,7 +101,6 @@ const CreateNewAd = () => {
           </div>
           <CustomTextField
             label={'Description'}
-            id={'description outlined-multiline-static'}
             width={'888px'}
             placeholder={'Enter the description'}
             name={'description'}

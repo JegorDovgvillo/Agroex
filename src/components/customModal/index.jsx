@@ -47,4 +47,5 @@ const CustomModal = ({
     </div>
   );
 };
+
 export default CustomModal;

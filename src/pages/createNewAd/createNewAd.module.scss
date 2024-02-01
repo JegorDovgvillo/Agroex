@@ -8,13 +8,14 @@ form {
   line-height: 28px;
   letter-spacing: 0.4px;
   padding: 16px 40px;
+
   label {
     margin-bottom: 8px;
   }
+
   .inputBlock {
     display: flex;
     flex-direction: row;
     align-items: flex-end;
   }
-  
 }

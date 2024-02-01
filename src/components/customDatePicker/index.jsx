@@ -1,15 +1,18 @@
-import { DateTime } from 'luxon'; // Импортируем DateTime из Luxon
+import { DateTime } from 'luxon';
 import Stack from '@mui/material/Stack';
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { useState } from 'react';
+
 import './customDatePicker.module.scss';
+
 const CustomDatePicker = ({ onChange }) => {
   const [value, setValue] = useState(null);
+
   const handleDateChange = (newValue) => {
     setValue(newValue);
-    onChange(newValue); // Вызываем обработчик изменения даты
+    onChange(newValue);
   };
 
   return (
@@ -24,4 +27,5 @@ const CustomDatePicker = ({ onChange }) => {
     </LocalizationProvider>
   );
 };
+
 export default CustomDatePicker;
