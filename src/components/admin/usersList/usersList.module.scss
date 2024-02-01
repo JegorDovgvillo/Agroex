@@ -1,0 +1,71 @@
+@import "../../../scss/colorVariables.module.scss";
+
+.tableRow th,
+.tableRow td {
+  text-align: center;
+}
+
+.tableRow th:last-of-type,
+.tableRow td:last-of-type {
+  text-align: right;
+}
+
+.tableRow th:last-of-type {
+  padding: 0 40px 0 0;
+}
+
+.tableRow td:last-of-type {
+  padding: 0 30px 0 0;
+}
+
+.verifiedIconContainer {
+  display: flex;
+  justify-content: center;
+
+  .verifiedIcon {
+    color: $successDark;
+  }
+
+  .noVerifiedIcon {
+    color: $errorDark;
+  }
+}
+
+.userName {
+  text-decoration: underline;
+  transition: 0.3s ease-out;
+
+  &:hover {
+    transition: 0.3s ease-out;
+    color: $mainBase;
+    cursor: pointer;
+  }
+}
+
+.editBlock {
+  display: flex;
+  column-gap: 10px;
+  justify-content: flex-end;
+
+  .editIcon {
+    transition: 0.3s ease-out;
+
+    &:hover {
+      transition: 0.3s ease-out;
+      color: $mainBase;
+      cursor: pointer;
+    }
+  }
+
+  .deleteIcon {
+    width: 30px;
+    height: 30px;
+    color: $errorDark;
+
+    &:hover {
+      transition: 0.3s ease-out;
+      color: $errorLight;
+      cursor: pointer;
+    }
+  }
+}

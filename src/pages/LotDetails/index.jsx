@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+
 import { useSelector, useDispatch } from 'react-redux';
 import CircularProgress from '@mui/material/CircularProgress';
 import ImageListItem from '@mui/material/ImageListItem';
@@ -98,14 +99,14 @@ export const LotDetails = () => {
     return (
       <div className={locationContainer}>
         <img src={mapIcon} alt='Map icon' />
-        <h6>{`${location.country}, ${location.region}`}</h6>
+        <h6>{`${location.countryId}, ${location.region}`}</h6>
       </div>
     );
   };
 
   const lotDescription = [
     { key: 'Variety', value: variety },
-    { key: 'Quantity', value: `${quantity} ton` },
+    { key: 'Quantity', value: `${getNumberWithCurrency(quantity, '')} ton` },
     { key: 'Size', value: size },
     { key: 'Packaging', value: packaging },
     { key: 'Location', value: getLocation() },

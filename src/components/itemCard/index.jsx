@@ -1,4 +1,3 @@
-import { DateTime } from 'luxon';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
@@ -15,6 +14,8 @@ import betIcon from '@assets/icons/bet.svg';
 import img from '@assets/images/77d4dc59-3013-41aa-8a7b-cb27cb6fa425.jpg';
 
 import styles from './itemCard.module.scss';
+import getNumberWithCurrency from '@helpers/getNumberWithCurrency';
+import getFormattedDate from '@helpers/getFormattedDate';
 
 const ItemCard = (item) => {
   const dispatch = useDispatch();
@@ -22,7 +23,7 @@ const ItemCard = (item) => {
 
   const viewDetailsCard = () => {
     dispatch(updateId(item.id));
-    navigate(ROUTES.LOTS_DETAILS);
+    navigate(ROUTES.LOTS_DETAILS.replace(':id', item.id));
   };
 
   const handleClick = (event) => {
@@ -43,13 +44,14 @@ const ItemCard = (item) => {
         </div>
         <div className={styles.info}>
           <span>
-            {item.productCategory.title}, idared, {item.quantity}ton, 70+, bins
+            {item.productCategory.title}, idared,{' '}
+            {getNumberWithCurrency(item.quantity)} ton, 70+, bins
           </span>
           <span>
             {item.location.country}, {item.location.region}
           </span>
           <span className={styles.creationDate}>
-            {DateTime.fromISO(item.creationDate).toFormat('dd.MM.yyyy, HH:mm')}
+            {getFormattedDate(item.creationDate)}
           </span>
         </div>
       </div>
