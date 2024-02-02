@@ -11,10 +11,16 @@ import BorderColorIcon from '@mui/icons-material/BorderColor';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import GppBadIcon from '@mui/icons-material/GppBad';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
+import AddIcon from '@mui/icons-material/Add';
 
-import { fetchUsers } from '@store/thunks/fetchUsers';
+import { setUserId } from '@store/slices/usersListSlice';
+import { fetchUsers, deleteUser } from '@store/thunks/fetchUsers';
 import { usersListSelector } from '@store/slices/usersListSlice';
 import getFormattedDate from '@helpers/getFormattedDate';
+import { openCreatingModal, openUpdatingModal } from '@store/slices/modalSlice';
+
+import ModalForCreatingUser from '../../customModal/modalForCreatingUser';
+import ModalForUpdatingUser from '../../customModal/modalForUpdatingUser';
 
 import styles from './usersList.module.scss';
 
@@ -37,20 +43,32 @@ export default function UsersList() {
     dispatch(fetchUsers());
   }, [dispatch]);
 
-  const handleEditClick = () => {
-    //toDo write edit user logic
+  const handleEditClick = (id) => {
+    dispatch(openUpdatingModal());
+    dispatch(setUserId(id));
   };
 
-  const handleDeleteClick = () => {
-    //toDo write edit user logic
+  const handleDeleteClick = async (id) => {
+    dispatch(deleteUser(id));
   };
 
   return (
     <>
-      <Typography component='h2' variant='h6' color='primary' gutterBottom>
-        Users
-      </Typography>
-      <Table size='small'>
+      <div className={styles.titleWrapp}>
+        <Typography component="h2" variant="h6" color="primary">
+          Users
+        </Typography>
+        <div
+          className={styles.title}
+          onClick={() => dispatch(openCreatingModal())}
+        >
+          <Typography component="h2" variant="h6" color="primary">
+            Create new user
+          </Typography>
+          <AddIcon />
+        </div>
+      </div>
+      <Table size="small">
         <TableHead>
           <TableRow className={tableRow}>
             <TableCell>ID</TableCell>
@@ -68,7 +86,10 @@ export default function UsersList() {
               <TableRow key={u.id} className={tableRow}>
                 <TableCell>{u.id}</TableCell>
                 <TableCell>
-                  <span className={userName} onClick={handleEditClick}>
+                  <span
+                    className={userName}
+                    onClick={() => handleEditClick(u.id)}
+                  >
                     {u.username}
                   </span>
                 </TableCell>
@@ -89,11 +110,11 @@ export default function UsersList() {
                   <div className={editBlock}>
                     <DeleteForeverOutlinedIcon
                       className={deleteIcon}
-                      onClick={handleDeleteClick}
+                      onClick={() => handleDeleteClick(u.id)}
                     />
                     <BorderColorIcon
                       className={editIcon}
-                      onClick={handleEditClick}
+                      onClick={() => handleEditClick(u.id)}
                     />
                   </div>
                 </TableCell>
@@ -101,6 +122,8 @@ export default function UsersList() {
             ))}
         </TableBody>
       </Table>
+      <ModalForUpdatingUser title="Update user info" />
+      <ModalForCreatingUser title="Create new user" />
     </>
   );
 }
