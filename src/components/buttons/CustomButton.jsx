@@ -20,6 +20,7 @@ export const CustomButton = ({
   text = '',
   size = 'L',
   type = 'primary',
+  typeOfButton = 'button',
   disabled = false,
   icon = null,
   width = null,
@@ -36,6 +37,7 @@ export const CustomButton = ({
       style={width && { width: width }}
       className={`${styles.commonButtonStyles} ${buttonStyles}`}
       onClick={handleClick}
+      type={typeOfButton}
     >
       {text}
     </Button>

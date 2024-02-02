@@ -98,7 +98,7 @@ export const LotDetails = () => {
   const getLocation = () => {
     return (
       <div className={locationContainer}>
-        <img src={mapIcon} alt='Map icon' />
+        <img src={mapIcon} alt="Map icon" />
         <h6>{`${location.countryId}, ${location.region}`}</h6>
       </div>
     );
@@ -124,8 +124,8 @@ export const LotDetails = () => {
                 <ImageListItem key={sliderImage}>
                   <img
                     src={`${sliderImage}?w=164&h=164&fit=crop&auto=format`}
-                    alt={'Slider image'}
-                    loading='lazy'
+                    alt='Slider image'
+                    loading="lazy"
                   />
                 </ImageListItem>
               </div>
@@ -139,12 +139,11 @@ export const LotDetails = () => {
                 </div>
               </div>
               <div className={descriptionContainer}>
-                <img src={attentionIcon} alt='Attention icon' />
+                <img src={attentionIcon} alt="Attention icon" />
                 <p className={description}>{description}</p>
               </div>
               <div className={betPriceContainer}>
                 <div className={betContainer} />
-
                 <div className={priceContainer}>
                   <div className={priceTotalContainer}>
                     <p className={body2}>Total price</p>
@@ -158,9 +157,9 @@ export const LotDetails = () => {
                     </div>
                   </div>
                   <CustomButton
-                    type='primary'
-                    width={'100%'}
-                    icon={<img src={cartIcon} alt='Cart icon' />}
+                    type="primary"
+                    width="100%"
+                    icon={<img src={cartIcon} alt="Cart icon" />}
                     text={buySellBtnText}
                   />
                 </div>
