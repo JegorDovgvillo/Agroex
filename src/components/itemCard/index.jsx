@@ -49,8 +49,7 @@ const ItemCard = (item) => {
             {item.size}, {item.packaging}
           </span>
           <span>
-            {/* {item.location.country} */}
-            Belarus, {item.location.region}
+            {item.location.countryName}, {item.location.region}
           </span>
           <span className={styles.creationDate}>
             {getFormattedDate(item.creationDate)}

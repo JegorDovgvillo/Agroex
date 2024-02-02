@@ -4,7 +4,13 @@ import {
   createSelector,
 } from '@reduxjs/toolkit';
 
-import { fetchCategories } from '../thunks/fetchCategories';
+import {
+  fetchCategories,
+  deleteCategory,
+  updateCategory,
+  createCategory,
+  createSubcategory
+} from '../thunks/fetchCategories';
 
 const categoriesAdapter = createEntityAdapter();
 
@@ -26,6 +32,46 @@ const categoriesSlice = createSlice({
         categoriesAdapter.addMany(state, action.payload);
       })
       .addCase(fetchCategories.rejected, (state) => {
+        state.loadingStatus = 'rejected';
+      })
+      .addCase(deleteCategory.pending, (state) => {
+        state.loadingStatus = 'pending';
+      })
+      .addCase(deleteCategory.fulfilled, (state, action) => {
+        state.loadingStatus = 'fulfilled';
+        categoriesAdapter.removeOne(state, action.payload);
+      })
+      .addCase(deleteCategory.rejected, (state) => {
+        state.loadingStatus = 'rejected';
+      })
+      .addCase(updateCategory.pending, (state) => {
+        state.loadingStatus = 'pending';
+      })
+      .addCase(updateCategory.fulfilled, (state, action) => {
+        state.loadingStatus = 'fulfilled';
+        categoriesAdapter.upsertOne(state, action.payload);
+      })
+      .addCase(updateCategory.rejected, (state) => {
+        state.loadingStatus = 'rejected';
+      })
+      .addCase(createCategory.pending, (state) => {
+        state.loadingStatus = 'pending';
+      })
+      .addCase(createCategory.fulfilled, (state, action) => {
+        state.loadingStatus = 'fulfilled';
+        categoriesAdapter.setOne(state, action.payload);
+      })
+      .addCase(createCategory.rejected, (state) => {
+        state.loadingStatus = 'rejected';
+      })
+      .addCase(createSubcategory.pending, (state) => {
+        state.loadingStatus = 'pending';
+      })
+      .addCase(createSubcategory.fulfilled, (state, action) => {
+        state.loadingStatus = 'fulfilled';
+        categoriesAdapter.setOne(state, action.payload);
+      })
+      .addCase(createSubcategory.rejected, (state) => {
         state.loadingStatus = 'rejected';
       });
   },

@@ -7,7 +7,7 @@ import CreateNewLot from '@pages/createNewLot';
 
 import UsersList from '@components/admin/usersList';
 import Layout from '@components/layout';
-
+import CategoriesList from '@components/admin/adminCategories';
 import ROUTES from './routeNames';
 
 const Router = () => {
@@ -42,7 +42,7 @@ const Router = () => {
           children: [
             {
               path: ROUTES.ADMIN_CATEGORIES,
-              element: 'AdminCategories',
+              element: <CategoriesList/> ,
             },
             {
               path: ROUTES.ADMIN_USERS,
