@@ -4,7 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Formik, Form } from 'formik';
 
 import { updateUser } from '@store/thunks/fetchUsers';
-import { closeUpdatingModal } from '@store/slices/modalSlice';
+import { toggleModal } from '@store/slices/modalSlice';
+import { selectModalState } from '@store/slices/modalSlice';
 
 import CustomTextField from '../customTextField';
 import { CustomButton } from '../buttons/CustomButton';
@@ -27,7 +28,9 @@ const ModalForUpdatingUser = ({
   },
 }) => {
   const dispatch = useDispatch();
-  const isOpen = useSelector((state) => state.modal.updatingModalIsOpen);
+  const isOpen = useSelector((state) =>
+    selectModalState(state, 'updatingModal')
+  );
   const userId = useSelector((state) => state.usersList.userId);
 
   const userData = {
@@ -39,6 +42,7 @@ const ModalForUpdatingUser = ({
 
   const handleSubmitClick = (values) => {
     dispatch(updateUser({ userId, values }));
+    dispatch(toggleModal('updatingModal'));
   };
 
   return (
@@ -46,7 +50,7 @@ const ModalForUpdatingUser = ({
       <Modal
         open={isOpen}
         onClose={() => {
-          dispatch(closeUpdatingModal());
+          dispatch(toggleModal('updatingModal'));
         }}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"

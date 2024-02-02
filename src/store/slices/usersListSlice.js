@@ -4,22 +4,27 @@ import {
   createSelector,
 } from '@reduxjs/toolkit';
 
-import { fetchUsers,deleteUser,createUser,updateUser } from '../thunks/fetchUsers';
+import {
+  fetchUsers,
+  deleteUser,
+  createUser,
+  updateUser,
+} from '../thunks/fetchUsers';
 
 const usersListAdapter = createEntityAdapter();
 
 const initialState = usersListAdapter.getInitialState({
   loadingStatus: 'idle',
-  userId:null
+  userId: null,
 });
 
 const usersListSlice = createSlice({
   name: 'usersList',
   initialState,
   reducers: {
-    setUserId:(state, action) => {
+    setUserId: (state, action) => {
       state.userId = action.payload;
-    }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -72,7 +77,7 @@ export const usersListSelector = createSelector([selectAll], (usersList) =>
   Object.values(usersList)
 );
 
-const { actions,reducer } = usersListSlice;
+const { actions, reducer } = usersListSlice;
 
 export const { setUserId } = actions;
 

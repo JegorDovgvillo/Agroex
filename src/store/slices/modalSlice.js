@@ -3,45 +3,35 @@ import { createSlice, createEntityAdapter } from '@reduxjs/toolkit';
 const modalAdapter = createEntityAdapter();
 
 const initialState = modalAdapter.getInitialState({
-  creatingModalIsOpen: false,
-  updatingModalIsOpen: false,
-  infoModalIsOpen: false,
+  modals: [
+    { id: 'creatingModal', isOpen: false },
+    { id: 'updatingModal', isOpen: false },
+    { id: 'infoModal', isOpen: false },
+  ],
 });
 
 const modalSlice = createSlice({
   name: 'modal',
   initialState,
   reducers: {
-    openCreatingModal: (state) => {
-      state.creatingModalIsOpen = true;
-    },
-    closeCreatingModal: (state) => {
-      state.creatingModalIsOpen = false;
-    },
-    openUpdatingModal: (state) => {
-      state.updatingModalIsOpen = true;
-    },
-    closeUpdatingModal: (state) => {
-      state.updatingModalIsOpen = false;
-    },
-    openInfoModal: (state) => {
-      state.infoModalIsOpen = true;
-    },
-    closeInfoModal: (state) => {
-      state.infoModalIsOpen = false;
+    toggleModal: (state, action) => {
+      const modalId = action.payload;
+      const modalIndex = state.modals.findIndex(
+        (modal) => modal.id === modalId
+      );
+      state.modals[modalIndex].isOpen = !state.modals[modalIndex].isOpen;
     },
   },
 });
 
 const { reducer, actions } = modalSlice;
 
-export const {
-  openCreatingModal,
-  closeCreatingModal,
-  openUpdatingModal,
-  closeUpdatingModal,
-  closeInfoModal,
-  openInfoModal,
-} = actions;
+export const { toggleModal } = actions;
+
+export const selectModalState = (state, modalId) => {
+  const modal = state.modal.modals.find((modal) => modal.id === modalId);
+
+  return modal ? modal.isOpen : false;
+};
 
 export default reducer;

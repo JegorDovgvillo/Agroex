@@ -9,20 +9,32 @@ export const fetchUsers = createAsyncThunk('usersList/fetchUsers', async () => {
   return response.data;
 });
 
-export const deleteUser = createAsyncThunk('usersList/deleteUser', async (id) => {
-  const response = await axiosInstance.delete(`${ENDPOINTS.USERS}/${id}`);
+export const deleteUser = createAsyncThunk(
+  'usersList/deleteUser',
+  async (id) => {
+    const response = await axiosInstance.delete(`${ENDPOINTS.USERS}/${id}`);
 
-  return response.data;
-});
+    return response.data;
+  }
+);
 
-export const createUser = createAsyncThunk('usersList/createUser', async (userData) => {
-  const response = await axiosInstance.post(ENDPOINTS.USERS,userData);
+export const createUser = createAsyncThunk(
+  'usersList/createUser',
+  async (userData) => {
+    const response = await axiosInstance.post(ENDPOINTS.USERS, userData);
 
-  return response.data;
-});
+    return response.data;
+  }
+);
 
-export const updateUser = createAsyncThunk('usersList/updateUser', async ({ id,userData }) => {
-  const response = await axiosInstance.put(`${ENDPOINTS.USERS}/${id}`,userData);
+export const updateUser = createAsyncThunk(
+  'usersList/updateUser',
+  async ({ id, userData }) => {
+    const response = await axiosInstance.put(
+      `${ENDPOINTS.USERS}/${id}`,
+      userData
+    );
 
-  return response.data;
-});
+    return response.data;
+  }
+);

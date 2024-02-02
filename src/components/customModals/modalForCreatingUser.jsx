@@ -4,7 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Formik, Form } from 'formik';
 
 import { createUser } from '@store/thunks/fetchUsers';
-import { closeCreatingModal } from '@store/slices/modalSlice';
+import { toggleModal } from '@store/slices/modalSlice';
+import { selectModalState } from '@store/slices/modalSlice';
 
 import CustomTextField from '../customTextField';
 import { CustomButton } from '../buttons/CustomButton';
@@ -27,7 +28,7 @@ const ModalForCreatingUser = ({
   },
 }) => {
   const dispatch = useDispatch();
-  const isOpen = useSelector((state) => state.modal.creatingModalIsOpen);
+  const isOpen = useSelector(state => selectModalState(state, 'creatingModal'));
 
   const userData = {
     username: '',
@@ -38,7 +39,7 @@ const ModalForCreatingUser = ({
 
   const handleSubmitClick = (values) => {
     dispatch(createUser(values));
-    dispatch(closeCreatingModal());
+    dispatch(toggleModal('creatingModal'));
   };
 
   return (
@@ -46,7 +47,7 @@ const ModalForCreatingUser = ({
       <Modal
         open={isOpen}
         onClose={() => {
-          dispatch(closeCreatingModal());
+          dispatch(toggleModal('creatingModal'));
         }}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
@@ -55,7 +56,7 @@ const ModalForCreatingUser = ({
           <h2>{title}</h2>
           <Formik
             initialValues={userData}
-            onSubmit={async (values) => {
+            onSubmit={(values) => {
               handleSubmitClick(values);
             }}
           >

@@ -2,7 +2,8 @@ import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { closeInfoModal } from '@store/slices/modalSlice';
+import { toggleModal } from '@store/slices/modalSlice';
+import { selectModalState } from '@store/slices/modalSlice';
 
 import ill from '@assets/icons/ill.png';
 
@@ -24,14 +25,14 @@ const InfoModal = ({
   },
 }) => {
   const dispatch = useDispatch();
-  const isOpen = useSelector((state) => state.modal.infoModalIsOpen);
-
+  const isOpen = useSelector((state) => selectModalState(state, 'infoModal'));
+  
   return (
     <div>
       <Modal
         open={isOpen}
         onClose={() => {
-          dispatch(closeInfoModal());
+          dispatch(toggleModal('infoModal'));
         }}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"

@@ -17,7 +17,7 @@ import { setUserId } from '@store/slices/usersListSlice';
 import { fetchUsers, deleteUser } from '@store/thunks/fetchUsers';
 import { usersListSelector } from '@store/slices/usersListSlice';
 import getFormattedDate from '@helpers/getFormattedDate';
-import { openCreatingModal, openUpdatingModal } from '@store/slices/modalSlice';
+import { toggleModal } from '@store/slices/modalSlice';
 
 import ModalForCreatingUser from '../../customModals/modalForCreatingUser';
 import ModalForUpdatingUser from '../../customModals/modalForUpdatingUser';
@@ -44,11 +44,11 @@ export default function UsersList() {
   }, [dispatch]);
 
   const handleEditClick = (id) => {
-    dispatch(openUpdatingModal());
+    dispatch(toggleModal('updatingModal'));
     dispatch(setUserId(id));
   };
 
-  const handleDeleteClick = async (id) => {
+  const handleDeleteClick = (id) => {
     dispatch(deleteUser(id));
   };
 
@@ -60,7 +60,7 @@ export default function UsersList() {
         </Typography>
         <div
           className={styles.title}
-          onClick={() => dispatch(openCreatingModal())}
+          onClick={() => dispatch(toggleModal('creatingModal'))}
         >
           <Typography component="h2" variant="h6" color="primary">
             Create new user

@@ -10,7 +10,7 @@ import InfoModal from '../../components/customModals/infoModal';
 
 import { fetchUsers } from '@store/thunks/fetchUsers';
 import { usersListSelector } from '@store/slices/usersListSlice';
-import { openInfoModal } from '@store/slices/modalSlice';
+import { toggleModal } from '@store/slices/modalSlice';
 import { fetchCategories } from '@store/thunks/fetchCategories';
 import { categoriesSelector } from '@store/slices/categoriesSlice';
 import { countrySelector } from '@store/slices/countriesSlice';
@@ -72,7 +72,7 @@ const CreateNewLot = () => {
     };
 
     await axiosInstance.post(ENDPOINTS.LOTS, lotData);
-    dispatch(openInfoModal());
+    dispatch(toggleModal('infoModal'));
     resetForm();
   };
 
