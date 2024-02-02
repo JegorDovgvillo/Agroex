@@ -1,10 +1,13 @@
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import { useDispatch, useSelector } from 'react-redux';
-import { Formik, Form, Field } from 'formik';
+import { Formik, Form } from 'formik';
 
 import { updateUser } from '@store/thunks/fetchUsers';
 import { closeUpdatingModal } from '@store/slices/modalSlice';
+
+import CustomTextField from '../customTextField';
+import { CustomButton } from '../buttons/CustomButton';
 
 const ModalForUpdatingUser = ({
   title,
@@ -13,11 +16,14 @@ const ModalForUpdatingUser = ({
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 400,
+    width: 600,
     bgcolor: 'background.paper',
     border: '2px solid #000',
     boxShadow: 24,
     p: 4,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
   },
 }) => {
   const dispatch = useDispatch();
@@ -54,26 +60,35 @@ const ModalForUpdatingUser = ({
             }}
           >
             <Form>
-              <Field
-                type="text"
+              <CustomTextField
                 name="username"
-                placeholder="username"
+                placeholder="Username"
+                required
+                label="Username"
+                id="username"
+              />
+              <CustomTextField
+                label="Email"
+                id="email"
+                name="email"
+                placeholder="Email"
                 required
               />
-              <Field type="text" name="email" placeholder="email" required />
-              <Field
-                type="tel"
+              <CustomTextField
                 name="phoneNumber"
-                placeholder="tel "
+                placeholder="Phone number"
                 required
+                label="Phone number"
+                id="phoneNumber"
               />
-              <Field
-                type="password"
+              <CustomTextField
                 name="password"
                 placeholder="password"
                 required
+                label="Password"
+                id="password"
               />
-              <button type="submit">Submit</button>
+              <CustomButton text="Update" width="210px" typeOfButton="submit" />
             </Form>
           </Formik>
         </Box>

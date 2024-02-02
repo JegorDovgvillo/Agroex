@@ -2,13 +2,13 @@ import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { closeModal } from '@store/slices/modalSlice';
+import { closeInfoModal } from '@store/slices/modalSlice';
 
 import ill from '@assets/icons/ill.png';
 
-import styles from './customModal.module.scss';
+import styles from './infoModal.module.scss';
 
-const CustomModal = ({
+const InfoModal = ({
   title,
   text,
   style = {
@@ -24,14 +24,14 @@ const CustomModal = ({
   },
 }) => {
   const dispatch = useDispatch();
-  const isOpen = useSelector((state) => state.modal.isOpen);
+  const isOpen = useSelector((state) => state.modal.infoModalIsOpen);
 
   return (
     <div>
       <Modal
         open={isOpen}
         onClose={() => {
-          dispatch(closeModal());
+          dispatch(closeInfoModal());
         }}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
@@ -48,4 +48,4 @@ const CustomModal = ({
   );
 };
 
-export default CustomModal;
+export default InfoModal;

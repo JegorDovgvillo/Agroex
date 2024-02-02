@@ -19,8 +19,8 @@ import { usersListSelector } from '@store/slices/usersListSlice';
 import getFormattedDate from '@helpers/getFormattedDate';
 import { openCreatingModal, openUpdatingModal } from '@store/slices/modalSlice';
 
-import ModalForCreatingUser from '../../customModal/modalForCreatingUser';
-import ModalForUpdatingUser from '../../customModal/modalForUpdatingUser';
+import ModalForCreatingUser from '../../customModals/modalForCreatingUser';
+import ModalForUpdatingUser from '../../customModals/modalForUpdatingUser';
 
 import styles from './usersList.module.scss';
 

@@ -5,6 +5,7 @@ const modalAdapter = createEntityAdapter();
 const initialState = modalAdapter.getInitialState({
   creatingModalIsOpen: false,
   updatingModalIsOpen: false,
+  infoModalIsOpen: false,
 });
 
 const modalSlice = createSlice({
@@ -23,11 +24,24 @@ const modalSlice = createSlice({
     closeUpdatingModal: (state) => {
       state.updatingModalIsOpen = false;
     },
+    openInfoModal: (state) => {
+      state.infoModalIsOpen = true;
+    },
+    closeInfoModal: (state) => {
+      state.infoModalIsOpen = false;
+    },
   },
 });
 
 const { reducer, actions } = modalSlice;
 
-export const { openCreatingModal, closeCreatingModal, openUpdatingModal, closeUpdatingModal } = actions;
+export const {
+  openCreatingModal,
+  closeCreatingModal,
+  openUpdatingModal,
+  closeUpdatingModal,
+  closeInfoModal,
+  openInfoModal,
+} = actions;
 
 export default reducer;
