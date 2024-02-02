@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 
 import CssBaseline from '@mui/material/CssBaseline';
@@ -16,11 +16,27 @@ import { Drawer } from '@components/admin/drawer';
 import styles from './admin.module.scss';
 
 const AdminPage = () => {
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = useState(window.innerWidth > 1200);
+  const [isBarVisible, setIsBarVisible] = useState(
+    window.innerWidth > 1000 && true
+  );
 
   const toggleDrawer = () => {
     setOpen(!open);
   };
+
+  useEffect(() => {
+    const handleResize = () => {
+      setOpen(window.innerWidth > 1200);
+      setIsBarVisible(window.innerWidth > 1200);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   return (
     <div className={styles.userPageContainer}>
@@ -34,16 +50,18 @@ const AdminPage = () => {
               aria-label='open drawer'
               onClick={toggleDrawer}
             >
-              <MenuIcon />
+              {isBarVisible && <MenuIcon />}
             </IconButton>
             <h6 className={styles.toolBarTitle}>Dashboard</h6>
           </Toolbar>
         </AppBar>
         <Drawer variant='permanent' open={open} className={styles.toolBar}>
           <Toolbar className={styles.toolBarRightHeader}>
-            <IconButton onClick={toggleDrawer}>
-              <ChevronLeftIcon />
-            </IconButton>
+            {isBarVisible && (
+              <IconButton onClick={toggleDrawer}>
+                <ChevronLeftIcon />
+              </IconButton>
+            )}
           </Toolbar>
           <Divider />
           <List component='nav'>
