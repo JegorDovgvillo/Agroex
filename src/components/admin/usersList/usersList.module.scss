@@ -5,6 +5,20 @@
   text-align: center;
 }
 
+.titleWrapp {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.title {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  cursor: pointer;
+}
+
 .tableRow th:last-of-type,
 .tableRow td:last-of-type {
   text-align: right;

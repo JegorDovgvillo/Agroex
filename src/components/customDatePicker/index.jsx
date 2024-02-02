@@ -11,7 +11,7 @@ const CustomDatePicker = ({ onChange }) => {
   const [date, setDate] = useState(null);
 
   const handleDateChange = (newDate) => {
-    setDate(setDate);
+    setDate(newDate);
     onChange(newDate);
   };
 

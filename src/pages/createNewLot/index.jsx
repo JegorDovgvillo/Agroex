@@ -6,11 +6,11 @@ import CustomTextField from '@components/customTextField';
 import { CustomButton } from '@components/buttons/CustomButton';
 import CustomSelect from '@components/customSelect';
 import CustomDatePicker from '@components/customDatePicker';
-import CustomModal from '@components/customModal';
+import InfoModal from '../../components/customModals/infoModal';
 
 import { fetchUsers } from '@store/thunks/fetchUsers';
 import { usersListSelector } from '@store/slices/usersListSlice';
-import { openModal } from '@store/slices/modalSlice';
+import { toggleModal } from '@store/slices/modalSlice';
 import { fetchCategories } from '@store/thunks/fetchCategories';
 import { categoriesSelector } from '@store/slices/categoriesSlice';
 import { countrySelector } from '@store/slices/countriesSlice';
@@ -72,7 +72,7 @@ const CreateNewLot = () => {
     };
 
     await axiosInstance.post(ENDPOINTS.LOTS, lotData);
-    dispatch(openModal());
+    dispatch(toggleModal('infoModal'));
     resetForm();
   };
 
@@ -104,7 +104,7 @@ const CreateNewLot = () => {
             <CustomSelect
               label="Location"
               units={country}
-              itemFieldName="title"
+              itemFieldName="name"
               name="country"
               width="210px"
               disabled={false}
@@ -203,7 +203,7 @@ const CreateNewLot = () => {
             width="auto"
             typeOfButton="submit"
           />
-          <CustomModal title="Success!" text="Your ad has been published" />
+          <InfoModal title="Success!" text="Your ad has been published" />
         </Form>
       )}
     </Formik>

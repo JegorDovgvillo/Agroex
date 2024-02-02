@@ -3,24 +3,35 @@ import { createSlice, createEntityAdapter } from '@reduxjs/toolkit';
 const modalAdapter = createEntityAdapter();
 
 const initialState = modalAdapter.getInitialState({
-  isOpen: false,
+  modals: [
+    { id: 'creatingModal', isOpen: false },
+    { id: 'updatingModal', isOpen: false },
+    { id: 'infoModal', isOpen: false },
+  ],
 });
 
 const modalSlice = createSlice({
   name: 'modal',
   initialState,
   reducers: {
-    openModal: (state) => {
-      state.isOpen = true;
-    },
-    closeModal: (state) => {
-      state.isOpen = false;
+    toggleModal: (state, action) => {
+      const modalId = action.payload;
+      const modalIndex = state.modals.findIndex(
+        (modal) => modal.id === modalId
+      );
+      state.modals[modalIndex].isOpen = !state.modals[modalIndex].isOpen;
     },
   },
 });
 
 const { reducer, actions } = modalSlice;
 
-export const { openModal, closeModal } = actions;
+export const { toggleModal } = actions;
+
+export const selectModalState = (state, modalId) => {
+  const modal = state.modal.modals.find((modal) => modal.id === modalId);
+
+  return modal ? modal.isOpen : false;
+};
 
 export default reducer;
