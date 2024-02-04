@@ -1,73 +1,105 @@
-import Box from '@mui/material/Box';
-import Modal from '@mui/material/Modal';
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Box, Modal } from '@mui/material';
 import { Formik, Form } from 'formik';
 
-import { closeCreatingModal } from '@store/slices/modalSlice';
+import { toggleModal, selectModalState } from '@store/slices/modalSlice';
+import { createCategory } from '@store/thunks/fetchCategories';
+import { selectRootCategories } from '@store/slices/categoriesSlice';
 
+import CustomSelect from '../customSelect';
 import CustomTextField from '../customTextField';
 import { CustomButton } from '../buttons/CustomButton';
-import { createCategory } from '../../store/thunks/fetchCategories';
 
-const ModalForCreatingCategory = ({
-  title,
-  style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 600,
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
-    boxShadow: 24,
-    p: 4,
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-}) => {
+import styles from './infoModal.module.scss';
+
+const ModalForCreatingCategory = () => {
   const dispatch = useDispatch();
-  const isOpen = useSelector((state) => state.modal.creatingModalIsOpen);
+  const isOpen = useSelector((state) =>
+    selectModalState(state, 'creatingModal')
+  );
+  const rootCategories = useSelector(selectRootCategories);
+  const [isCreatingCategory, setIsCreatingCategory] = useState(true);
 
-  const userData = {
-    category: '',
-    parentId: 0,
+  const handleSubmit = (values) => {
+    dispatch(createCategory(values));
+    dispatch(toggleModal('creatingModal'));
   };
 
-  const handleSubmitClick = (values) => {
-    dispatch(createCategory(values));
-    // dispatch(closeCreatingModal());
+  const initialValues = {
+    title: '',
+    parentId: '',
   };
 
   return (
     <div>
       <Modal
         open={isOpen}
+        aria-labelledby='modal-modal-title'
+        aria-describedby='modal-modal-description'
         onClose={() => {
-          // dispatch(closeCreatingModal());
+          dispatch(toggleModal('creatingModal'));
         }}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
       >
-        <Box sx={style}>
-          <h2>{title}</h2>
+        <Box className={styles.wrapp}>
+          <h2 className={styles.title}>
+            {isCreatingCategory
+              ? 'Create new Category'
+              : 'Create new subcategory'}
+          </h2>
           <Formik
-            initialValues={userData}
-            onSubmit={async (values) => {
-              handleSubmitClick(values);
-            }}
+            initialValues={initialValues}
+            onSubmit={(values) => handleSubmit(values)}
           >
             <Form>
-            <CustomTextField
-                name="category"
-                placeholder="Enter the category"
+              {!isCreatingCategory && (
+                <CustomSelect
+                  units={rootCategories}
+                  itemFieldName='title'
+                  name='parentId'
+                  width='210px'
+                  disabled={false}
+                  margin='0 16px 24px 0'
+                  placeholder='Choose category'
+                  label='Category'
+                />
+              )}
+              <CustomTextField
+                name='title'
+                placeholder={
+                  isCreatingCategory
+                    ? 'Enter the category name'
+                    : 'Enter the subcategory'
+                }
                 required
-                label="Category name"
-                id="category"
+                label={
+                  isCreatingCategory ? 'Category name' : 'Subcategory name'
+                }
+                id='title'
               />
-              <CustomButton text="Create" width="210px" typeOfButton="submit" />
+              <CustomButton text='Create' width='210px' typeOfButton='submit' />
             </Form>
           </Formik>
+          <div className={styles.radioButtons}>
+            <label>
+              <input
+                type='radio'
+                value='category'
+                checked={isCreatingCategory}
+                onChange={() => setIsCreatingCategory(true)}
+              />
+              Create Category
+            </label>
+            <label>
+              <input
+                type='radio'
+                value='subcategory'
+                checked={!isCreatingCategory}
+                onChange={() => setIsCreatingCategory(false)}
+              />
+              Create Subcategory
+            </label>
+          </div>
         </Box>
       </Modal>
     </div>

@@ -12,22 +12,19 @@ import { CustomButton } from '../buttons/CustomButton';
 
 import styles from './infoModal.module.scss';
 
-const ModalForUpdatingUser = () => {
+const ModalForUpdatingCategory = () => {
   const dispatch = useDispatch();
   const isOpen = useSelector((state) =>
     selectModalState(state, 'updatingModal')
   );
-  const userId = useSelector((state) => state.usersList.userId);
-
-  const userData = {
-    username: '',
-    email: '',
-    phoneNumber: '',
-    password: '',
+  const categoryId = useSelector((state) => state.categories.categoryId);
+  
+  const categoryData = {
+    title: '',
   };
 
   const handleSubmitClick = (values) => {
-    dispatch(updateUser({ userId, values }));
+    dispatch(updateUser({ categoryId, values }));
     dispatch(toggleModal('updatingModal'));
   };
 
@@ -42,41 +39,20 @@ const ModalForUpdatingUser = () => {
         aria-describedby='modal-modal-description'
       >
         <Box className={styles.wrapp}>
-          <h2 className={styles.title}>Update user info</h2>
+          <h2 className={styles.title}>Update category</h2>
           <Formik
-            initialValues={userData}
+            initialValues={categoryData}
             onSubmit={async (values) => {
               handleSubmitClick(values);
             }}
           >
             <Form>
               <CustomTextField
-                name='username'
-                placeholder='Username'
+                name='title'
+                placeholder='Enter the category name'
                 required
-                label='Username'
-                id='username'
-              />
-              <CustomTextField
-                label='Email'
-                id='email'
-                name='email'
-                placeholder='Email'
-                required
-              />
-              <CustomTextField
-                name='phoneNumber'
-                placeholder='Phone number'
-                required
-                label='Phone number'
-                id='phoneNumber'
-              />
-              <CustomTextField
-                name='password'
-                placeholder='password'
-                required
-                label='Password'
-                id='password'
+                label='Name of category'
+                id='title'
               />
               <CustomButton text='Update' width='210px' typeOfButton='submit' />
             </Form>
@@ -87,4 +63,4 @@ const ModalForUpdatingUser = () => {
   );
 };
 
-export default ModalForUpdatingUser;
+export default ModalForUpdatingCategory;

@@ -25,10 +25,10 @@ const CustomSelect = ({
         disabled={disabled}
         required={required}
       >
-        <MenuItem disabled value="">
+        <MenuItem disabled value=''>
           <em>{placeholder}</em>
         </MenuItem>
-        {units.map((item,index) => (
+        {units.map((item, index) => (
           <MenuItem key={index} value={item.id || item}>
             {item[itemFieldName] || item}
           </MenuItem>

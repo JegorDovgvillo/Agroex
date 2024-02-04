@@ -12,9 +12,13 @@ import AddIcon from '@mui/icons-material/Add';
 
 import { fetchCategories } from '@store/thunks/fetchCategories';
 import { categoriesSelector } from '@store/slices/categoriesSlice';
+import { toggleModal } from '@store/slices/modalSlice';
+import { setCategoryId } from '@store/slices/categoriesSlice';
+import { deleteCategory } from '@store/thunks/fetchCategories';
 
 import styles from '../usersList/usersList.module.scss';
-import { deleteCategory } from '../../../store/thunks/fetchCategories';
+import ModalForCreatingCategory from '../../customModals/modalForCreatingCategory';
+import ModalForUpdatingCategory from '../../customModals/modalForUpdaitingCategory';
 
 const { tableRow, userName, editIcon, deleteIcon, editBlock } = styles;
 
@@ -26,7 +30,10 @@ export default function CategoriesList() {
     dispatch(fetchCategories());
   }, [dispatch]);
 
-  const handleEditClick = (id) => {};
+  const handleEditClick = (id) => {
+    dispatch(toggleModal('updatingModal'));
+    dispatch(setCategoryId(id));
+  };
 
   const handleDeleteClick = (id) => {
     dispatch(deleteCategory(id));
@@ -38,19 +45,14 @@ export default function CategoriesList() {
         <Typography component='h2' variant='h6' color='primary'>
           Categories
         </Typography>
-        <div className={styles.title}>
-          <div onClick={() => dispatch(toggleModal('creatingCategoryModal'))}>
-            <Typography component='h2' variant='h6' color='primary'>
-              Create new category
-            </Typography>
-            <AddIcon />
-          </div>
-          <div onClick={() => dispatch(toggleModal('creatingCategoryModal'))}>
-            <Typography component='h2' variant='h6' color='primary'>
-              Create new subcategory
-            </Typography>
-            <AddIcon />
-          </div>
+        <div
+          className={styles.title}
+          onClick={() => dispatch(toggleModal('creatingModal'))}
+        >
+          <Typography component='h2' variant='h6' color='primary'>
+            Create new category
+          </Typography>
+          <AddIcon />
         </div>
       </div>
       <Table size='small'>
@@ -68,7 +70,10 @@ export default function CategoriesList() {
               <TableRow key={c.id} className={tableRow}>
                 <TableCell>{c.id}</TableCell>
                 <TableCell>
-                  <span className={userName} onClick={handleEditClick}>
+                  <span
+                    className={userName}
+                    onClick={() => handleEditClick(c.id)}
+                  >
                     {c.title}
                   </span>
                 </TableCell>
@@ -89,6 +94,8 @@ export default function CategoriesList() {
             ))}
         </TableBody>
       </Table>
+      <ModalForCreatingCategory />
+      <ModalForUpdatingCategory />
     </>
   );
 }

@@ -3,25 +3,28 @@ import {
   createEntityAdapter,
   createSelector,
 } from '@reduxjs/toolkit';
-
 import {
   fetchCategories,
   deleteCategory,
   updateCategory,
   createCategory,
-  createSubcategory
 } from '../thunks/fetchCategories';
 
 const categoriesAdapter = createEntityAdapter();
 
 const initialState = categoriesAdapter.getInitialState({
   loadingStatus: 'idle',
+  categoryId: null,
 });
 
 const categoriesSlice = createSlice({
   name: 'categories',
   initialState,
-  reducers: {},
+  reducers: {
+    setCategoryId: (state, action) => {
+      state.userId = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchCategories.pending, (state) => {
@@ -63,21 +66,13 @@ const categoriesSlice = createSlice({
       })
       .addCase(createCategory.rejected, (state) => {
         state.loadingStatus = 'rejected';
-      })
-      .addCase(createSubcategory.pending, (state) => {
-        state.loadingStatus = 'pending';
-      })
-      .addCase(createSubcategory.fulfilled, (state, action) => {
-        state.loadingStatus = 'fulfilled';
-        categoriesAdapter.setOne(state, action.payload);
-      })
-      .addCase(createSubcategory.rejected, (state) => {
-        state.loadingStatus = 'rejected';
       });
   },
 });
 
-const { reducer } = categoriesSlice;
+const { actions, reducer } = categoriesSlice;
+
+export const { setCategoryId } = actions;
 
 const { selectAll } = categoriesAdapter.getSelectors(
   (state) => state.categories
@@ -85,6 +80,11 @@ const { selectAll } = categoriesAdapter.getSelectors(
 
 export const categoriesSelector = createSelector([selectAll], (categories) =>
   Object.values(categories)
+);
+
+export const selectRootCategories = createSelector(
+  [categoriesSelector],
+  (categories) => categories.filter((category) => category.parentId === 0)
 );
 
 export default reducer;

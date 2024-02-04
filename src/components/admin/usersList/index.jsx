@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -16,8 +15,9 @@ import AddIcon from '@mui/icons-material/Add';
 import { setUserId } from '@store/slices/usersListSlice';
 import { fetchUsers, deleteUser } from '@store/thunks/fetchUsers';
 import { usersListSelector } from '@store/slices/usersListSlice';
-import getFormattedDate from '@helpers/getFormattedDate';
 import { toggleModal } from '@store/slices/modalSlice';
+
+import getFormattedDate from '@helpers/getFormattedDate';
 
 import ModalForCreatingUser from '../../customModals/modalForCreatingUser';
 import ModalForUpdatingUser from '../../customModals/modalForUpdatingUser';
@@ -55,20 +55,20 @@ export default function UsersList() {
   return (
     <>
       <div className={styles.titleWrapp}>
-        <Typography component="h2" variant="h6" color="primary">
+        <Typography component='h2' variant='h6' color='primary'>
           Users
         </Typography>
         <div
           className={styles.title}
           onClick={() => dispatch(toggleModal('creatingModal'))}
         >
-          <Typography component="h2" variant="h6" color="primary">
+          <Typography component='h2' variant='h6' color='primary'>
             Create new user
           </Typography>
           <AddIcon />
         </div>
       </div>
-      <Table size="small">
+      <Table size='small'>
         <TableHead>
           <TableRow className={tableRow}>
             <TableCell>ID</TableCell>
@@ -122,8 +122,8 @@ export default function UsersList() {
             ))}
         </TableBody>
       </Table>
-      <ModalForUpdatingUser title="Update user info" />
-      <ModalForCreatingUser title="Create new user" />
+      <ModalForUpdatingUser />
+      <ModalForCreatingUser />
     </>
   );
 }

@@ -15,7 +15,9 @@ export const fetchCategories = createAsyncThunk(
 export const deleteCategory = createAsyncThunk(
   'categories/deleteCategory',
   async (id) => {
-    const response = await axiosInstance.delete(`${ENDPOINTS.MAIN_CATEGORIES}/${id}`);
+    const response = await axiosInstance.delete(
+      `${ENDPOINTS.MAIN_CATEGORIES}/${id}`
+    );
 
     return response.data;
   }
@@ -35,18 +37,6 @@ export const updateCategory = createAsyncThunk(
 
 export const createCategory = createAsyncThunk(
   'categories/createCategory',
-  async (dataCategory) => {
-    const response = await axiosInstance.post(
-      ENDPOINTS.MAIN_CATEGORIES,
-      dataCategory
-    );
-
-    return response.data;
-  }
-);
-
-export const createSubcategory = createAsyncThunk(
-  'categories/createSubcategory',
   async (dataCategory) => {
     const response = await axiosInstance.post(
       ENDPOINTS.MAIN_CATEGORIES,
