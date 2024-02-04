@@ -4,18 +4,23 @@ import {
   createSelector,
 } from '@reduxjs/toolkit';
 
-import { fetchLots } from '../thunks/fetchLots';
+import { fetchLots, fetchLotDetails, updateLot } from '../thunks/fetchLots';
 
 const lotListAdapter = createEntityAdapter();
 
 const initialState = lotListAdapter.getInitialState({
   loadingStatus: 'idle',
+  lotId: null,
 });
 
 const lotListSlice = createSlice({
   name: 'lotList',
   initialState,
-  reducers: {},
+  reducers: {
+    setLotId: (state, action) => {
+      state.lotId = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchLots.pending, (state) => {
@@ -27,6 +32,26 @@ const lotListSlice = createSlice({
       })
       .addCase(fetchLots.rejected, (state) => {
         state.loadingStatus = 'rejected';
+      })
+      .addCase(updateLot.pending, (state) => {
+        state.loadingStatus = 'pending';
+      })
+      .addCase(updateLot.fulfilled, (state, action) => {
+        state.loadingStatus = 'fulfilled';
+        lotListAdapter.upsertOne(state, action.payload);
+      })
+      .addCase(updateLot.rejected, (state) => {
+        state.loadingStatus = 'rejected';
+      })
+      .addCase(fetchLotDetails.pending, (state) => {
+        state.loadingStatus = 'pending';
+      })
+      .addCase(fetchLotDetails.fulfilled, (state, action) => {
+        lotListAdapter.setOne(state, action.payload);
+        state.loadingStatus = 'fulfilled';
+      })
+      .addCase(fetchLotDetails.rejected, (state) => {
+        state.loadingStatus = 'rejected';
       });
   },
 });
@@ -37,6 +62,11 @@ export const lotListSelector = createSelector([selectAll], (lotList) =>
   Object.values(lotList)
 );
 
-const { reducer } = lotListSlice;
+export const { selectById: selectLotDetailById } = lotListAdapter.getSelectors(
+  (state) => state.lotList
+);
+
+const { actions, reducer } = lotListSlice;
+export const { setLotId } = actions;
 
 export default reducer;

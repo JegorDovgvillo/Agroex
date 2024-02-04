@@ -1,15 +1,15 @@
 import { createSlice, createEntityAdapter } from '@reduxjs/toolkit';
 
-import { fetchImage } from '../thunks/fetchImage';
+import { fetchImagesById } from '../thunks/fetchImages';
 
-const imageAdapter = createEntityAdapter();
+const imagesAdapter = createEntityAdapter();
 
-const initialState = imageAdapter.getInitialState({
+const initialState = imagesAdapter.getInitialState({
   loadingStatus: 'idle',
 });
 
-const ImageSlice = createSlice({
-  name: 'image',
+const imagesSlice = createSlice({
+  name: 'images',
   initialState,
 
   reducers: {
@@ -25,7 +25,7 @@ const ImageSlice = createSlice({
       })
       .addCase(fetchImage.fulfilled, (state, action) => {
         state.loadingStatus = 'fulfilled';
-        imageAdapter.setOne(state, action.payload);
+        imagesAdapter.setOne(state, action.payload);
       })
       .addCase(fetchImage.rejected, (state) => {
         state.loadingStatus = 'rejected';
@@ -33,7 +33,7 @@ const ImageSlice = createSlice({
   },
 });
 
-const { actions, reducer } = imageSlice;
+const { actions, reducer } = imagesSlice;
 export const { updateLoadingStatus } = actions;
 export default reducer;
 /* 

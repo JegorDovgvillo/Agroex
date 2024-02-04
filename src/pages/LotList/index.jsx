@@ -19,7 +19,7 @@ const LotList = ({ lotType }) => {
 
   const filteringLotsByLotType = () => {
     const filteredLots = lots
-    .filter((item) => !lotType || item.lotType === lotType)
+      .filter((item) => !lotType || item.lotType === lotType)
       .map((item) => {
         return <ItemCard {...item} key={item.id} />;
       });
@@ -28,7 +28,7 @@ const LotList = ({ lotType }) => {
   };
 
   const filteredLots = filteringLotsByLotType();
-  
+
   return (
     <>
       <Filters />

@@ -7,6 +7,8 @@ const initialState = modalAdapter.getInitialState({
     { id: 'creatingModal', isOpen: false },
     { id: 'updatingModal', isOpen: false },
     { id: 'infoModal', isOpen: false },
+    { id: 'confirmModal', isOpen: false },
+    { id: 'confirmNestedModal', isOpen: false },
   ],
 });
 

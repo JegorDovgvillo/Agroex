@@ -38,3 +38,9 @@ export const updateUser = createAsyncThunk(
     return response.data;
   }
 );
+
+export const fetchUser = createAsyncThunk('usersList/fetchUser', async (id) => {
+  const response = await axiosInstance.get(`${ENDPOINTS.USERS}/${id}`);
+
+  return response.data;
+});
