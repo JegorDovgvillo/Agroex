@@ -6,6 +6,7 @@ import { Formik, Form } from 'formik';
 import { updateUser } from '@store/thunks/fetchUsers';
 import { toggleModal } from '@store/slices/modalSlice';
 import { selectModalState } from '@store/slices/modalSlice';
+import { selectUserById } from '@store/slices/usersListSlice';
 
 import CustomTextField from '../customTextField';
 import { CustomButton } from '../buttons/CustomButton';
@@ -18,16 +19,17 @@ const ModalForUpdatingUser = () => {
     selectModalState(state, 'updatingModal')
   );
   const userId = useSelector((state) => state.usersList.userId);
+  const userFields = useSelector((state) => selectUserById(state, userId));
 
   const userData = {
-    username: '',
-    email: '',
-    phoneNumber: '',
+    username: userFields ? userFields.username : '',
+    email: userFields ? userFields.email : '',
+    phoneNumber: userFields ? userFields.phoneNumber : '',
     password: '',
   };
 
   const handleSubmitClick = (values) => {
-    dispatch(updateUser({ userId, values }));
+    dispatch(updateUser({ id: userId, userData: values }));
     dispatch(toggleModal('updatingModal'));
   };
 
@@ -45,7 +47,7 @@ const ModalForUpdatingUser = () => {
           <h2 className={styles.title}>Update user info</h2>
           <Formik
             initialValues={userData}
-            onSubmit={async (values) => {
+            onSubmit={(values) => {
               handleSubmitClick(values);
             }}
           >

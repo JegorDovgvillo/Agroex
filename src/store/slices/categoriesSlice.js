@@ -22,7 +22,7 @@ const categoriesSlice = createSlice({
   initialState,
   reducers: {
     setCategoryId: (state, action) => {
-      state.userId = action.payload;
+      state.categoryId = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -85,6 +85,15 @@ export const categoriesSelector = createSelector([selectAll], (categories) =>
 export const selectRootCategories = createSelector(
   [categoriesSelector],
   (categories) => categories.filter((category) => category.parentId === 0)
+);
+
+export const selectCategoryById = createSelector(
+  [(state, categoryId) => categoryId, (state) => state.categories],
+  (categoryId, categoriesState) => {
+    return categoriesAdapter
+      .getSelectors()
+      .selectById(categoriesState, categoryId);
+  }
 );
 
 export default reducer;

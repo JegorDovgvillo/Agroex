@@ -3,9 +3,10 @@ import Modal from '@mui/material/Modal';
 import { useDispatch, useSelector } from 'react-redux';
 import { Formik, Form } from 'formik';
 
-import { updateUser } from '@store/thunks/fetchUsers';
 import { toggleModal } from '@store/slices/modalSlice';
 import { selectModalState } from '@store/slices/modalSlice';
+import { updateCategory } from '@store/thunks/fetchCategories';
+import { selectCategoryById } from '@store/slices/categoriesSlice';
 
 import CustomTextField from '../customTextField';
 import { CustomButton } from '../buttons/CustomButton';
@@ -18,13 +19,16 @@ const ModalForUpdatingCategory = () => {
     selectModalState(state, 'updatingModal')
   );
   const categoryId = useSelector((state) => state.categories.categoryId);
-  
+  const categoryFields = useSelector((state) =>
+    selectCategoryById(state, categoryId)
+  );
+
   const categoryData = {
-    title: '',
+    title: categoryFields ? categoryFields.title : '',
   };
 
   const handleSubmitClick = (values) => {
-    dispatch(updateUser({ categoryId, values }));
+    dispatch(updateCategory({ id: categoryId, categoryData: values }));
     dispatch(toggleModal('updatingModal'));
   };
 
