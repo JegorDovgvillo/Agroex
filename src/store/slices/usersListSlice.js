@@ -14,7 +14,7 @@ const usersListAdapter = createEntityAdapter();
 
 const initialState = usersListAdapter.getInitialState({
   loadingStatus: 'idle',
-  userId: 1,
+  userId: null,
 });
 
 const usersListSlice = createSlice({
