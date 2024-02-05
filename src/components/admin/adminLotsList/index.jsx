@@ -19,6 +19,7 @@ import { fetchAllCategories } from '@store/thunks/fetchCategories';
 import { toggleModal } from '@store/slices/modalSlice';
 import { lotListSelector, setLotId } from '@store/slices/lotListSlice';
 import { setUserId } from '@store/slices/usersListSlice';
+import { selectModalState } from '../../../store/slices/modalSlice';
 
 import getFormattedDate from '@helpers/getFormattedDate';
 import getNumberWithCurrency from '@helpers/getNumberWithCurrency';
@@ -46,6 +47,9 @@ export default function AdminLotsList() {
   const lots = useSelector(lotListSelector);
   const [confirmStatus, setConfirmStatus] = useState(false);
   const [openedLot, setOpenedLot] = useState(null);
+  const isModalOpened = useSelector((state) =>
+    selectModalState(state, 'infoModal')
+  );
 
   const handleChangeLot = useCallback(
     (lot) => {
@@ -185,7 +189,9 @@ export default function AdminLotsList() {
             ))}
         </TableBody>
       </Table>
-      <DetailedLotViewModal handleChangeLot={handleChangeLot} />
+      {isModalOpened && (
+        <DetailedLotViewModal handleChangeLot={handleChangeLot} />
+      )}
       <ConfirmActionModal
         text='This action changes the lot status. Do you confirm the action?'
         setConfirmStatus={setConfirmStatus}

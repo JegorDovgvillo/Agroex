@@ -50,7 +50,7 @@ export const createCategory = createAsyncThunk(
 export const fetchAllCategories = createAsyncThunk(
   'categories/fetchCategories',
   async () => {
-    const response = await axiosInstance.get(ENDPOINTS.CATEGORIES_ALL);
+    const response = await axiosInstance.get(ENDPOINTS.ALL_CATEGORIES);
 
     return response.data;
   }

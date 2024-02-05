@@ -38,6 +38,7 @@ const AdminDetailedLotView = ({ lot, userData }) => {
   const category = useSelector((state) =>
     selectCategoryById(state, productCategoryId)
   );
+
   const { title: categoryTitle } = category;
 
   const {

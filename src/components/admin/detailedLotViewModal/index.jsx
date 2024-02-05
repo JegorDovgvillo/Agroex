@@ -27,6 +27,7 @@ const DetailedLotViewModal = ({ handleChangeLot }) => {
   const { userId } = useSelector((state) => state.usersList);
   const userData = useSelector((state) => selectUserById(state, userId));
   const [confirm, setConfirm] = useState(false);
+  console.log('ff', lotId);
 
   useEffect(() => {
     dispatch(fetchLotDetails(lotId));
