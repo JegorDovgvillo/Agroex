@@ -1,6 +1,6 @@
 import { createSlice, createEntityAdapter } from '@reduxjs/toolkit';
 
-import { fetchImagesById } from '../thunks/fetchImages';
+import { fetchImagesByName } from '../thunks/fetchImages';
 
 const imagesAdapter = createEntityAdapter();
 
@@ -20,14 +20,14 @@ const imagesSlice = createSlice({
 
   extraReducers: (builder) => {
     builder
-      .addCase(fetchImage.pending, (state) => {
+      .addCase(fetchImagesByName.pending, (state) => {
         state.loadingStatus = 'pending';
       })
-      .addCase(fetchImage.fulfilled, (state, action) => {
+      .addCase(fetchImagesByName.fulfilled, (state, action) => {
         state.loadingStatus = 'fulfilled';
         imagesAdapter.setOne(state, action.payload);
       })
-      .addCase(fetchImage.rejected, (state) => {
+      .addCase(fetchImagesByName.rejected, (state) => {
         state.loadingStatus = 'rejected';
       });
   },
@@ -36,6 +36,3 @@ const imagesSlice = createSlice({
 const { actions, reducer } = imagesSlice;
 export const { updateLoadingStatus } = actions;
 export default reducer;
-/* 
-export const { selectById: selectLotDetailById } =
-  imageAdapter.getSelectors((state) => state.Image); */

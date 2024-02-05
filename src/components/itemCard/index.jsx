@@ -1,5 +1,4 @@
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 
 import { CustomButton } from '../buttons/CustomButton';
 import PriceBlock from '../priceBlock';

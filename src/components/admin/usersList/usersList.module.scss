@@ -38,10 +38,10 @@
 }
 
 .tableRow td:last-of-type {
-  padding: 0 25px 0 0;
+  padding: 16px 25px 16px 0;
 
   @media screen and (max-width: 850px) {
-    padding: 0 5px 0 0;
+    padding: 16px 5px 16px 0;
   }
 }
 

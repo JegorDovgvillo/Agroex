@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
@@ -47,12 +47,15 @@ export default function AdminLotsList() {
   const [confirmStatus, setConfirmStatus] = useState(false);
   const [openedLot, setOpenedLot] = useState(null);
 
-  const handleChangeLot = ({ ...lot }) => {
-    const lotData = { ...lot, enabledByAdmin: !lot.enabledByAdmin };
-    const { id } = lot;
+  const handleChangeLot = useCallback(
+    (lot) => {
+      const lotData = { ...lot, enabledByAdmin: !lot.enabledByAdmin };
+      const { id } = lot;
 
-    lotData && id && dispatch(updateLot({ id, lotData }));
-  };
+      lotData && id && dispatch(updateLot({ id, lotData }));
+    },
+    [dispatch]
+  );
 
   useEffect(() => {
     dispatch(fetchLots());
