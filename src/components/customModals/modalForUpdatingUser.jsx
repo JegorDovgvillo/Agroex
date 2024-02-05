@@ -22,9 +22,9 @@ const ModalForUpdatingUser = () => {
   const userFields = useSelector((state) => selectUserById(state, userId));
 
   const userData = {
-    username: userFields ? userFields.username : '',
-    email: userFields ? userFields.email : '',
-    phoneNumber: userFields ? userFields.phoneNumber : '',
+    username: userFields?.username || '',
+    email: userFields?.email || '',
+    phoneNumber: userFields?.phoneNumber || '',
     password: '',
   };
 
@@ -40,8 +40,8 @@ const ModalForUpdatingUser = () => {
         onClose={() => {
           dispatch(toggleModal('updatingModal'));
         }}
-        aria-labelledby='modal-modal-title'
-        aria-describedby='modal-modal-description'
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
       >
         <Box className={styles.wrapp}>
           <h2 className={styles.title}>Update user info</h2>
@@ -53,34 +53,34 @@ const ModalForUpdatingUser = () => {
           >
             <Form>
               <CustomTextField
-                name='username'
-                placeholder='Username'
+                name="username"
+                placeholder="Username"
                 required
-                label='Username'
-                id='username'
+                label="Username"
+                id="username"
               />
               <CustomTextField
-                label='Email'
-                id='email'
-                name='email'
-                placeholder='Email'
+                label="Email"
+                id="email"
+                name="email"
+                placeholder="Email"
                 required
               />
               <CustomTextField
-                name='phoneNumber'
-                placeholder='Phone number'
+                name="phoneNumber"
+                placeholder="Phone number"
                 required
-                label='Phone number'
-                id='phoneNumber'
+                label="Phone number"
+                id="phoneNumber"
               />
               <CustomTextField
-                name='password'
-                placeholder='password'
+                name="password"
+                placeholder="password"
                 required
-                label='Password'
-                id='password'
+                label="Password"
+                id="password"
               />
-              <CustomButton text='Update' width='210px' typeOfButton='submit' />
+              <CustomButton text="Update" width="210px" typeOfButton="submit" />
             </Form>
           </Formik>
         </Box>

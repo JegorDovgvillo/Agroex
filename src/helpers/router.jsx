@@ -42,7 +42,7 @@ const Router = () => {
           children: [
             {
               path: ROUTES.ADMIN_CATEGORIES,
-              element: <CategoriesList/> ,
+              element: <CategoriesList />,
             },
             {
               path: ROUTES.ADMIN_USERS,

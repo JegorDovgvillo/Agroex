@@ -20,7 +20,15 @@ import styles from '../usersList/usersList.module.scss';
 import ModalForCreatingCategory from '../../customModals/modalForCreatingCategory';
 import ModalForUpdatingCategory from '../../customModals/modalForUpdaitingCategory';
 
-const { tableRow, userName, editIcon, deleteIcon, editBlock } = styles;
+const {
+  tableRow,
+  userName,
+  editIcon,
+  deleteIcon,
+  editBlock,
+  titleWrapp,
+  title,
+} = styles;
 
 export default function CategoriesList() {
   const dispatch = useDispatch();
@@ -41,21 +49,21 @@ export default function CategoriesList() {
 
   return (
     <>
-      <div className={styles.titleWrapp}>
-        <Typography component='h2' variant='h6' color='primary'>
+      <div className={titleWrapp}>
+        <Typography component="h2" variant="h6" color="primary">
           Categories
         </Typography>
         <div
-          className={styles.title}
+          className={title}
           onClick={() => dispatch(toggleModal('creatingModal'))}
         >
-          <Typography component='h2' variant='h6' color='primary'>
+          <Typography component="h2" variant="h6" color="primary">
             Create new category
           </Typography>
           <AddIcon />
         </div>
       </div>
-      <Table size='small'>
+      <Table size="small">
         <TableHead>
           <TableRow className={tableRow}>
             <TableCell>ID</TableCell>
@@ -66,27 +74,27 @@ export default function CategoriesList() {
         </TableHead>
         <TableBody>
           {categories &&
-            categories.map((c) => (
-              <TableRow key={c.id} className={tableRow}>
-                <TableCell>{c.id}</TableCell>
+            categories.map((category) => (
+              <TableRow key={category.id} className={tableRow}>
+                <TableCell>{category.id}</TableCell>
                 <TableCell>
                   <span
                     className={userName}
-                    onClick={() => handleEditClick(c.id)}
+                    onClick={() => handleEditClick(category.id)}
                   >
-                    {c.title}
+                    {category.title}
                   </span>
                 </TableCell>
-                <TableCell>{c.parentId}</TableCell>
+                <TableCell>{category.parentId}</TableCell>
                 <TableCell>
                   <div className={editBlock}>
                     <DeleteForeverOutlinedIcon
                       className={deleteIcon}
-                      onClick={() => handleDeleteClick(c.id)}
+                      onClick={() => handleDeleteClick(category.id)}
                     />
                     <BorderColorIcon
                       className={editIcon}
-                      onClick={() => handleEditClick(c.id)}
+                      onClick={() => handleEditClick(category.id)}
                     />
                   </div>
                 </TableCell>

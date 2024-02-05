@@ -24,7 +24,7 @@ const ModalForUpdatingCategory = () => {
   );
 
   const categoryData = {
-    title: categoryFields ? categoryFields.title : '',
+    title: categoryFields?.title || '',
   };
 
   const handleSubmitClick = (values) => {
@@ -39,8 +39,8 @@ const ModalForUpdatingCategory = () => {
         onClose={() => {
           dispatch(toggleModal('updatingModal'));
         }}
-        aria-labelledby='modal-modal-title'
-        aria-describedby='modal-modal-description'
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
       >
         <Box className={styles.wrapp}>
           <h2 className={styles.title}>Update category</h2>
@@ -52,13 +52,13 @@ const ModalForUpdatingCategory = () => {
           >
             <Form>
               <CustomTextField
-                name='title'
-                placeholder='Enter the category name'
+                name="title"
+                placeholder="Enter the category name"
                 required
-                label='Name of category'
-                id='title'
+                label="Name of category"
+                id="title"
               />
-              <CustomButton text='Update' width='210px' typeOfButton='submit' />
+              <CustomButton text="Update" width="210px" typeOfButton="submit" />
             </Form>
           </Formik>
         </Box>

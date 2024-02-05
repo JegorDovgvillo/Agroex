@@ -37,8 +37,8 @@ const ModalForCreatingUser = () => {
         onClose={() => {
           dispatch(toggleModal('creatingModal'));
         }}
-        aria-labelledby='modal-modal-title'
-        aria-describedby='modal-modal-description'
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
       >
         <Box className={styles.wrapp}>
           <h2 className={styles.title}>Create new user</h2>
@@ -50,34 +50,34 @@ const ModalForCreatingUser = () => {
           >
             <Form>
               <CustomTextField
-                name='username'
-                placeholder='Username'
+                name="username"
+                placeholder="Username"
                 required
-                label='Username'
-                id='username'
+                label="Username"
+                id="username"
               />
               <CustomTextField
-                label='Email'
-                id='email'
-                name='email'
-                placeholder='Email'
+                label="Email"
+                id="email"
+                name="email"
+                placeholder="Email"
                 required
               />
               <CustomTextField
-                name='phoneNumber'
-                placeholder='Phone number'
+                name="phoneNumber"
+                placeholder="Phone number"
                 required
-                label='Phone number'
-                id='phoneNumber'
+                label="Phone number"
+                id="phoneNumber"
               />
               <CustomTextField
-                name='password'
-                placeholder='password'
+                name="password"
+                placeholder="password"
                 required
-                label='Password'
-                id='password'
+                label="Password"
+                id="password"
               />
-              <CustomButton text='Create' width='210px' typeOfButton='submit' />
+              <CustomButton text="Create" width="210px" typeOfButton="submit" />
             </Form>
           </Formik>
         </Box>

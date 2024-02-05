@@ -25,7 +25,7 @@ const CustomSelect = ({
         disabled={disabled}
         required={required}
       >
-        <MenuItem disabled value=''>
+        <MenuItem disabled value="">
           <em>{placeholder}</em>
         </MenuItem>
         {units.map((item, index) => (

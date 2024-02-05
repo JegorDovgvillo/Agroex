@@ -35,8 +35,8 @@ const ModalForCreatingCategory = () => {
     <div>
       <Modal
         open={isOpen}
-        aria-labelledby='modal-modal-title'
-        aria-describedby='modal-modal-description'
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
         onClose={() => {
           dispatch(toggleModal('creatingModal'));
         }}
@@ -55,17 +55,17 @@ const ModalForCreatingCategory = () => {
               {!isCreatingCategory && (
                 <CustomSelect
                   units={rootCategories}
-                  itemFieldName='title'
-                  name='parentId'
-                  width='210px'
+                  itemFieldName="title"
+                  name="parentId"
+                  width="210px"
                   disabled={false}
-                  margin='0 16px 24px 0'
-                  placeholder='Choose category'
-                  label='Category'
+                  margin="0 16px 24px 0"
+                  placeholder="Choose category"
+                  label="Category"
                 />
               )}
               <CustomTextField
-                name='title'
+                name="title"
                 placeholder={
                   isCreatingCategory
                     ? 'Enter the category name'
@@ -75,16 +75,16 @@ const ModalForCreatingCategory = () => {
                 label={
                   isCreatingCategory ? 'Category name' : 'Subcategory name'
                 }
-                id='title'
+                id="title"
               />
-              <CustomButton text='Create' width='210px' typeOfButton='submit' />
+              <CustomButton text="Create" width="210px" typeOfButton="submit" />
             </Form>
           </Formik>
           <div className={styles.radioButtons}>
             <label>
               <input
-                type='radio'
-                value='category'
+                type="radio"
+                value="category"
                 checked={isCreatingCategory}
                 onChange={() => setIsCreatingCategory(true)}
               />
@@ -92,8 +92,8 @@ const ModalForCreatingCategory = () => {
             </label>
             <label>
               <input
-                type='radio'
-                value='subcategory'
+                type="radio"
+                value="subcategory"
                 checked={!isCreatingCategory}
                 onChange={() => setIsCreatingCategory(false)}
               />

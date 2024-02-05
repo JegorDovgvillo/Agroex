@@ -33,6 +33,8 @@ const {
   editIcon,
   deleteIcon,
   editBlock,
+  titleWrapp,
+  title,
 } = styles;
 
 export default function UsersList() {
@@ -54,21 +56,21 @@ export default function UsersList() {
 
   return (
     <>
-      <div className={styles.titleWrapp}>
-        <Typography component='h2' variant='h6' color='primary'>
+      <div className={titleWrapp}>
+        <Typography component="h2" variant="h6" color="primary">
           Users
         </Typography>
         <div
-          className={styles.title}
+          className={title}
           onClick={() => dispatch(toggleModal('creatingModal'))}
         >
-          <Typography component='h2' variant='h6' color='primary'>
+          <Typography component="h2" variant="h6" color="primary">
             Create new user
           </Typography>
           <AddIcon />
         </div>
       </div>
-      <Table size='small'>
+      <Table size="small">
         <TableHead>
           <TableRow className={tableRow}>
             <TableCell>ID</TableCell>
@@ -82,26 +84,26 @@ export default function UsersList() {
         </TableHead>
         <TableBody>
           {users &&
-            users.map((u) => (
-              <TableRow key={u.id} className={tableRow}>
-                <TableCell>{u.id}</TableCell>
+            users.map((user) => (
+              <TableRow key={user.id} className={tableRow}>
+                <TableCell>{user.id}</TableCell>
                 <TableCell>
                   <span
                     className={userName}
-                    onClick={() => handleEditClick(u.id)}
+                    onClick={() => handleEditClick(user.id)}
                   >
-                    {u.username}
+                    {user.username}
                   </span>
                 </TableCell>
-                <TableCell>{u.email}</TableCell>
-                <TableCell>{u.phoneNumber}</TableCell>
-                <TableCell>{getFormattedDate(u.creationDate)}</TableCell>
+                <TableCell>{user.email}</TableCell>
+                <TableCell>{user.phoneNumber}</TableCell>
+                <TableCell>{getFormattedDate(user.creationDate)}</TableCell>
                 <TableCell className={verifiedIconContainer}>
                   <>
-                    {u.emailVerified && (
+                    {user.emailVerified && (
                       <VerifiedUserIcon className={verifiedIcon} />
                     )}
-                    {!u.emailVerified && (
+                    {!user.emailVerified && (
                       <GppBadIcon className={noVerifiedIcon} />
                     )}
                   </>
@@ -110,11 +112,11 @@ export default function UsersList() {
                   <div className={editBlock}>
                     <DeleteForeverOutlinedIcon
                       className={deleteIcon}
-                      onClick={() => handleDeleteClick(u.id)}
+                      onClick={() => handleDeleteClick(user.id)}
                     />
                     <BorderColorIcon
                       className={editIcon}
-                      onClick={() => handleEditClick(u.id)}
+                      onClick={() => handleEditClick(user.id)}
                     />
                   </div>
                 </TableCell>

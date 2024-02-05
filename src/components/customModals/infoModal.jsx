@@ -20,8 +20,8 @@ const InfoModal = ({ title, text }) => {
         onClose={() => {
           dispatch(toggleModal('infoModal'));
         }}
-        aria-labelledby='modal-modal-title'
-        aria-describedby='modal-modal-description'
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
       >
         <Box className={styles.wrapp}>
           <h2 className={styles.title}>{title}</h2>
