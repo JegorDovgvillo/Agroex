@@ -84,7 +84,7 @@ export const categoriesSelector = createSelector([selectAll], (categories) =>
 
 export const selectRootCategories = createSelector(
   [categoriesSelector],
-  (categories) => categories.filter((category) => category.parentId === 0)
+  (categories) => categories.filter((category) => !category.parentId)
 );
 
 export const selectCategoryById = createSelector(
