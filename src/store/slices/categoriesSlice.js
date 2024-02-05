@@ -3,6 +3,7 @@ import {
   createEntityAdapter,
   createSelector,
 } from '@reduxjs/toolkit';
+
 import {
   fetchCategories,
   deleteCategory,
@@ -95,5 +96,7 @@ export const selectCategoryById = createSelector(
       .selectById(categoriesState, categoryId);
   }
 );
+/* export const { selectById: selectCategoryById } =
+  categoriesAdapter.getSelectors((state) => state.categories); */
 
 export default reducer;

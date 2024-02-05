@@ -16,7 +16,6 @@ import img from '@assets/images/77d4dc59-3013-41aa-8a7b-cb27cb6fa425.jpg';
 import styles from './itemCard.module.scss';
 
 const ItemCard = (item) => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const viewDetailsCard = () => {

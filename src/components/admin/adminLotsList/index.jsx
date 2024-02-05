@@ -10,16 +10,15 @@ import {
   Avatar,
 } from '@mui/material';
 
-import DisabledByDefaultIcon from '@mui/icons-material/DisabledByDefault';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import CancelIcon from '@mui/icons-material/Cancel';
+import MoreIcon from '@mui/icons-material/More';
 
-import { fetchLots } from '@store/thunks/fetchLots';
-import { openInfoModal } from '@store/slices/modalSlice';
-import { lotListSelector } from '@store/slices/lotListSlice';
-import { setLotId } from '@store/slices/lotListSlice';
-import { updateLot } from '@store/thunks/fetchLots';
+import { fetchLots, updateLot } from '@store/thunks/fetchLots';
+import { fetchAllCategories } from '@store/thunks/fetchCategories';
+import { toggleModal } from '@store/slices/modalSlice';
+import { lotListSelector, setLotId } from '@store/slices/lotListSlice';
 import { setUserId } from '@store/slices/usersListSlice';
-import { openConfirmModal } from '@store/slices/modalSlice';
 
 import getFormattedDate from '@helpers/getFormattedDate';
 import getNumberWithCurrency from '@helpers/getNumberWithCurrency';
@@ -32,8 +31,15 @@ import image from '@assets/images/77d4dc59-3013-41aa-8a7b-cb27cb6fa425.jpg';
 import styles from './adminLotsList.module.scss';
 import tableStyles from '../usersList/usersList.module.scss';
 
-const { lotImage, lotTitleBlock } = styles;
-const { tableRow, userName, deleteIcon, editBlock } = tableStyles;
+const {
+  lotImage,
+  lotTitleBlock,
+  disableIcon,
+  enableIcon,
+  statusCell,
+  moreInfoIcon,
+} = styles;
+const { tableRow, userName } = tableStyles;
 
 export default function AdminLotsList() {
   const dispatch = useDispatch();
@@ -41,35 +47,34 @@ export default function AdminLotsList() {
   const [confirmStatus, setConfirmStatus] = useState(false);
   const [openedLot, setOpenedLot] = useState(null);
 
+  const handleChangeLot = ({ ...lot }) => {
+    const lotData = { ...lot, enabledByAdmin: !lot.enabledByAdmin };
+    const { id } = lot;
+
+    lotData && id && dispatch(updateLot({ id, lotData }));
+  };
+
   useEffect(() => {
     dispatch(fetchLots());
+    dispatch(fetchAllCategories());
   }, [dispatch]);
 
   useEffect(() => {
     if (confirmStatus && openedLot) {
-      console.log('useEffect', openedLot.id);
       handleChangeLot({ ...openedLot });
       setConfirmStatus(false);
     }
-  }, [confirmStatus, openedLot]);
+  }, [handleChangeLot, confirmStatus, openedLot]);
 
   const handleEditClick = (id, userId) => {
-    dispatch(openInfoModal());
+    dispatch(toggleModal('infoModal'));
     dispatch(setLotId(id));
     dispatch(setUserId(userId));
   };
 
   const handleChangeLotStatusClick = (lot) => {
     setOpenedLot(lot);
-
-    dispatch(openConfirmModal());
-  };
-
-  const handleChangeLot = ({ ...lot }) => {
-    const lotData = { ...lot, enabledByAdmin: !lot.enabledByAdmin };
-    const { id } = lot;
-
-    lotData && id && dispatch(updateLot({ id, lotData }));
+    dispatch(toggleModal('confirmModal'));
   };
 
   const tableHead = [
@@ -143,22 +148,33 @@ export default function AdminLotsList() {
                   }
                 </TableCell>
                 <TableCell>
-                  {`${
-                    lot.enabledByAdmin
-                      ? 'Enabled by Admin'
-                      : 'Disabled by Admin'
-                  }`}
+                  <div className={statusCell}>
+                    {`${
+                      lot.enabledByAdmin
+                        ? 'Enabled  by Admin'
+                        : 'Disabled by Admin'
+                    }`}
+
+                    {!lot.enabledByAdmin && (
+                      <CancelIcon
+                        className={disableIcon}
+                        onClick={() => handleChangeLotStatusClick(lot)}
+                      />
+                    )}
+                    {lot.enabledByAdmin && (
+                      <CheckCircleOutlineIcon
+                        className={enableIcon}
+                        onClick={() => handleChangeLotStatusClick(lot)}
+                      />
+                    )}
+                  </div>
                 </TableCell>
 
                 <TableCell>
-                  <div className={editBlock}>
-                    <MoreHorizIcon
-                      className={deleteIcon}
+                  <div>
+                    <MoreIcon
+                      className={moreInfoIcon}
                       onClick={() => handleEditClick(lot.id, lot.userId)}
-                    />
-                    <DisabledByDefaultIcon
-                      className={deleteIcon}
-                      onClick={() => handleChangeLotStatusClick(lot)}
                     />
                   </div>
                 </TableCell>
@@ -168,7 +184,7 @@ export default function AdminLotsList() {
       </Table>
       <DetailedLotViewModal handleChangeLot={handleChangeLot} />
       <ConfirmActionModal
-        text='This action deactivates the lot. Do you confirm the action?'
+        text='This action changes the lot status. Do you confirm the action?'
         setConfirmStatus={setConfirmStatus}
       />
     </>

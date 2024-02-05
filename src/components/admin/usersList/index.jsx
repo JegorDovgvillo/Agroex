@@ -12,11 +12,9 @@ import GppBadIcon from '@mui/icons-material/GppBad';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 import AddIcon from '@mui/icons-material/Add';
 
-import { setUserId } from '@store/slices/usersListSlice';
+import { setUserId, usersListSelector } from '@store/slices/usersListSlice';
 import { fetchUsers, deleteUser } from '@store/thunks/fetchUsers';
-import { usersListSelector } from '@store/slices/usersListSlice';
 import { toggleModal } from '@store/slices/modalSlice';
-
 import getFormattedDate from '@helpers/getFormattedDate';
 
 import ModalForCreatingUser from '../../customModals/modalForCreatingUser';

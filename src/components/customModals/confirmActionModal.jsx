@@ -6,28 +6,26 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 
-import {
-  closeConfirmModal,
-  closeConfirmNestedModal,
-} from '@store/slices/modalSlice';
+import { toggleModal, selectModalState } from '@store/slices/modalSlice';
 
 const ConfirmActionModal = ({ text, setConfirmStatus, isNested = false }) => {
   const dispatch = useDispatch();
   const open = isNested
-    ? useSelector((state) => state.modal.confirmNestedModalIsOpen)
-    : useSelector((state) => state.modal.confirmModalIsOpen);
+    ? useSelector((state) => selectModalState(state, 'confirmNestedModal'))
+    : useSelector((state) => selectModalState(state, 'confirmModal'));
 
   const handleCloseDisagree = () => {
     setConfirmStatus(false);
     isNested
-      ? dispatch(closeConfirmNestedModal())
-      : dispatch(closeConfirmModal());
+      ? dispatch(toggleModal('confirmNestedModal'))
+      : dispatch(toggleModal('confirmModal'));
   };
+
   const handleCloseAgree = () => {
     setConfirmStatus(true);
     isNested
-      ? dispatch(closeConfirmNestedModal())
-      : dispatch(closeConfirmModal());
+      ? dispatch(toggleModal('confirmNestedModal'))
+      : dispatch(toggleModal('confirmModal'));
   };
 
   return (

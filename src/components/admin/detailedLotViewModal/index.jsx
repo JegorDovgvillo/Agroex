@@ -7,10 +7,9 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 
 import { fetchUser } from '@store/thunks/fetchUsers';
-import { selectUserById } from '@store/slices/usersListSlice';
-import { openConfirmNestedModal } from '@store/slices/modalSlice';
-import { closeInfoModal, openConfirmModal } from '@store/slices/modalSlice';
 import { fetchLotDetails } from '@store/thunks/fetchLots';
+import { selectUserById } from '@store/slices/usersListSlice';
+import { toggleModal, selectModalState } from '@store/slices/modalSlice';
 import { selectLotDetailById } from '@store/slices/lotListSlice';
 
 import AdminDetailedLotView from '../adminDetailedLotView';
@@ -24,7 +23,7 @@ const DetailedLotViewModal = ({ handleChangeLot }) => {
   const dispatch = useDispatch();
   const { lotId } = useSelector((state) => state.lotList);
   const lot = useSelector((state) => selectLotDetailById(state, lotId));
-  const open = useSelector((state) => state.modal.infoModalIsOpen);
+  const open = useSelector((state) => selectModalState(state, 'infoModal'));
   const { userId } = useSelector((state) => state.usersList);
   const userData = useSelector((state) => selectUserById(state, userId));
   const [confirm, setConfirm] = useState(false);
@@ -32,21 +31,21 @@ const DetailedLotViewModal = ({ handleChangeLot }) => {
   useEffect(() => {
     dispatch(fetchLotDetails(lotId));
     dispatch(fetchUser(userId));
-  }, [fetchLotDetails, lotId, fetchUser, userId]);
+  }, [dispatch, lotId, userId]);
 
   useEffect(() => {
     if (confirm) {
       handleChangeLot({ ...lot });
       setConfirm(false);
     }
-  }, [confirm]);
+  }, [handleChangeLot, confirm, lot]);
 
   const handleClose = () => {
-    dispatch(closeInfoModal());
+    dispatch(toggleModal('infoModal'));
   };
 
   function handleChangeLotByAdmin() {
-    dispatch(openConfirmNestedModal());
+    dispatch(toggleModal('confirmNestedModal'));
   }
 
   return (
@@ -78,7 +77,7 @@ const DetailedLotViewModal = ({ handleChangeLot }) => {
         </Dialog>
       )}
       <ConfirmActionModal
-        text='This action deactivates the lot. Do you confirm the action?'
+        text='This action changes the lot status. Do you confirm the action?'
         setConfirmStatus={setConfirm}
         isNested={true}
       />

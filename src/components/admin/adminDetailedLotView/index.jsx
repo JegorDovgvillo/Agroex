@@ -1,3 +1,7 @@
+import { useSelector } from 'react-redux';
+
+import { selectCategoryById } from '@store/slices/categoriesSlice';
+
 import getNumberWithCurrency from '@helpers/getNumberWithCurrency';
 import getFormattedDate from '@helpers/getFormattedDate';
 
@@ -19,7 +23,6 @@ const AdminDetailedLotView = ({ lot, userData }) => {
     description,
     enabledByAdmin,
     expirationDate,
-    images,
     location,
     lotType,
     packaging,
@@ -31,6 +34,11 @@ const AdminDetailedLotView = ({ lot, userData }) => {
     title,
     variety,
   } = lot;
+
+  const category = useSelector((state) =>
+    selectCategoryById(state, productCategoryId)
+  );
+  const { title: categoryTitle } = category;
 
   const {
     username,
@@ -59,7 +67,7 @@ const AdminDetailedLotView = ({ lot, userData }) => {
     },
     {
       key: 'Product Category',
-      value: productCategoryId,
+      value: categoryTitle,
     },
     { key: 'Variety', value: variety },
     { key: 'Description', value: description },

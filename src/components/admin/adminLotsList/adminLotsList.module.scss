@@ -1,3 +1,5 @@
+@import "@scss/colorVariables.module.scss";
+
 .lotsListContainer {
   width: 100%;
 
@@ -13,6 +15,36 @@
   align-items: center;
 }
 
-.deactivateIcon {
-  color: red;
+.moreInfoIcon {
+  color: $mainDark;
+
+  &:hover {
+    cursor: pointer;
+    color: $mainBase;
+  }
+}
+
+.disableIcon {
+  color: $errorDark;
+
+  &:hover {
+    cursor: pointer;
+    color: $errorLight;
+  }
+}
+
+.enableIcon {
+  color: $successDark;
+
+  &:hover {
+    cursor: pointer;
+    color: $successLight;
+  }
+}
+
+.statusCell {
+  display: flex;
+  align-items: center;
+  column-gap: 8px;
+  justify-content: center;
 }
