@@ -1,5 +1,4 @@
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 
 import { CustomButton } from '../buttons/CustomButton';
 import PriceBlock from '../priceBlock';
@@ -9,8 +8,6 @@ import ROUTES from '@helpers/routeNames';
 import getFormattedDate from '@helpers/getFormattedDate';
 import getNumberWithCurrency from '@helpers/getNumberWithCurrency';
 
-import { updateId } from '@store/slices/lotDetailsSlice';
-
 import shoppingIcon from '@assets/icons/shopping.svg';
 import betIcon from '@assets/icons/bet.svg';
 import img from '@assets/images/77d4dc59-3013-41aa-8a7b-cb27cb6fa425.jpg';
@@ -18,11 +15,9 @@ import img from '@assets/images/77d4dc59-3013-41aa-8a7b-cb27cb6fa425.jpg';
 import styles from './itemCard.module.scss';
 
 const ItemCard = (item) => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const viewDetailsCard = () => {
-    dispatch(updateId(item.id));
     navigate(ROUTES.LOTS_DETAILS.replace(':id', item.id));
   };
 

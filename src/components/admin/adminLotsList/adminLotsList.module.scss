@@ -1,0 +1,68 @@
+@import "@scss/colorVariables.module.scss";
+
+.lotsListContainer {
+  width: 100%;
+
+  .lotImage {
+    width: 100px;
+    height: 70px;
+  }
+}
+.lotTitleBlockCell {
+  & .lotTitleBlock {
+    max-width: 130px;
+    display: flex;
+    column-gap: 8px;
+    align-items: center;
+
+    @media screen and (max-width: 1000px) {
+      max-width: 150px;
+    }
+
+    & .title {
+      text-overflow: ellipsis;
+      text-align: center;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+  }
+}
+
+.priceBet {
+  display: flex;
+  flex-direction: column;
+}
+
+.moreInfoIcon {
+  color: $mainDark;
+
+  &:hover {
+    cursor: pointer;
+    color: $mainBase;
+  }
+}
+
+.disableIcon {
+  color: $errorDark;
+
+  &:hover {
+    cursor: pointer;
+    color: $errorLight;
+  }
+}
+
+.enableIcon {
+  color: $successDark;
+
+  &:hover {
+    cursor: pointer;
+    color: $successLight;
+  }
+}
+
+.statusCell {
+  display: flex;
+  align-items: center;
+  column-gap: 8px;
+  justify-content: center;
+}

@@ -8,6 +8,7 @@ import {
   deleteUser,
   createUser,
   updateUser,
+  fetchUser,
 } from '../thunks/fetchUsers';
 
 const usersListAdapter = createEntityAdapter();
@@ -66,6 +67,16 @@ const usersListSlice = createSlice({
       })
       .addCase(updateUser.rejected, (state) => {
         state.loadingStatus = 'rejected';
+      })
+      .addCase(fetchUser.pending, (state) => {
+        state.loadingStatus = 'pending';
+      })
+      .addCase(fetchUser.fulfilled, (state, action) => {
+        state.loadingStatus = 'fulfilled';
+        usersListAdapter.upsertOne(state, action.payload);
+      })
+      .addCase(fetchUser.rejected, (state) => {
+        state.loadingStatus = 'rejected';
       });
   },
 });
@@ -76,11 +87,8 @@ export const usersListSelector = createSelector([selectAll], (usersList) =>
   Object.values(usersList)
 );
 
-export const selectUserById = createSelector(
-  [(state, userId) => userId, (state) => state.usersList],
-  (userId, usersState) => {
-    return usersListAdapter.getSelectors().selectById(usersState, userId);
-  }
+export const { selectById: selectUserById } = usersListAdapter.getSelectors(
+  (state) => state.usersList
 );
 
 const { actions, reducer } = usersListSlice;

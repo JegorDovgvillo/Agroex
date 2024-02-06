@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-
+import { useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import CircularProgress from '@mui/material/CircularProgress';
 import ImageListItem from '@mui/material/ImageListItem';
@@ -11,11 +11,8 @@ import Timer from '@components/timer';
 import getNumberWithCurrency from '@helpers/getNumberWithCurrency';
 import getFormattedDate from '@helpers/getFormattedDate';
 
-import {
-  selectLotDetailById,
-  updateLoadingStatus,
-} from '@store/slices/lotDetailsSlice';
-import { fetchLotDetails } from '@store/thunks/fetchLotDetails';
+import { selectLotDetailById, setLotId } from '@store/slices/lotListSlice';
+import { fetchLotDetails } from '@store/thunks/fetchLots';
 
 import attentionIcon from '@assets/icons/attention.svg';
 import cartIcon from '@assets/icons/cartIcon.svg';
@@ -49,16 +46,15 @@ const {
 
 export const LotDetails = () => {
   const dispatch = useDispatch();
-  const { loadingStatus, lotID } = useSelector((state) => state.lotDetails);
-  const selectedLot = useSelector((state) => selectLotDetailById(state, lotID));
+  const { id: lotId } = useParams();
+
+  const { loadingStatus } = useSelector((state) => state.lotList);
+  const selectedLot = useSelector((state) => selectLotDetailById(state, lotId));
 
   useEffect(() => {
-    dispatch(fetchLotDetails(lotID));
-
-    return () => {
-      dispatch(updateLoadingStatus({ loadingStatus: 'idle' }));
-    };
-  }, [dispatch, lotID]);
+    dispatch(setLotId(lotId));
+    dispatch(fetchLotDetails(lotId));
+  }, [dispatch, lotId]);
 
   if (loadingStatus !== 'fulfilled') {
     return (
@@ -66,6 +62,8 @@ export const LotDetails = () => {
         <CircularProgress />
       </div>
     );
+  } else if (loadingStatus === 'fulfilled' && !selectedLot) {
+    return;
   }
 
   const {
@@ -99,7 +97,7 @@ export const LotDetails = () => {
     return (
       <div className={locationContainer}>
         <img src={mapIcon} alt="Map icon" />
-        <h6>{`${location.countryId}, ${location.region}`}</h6>
+        <h6>{`${location.countryName}, ${location.region}`}</h6>
       </div>
     );
   };
@@ -117,14 +115,14 @@ export const LotDetails = () => {
     <div className={pageContainer}>
       <div className={breadCrumbs} />
       <div className={container}>
-        {loadingStatus === 'fulfilled' && (
+        {
           <>
             <div className={leftSide}>
               <div className={imageContainer}>
                 <ImageListItem key={sliderImage}>
                   <img
                     src={`${sliderImage}?w=164&h=164&fit=crop&auto=format`}
-                    alt='Slider image'
+                    alt="Slider image"
                     loading="lazy"
                   />
                 </ImageListItem>
@@ -179,7 +177,7 @@ export const LotDetails = () => {
               </div>
             </div>
           </>
-        )}
+        }
       </div>
     </div>
   );

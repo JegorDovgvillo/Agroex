@@ -3,6 +3,7 @@ import {
   createEntityAdapter,
   createSelector,
 } from '@reduxjs/toolkit';
+
 import {
   fetchCategories,
   deleteCategory,
