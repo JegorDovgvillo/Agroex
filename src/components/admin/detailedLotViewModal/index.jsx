@@ -6,14 +6,14 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 
-import { fetchUser } from '@store/thunks/fetchUsers';
-import { fetchLotDetails } from '@store/thunks/fetchLots';
-import { selectUserById } from '@store/slices/usersListSlice';
-import { toggleModal, selectModalState } from '@store/slices/modalSlice';
-import { selectLotDetailById } from '@store/slices/lotListSlice';
+import { fetchUser } from '@thunks/fetchUsers';
+import { fetchLotDetails } from '@thunks/fetchLots';
+import { selectUserById } from '@slices/usersListSlice';
+import { toggleModal, selectModalState } from '@slices/modalSlice';
+import { selectLotDetailById } from '@slices/lotListSlice';
 
 import AdminDetailedLotView from '../adminDetailedLotView';
-import ConfirmActionModal from '../../customModals/confirmActionModal';
+import ConfirmActionModal from '@customModals/confirmActionModal';
 
 import styles from './detailedLotViewModal.module.scss';
 

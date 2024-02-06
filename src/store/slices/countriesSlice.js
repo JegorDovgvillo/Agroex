@@ -4,7 +4,7 @@ import {
   createSelector,
 } from '@reduxjs/toolkit';
 
-import { fetchCountries } from '../thunks/fetchCountries';
+import { fetchCountries } from '@thunks/fetchCountries';
 
 const countryAdapter = createEntityAdapter();
 

@@ -2,8 +2,8 @@ import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { toggleModal } from '@store/slices/modalSlice';
-import { selectModalState } from '@store/slices/modalSlice';
+import { toggleModal } from '@slices/modalSlice';
+import { selectModalState } from '@slices/modalSlice';
 
 import ill from '@assets/icons/ill.png';
 

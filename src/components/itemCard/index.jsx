@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 
-import { CustomButton } from '../buttons/CustomButton';
+import { CustomButton } from '@buttons/CustomButton';
 import PriceBlock from '../priceBlock';
 import Timer from '../timer';
 
@@ -8,8 +8,8 @@ import ROUTES from '@helpers/routeNames';
 import getFormattedDate from '@helpers/getFormattedDate';
 import getNumberWithCurrency from '@helpers/getNumberWithCurrency';
 
-import shoppingIcon from '@assets/icons/shopping.svg';
-import betIcon from '@assets/icons/bet.svg';
+import shoppingIcon from '@icons/shopping.svg';
+import betIcon from '@icons/bet.svg';
 import img from '@assets/images/77d4dc59-3013-41aa-8a7b-cb27cb6fa425.jpg';
 
 import styles from './itemCard.module.scss';

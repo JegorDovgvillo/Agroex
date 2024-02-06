@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
-import { axiosInstanceImages } from '../../helpers/axiosInstance';
-import ENDPOINTS from '../../helpers/endpoints';
+import { axiosInstanceImages } from '@helpers/axiosInstance';
+import ENDPOINTS from '@helpers/endpoints';
 
 export const fetchImagesByName = createAsyncThunk(
   'images/fetchImagesByName',
@@ -20,7 +20,6 @@ export const fetchImagesByName = createAsyncThunk(
         ''
       )
     );
-    console.log(response, 'base64String', base64String);
 
     return base64String;
   }

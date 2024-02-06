@@ -2,7 +2,7 @@ import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { closeModal } from '@store/slices/modalSlice';
+import { closeModal } from '@slices/modalSlice';
 
 import styles from './customModal.module.scss';
 

@@ -4,8 +4,8 @@ import { useEffect } from 'react';
 import Filters from '@components/filters';
 import ItemCard from '@components/itemCard';
 
-import { fetchLots } from '@store/thunks/fetchLots';
-import { lotListSelector } from '@store/slices/lotListSlice';
+import { fetchLots } from '@thunks/fetchLots';
+import { lotListSelector } from '@slices/lotListSlice';
 
 import styles from './lotList.module.scss';
 

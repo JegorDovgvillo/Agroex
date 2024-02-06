@@ -7,11 +7,18 @@ export default defineConfig({
   resolve: {
     alias: {
       '@assets': '/src/assets',
+      '@icons': '/src/assets/icons',
       '@components': '/src/components',
+      '@buttons': '/src/components/buttons',
+      '@customModals': '/src/components/customModals',
+      '@customTextField': '/src/components/customTextField',
+      '@customSelect': '/src/components/customSelect',
       '@helpers': '/src/helpers',
       '@pages': '/src/pages',
       '@scss': '/src/scss',
       '@store': '/src/store',
+      '@thunks': '/src/store/thunks',
+      '@slices': '/src/store/slices',
     },
   },
 });
