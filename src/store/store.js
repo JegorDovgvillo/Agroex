@@ -9,7 +9,7 @@ import images from './slices/imagesSlice';
 
 const store = configureStore({
   reducer: { lotList, usersList, modal, categories, countries, images },
-  devTools: import.meta.env.DEV !== 'production',
+  devTools: import.meta.env.DEV,
 });
 
 export default store;
