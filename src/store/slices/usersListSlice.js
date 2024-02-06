@@ -3,7 +3,6 @@ import {
   createEntityAdapter,
   createSelector,
 } from '@reduxjs/toolkit';
-
 import {
   fetchUsers,
   deleteUser,
@@ -75,6 +74,13 @@ const { selectAll } = usersListAdapter.getSelectors((state) => state.usersList);
 
 export const usersListSelector = createSelector([selectAll], (usersList) =>
   Object.values(usersList)
+);
+
+export const selectUserById = createSelector(
+  [(state, userId) => userId, (state) => state.usersList],
+  (userId, usersState) => {
+    return usersListAdapter.getSelectors().selectById(usersState, userId);
+  }
 );
 
 const { actions, reducer } = usersListSlice;

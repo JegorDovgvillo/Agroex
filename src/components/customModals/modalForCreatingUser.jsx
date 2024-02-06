@@ -10,25 +10,13 @@ import { selectModalState } from '@store/slices/modalSlice';
 import CustomTextField from '../customTextField';
 import { CustomButton } from '../buttons/CustomButton';
 
-const ModalForCreatingUser = ({
-  title,
-  style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 600,
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
-    boxShadow: 24,
-    p: 4,
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-}) => {
+import styles from './infoModal.module.scss';
+
+const ModalForCreatingUser = () => {
   const dispatch = useDispatch();
-  const isOpen = useSelector(state => selectModalState(state, 'creatingModal'));
+  const isOpen = useSelector((state) =>
+    selectModalState(state, 'creatingModal')
+  );
 
   const userData = {
     username: '',
@@ -52,8 +40,8 @@ const ModalForCreatingUser = ({
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={style}>
-          <h2>{title}</h2>
+        <Box className={styles.wrapp}>
+          <h2 className={styles.title}>Create new user</h2>
           <Formik
             initialValues={userData}
             onSubmit={(values) => {
@@ -61,7 +49,7 @@ const ModalForCreatingUser = ({
             }}
           >
             <Form>
-            <CustomTextField
+              <CustomTextField
                 name="username"
                 placeholder="Username"
                 required

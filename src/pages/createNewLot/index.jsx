@@ -6,7 +6,7 @@ import CustomTextField from '@components/customTextField';
 import { CustomButton } from '@components/buttons/CustomButton';
 import CustomSelect from '@components/customSelect';
 import CustomDatePicker from '@components/customDatePicker';
-import InfoModal from '../../components/customModals/infoModal';
+import InfoModal from '@components/customModals/infoModal';
 
 import { fetchUsers } from '@store/thunks/fetchUsers';
 import { usersListSelector } from '@store/slices/usersListSlice';
@@ -45,7 +45,7 @@ const CreateNewLot = () => {
     packaging: '',
     quantity: '',
     price: '',
-    priceUnits: '',
+    priceUnits: 'USD',
     lotType: '',
     size: '',
     expirationDate: '',
@@ -178,7 +178,7 @@ const CreateNewLot = () => {
             <CustomSelect
               units={['USD']}
               name="priceUnits"
-              disabled={false}
+              disabled={true}
               placeholder="Currency"
               width="210px"
               margin="0 16px 24px 0"

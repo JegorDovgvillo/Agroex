@@ -1,11 +1,37 @@
 @import "@scss/typography.module.scss";
 
 .title {
-  @include h2;
+  @include h3;
   text-align: center;
 }
 
 .text {
   @include body1;
-  text-align: center;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 150%;
+  letter-spacing: 0.15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.wrapp {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 585px;
+  background-color: #ffffff;
+  border: 2px solid #000;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  padding: 35px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .radioButtons {
+    display: flex;
+    flex-direction: column;
+  }
 }

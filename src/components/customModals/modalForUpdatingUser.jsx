@@ -6,42 +6,30 @@ import { Formik, Form } from 'formik';
 import { updateUser } from '@store/thunks/fetchUsers';
 import { toggleModal } from '@store/slices/modalSlice';
 import { selectModalState } from '@store/slices/modalSlice';
+import { selectUserById } from '@store/slices/usersListSlice';
 
 import CustomTextField from '../customTextField';
 import { CustomButton } from '../buttons/CustomButton';
 
-const ModalForUpdatingUser = ({
-  title,
-  style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 600,
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
-    boxShadow: 24,
-    p: 4,
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-}) => {
+import styles from './infoModal.module.scss';
+
+const ModalForUpdatingUser = () => {
   const dispatch = useDispatch();
   const isOpen = useSelector((state) =>
     selectModalState(state, 'updatingModal')
   );
   const userId = useSelector((state) => state.usersList.userId);
+  const userFields = useSelector((state) => selectUserById(state, userId));
 
   const userData = {
-    username: '',
-    email: '',
-    phoneNumber: '',
+    username: userFields?.username || '',
+    email: userFields?.email || '',
+    phoneNumber: userFields?.phoneNumber || '',
     password: '',
   };
 
   const handleSubmitClick = (values) => {
-    dispatch(updateUser({ userId, values }));
+    dispatch(updateUser({ id: userId, userData: values }));
     dispatch(toggleModal('updatingModal'));
   };
 
@@ -55,11 +43,11 @@ const ModalForUpdatingUser = ({
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={style}>
-          <h2>{title}</h2>
+        <Box className={styles.wrapp}>
+          <h2 className={styles.title}>Update user info</h2>
           <Formik
             initialValues={userData}
-            onSubmit={async (values) => {
+            onSubmit={(values) => {
               handleSubmitClick(values);
             }}
           >

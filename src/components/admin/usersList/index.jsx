@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -16,8 +15,9 @@ import AddIcon from '@mui/icons-material/Add';
 import { setUserId } from '@store/slices/usersListSlice';
 import { fetchUsers, deleteUser } from '@store/thunks/fetchUsers';
 import { usersListSelector } from '@store/slices/usersListSlice';
-import getFormattedDate from '@helpers/getFormattedDate';
 import { toggleModal } from '@store/slices/modalSlice';
+
+import getFormattedDate from '@helpers/getFormattedDate';
 
 import ModalForCreatingUser from '../../customModals/modalForCreatingUser';
 import ModalForUpdatingUser from '../../customModals/modalForUpdatingUser';
@@ -33,6 +33,8 @@ const {
   editIcon,
   deleteIcon,
   editBlock,
+  titleWrapp,
+  title,
 } = styles;
 
 export default function UsersList() {
@@ -54,12 +56,12 @@ export default function UsersList() {
 
   return (
     <>
-      <div className={styles.titleWrapp}>
+      <div className={titleWrapp}>
         <Typography component="h2" variant="h6" color="primary">
           Users
         </Typography>
         <div
-          className={styles.title}
+          className={title}
           onClick={() => dispatch(toggleModal('creatingModal'))}
         >
           <Typography component="h2" variant="h6" color="primary">
@@ -82,26 +84,26 @@ export default function UsersList() {
         </TableHead>
         <TableBody>
           {users &&
-            users.map((u) => (
-              <TableRow key={u.id} className={tableRow}>
-                <TableCell>{u.id}</TableCell>
+            users.map((user) => (
+              <TableRow key={user.id} className={tableRow}>
+                <TableCell>{user.id}</TableCell>
                 <TableCell>
                   <span
                     className={userName}
-                    onClick={() => handleEditClick(u.id)}
+                    onClick={() => handleEditClick(user.id)}
                   >
-                    {u.username}
+                    {user.username}
                   </span>
                 </TableCell>
-                <TableCell>{u.email}</TableCell>
-                <TableCell>{u.phoneNumber}</TableCell>
-                <TableCell>{getFormattedDate(u.creationDate)}</TableCell>
+                <TableCell>{user.email}</TableCell>
+                <TableCell>{user.phoneNumber}</TableCell>
+                <TableCell>{getFormattedDate(user.creationDate)}</TableCell>
                 <TableCell className={verifiedIconContainer}>
                   <>
-                    {u.emailVerified && (
+                    {user.emailVerified && (
                       <VerifiedUserIcon className={verifiedIcon} />
                     )}
-                    {!u.emailVerified && (
+                    {!user.emailVerified && (
                       <GppBadIcon className={noVerifiedIcon} />
                     )}
                   </>
@@ -110,11 +112,11 @@ export default function UsersList() {
                   <div className={editBlock}>
                     <DeleteForeverOutlinedIcon
                       className={deleteIcon}
-                      onClick={() => handleDeleteClick(u.id)}
+                      onClick={() => handleDeleteClick(user.id)}
                     />
                     <BorderColorIcon
                       className={editIcon}
-                      onClick={() => handleEditClick(u.id)}
+                      onClick={() => handleEditClick(user.id)}
                     />
                   </div>
                 </TableCell>
@@ -122,8 +124,8 @@ export default function UsersList() {
             ))}
         </TableBody>
       </Table>
-      <ModalForUpdatingUser title="Update user info" />
-      <ModalForCreatingUser title="Create new user" />
+      <ModalForUpdatingUser />
+      <ModalForCreatingUser />
     </>
   );
 }
