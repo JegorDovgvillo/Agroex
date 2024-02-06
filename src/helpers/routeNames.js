@@ -7,7 +7,7 @@ const ROUTES = {
   ADMIN_CATEGORIES: '/admin/categories',
   ADMIN_USERS: '/admin/users',
   ADMIN_LOTS: '/admin/lots',
-  CREATE_NEW_LOT:'/new-lot'
+  CREATE_NEW_LOT: '/new-lot',
 };
 
 export default ROUTES;

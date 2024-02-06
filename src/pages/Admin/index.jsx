@@ -17,9 +17,7 @@ import styles from './admin.module.scss';
 
 const AdminPage = () => {
   const [open, setOpen] = useState(window.innerWidth > 1200);
-  const [isBarVisible, setIsBarVisible] = useState(
-    window.innerWidth > 1000 && true
-  );
+  const [isBarVisible, setIsBarVisible] = useState(window.innerWidth > 1000);
 
   const toggleDrawer = () => {
     setOpen(!open);
@@ -46,8 +44,8 @@ const AdminPage = () => {
           <Toolbar className={styles.toolBarHeader}>
             <IconButton
               className={`${styles.toolBarBtn} ${open && styles.hidden}`}
-              edge='start'
-              aria-label='open drawer'
+              edge="start"
+              aria-label="open drawer"
               onClick={toggleDrawer}
             >
               {isBarVisible && <MenuIcon />}
@@ -55,7 +53,7 @@ const AdminPage = () => {
             <h6 className={styles.toolBarTitle}>Dashboard</h6>
           </Toolbar>
         </AppBar>
-        <Drawer variant='permanent' open={open} className={styles.toolBar}>
+        <Drawer variant="permanent" open={open} className={styles.toolBar}>
           <Toolbar className={styles.toolBarRightHeader}>
             {isBarVisible && (
               <IconButton onClick={toggleDrawer}>
@@ -64,7 +62,7 @@ const AdminPage = () => {
             )}
           </Toolbar>
           <Divider />
-          <List component='nav'>
+          <List component="nav">
             <MainListItems />
           </List>
         </Drawer>

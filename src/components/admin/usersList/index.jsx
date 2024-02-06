@@ -122,8 +122,8 @@ export default function UsersList() {
             ))}
         </TableBody>
       </Table>
-      <ModalForUpdatingUser title='Update user info' />
-      <ModalForCreatingUser title='Create new user' />
+      <ModalForUpdatingUser title="Update user info" />
+      <ModalForCreatingUser title="Create new user" />
     </>
   );
 }

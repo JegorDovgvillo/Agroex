@@ -4,8 +4,6 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { closeModal } from '@store/slices/modalSlice';
 
-//import ill from '@assets/icons/ill.png';
-
 import styles from './customModal.module.scss';
 
 const CustomModal = ({
@@ -33,15 +31,12 @@ const CustomModal = ({
         onClose={() => {
           dispatch(closeModal());
         }}
-        aria-labelledby='modal-modal-title'
-        aria-describedby='modal-modal-description'
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
           <h2 className={styles.title}>{title}</h2>
-          <p className={styles.text}>
-            {text}
-            {/*  <img src={ill} /> */}
-          </p>
+          <p className={styles.text}>{text}</p>
         </Box>
       </Modal>
     </div>

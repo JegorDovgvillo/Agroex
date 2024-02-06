@@ -10,41 +10,36 @@ import { toggleModal, selectModalState } from '@store/slices/modalSlice';
 
 const ConfirmActionModal = ({ text, setConfirmStatus, isNested = false }) => {
   const dispatch = useDispatch();
-  const open = isNested
-    ? useSelector((state) => selectModalState(state, 'confirmNestedModal'))
-    : useSelector((state) => selectModalState(state, 'confirmModal'));
+  const modalType = isNested ? 'confirmNestedModal' : 'confirmModal';
+  const open = useSelector((state) => selectModalState(state, modalType));
 
   const handleCloseDisagree = () => {
     setConfirmStatus(false);
-    isNested
-      ? dispatch(toggleModal('confirmNestedModal'))
-      : dispatch(toggleModal('confirmModal'));
+    dispatch(toggleModal(modalType));
   };
 
   const handleCloseAgree = () => {
     setConfirmStatus(true);
-    isNested
-      ? dispatch(toggleModal('confirmNestedModal'))
-      : dispatch(toggleModal('confirmModal'));
+    dispatch(toggleModal(modalType));
   };
 
   return (
     <Dialog
       open={open}
       onClose={handleCloseDisagree}
-      aria-labelledby='alert-dialog-title'
-      aria-describedby='alert-dialog-description'
+      aria-labelledby="alert-dialog-title"
+      aria-describedby="alert-dialog-description"
     >
       <DialogContent>
-        <DialogContentText id='alert-dialog-description'>
+        <DialogContentText id="alert-dialog-description">
           {text}
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleCloseDisagree} variant='outlined' color='error'>
+        <Button onClick={handleCloseDisagree} variant="outlined" color="error">
           No
         </Button>
-        <Button onClick={handleCloseAgree} variant='contained' autoFocus>
+        <Button onClick={handleCloseAgree} variant="contained" autoFocus>
           Yes
         </Button>
       </DialogActions>

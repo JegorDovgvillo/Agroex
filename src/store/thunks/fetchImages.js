@@ -1,14 +1,27 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
-import { axiosInstance, ENDPOINTS } from '@helpers';
+import { axiosInstanceImages } from '../../helpers/axiosInstance';
+import ENDPOINTS from '../../helpers/endpoints';
 
 export const fetchImagesByName = createAsyncThunk(
   'images/fetchImagesByName',
   async (imageName) => {
-    const response = await axiosInstance.get(
-      `${ENDPOINTS.IMAGES}/${imageName}`
+    const response = await axiosInstanceImages.get(
+      `${ENDPOINTS.IMAGES}/${imageName}`,
+
+      {
+        responseType: 'arraybuffer',
+      }
     );
 
-    return response.data;
+    const base64String = btoa(
+      new Uint8Array(response.data).reduce(
+        (data, byte) => data + String.fromCharCode(byte),
+        ''
+      )
+    );
+    console.log(response, 'base64String', base64String);
+
+    return base64String;
   }
 );

@@ -27,7 +27,6 @@ const DetailedLotViewModal = ({ handleChangeLot }) => {
   const { userId } = useSelector((state) => state.usersList);
   const userData = useSelector((state) => selectUserById(state, userId));
   const [confirm, setConfirm] = useState(false);
-  console.log('ff', lotId);
 
   useEffect(() => {
     dispatch(fetchLotDetails(lotId));
@@ -53,23 +52,23 @@ const DetailedLotViewModal = ({ handleChangeLot }) => {
     <>
       {lot && userData && (
         <Dialog
-          maxWidth='none'
+          maxWidth="none"
           className={dialog}
           open={open}
           onClose={handleClose}
-          aria-labelledby='alert-dialog-title'
-          aria-describedby='alert-dialog-description'
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
         >
           <DialogContent>
             <AdminDetailedLotView lot={lot} userData={userData} />
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose} variant='outlined' color='error'>
+            <Button onClick={handleClose} variant="outlined" color="error">
               Close
             </Button>
             <Button
               onClick={handleChangeLotByAdmin}
-              variant='contained'
+              variant="contained"
               autoFocus
             >
               {`${!lot.enabledByAdmin ? 'Enable' : 'Disable'} lot`}
@@ -78,7 +77,7 @@ const DetailedLotViewModal = ({ handleChangeLot }) => {
         </Dialog>
       )}
       <ConfirmActionModal
-        text='This action changes the lot status. Do you confirm the action?'
+        text="This action changes the lot status. Do you confirm the action?"
         setConfirmStatus={setConfirm}
         isNested={true}
       />

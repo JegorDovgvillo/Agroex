@@ -35,10 +35,13 @@ import tableStyles from '../usersList/usersList.module.scss';
 const {
   lotImage,
   lotTitleBlock,
+  title,
   disableIcon,
   enableIcon,
   statusCell,
   moreInfoIcon,
+  priceBet,
+  lotTitleBlockCell,
 } = styles;
 const { tableRow, userName } = tableStyles;
 
@@ -100,7 +103,7 @@ export default function AdminLotsList() {
   return (
     <>
       <h6>Lots</h6>
-      <Table size='small'>
+      <Table size="small">
         <TableHead>
           <TableRow className={tableRow}>
             {tableHead.map((el) => (
@@ -114,22 +117,20 @@ export default function AdminLotsList() {
               <TableRow key={lot.id} className={tableRow}>
                 <TableCell>{lot.id}</TableCell>
 
-                <TableCell>
+                <TableCell className={lotTitleBlockCell}>
                   <div className={lotTitleBlock}>
                     <Avatar
                       className={lotImage}
-                      alt='Lot image'
+                      alt="Lot image"
                       src={image}
-                      variant='rounded'
+                      variant="rounded"
                     />
-                    <span
-                      className={userName}
+                    <p
+                      className={`${userName} ${title}`}
                       onClick={() => handleEditClick(lot.id, lot.userId)}
                     >
-                      {lot.title.length > 20
-                        ? `${lot.title.substr(0, 20)}...`
-                        : lot.title}
-                    </span>
+                      {lot.title}
+                    </p>
                   </div>
                 </TableCell>
                 <TableCell>{`${getNumberWithCurrency(
@@ -144,21 +145,20 @@ export default function AdminLotsList() {
                 <TableCell>{lot.lotType}</TableCell>
                 <TableCell>
                   {
-                    <>
-                      <span>{`${getNumberWithCurrency(
+                    <div className={priceBet}>
+                      <div>{`${getNumberWithCurrency(
                         lot.quantity * lot.pricePerTon,
                         lot.currency
-                      )} / `}</span>
-
-                      <span>no bets</span>
-                    </>
+                      )} / `}</div>
+                      <div>no bets</div>
+                    </div>
                   }
                 </TableCell>
                 <TableCell>
                   <div className={statusCell}>
                     {`${
                       lot.enabledByAdmin
-                        ? 'Enabled  by Admin'
+                        ? 'Enabled by Admin'
                         : 'Disabled by Admin'
                     }`}
 
@@ -193,7 +193,7 @@ export default function AdminLotsList() {
         <DetailedLotViewModal handleChangeLot={handleChangeLot} />
       )}
       <ConfirmActionModal
-        text='This action changes the lot status. Do you confirm the action?'
+        text="This action changes the lot status. Do you confirm the action?"
         setConfirmStatus={setConfirmStatus}
       />
     </>
