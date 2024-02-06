@@ -12,13 +12,13 @@ import GppBadIcon from '@mui/icons-material/GppBad';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 import AddIcon from '@mui/icons-material/Add';
 
-import { setUserId, usersListSelector } from '@store/slices/usersListSlice';
-import { fetchUsers, deleteUser } from '@store/thunks/fetchUsers';
-import { toggleModal } from '@store/slices/modalSlice';
+import { setUserId, usersListSelector } from '@slices/usersListSlice';
+import { fetchUsers, deleteUser } from '@thunks/fetchUsers';
+import { toggleModal } from '@slices/modalSlice';
 import getFormattedDate from '@helpers/getFormattedDate';
 
-import ModalForCreatingUser from '../../customModals/modalForCreatingUser';
-import ModalForUpdatingUser from '../../customModals/modalForUpdatingUser';
+import ModalForCreatingUser from '@customModals/modalForCreatingUser';
+import ModalForUpdatingUser from '@customModals/modalForUpdatingUser';
 
 import styles from './usersList.module.scss';
 

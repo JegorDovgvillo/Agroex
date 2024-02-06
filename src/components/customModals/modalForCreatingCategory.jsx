@@ -3,13 +3,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Box, Modal } from '@mui/material';
 import { Formik, Form } from 'formik';
 
-import { toggleModal, selectModalState } from '@store/slices/modalSlice';
-import { createCategory } from '@store/thunks/fetchCategories';
-import { selectRootCategories } from '@store/slices/categoriesSlice';
+import { toggleModal, selectModalState } from '@slices/modalSlice';
+import { createCategory } from '@thunks/fetchCategories';
+import { selectRootCategories } from '@slices/categoriesSlice';
 
 import CustomSelect from '../customSelect';
-import CustomTextField from '../customTextField';
-import { CustomButton } from '../buttons/CustomButton';
+import CustomTextField from '@customTextField';
+import { CustomButton } from '@buttons/CustomButton';
 
 import styles from './infoModal.module.scss';
 

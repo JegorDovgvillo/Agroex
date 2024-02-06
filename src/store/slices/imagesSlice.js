@@ -1,6 +1,6 @@
 import { createSlice, createEntityAdapter } from '@reduxjs/toolkit';
 
-import { fetchImagesByName } from '../thunks/fetchImages';
+import { fetchImagesByName } from '@thunks/fetchImages';
 
 const imagesAdapter = createEntityAdapter();
 

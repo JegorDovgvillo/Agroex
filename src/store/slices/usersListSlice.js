@@ -9,7 +9,7 @@ import {
   createUser,
   updateUser,
   fetchUser,
-} from '../thunks/fetchUsers';
+} from '@thunks/fetchUsers';
 
 const usersListAdapter = createEntityAdapter();
 

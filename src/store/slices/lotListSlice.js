@@ -4,7 +4,7 @@ import {
   createSelector,
 } from '@reduxjs/toolkit';
 
-import { fetchLots, fetchLotDetails, updateLot } from '../thunks/fetchLots';
+import { fetchLots, fetchLotDetails, updateLot } from '@thunks/fetchLots';
 
 const lotListAdapter = createEntityAdapter();
 

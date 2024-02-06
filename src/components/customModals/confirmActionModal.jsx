@@ -6,7 +6,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 
-import { toggleModal, selectModalState } from '@store/slices/modalSlice';
+import { toggleModal, selectModalState } from '@slices/modalSlice';
 
 const ConfirmActionModal = ({ text, setConfirmStatus, isNested = false }) => {
   const dispatch = useDispatch();

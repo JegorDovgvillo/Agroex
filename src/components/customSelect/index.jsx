@@ -1,7 +1,7 @@
 import { Select, MenuItem } from '@mui/material';
 import { Field } from 'formik';
 
-import styles from '../customTextField/customTextField.module.scss';
+import styles from '@customTextField/customTextField.module.scss';
 
 const CustomSelect = ({
   margin = '0 0 24px 0',

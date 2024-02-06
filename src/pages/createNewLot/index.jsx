@@ -8,13 +8,13 @@ import CustomSelect from '@components/customSelect';
 import CustomDatePicker from '@components/customDatePicker';
 import InfoModal from '@components/customModals/infoModal';
 
-import { fetchUsers } from '@store/thunks/fetchUsers';
-import { usersListSelector } from '@store/slices/usersListSlice';
-import { toggleModal } from '@store/slices/modalSlice';
-import { fetchCategories } from '@store/thunks/fetchCategories';
-import { categoriesSelector } from '@store/slices/categoriesSlice';
-import { countrySelector } from '@store/slices/countriesSlice';
-import { fetchCountries } from '@store/thunks/fetchCountries';
+import { fetchUsers } from '@thunks/fetchUsers';
+import { usersListSelector } from '@slices/usersListSlice';
+import { toggleModal } from '@slices/modalSlice';
+import { fetchCategories } from '@thunks/fetchCategories';
+import { categoriesSelector } from '@slices/categoriesSlice';
+import { countrySelector } from '@slices/countriesSlice';
+import { fetchCountries } from '@thunks/fetchCountries';
 
 import axiosInstance from '@helpers/axiosInstance';
 import ENDPOINTS from '@helpers/endpoints';

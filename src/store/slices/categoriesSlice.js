@@ -9,7 +9,7 @@ import {
   deleteCategory,
   updateCategory,
   createCategory,
-} from '../thunks/fetchCategories';
+} from '@thunks/fetchCategories';
 
 const categoriesAdapter = createEntityAdapter();
 

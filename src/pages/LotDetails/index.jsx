@@ -11,12 +11,12 @@ import Timer from '@components/timer';
 import getNumberWithCurrency from '@helpers/getNumberWithCurrency';
 import getFormattedDate from '@helpers/getFormattedDate';
 
-import { selectLotDetailById, setLotId } from '@store/slices/lotListSlice';
-import { fetchLotDetails } from '@store/thunks/fetchLots';
+import { selectLotDetailById, setLotId } from '@slices/lotListSlice';
+import { fetchLotDetails } from '@thunks/fetchLots';
 
-import attentionIcon from '@assets/icons/attention.svg';
-import cartIcon from '@assets/icons/cartIcon.svg';
-import mapIcon from '@assets/icons/mapIcon.svg';
+import attentionIcon from '@icons/attention.svg';
+import cartIcon from '@icons/cartIcon.svg';
+import mapIcon from '@icons/mapIcon.svg';
 import sliderImage from '@assets/images/77d4dc59-3013-41aa-8a7b-cb27cb6fa425.jpg';
 
 import styles from './lotDetails.module.scss';

@@ -10,15 +10,15 @@ import BorderColorIcon from '@mui/icons-material/BorderColor';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 import AddIcon from '@mui/icons-material/Add';
 
-import { fetchCategories } from '@store/thunks/fetchCategories';
-import { categoriesSelector } from '@store/slices/categoriesSlice';
-import { toggleModal } from '@store/slices/modalSlice';
-import { setCategoryId } from '@store/slices/categoriesSlice';
-import { deleteCategory } from '@store/thunks/fetchCategories';
+import { fetchCategories } from '@thunks/fetchCategories';
+import { categoriesSelector } from '@slices/categoriesSlice';
+import { toggleModal } from '@slices/modalSlice';
+import { setCategoryId } from '@slices/categoriesSlice';
+import { deleteCategory } from '@thunks/fetchCategories';
 
 import styles from '../usersList/usersList.module.scss';
-import ModalForCreatingCategory from '../../customModals/modalForCreatingCategory';
-import ModalForUpdatingCategory from '../../customModals/modalForUpdaitingCategory';
+import ModalForCreatingCategory from '@customModals/modalForCreatingCategory';
+import ModalForUpdatingCategory from '@customModals/modalForUpdaitingCategory';
 
 const {
   tableRow,

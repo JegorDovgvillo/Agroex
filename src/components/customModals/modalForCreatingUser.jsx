@@ -3,12 +3,12 @@ import Modal from '@mui/material/Modal';
 import { useDispatch, useSelector } from 'react-redux';
 import { Formik, Form } from 'formik';
 
-import { createUser } from '@store/thunks/fetchUsers';
-import { toggleModal } from '@store/slices/modalSlice';
-import { selectModalState } from '@store/slices/modalSlice';
+import { createUser } from '@thunks/fetchUsers';
+import { toggleModal } from '@slices/modalSlice';
+import { selectModalState } from '@slices/modalSlice';
 
-import CustomTextField from '../customTextField';
-import { CustomButton } from '../buttons/CustomButton';
+import CustomTextField from '@customTextField';
+import { CustomButton } from '@buttons/CustomButton';
 
 import styles from './infoModal.module.scss';
 

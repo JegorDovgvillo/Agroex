@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom';
 
-import AgroexLogo from '@assets/icons/AgroexLogoHeader.svg';
+import AgroexLogo from '@icons/AgroexLogoHeader.svg';
 import styles from './header.module.scss';
 
 const Header = () => {
