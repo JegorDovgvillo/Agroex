@@ -4,7 +4,13 @@ import {
   createSelector,
 } from '@reduxjs/toolkit';
 
-import { fetchLots, fetchLotDetails, updateLot } from '@thunks/fetchLots';
+import {
+  fetchLots,
+  fetchLotDetails,
+  updateLot,
+  deleteLot,
+  createLot,
+} from '@thunks/fetchLots';
 
 const lotListAdapter = createEntityAdapter();
 
@@ -51,6 +57,26 @@ const lotListSlice = createSlice({
         state.loadingStatus = 'fulfilled';
       })
       .addCase(fetchLotDetails.rejected, (state) => {
+        state.loadingStatus = 'rejected';
+      })
+      .addCase(deleteLot.pending, (state) => {
+        state.loadingStatus = 'pending';
+      })
+      .addCase(deleteLot.fulfilled, (state, action) => {
+        lotListAdapter.removeOne(state, action.payload);
+        state.loadingStatus = 'fulfilled';
+      })
+      .addCase(deleteLot.rejected, (state) => {
+        state.loadingStatus = 'rejected';
+      })
+      .addCase(createLot.pending, (state) => {
+        state.loadingStatus = 'pending';
+      })
+      .addCase(createLot.fulfilled, (state, action) => {
+        lotListAdapter.addOne(state, action.payload);
+        state.loadingStatus = 'fulfilled';
+      })
+      .addCase(createLot.rejected, (state) => {
         state.loadingStatus = 'rejected';
       });
   },
