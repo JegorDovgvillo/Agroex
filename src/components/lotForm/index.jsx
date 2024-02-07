@@ -5,8 +5,10 @@ import { CustomButton } from '@buttons/CustomButton';
 import CustomSelect from '@customSelect';
 import CustomDatePicker from '@components/customDatePicker';
 import InfoModal from '@customModals/infoModal';
+import ConfirmActionModal from '@customModals/confirmActionModal';
 
 import styles from './lotForm.module.scss';
+
 
 const LotForm = ({
   initialValues,
@@ -15,7 +17,8 @@ const LotForm = ({
   categories = {},
   users,
   formType,
-  handleDeleteClick,
+  setConfirmStatus,
+  showConfirm,
 }) => {
   return (
     <Formik
@@ -159,9 +162,14 @@ const LotForm = ({
                 text="Delete an item"
                 width="auto"
                 typeOfButton="button"
-                handleClick={handleDeleteClick}
+                handleClick={() => {
+                  showConfirm();
+                }}
               />
-              <InfoModal title="Success!" text="Your ad has been published" />
+              <ConfirmActionModal
+                text="This action delete the lot. Do you confirm the action?"
+                setConfirmStatus={setConfirmStatus}
+              />
             </div>
           )}
         </Form>

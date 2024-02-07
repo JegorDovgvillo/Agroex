@@ -1,5 +1,5 @@
 import { useParams } from 'react-router';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { selectLotDetailById } from '@slices/lotListSlice';
@@ -10,16 +10,32 @@ import { fetchCountries } from '@thunks/fetchCountries';
 import { fetchUsers } from '@thunks/fetchUsers';
 import { deleteLot, updateLot } from '@thunks/fetchLots';
 import { fetchCategories } from '@thunks/fetchCategories';
-
+import { toggleModal } from '@slices/modalSlice';
 import LotForm from '@components/lotForm';
 
+import { useNavigate } from 'react-router-dom';
+
 const UpdateLot = () => {
-  const dispatch = useDispatch();
-  const { id: lotId } = useParams();
   const users = useSelector(usersListSelector);
   const categories = useSelector(categoriesSelector);
   const country = useSelector(countrySelector);
   const selectedLot = useSelector((state) => selectLotDetailById(state, lotId));
+  const [confirmStatus, setConfirmStatus] = useState(false);
+  const dispatch = useDispatch();
+  const { id: lotId } = useParams();
+  const navigate = useNavigate();
+
+  const showConfirm = () => {
+    dispatch(toggleModal('confirmModal'));
+  };
+
+  useEffect(() => {
+    if (confirmStatus) {
+      dispatch(deleteLot({ id: lotId }));
+      navigate(-1);
+      setConfirmStatus(false);
+    }
+  }, [confirmStatus]);
 
   useEffect(() => {
     dispatch(fetchUsers());
@@ -45,7 +61,7 @@ const UpdateLot = () => {
     expirationDate: selectedLot?.expirationDate || '',
   };
 
-  const handleUpdateClick = async (values, resetForm) => {
+  const handleUpdateClick = async (values) => {
     const lotData = {
       title: values.title,
       description: values.description,
@@ -65,24 +81,19 @@ const UpdateLot = () => {
       },
     };
     dispatch(updateLot({ id: lotId, lotData }));
-
-    // dispatch(toggleModal('infoModal'));
-    resetForm();
-  };
-
-  const handleDeleteClick = () => {
-    dispatch(deleteLot({ id: lotId }));
+    navigate(-1);
   };
 
   return (
     <LotForm
-      handleDeleteClick={handleDeleteClick}
       initialValues={initialValues}
       handleSubmitClick={handleUpdateClick}
       country={country}
       categories={categories}
       users={users}
       formType="update"
+      setConfirmStatus={setConfirmStatus}
+      showConfirm={showConfirm}
     />
   );
 };
