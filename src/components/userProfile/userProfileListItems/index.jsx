@@ -32,7 +32,6 @@ const UserProfileListItems = () => {
       page: activePage.route,
       tab: activeTab?.tabRoute || '',
     });
-
     navigate(path);
   }, [activePage, activeTab, navigate]);
 
