@@ -8,7 +8,6 @@ const ROUTES = {
   ADMIN_USERS: '/admin/users',
   ADMIN_LOTS: '/admin/lots',
   CREATE_NEW_LOT: '/new-lot',
-  DELETE_LOT: '/delete-lot/:id',
   UPDATE_LOT: '/update-lot/:id',
 };
 

@@ -9,7 +9,6 @@ import ConfirmActionModal from '@customModals/confirmActionModal';
 
 import styles from './lotForm.module.scss';
 
-
 const LotForm = ({
   initialValues,
   handleSubmitClick,
@@ -40,9 +39,6 @@ const LotForm = ({
               units={users}
               itemFieldName="username"
               name="userId"
-              width="210px"
-              disabled={false}
-              margin="0 16px 24px 0"
               placeholder="Choose user"
             />
             <CustomSelect
@@ -50,9 +46,6 @@ const LotForm = ({
               units={country}
               itemFieldName="name"
               name="country"
-              width="210px"
-              disabled={false}
-              margin="0 16px 24px 0"
               placeholder="Choose country"
             />
             <CustomTextField
@@ -75,9 +68,6 @@ const LotForm = ({
               units={categories}
               itemFieldName="title"
               name="category"
-              width="210px"
-              disabled={false}
-              margin="0 16px 24px 0"
               placeholder="Choose category"
             />
             <CustomTextField
@@ -124,8 +114,6 @@ const LotForm = ({
               name="priceUnits"
               disabled={true}
               placeholder="Currency"
-              width="210px"
-              margin="0 16px 24px 0"
             />
           </div>
           <div className={styles.inputBlock}>
@@ -137,9 +125,8 @@ const LotForm = ({
               id="lotType"
               name="lotType"
               units={['sell', 'buy']}
-              disabled={false}
               placeholder="Lot type"
-              width="210px"
+              margin="0 0 24px 0"
             />
           </div>
           {formType === 'create' ? (
@@ -162,9 +149,7 @@ const LotForm = ({
                 text="Delete an item"
                 width="auto"
                 typeOfButton="button"
-                handleClick={() => {
-                  showConfirm();
-                }}
+                handleClick={showConfirm}
               />
               <ConfirmActionModal
                 text="This action delete the lot. Do you confirm the action?"

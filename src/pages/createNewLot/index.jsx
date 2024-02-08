@@ -1,12 +1,13 @@
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { fetchUsers } from '@thunks/fetchUsers';
 import { usersListSelector } from '@slices/usersListSlice';
 import { toggleModal } from '@slices/modalSlice';
-import { fetchCategories } from '@thunks/fetchCategories';
 import { categoriesSelector } from '@slices/categoriesSlice';
 import { countrySelector } from '@slices/countriesSlice';
+
+import { fetchCategories } from '@thunks/fetchCategories';
+import { fetchUsers } from '@thunks/fetchUsers';
 import { fetchCountries } from '@thunks/fetchCountries';
 import { createLot } from '@thunks/fetchLots';
 

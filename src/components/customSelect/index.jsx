@@ -4,11 +4,11 @@ import { Field } from 'formik';
 import styles from '@customTextField/customTextField.module.scss';
 
 const CustomSelect = ({
-  margin = '0 0 24px 0',
+  margin = '0 16px 24px 0',
   units,
   name,
-  width,
-  disabled = true,
+  width = '210px',
+  disabled = false,
   placeholder,
   required = true,
   itemFieldName,

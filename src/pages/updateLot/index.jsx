@@ -1,28 +1,29 @@
 import { useParams } from 'react-router';
 import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 import { selectLotDetailById } from '@slices/lotListSlice';
-import { usersListSelector } from '@store/slices/usersListSlice';
+import { usersListSelector } from '@slices/usersListSlice';
 import { categoriesSelector } from '@slices/categoriesSlice';
 import { countrySelector } from '@slices/countriesSlice';
+import { toggleModal } from '@slices/modalSlice';
+
 import { fetchCountries } from '@thunks/fetchCountries';
 import { fetchUsers } from '@thunks/fetchUsers';
 import { deleteLot, updateLot } from '@thunks/fetchLots';
 import { fetchCategories } from '@thunks/fetchCategories';
-import { toggleModal } from '@slices/modalSlice';
+
 import LotForm from '@components/lotForm';
 
-import { useNavigate } from 'react-router-dom';
-
 const UpdateLot = () => {
+  const { id: lotId } = useParams();
   const users = useSelector(usersListSelector);
   const categories = useSelector(categoriesSelector);
   const country = useSelector(countrySelector);
   const selectedLot = useSelector((state) => selectLotDetailById(state, lotId));
   const [confirmStatus, setConfirmStatus] = useState(false);
   const dispatch = useDispatch();
-  const { id: lotId } = useParams();
   const navigate = useNavigate();
 
   const showConfirm = () => {
@@ -80,6 +81,7 @@ const UpdateLot = () => {
         region: values.region,
       },
     };
+
     dispatch(updateLot({ id: lotId, lotData }));
     navigate(-1);
   };

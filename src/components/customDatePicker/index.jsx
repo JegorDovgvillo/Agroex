@@ -5,6 +5,8 @@ import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 
+import styles from './customDatePicker.module.scss';
+
 const CustomDatePicker = ({ onChange, value }) => {
   const [date, setDate] = useState(null);
 
@@ -24,6 +26,12 @@ const CustomDatePicker = ({ onChange, value }) => {
           value={date}
           onChange={handleDateChange}
           referenceDate={DateTime.fromISO('2024-01-01T15:30')}
+          slotProps={{
+            popper: {
+              className: styles.popper,
+              disablePortal: true,
+            },
+          }}
         />
       </Stack>
     </LocalizationProvider>
