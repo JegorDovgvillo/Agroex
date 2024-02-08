@@ -8,6 +8,7 @@ const ROUTES = {
   ADMIN_USERS: '/admin/users',
   ADMIN_LOTS: '/admin/lots',
   CREATE_NEW_LOT: '/new-lot',
+  UPDATE_LOT: '/update-lot/:id',
 };
 
 export default ROUTES;

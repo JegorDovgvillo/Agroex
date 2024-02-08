@@ -29,3 +29,24 @@ export const fetchLotDetails = createAsyncThunk(
     return response.data;
   }
 );
+
+export const createLot = createAsyncThunk(
+  'lotList/createLot',
+  async (lotData) => {
+    const response = await axiosInstance.post(ENDPOINTS.LOTS, lotData);
+
+    return response.data;
+  }
+);
+
+export const deleteLot = createAsyncThunk(
+  'lotList/deleteLot',
+  async ({ id, categoryData }) => {
+    const response = await axiosInstance.delete(
+      `${ENDPOINTS.LOTS}/${id}`,
+      categoryData
+    );
+
+    return response.data;
+  }
+);

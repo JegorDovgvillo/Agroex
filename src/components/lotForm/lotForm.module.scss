@@ -18,4 +18,10 @@ form {
     flex-direction: row;
     align-items: flex-end;
   }
+
+  .buttonsWrap {
+    display: flex;
+    gap: 16px;
+    flex-direction: row;
+  }
 }

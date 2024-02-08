@@ -4,6 +4,7 @@ import LotList from '@pages/LotList';
 import AdminPage from '@pages/Admin';
 import { LotDetails } from '@pages/LotDetails';
 import CreateNewLot from '@pages/createNewLot';
+import UpdateLot from '@pages/updateLot';
 
 import UsersList from '@components/admin/usersList';
 import Layout from '@components/layout';
@@ -37,6 +38,10 @@ const Router = () => {
         {
           path: ROUTES.CREATE_NEW_LOT,
           element: <CreateNewLot />,
+        },
+        {
+          path: ROUTES.UPDATE_LOT,
+          element: <UpdateLot />,
         },
         {
           path: ROUTES.ADMIN,

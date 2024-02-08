@@ -1,25 +1,17 @@
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Form, Formik } from 'formik';
 
-import CustomTextField from '@components/customTextField';
-import { CustomButton } from '@components/buttons/CustomButton';
-import CustomSelect from '@components/customSelect';
-import CustomDatePicker from '@components/customDatePicker';
-import InfoModal from '@components/customModals/infoModal';
-
-import { fetchUsers } from '@thunks/fetchUsers';
 import { usersListSelector } from '@slices/usersListSlice';
 import { toggleModal } from '@slices/modalSlice';
-import { fetchCategories } from '@thunks/fetchCategories';
 import { categoriesSelector } from '@slices/categoriesSlice';
 import { countrySelector } from '@slices/countriesSlice';
+
+import { fetchCategories } from '@thunks/fetchCategories';
+import { fetchUsers } from '@thunks/fetchUsers';
 import { fetchCountries } from '@thunks/fetchCountries';
+import { createLot } from '@thunks/fetchLots';
 
-import axiosInstance from '@helpers/axiosInstance';
-import ENDPOINTS from '@helpers/endpoints';
-
-import styles from './createNewLot.module.scss';
+import LotForm from '@components/lotForm';
 
 const CreateNewLot = () => {
   const dispatch = useDispatch();
@@ -71,142 +63,20 @@ const CreateNewLot = () => {
       },
     };
 
-    await axiosInstance.post(ENDPOINTS.LOTS, lotData);
+    dispatch(createLot(lotData));
     dispatch(toggleModal('infoModal'));
     resetForm();
   };
 
   return (
-    <Formik
+    <LotForm
       initialValues={initialValues}
-      onSubmit={(values, { resetForm }) => {
-        handleSubmitClick(values, resetForm);
-      }}
-    >
-      {({ values, setFieldValue }) => (
-        <Form>
-          <div className={styles.inputBlock}>
-            <CustomTextField
-              label="Title"
-              id="title"
-              placeholder="Enter the title"
-              name="title"
-            />
-            <CustomSelect
-              units={users}
-              itemFieldName="username"
-              name="userId"
-              width="210px"
-              disabled={false}
-              margin="0 16px 24px 0"
-              placeholder="Choose user"
-            />
-            <CustomSelect
-              label="Location"
-              units={country}
-              itemFieldName="name"
-              name="country"
-              width="210px"
-              disabled={false}
-              margin="0 16px 24px 0"
-              placeholder="Choose country"
-            />
-            <CustomTextField
-              id="region"
-              placeholder="Enter the region"
-              name="region"
-            />
-          </div>
-          <CustomTextField
-            label="Description"
-            width="888px"
-            placeholder="Enter the description"
-            name="description"
-            multiline
-            rows={4}
-          />
-          <div className={styles.inputBlock}>
-            <CustomSelect
-              label="Categories"
-              units={categories}
-              itemFieldName="title"
-              name="category"
-              width="210px"
-              disabled={false}
-              margin="0 16px 24px 0"
-              placeholder="Choose category"
-            />
-            <CustomTextField
-              id="subcategory"
-              placeholder="Enter the subcategory"
-              name="subcategory"
-            />
-            <CustomTextField
-              label="Variety"
-              id="variety"
-              placeholder="Enter the variety"
-              name="variety"
-            />
-            <CustomTextField
-              label="Size"
-              id="size"
-              placeholder="Enter the size"
-              required={false}
-              name="size"
-            />
-          </div>
-          <div className={styles.inputBlock}>
-            <CustomTextField
-              label="Packaging"
-              id="packaging"
-              placeholder="Enter the packaging"
-              name="packaging"
-              required={false}
-            />
-            <CustomTextField
-              label="Quantity"
-              id="quantity"
-              placeholder="Enter the quantity"
-              name="quantity"
-            />
-            <CustomTextField
-              label="Price"
-              id="price"
-              name="price"
-              placeholder="Enter the price"
-            />
-            <CustomSelect
-              units={['USD']}
-              name="priceUnits"
-              disabled={true}
-              placeholder="Currency"
-              width="210px"
-              margin="0 16px 24px 0"
-            />
-          </div>
-          <div className={styles.inputBlock}>
-            <CustomDatePicker
-              value={values.expirationDate}
-              onChange={(date) => setFieldValue('expirationDate', date)}
-            />
-            <CustomSelect
-              id="lotType"
-              name="lotType"
-              units={['sell', 'buy']}
-              disabled={false}
-              placeholder="Lot type"
-              width="210px"
-            />
-          </div>
-          <CustomButton
-            text="Place an item"
-            width="auto"
-            typeOfButton="submit"
-          />
-          <InfoModal title="Success!" text="Your ad has been published" />
-        </Form>
-      )}
-    </Formik>
+      handleSubmitClick={handleSubmitClick}
+      country={country}
+      categories={categories}
+      users={users}
+      formType="create"
+    />
   );
 };
 

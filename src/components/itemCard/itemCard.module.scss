@@ -30,7 +30,7 @@
     flex-direction: column;
     justify-content: space-between;
     align-items: flex-start;
-    flex: 1 0 0;
+    flex: 1 0 250px;
     align-self: stretch;
 
     .title {
@@ -50,6 +50,26 @@
         line-height: 16px;
         letter-spacing: 0.2px;
       }
+    }
+  }
+
+  .buttonWrap {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 1 0 150px;
+
+    button {
+      margin-bottom: 20px;
+      transition: all 0.7s ease-in-out;
+      opacity: 0.3;
+    }
+  }
+
+  .buttonWrap:hover {
+    button {
+      transition: all 0.7s ease-in-out;
+      opacity: 1;
     }
   }
 
