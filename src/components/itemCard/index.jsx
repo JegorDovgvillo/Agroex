@@ -17,11 +17,6 @@ const ItemCard = ({ ...item }) => {
     navigate(ROUTES.LOTS_DETAILS.replace(':id', item.id));
   };
 
-  const handleUpdateLot = (event) => {
-    event.stopPropagation();
-    navigate(ROUTES.UPDATE_LOT.replace(':id', item.id));
-  };
-
   const handleClick = (event) => {
     event.stopPropagation();
   };

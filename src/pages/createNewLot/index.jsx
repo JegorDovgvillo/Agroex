@@ -4,16 +4,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import { fetchUsers } from '@thunks/fetchUsers';
 import { fetchCategories } from '@thunks/fetchCategories';
 import { fetchCountries } from '@thunks/fetchCountries';
+import { createLot } from '@thunks/fetchLots';
 
 import { usersListSelector } from '@slices/usersListSlice';
 import { toggleModal } from '@slices/modalSlice';
 import { categoriesSelector } from '@slices/categoriesSlice';
 import { countrySelector } from '@slices/countriesSlice';
-
-import { fetchCategories } from '@thunks/fetchCategories';
-import { fetchUsers } from '@thunks/fetchUsers';
-import { fetchCountries } from '@thunks/fetchCountries';
-import { createLot } from '@thunks/fetchLots';
 
 import LotForm from '@components/lotForm';
 
