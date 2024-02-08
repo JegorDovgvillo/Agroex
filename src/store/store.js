@@ -5,10 +5,17 @@ import usersList from './slices/usersListSlice';
 import modal from './slices/modalSlice';
 import categories from './slices/categoriesSlice';
 import countries from './slices/countriesSlice';
-import images from './slices/imagesSlice';
+import userProfile from './slices/userProfileSlice';
 
 const store = configureStore({
-  reducer: { lotList, usersList, modal, categories, countries, images },
+  reducer: {
+    lotList,
+    usersList,
+    modal,
+    categories,
+    countries,
+    userProfile,
+  },
   devTools: import.meta.env.DEV,
 });
 

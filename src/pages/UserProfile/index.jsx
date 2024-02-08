@@ -3,13 +3,15 @@ import { Outlet } from 'react-router-dom';
 
 import { CssBaseline, Toolbar } from '@mui/material';
 
-import { MainListItems } from '@components/admin/adminListItems';
+import UserProfileListItems from '@components/userProfile/userProfileListItems';
 import CustomAppBar from '@components/customAppBar';
 import CustomDrawer from '@components/customDrawer';
 
-import styles from './admin.module.scss';
+import styles from './userProfile.module.scss';
 
-const AdminPage = () => {
+const { pageContainer, appBarContainer, contentContainer, content } = styles;
+
+const UserProfile = () => {
   const [open, setOpen] = useState(window.innerWidth > 1200);
   const [isBarVisible, setIsBarVisible] = useState(window.innerWidth > 1000);
 
@@ -31,18 +33,16 @@ const AdminPage = () => {
   }, []);
 
   return (
-    <div className={styles.pageContainer}>
-      <div className={styles.appBarContainer}>
+    <div className={pageContainer}>
+      <div className={appBarContainer}>
         <CssBaseline />
-        <div className={styles.aBar1}>
-          <CustomAppBar {...{ open, toggleDrawer, isBarVisible }} />
-        </div>
+        <CustomAppBar {...{ open, toggleDrawer, isBarVisible }} />
         <CustomDrawer {...{ open, toggleDrawer, isBarVisible }}>
-          <MainListItems />
+          <UserProfileListItems />
         </CustomDrawer>
-        <div className={styles.contentContainer}>
+        <div className={contentContainer}>
           <Toolbar />
-          <div className={styles.content}>
+          <div className={content}>
             <Outlet />
           </div>
         </div>
@@ -51,4 +51,4 @@ const AdminPage = () => {
   );
 };
 
-export default AdminPage;
+export default UserProfile;

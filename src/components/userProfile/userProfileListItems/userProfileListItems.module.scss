@@ -1,0 +1,31 @@
+@import "@scss/typography.module.scss";
+@import "@scss/colorVariables.module.scss";
+
+.listItemsContainer {
+  padding: 88px 0 0 0;
+
+  .text {
+    @include btnLarge;
+    color: $monoBlack !important;
+  }
+
+  .icon {
+    min-width: 0;
+  }
+
+  .iconActive svg {
+    fill: $mainBase;
+  }
+
+  .button {
+    display: flex;
+    justify-content: flex-start;
+    column-gap: 30px;
+    padding: 18px 16px 18px 16px;
+  }
+
+  .buttonActive {
+    box-shadow: inset -3px 0px 0px 0px rgb(81, 172, 174);
+    background: $mainExtraLight;
+  }
+}

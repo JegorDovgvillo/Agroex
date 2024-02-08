@@ -1,20 +1,16 @@
 import { useNavigate } from 'react-router-dom';
 
-import { CustomButton } from '@buttons/CustomButton';
-import PriceBlock from '../priceBlock';
-import Timer from '../timer';
-
 import ROUTES from '@helpers/routeNames';
-import getFormattedDate from '@helpers/getFormattedDate';
-import getNumberWithCurrency from '@helpers/getNumberWithCurrency';
+import { CustomButton } from '@buttons/CustomButton';
+import PriceBlock from '@components/priceBlock';
 
 import shoppingIcon from '@icons/shopping.svg';
 import betIcon from '@icons/bet.svg';
-import img from '@assets/images/77d4dc59-3013-41aa-8a7b-cb27cb6fa425.jpg';
+import ItemCardInfoBlock from './itemCardInfo';
 
 import styles from './itemCard.module.scss';
 
-const ItemCard = (item) => {
+const ItemCard = ({ ...item }) => {
   const navigate = useNavigate();
 
   const viewDetailsCard = () => {
@@ -32,33 +28,7 @@ const ItemCard = (item) => {
 
   return (
     <div className={styles.cardWrapp} onClick={viewDetailsCard}>
-      <div className={styles.imageContainer}>
-        <img src={img} className={styles.image} alt="item image" />
-      </div>
-
-      <div className={styles.infoWrap}>
-        <h6 className={styles.title}>{item.title}</h6>
-        <div className={styles.technicalInfo}>
-          <Timer endDate={item.expirationDate} />
-          <span className={styles.itemId}>ID{item.id}</span>
-        </div>
-        <div className={styles.info}>
-          <span>
-            {/* {item.productCategory.title} */}
-            Apples, {item.variety}, {getNumberWithCurrency(item.quantity)} ton,{' '}
-            {item.size}, {item.packaging}
-          </span>
-          <span>
-            {item.location.countryName}, {item.location.region}
-          </span>
-          <span className={styles.creationDate}>
-            {getFormattedDate(item.creationDate)}
-          </span>
-        </div>
-      </div>
-      <div className={styles.buttonWrap}>
-        <CustomButton size="S" text="Update" handleClick={handleUpdateLot} />
-      </div>
+      <ItemCardInfoBlock item={item} />
       <div className={styles.priceWrapp}>
         <div className={styles.priceBlock}>
           <PriceBlock

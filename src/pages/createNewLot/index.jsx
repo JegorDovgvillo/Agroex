@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
+import { fetchUsers } from '@thunks/fetchUsers';
+import { fetchCategories } from '@thunks/fetchCategories';
+import { fetchCountries } from '@thunks/fetchCountries';
+
 import { usersListSelector } from '@slices/usersListSlice';
 import { toggleModal } from '@slices/modalSlice';
 import { categoriesSelector } from '@slices/categoriesSlice';

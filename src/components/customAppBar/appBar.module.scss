@@ -1,0 +1,23 @@
+@import "@scss/colorVariables.module.scss";
+
+.appBar {
+  position: absolute !important;
+}
+
+.toolBarHeader {
+  padding: 0 24px;
+  color: $monoWhite;
+
+  .toolBarBtn {
+    margin: 0 36px 0 0;
+    color: $monoWhite;
+  }
+
+  .toolBarTitle {
+    flex-grow: 1;
+  }
+}
+
+.hidden {
+  display: none;
+}

@@ -8,6 +8,7 @@ import {
   TableHead,
   TableRow,
   Avatar,
+  Typography,
 } from '@mui/material';
 
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
@@ -16,16 +17,15 @@ import MoreIcon from '@mui/icons-material/More';
 
 import { fetchLots, updateLot } from '@thunks/fetchLots';
 import { fetchAllCategories } from '@thunks/fetchCategories';
-import { toggleModal } from '@slices/modalSlice';
+import { toggleModal, selectModalState } from '@slices/modalSlice';
 import { lotListSelector, setLotId } from '@slices/lotListSlice';
 import { setUserId } from '@slices/usersListSlice';
-import { selectModalState } from '@slices/modalSlice';
 
 import getFormattedDate from '@helpers/getFormattedDate';
 import getNumberWithCurrency from '@helpers/getNumberWithCurrency';
+import ConfirmActionModal from '@customModals/confirmActionModal';
 
 import DetailedLotViewModal from '../detailedLotViewModal';
-import ConfirmActionModal from '@customModals/confirmActionModal';
 
 import image from '@assets/images/77d4dc59-3013-41aa-8a7b-cb27cb6fa425.jpg';
 
@@ -50,6 +50,7 @@ export default function AdminLotsList() {
   const lots = useSelector(lotListSelector);
   const [confirmStatus, setConfirmStatus] = useState(false);
   const [openedLot, setOpenedLot] = useState(null);
+
   const isModalOpened = useSelector((state) =>
     selectModalState(state, 'infoModal')
   );
@@ -58,7 +59,6 @@ export default function AdminLotsList() {
     (lot) => {
       const lotData = { ...lot, enabledByAdmin: !lot.enabledByAdmin };
       const { id } = lot;
-
       lotData && id && dispatch(updateLot({ id, lotData }));
     },
     [dispatch]
@@ -102,7 +102,9 @@ export default function AdminLotsList() {
 
   return (
     <>
-      <h6>Lots</h6>
+      <Typography component="h2" variant="h6" color="primary">
+        Lots
+      </Typography>
       <Table size="small">
         <TableHead>
           <TableRow className={tableRow}>

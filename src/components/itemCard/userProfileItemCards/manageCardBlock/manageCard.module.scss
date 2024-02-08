@@ -1,0 +1,9 @@
+@import "@scss/colorVariables.module.scss";
+
+.deactivate {
+  color: $errorDark;
+
+  svg {
+    fill: $errorDark;
+  }
+}

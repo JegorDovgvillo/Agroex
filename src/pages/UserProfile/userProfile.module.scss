@@ -1,0 +1,23 @@
+@import "@scss/colorVariables.module.scss";
+
+.pageContainer {
+  position: relative;
+  width: 100%;
+}
+
+.appBarContainer {
+  display: flex;
+}
+
+.contentContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-grow: 1;
+
+  .content {
+    width: 100%;
+    padding: 16px;
+  }
+}
