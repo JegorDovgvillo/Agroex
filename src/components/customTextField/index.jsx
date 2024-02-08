@@ -12,7 +12,7 @@ const CustomTextField = ({
   name,
   multiline = null,
   rows,
-  required = true,
+  required = false,
 }) => {
   return (
     <div className={styles.wrapp}>

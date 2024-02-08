@@ -43,11 +43,15 @@ const CreateNewLot = () => {
     expirationDate: '',
   };
 
-  const handleSubmitClick = async (values, resetForm) => {
+  const handleSubmitClick = async (values, selectedFiles, resetForm) => {
+    const formData = new FormData();
+    selectedFiles.forEach((file, index) => {
+      formData.append(`file`, file);
+    });
     const lotData = {
       title: values.title,
       description: values.description,
-      variety: values.variety,
+      variety: 1,
       size: values.size,
       packaging: values.packaging,
       quantity: values.quantity,
@@ -62,8 +66,8 @@ const CreateNewLot = () => {
         region: values.region,
       },
     };
-
-    dispatch(createLot(lotData));
+    formData.append('data', JSON.stringify(lotData));
+    dispatch(createLot(formData));
     dispatch(toggleModal('infoModal'));
     resetForm();
   };

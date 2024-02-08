@@ -1,0 +1,26 @@
+@import "../../scss/colorVariables.module.scss";
+
+.wrapp {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  width: 888px;
+  height: 160px;
+  border: 4px dashed $monoGray;
+  cursor: pointer;
+  p {
+    text-align: center;
+    span {
+      color: $mainBase;
+    }
+  }
+  .infoParagraph {
+    color: $monoGray;
+  }
+}
+
+.imageWrapp {
+  display: flex;
+  flex-direction: row;
+}
