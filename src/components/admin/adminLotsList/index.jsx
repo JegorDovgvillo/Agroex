@@ -20,6 +20,7 @@ import { fetchAllCategories } from '@thunks/fetchCategories';
 import { toggleModal, selectModalState } from '@slices/modalSlice';
 import { lotListSelector, setLotId } from '@slices/lotListSlice';
 import { setUserId } from '@slices/usersListSlice';
+import ENDPOINTS, { IMAGE_URL } from '@helpers/endpoints';
 
 import getFormattedDate from '@helpers/getFormattedDate';
 import getNumberWithCurrency from '@helpers/getNumberWithCurrency';
@@ -31,6 +32,8 @@ import image from '@assets/images/77d4dc59-3013-41aa-8a7b-cb27cb6fa425.jpg';
 
 import styles from './adminLotsList.module.scss';
 import tableStyles from '../usersList/usersList.module.scss';
+
+const baseURL = `${IMAGE_URL}${ENDPOINTS.IMAGES}`;
 
 const {
   lotImage,
@@ -124,7 +127,7 @@ export default function AdminLotsList() {
                     <Avatar
                       className={lotImage}
                       alt="Lot image"
-                      src={image}
+                      src={`${baseURL}/${lot.images[0].name}`}
                       variant="rounded"
                     />
                     <p
