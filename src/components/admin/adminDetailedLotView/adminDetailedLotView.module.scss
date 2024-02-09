@@ -2,10 +2,13 @@
 
 .container {
   display: flex;
-  //align-items: center;
   flex-direction: column;
   justify-self: flex-end;
   width: 700px;
+
+  @media screen and (max-width: 850px) {
+    width: 650px;
+  }
 
   .lotDetailsRow {
     display: flex;
