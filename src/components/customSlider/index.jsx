@@ -44,7 +44,7 @@ const CustomSlider = ({ images }) => {
     customPaging: function (i) {
       return (
         <a>
-          <img src={`${baseURL}/${images[i].name}`} width={120} height={100} />
+          <img src={`${baseURL}/${images[i].name}`} />
         </a>
       );
     },
