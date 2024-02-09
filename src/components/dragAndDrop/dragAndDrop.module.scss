@@ -1,4 +1,5 @@
-@import "../../scss/colorVariables.module.scss";
+@import "@scss/colorVariables.module.scss";
+@import "@scss/typography.module.scss";
 
 .wrapp {
   display: flex;
@@ -9,18 +10,43 @@
   height: 160px;
   border: 4px dashed $monoGray;
   cursor: pointer;
+  margin-bottom: 10px;
+
   p {
+    @include body2;
     text-align: center;
     span {
       color: $mainBase;
     }
   }
+
   .infoParagraph {
+    @include helper;
     color: $monoGray;
   }
+}
+
+.imageCount {
+  @include helper;
 }
 
 .imageWrapp {
   display: flex;
   flex-direction: row;
+  margin-bottom: 30px;
+
+  img {
+    border: solid 3px $mainBase;
+    padding: 3px;
+    border-radius: 4px;
+  }
+
+  svg {
+    bottom: 111px;
+    position: relative;
+  }
+
+  li {
+    margin-right: 20px;
+  }
 }

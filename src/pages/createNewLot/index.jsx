@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { usersListSelector } from '@slices/usersListSlice';
@@ -18,6 +18,9 @@ const CreateNewLot = () => {
   const users = useSelector(usersListSelector);
   const categories = useSelector(categoriesSelector);
   const country = useSelector(countrySelector);
+  const [files, setFiles] = useState([]);
+  const [disabled, setDisabled] = useState(false);
+  const [maxFilesPerDrop, setMaxFilesPerDrop] = useState(6 - files.length);
 
   useEffect(() => {
     dispatch(fetchUsers());
@@ -43,11 +46,8 @@ const CreateNewLot = () => {
     expirationDate: '',
   };
 
-  const handleSubmitClick = async (values, selectedFiles, resetForm) => {
+  const handleSubmitClick = async (values, resetForm) => {
     const formData = new FormData();
-    selectedFiles.forEach((file, index) => {
-      formData.append(`file`, file);
-    });
     const lotData = {
       title: values.title,
       description: values.description,
@@ -66,9 +66,16 @@ const CreateNewLot = () => {
         region: values.region,
       },
     };
+
+    files.forEach((file) => {
+      formData.append(`file`, file);
+    });
+
     formData.append('data', JSON.stringify(lotData));
+
     dispatch(createLot(formData));
     dispatch(toggleModal('infoModal'));
+    setFiles([]);
     resetForm();
   };
 
@@ -80,6 +87,12 @@ const CreateNewLot = () => {
       categories={categories}
       users={users}
       formType="create"
+      files={files}
+      setFiles={setFiles}
+      maxFilesPerDrop={maxFilesPerDrop}
+      setMaxFilesPerDrop={setMaxFilesPerDrop}
+      disabled={disabled}
+      setDisabled={setDisabled}
     />
   );
 };

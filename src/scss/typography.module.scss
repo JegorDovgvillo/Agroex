@@ -86,3 +86,11 @@ $fontSizeMain: 16px;
   line-height: 133.3%;
   letter-spacing: 0.2px;
 }
+
+@mixin helper {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  letter-spacing: 0px;
+  text-align: center;
+}

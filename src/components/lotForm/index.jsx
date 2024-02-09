@@ -1,5 +1,5 @@
 import { Form, Formik } from 'formik';
-import { useState } from 'react';
+
 import CustomTextField from '@customTextField';
 import { CustomButton } from '@buttons/CustomButton';
 import CustomSelect from '@customSelect';
@@ -7,33 +7,34 @@ import CustomDatePicker from '@components/customDatePicker';
 import InfoModal from '@customModals/infoModal';
 import ConfirmActionModal from '@customModals/confirmActionModal';
 
-import styles from './lotForm.module.scss';
 import Previews from '../dragAndDrop';
+
+import styles from './lotForm.module.scss';
 
 const LotForm = ({
   initialValues,
   handleSubmitClick,
   country,
-  categories = {},
+  categories,
   users,
   formType,
   setConfirmStatus,
   showConfirm,
+  files,
+  setFiles,
+  maxFilesPerDrop,
+  setMaxFilesPerDrop,
+  disabled,
+  setDisabled,
 }) => {
-  const [selectedFiles, setSelectedFiles] = useState([]);
-
-  const handleFileSelect = (selectedFiles) => {
-    setSelectedFiles(selectedFiles);
-  };
-
   return (
     <Formik
       initialValues={initialValues}
       onSubmit={(values, { resetForm }) => {
-        handleSubmitClick(values, selectedFiles, resetForm);
+        handleSubmitClick(values, resetForm);
       }}
     >
-      {({ values, setFieldValue, resetForm }) => (
+      {({ values, setFieldValue }) => (
         <Form>
           <div className={styles.inputBlock}>
             <CustomTextField
@@ -136,7 +137,14 @@ const LotForm = ({
               margin="0 0 24px 0"
             />
           </div>
-          <Previews values={values} handleFileSelect={handleFileSelect} />
+          <Previews
+            files={files}
+            setFiles={setFiles}
+            maxFilesPerDrop={maxFilesPerDrop}
+            setMaxFilesPerDrop={setMaxFilesPerDrop}
+            disabled={disabled}
+            setDisabled={setDisabled}
+          />
           {formType === 'create' ? (
             <>
               <CustomButton

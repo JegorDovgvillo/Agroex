@@ -39,26 +39,3 @@ const CustomSelect = ({
 };
 
 export default CustomSelect;
-// formData.append(
-//   'data',
-//   JSON.stringify(
-//     ({
-//       title: values.title,
-//       description: values.description,
-//       variety: 1,
-//       size: values.size,
-//       packaging: values.packaging,
-//       quantity: values.quantity,
-//       pricePerTon: (values.price / values.quantity).toFixed(2),
-//       currency: values.priceUnits,
-//       expirationDate: values.expirationDate,
-//       productCategoryId: values.category,
-//       lotType: values.lotType,
-//       userId: values.userId,
-//       location: {
-//         countryId: values.country,
-//         region: values.region,
-//       },
-//     })
-//   )
-// );
