@@ -15,7 +15,6 @@ const {
   lotDetailsKey,
   lotDetailsValue,
   userDataContainer,
-  sliderContainer,
 } = styles;
 
 const AdminDetailedLotView = ({ lot, userData }) => {
@@ -109,7 +108,7 @@ const AdminDetailedLotView = ({ lot, userData }) => {
           </div>
         ))}
 
-        <CustomSlider images={images} />
+        {images.length > 0 && <CustomSlider images={images} />}
       </>
     </div>
   );

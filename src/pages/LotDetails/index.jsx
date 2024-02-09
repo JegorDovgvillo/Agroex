@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import CircularProgress from '@mui/material/CircularProgress';
+import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported';
 
 import PriceBlock from '@components/priceBlock';
 import { CustomButton } from '@components/buttons/CustomButton';
@@ -41,6 +42,7 @@ const {
   lotDetailsValue,
   lotDetailsKey,
   lotDetailsRow_bordered,
+  noImage,
 } = styles;
 
 export const LotDetails = () => {
@@ -119,7 +121,13 @@ export const LotDetails = () => {
           <>
             <div className={leftSide}>
               <div className={imageContainer}>
-                <CustomSlider images={images} />
+                {images.length > 0 ? (
+                  <CustomSlider images={images} />
+                ) : (
+                  <div className={noImage}>
+                    <ImageNotSupportedIcon />
+                  </div>
+                )}
               </div>
             </div>
             <div className={rightSide}>

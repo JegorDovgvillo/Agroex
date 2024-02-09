@@ -11,6 +11,7 @@ import {
   Typography,
 } from '@mui/material';
 
+import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CancelIcon from '@mui/icons-material/Cancel';
 import MoreIcon from '@mui/icons-material/More';
@@ -27,8 +28,6 @@ import getNumberWithCurrency from '@helpers/getNumberWithCurrency';
 import ConfirmActionModal from '@customModals/confirmActionModal';
 
 import DetailedLotViewModal from '../detailedLotViewModal';
-
-import image from '@assets/images/77d4dc59-3013-41aa-8a7b-cb27cb6fa425.jpg';
 
 import styles from './adminLotsList.module.scss';
 import tableStyles from '../usersList/usersList.module.scss';
@@ -127,9 +126,15 @@ export default function AdminLotsList() {
                     <Avatar
                       className={lotImage}
                       alt="Lot image"
-                      src={`${baseURL}/${lot.images[0].name}`}
+                      src={
+                        lot.images.length > 0 &&
+                        `${baseURL}/${lot.images[0].name}`
+                      }
                       variant="rounded"
-                    />
+                      ic
+                    >
+                      <ImageNotSupportedIcon />
+                    </Avatar>
                     <p
                       className={`${userName} ${title}`}
                       onClick={() => handleEditClick(lot.id, lot.userId)}
