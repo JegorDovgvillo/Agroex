@@ -14,7 +14,7 @@ const ItemCardInfoBlock = ({ item, children }) => {
   return (
     <>
       <div className={styles.imageContainer}>
-        {image.name ? (
+        {image && image.name ? (
           <img
             src={`${IMAGE_URL}${ENDPOINTS.IMAGES}/${image.name}`}
             className={styles.image}

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { generatePath, useNavigate, useParams } from 'react-router-dom';
+import _ from 'lodash';
 
 import { ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 
@@ -19,13 +20,11 @@ const UserProfileListItems = () => {
   const { page, tab } = useParams();
 
   const [activePage, setActivePage] = useState(
-    userProfileData.find((p) => p.route === page) || userProfileData[0]
+    _.find(userProfileData, { route: page }) || userProfileData[0]
   );
 
   const [activeTab, setActiveTab] = useState(
-    activePage.tabs?.find((t) => t.tabRoute === tab) ||
-      activePage.tabs?.[0] ||
-      null
+    _.find(activePage.tabs, { tabRoute: tab }) || _.get(activePage.tabs, '[0]')
   );
 
   useEffect(() => {
@@ -33,6 +32,7 @@ const UserProfileListItems = () => {
       page: activePage.route,
       tab: activeTab?.tabRoute || '',
     });
+
     navigate(path);
   }, [activePage, activeTab, navigate]);
 

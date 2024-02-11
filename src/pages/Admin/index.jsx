@@ -10,11 +10,11 @@ import CustomDrawer from '@components/customDrawer';
 import styles from './admin.module.scss';
 
 const AdminPage = () => {
-  const [open, setOpen] = useState(window.innerWidth > 1200);
+  const [isOpen, setOpen] = useState(window.innerWidth > 1200);
   const [isBarVisible, setIsBarVisible] = useState(window.innerWidth > 1000);
 
   const toggleDrawer = () => {
-    setOpen(!open);
+    setOpen(!isOpen);
   };
 
   useEffect(() => {
@@ -35,9 +35,9 @@ const AdminPage = () => {
       <div className={styles.appBarContainer}>
         <CssBaseline />
         <div className={styles.aBar1}>
-          <CustomAppBar {...{ open, toggleDrawer, isBarVisible }} />
+          <CustomAppBar {...{ isOpen, toggleDrawer, isBarVisible }} />
         </div>
-        <CustomDrawer {...{ open, toggleDrawer, isBarVisible }}>
+        <CustomDrawer {...{ isOpen, toggleDrawer, isBarVisible }}>
           <MainListItems />
         </CustomDrawer>
         <div className={styles.contentContainer}>

@@ -16,7 +16,7 @@ const ROUTES = {
 };
 
 export const USER_PROFILE_PAGE_ROTES = {
-  USER_ADVERTS: 'my-advertisement',
+  USER_LOTS: 'my-lots',
   USER_BETTING: 'betting',
   USER_ORDERS: 'my-orders',
   USER_ACCOUNT: 'my-account',

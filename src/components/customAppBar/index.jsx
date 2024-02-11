@@ -7,19 +7,15 @@ import styles from './appBar.module.scss';
 
 const { appBar, toolBarHeader, toolBarBtn, hidden, toolBarTitle } = styles;
 
-const CustomAppBar = ({ open, toggleDrawer, isBarVisible }) => {
-  const handleClick = () => {
-    toggleDrawer();
-  };
-
+const CustomAppBar = ({ isOpen, toggleDrawer, isBarVisible }) => {
   return (
-    <AppBar open={open} className={appBar}>
+    <AppBar isOpen={isOpen} className={appBar}>
       <Toolbar className={toolBarHeader}>
         <IconButton
-          className={`${toolBarBtn} ${open && hidden}`}
+          className={`${toolBarBtn} ${isOpen && hidden}`}
           edge="start"
-          aria-label="open drawer"
-          onClick={handleClick}
+          aria-label="isOpen drawer"
+          onClick={toggleDrawer}
         >
           {isBarVisible && <MenuIcon />}
         </IconButton>

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { fetchUsers } from '@thunks/fetchUsers';
 
-import { Avatar, FormControlLabel } from '@mui/material';
+import { Avatar, FormControlLabel, CircularProgress } from '@mui/material';
 
 import EditIcon from '@mui/icons-material/Edit';
 import HttpsOutlinedIcon from '@mui/icons-material/HttpsOutlined';
@@ -17,6 +17,7 @@ import UserUpdateForm from './userUpdateForm';
 import styles from './userAccount.module.scss';
 
 const {
+  circularContainer,
   container,
   title,
   personalDataContainer,
@@ -40,8 +41,13 @@ const UserAccount = () => {
   const [isFormDisabled, setFormDisabled] = useState(true);
 
   if (!user) {
-    return;
+    return (
+      <div className={circularContainer}>
+        <CircularProgress />
+      </div>
+    );
   }
+
   const { username } = user;
 
   const handlePhotoEdit = () => {

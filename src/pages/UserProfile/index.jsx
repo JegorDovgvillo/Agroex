@@ -12,11 +12,11 @@ import styles from './userProfile.module.scss';
 const { pageContainer, appBarContainer, contentContainer, content } = styles;
 
 const UserProfile = () => {
-  const [open, setOpen] = useState(window.innerWidth > 1200);
+  const [isOpen, setOpen] = useState(window.innerWidth > 1200);
   const [isBarVisible, setIsBarVisible] = useState(window.innerWidth > 1000);
 
   const toggleDrawer = () => {
-    setOpen(!open);
+    setOpen(!isOpen);
   };
 
   useEffect(() => {
@@ -36,8 +36,8 @@ const UserProfile = () => {
     <div className={pageContainer}>
       <div className={appBarContainer}>
         <CssBaseline />
-        <CustomAppBar {...{ open, toggleDrawer, isBarVisible }} />
-        <CustomDrawer {...{ open, toggleDrawer, isBarVisible }}>
+        <CustomAppBar {...{ isOpen, toggleDrawer, isBarVisible }} />
+        <CustomDrawer {...{ isOpen, toggleDrawer, isBarVisible }}>
           <UserProfileListItems />
         </CustomDrawer>
         <div className={contentContainer}>

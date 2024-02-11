@@ -24,15 +24,18 @@ const CustomTabPanel = () => {
   const navigate = useNavigate();
   const { page, tab } = useParams();
 
-  const currPage = userProfileData.find((p) => p.route === page);
-  const { tabs } = currPage;
-  const currTabId = tabs.find((t) => t.tabRoute === tab).id;
+  const { tabs, element } = userProfileData.find(
+    (dataItem) => dataItem.route === page
+  );
+
+  const currTabId = tabs.find((tabEl) => tabEl.tabRoute === tab).id;
 
   const handleChange = (event, newValue) => {
     const path = generatePath(USER_PROFILE_PAGE_TAB, {
       page: page,
       tab: tabs[newValue].tabRoute,
     });
+
     navigate(path);
   };
 
@@ -44,22 +47,22 @@ const CustomTabPanel = () => {
           onChange={handleChange}
           aria-label="basic tabs example"
         >
-          {tabs.map((t) => (
+          {tabs.map((tab) => (
             <Tab
               className={tabItem}
-              key={t.id}
-              label={`${t.tabRoute.charAt(0).toUpperCase()}${t.tabRoute.slice(
-                1
-              )}`}
-              {...a11yProps(t.id)}
+              key={tab.id}
+              label={`${tab.tabRoute
+                .charAt(0)
+                .toUpperCase()}${tab.tabRoute.slice(1)}`}
+              {...a11yProps(tab.id)}
             />
           ))}
         </Tabs>
       </Box>
 
-      {tabs.map((t) => (
-        <TabPanel key={t.id} value={currTabId} index={t.id}>
-          {currPage.element}
+      {tabs.map((tab) => (
+        <TabPanel key={tab.id} value={currTabId} index={tab.id}>
+          {element}
         </TabPanel>
       ))}
     </Box>

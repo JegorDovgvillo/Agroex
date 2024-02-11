@@ -33,10 +33,12 @@ const saveBtnProps = {
   size: 'M',
 };
 
-const UserUpdateForm = ({ user, setFormDisabled, isFormDisabled }) => {
+const UserUpdateForm = ({
+  user: { id, username, email, phoneNumber },
+  setFormDisabled,
+  isFormDisabled,
+}) => {
   const dispatch = useDispatch();
-
-  const { id, username, email, phoneNumber } = user;
 
   const handleEditClick = () => {
     setFormDisabled(false);

@@ -1,10 +1,12 @@
 import { useParams, Outlet } from 'react-router-dom';
+import _ from 'lodash';
 
 import userProfileData from '../userProfileData';
 
 const UserProfilePage = () => {
   const { page, tab } = useParams();
-  const pageElement = userProfileData.find((p) => p.route === page).element;
+
+  const pageElement = _.find(userProfileData, { route: page }).element;
 
   return (
     <>

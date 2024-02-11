@@ -7,16 +7,12 @@ import styles from './customDrawer.module.scss';
 
 const { toolBar, toolBarRightHeader } = styles;
 
-const CustomDrawer = ({ open, isBarVisible, toggleDrawer, children }) => {
-  const handleClick = () => {
-    toggleDrawer();
-  };
-
+const CustomDrawer = ({ isOpen, isBarVisible, toggleDrawer, children }) => {
   return (
-    <Drawer variant="permanent" open={open} className={toolBar}>
+    <Drawer variant="permanent" isOpen={isOpen} className={toolBar}>
       <Toolbar className={toolBarRightHeader}>
         {isBarVisible && (
-          <IconButton onClick={handleClick}>
+          <IconButton onClick={toggleDrawer}>
             <ChevronLeftIcon />
           </IconButton>
         )}

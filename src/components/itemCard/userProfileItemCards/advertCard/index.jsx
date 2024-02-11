@@ -1,4 +1,5 @@
 import { useParams } from 'react-router-dom';
+import _ from 'lodash';
 
 import CheckIcon from '@mui/icons-material/Check';
 
@@ -38,10 +39,11 @@ const AdvertCard = (item) => {
     [inactive]: tab === 'inactive',
   };
 
-  const containerClassName = Object.entries(tabClasses)
-    .filter(([, condition]) => condition)
-    .map(([className]) => className)
-    .join(' ');
+  const containerClassNames = _.chain(tabClasses)
+    .pickBy((isActive) => isActive)
+    .keys()
+    .join(' ')
+    .value();
 
   return (
     <div className={styles.cardWrapp}>
@@ -51,7 +53,7 @@ const AdvertCard = (item) => {
           <ManageCardBlock />
         </>
       </ItemCardInfoBlock>
-      <div className={containerClassName}>
+      <div className={containerClassNames}>
         <div className={priceBlock}>
           <PriceBlock
             className={['list', 'auctionSum']}

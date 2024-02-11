@@ -9,15 +9,15 @@ import UserAdverts from './pages/userAdverts';
 import Betting from './pages/betting';
 import UserAccount from './pages/userAccount';
 
-const { USER_ADVERTS, USER_BETTING, USER_ORDERS, USER_ACCOUNT } =
+const { USER_LOTS, USER_BETTING, USER_ORDERS, USER_ACCOUNT } =
   USER_PROFILE_PAGE_ROTES;
 
 const userProfileData = [
   {
     id: 0,
-    name: 'My advertisements',
+    name: 'My lots',
     icon: <GrassOutlinedIcon />,
-    route: USER_ADVERTS,
+    route: USER_LOTS,
     tabs: [
       { id: 0, tabRoute: 'active' },
       { id: 1, tabRoute: 'pending' },
