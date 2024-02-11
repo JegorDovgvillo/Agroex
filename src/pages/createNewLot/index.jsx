@@ -14,13 +14,16 @@ import { createLot } from '@thunks/fetchLots';
 import LotForm from '@components/lotForm';
 
 const CreateNewLot = () => {
-  const dispatch = useDispatch();
   const users = useSelector(usersListSelector);
   const categories = useSelector(categoriesSelector);
   const country = useSelector(countrySelector);
+
   const [files, setFiles] = useState([]);
   const [disabled, setDisabled] = useState(false);
-  const [maxFilesPerDrop, setMaxFilesPerDrop] = useState(6 - files.length);
+  const MAXIMUM_NUMBER_OF_IMG = import.meta.env.VITE_MAXIMUM_NUMBER_OF_IMG;
+  const [maxFilesPerDrop, setMaxFilesPerDrop] = useState(MAXIMUM_NUMBER_OF_IMG);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(fetchUsers());

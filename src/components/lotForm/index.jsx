@@ -7,7 +7,7 @@ import CustomDatePicker from '@components/customDatePicker';
 import InfoModal from '@customModals/infoModal';
 import ConfirmActionModal from '@customModals/confirmActionModal';
 
-import Previews from '../dragAndDrop';
+import DragAndDrop from '../dragAndDrop';
 
 import styles from './lotForm.module.scss';
 
@@ -64,11 +64,11 @@ const LotForm = ({
           </div>
           <CustomTextField
             label="Description"
-            width="888px"
             placeholder="Enter the description"
             name="description"
             multiline
             rows={4}
+            type="textarea"
           />
           <div className={styles.inputBlock}>
             <CustomSelect
@@ -134,10 +134,9 @@ const LotForm = ({
               name="lotType"
               units={['sell', 'buy']}
               placeholder="Lot type"
-              margin="0 0 24px 0"
             />
           </div>
-          <Previews
+          <DragAndDrop
             files={files}
             setFiles={setFiles}
             maxFilesPerDrop={maxFilesPerDrop}

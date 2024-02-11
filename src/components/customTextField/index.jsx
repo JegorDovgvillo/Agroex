@@ -6,8 +6,7 @@ import styles from './customTextField.module.scss';
 const CustomTextField = ({
   label = '',
   id,
-  width = '210px',
-  margin = '0 16px 24px 0',
+  type = '',
   placeholder = '',
   name,
   multiline = null,
@@ -21,11 +20,11 @@ const CustomTextField = ({
         as={TextField}
         name={name}
         id={id}
-        sx={{ m: margin, width: { width } }}
         placeholder={placeholder}
         multiline={multiline}
         rows={rows}
         required={required}
+        className={`${styles.input} ${styles[type]}`}
       />
     </div>
   );

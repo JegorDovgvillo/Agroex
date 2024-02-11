@@ -12,9 +12,18 @@
   cursor: pointer;
   margin-bottom: 10px;
 
+  @media only all and (max-width: 1000px) {
+    width: 808px;
+  }
+
+  @media only all and (max-width: 880px) {
+    width: 708px;
+  }
+
   p {
     @include body2;
     text-align: center;
+
     span {
       color: $mainBase;
     }
@@ -28,12 +37,15 @@
 
 .imageCount {
   @include helper;
+  margin-bottom: 20px;
 }
 
 .imageWrapp {
-  display: flex;
+  display: grid;
   flex-direction: row;
   margin-bottom: 30px;
+  gap: 20px;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
 
   img {
     border: solid 3px $mainBase;
@@ -42,11 +54,13 @@
   }
 
   svg {
-    bottom: 111px;
+    bottom: 20px;
     position: relative;
   }
 
   li {
     margin-right: 20px;
+    display: flex;
+    flex-direction: row;
   }
 }

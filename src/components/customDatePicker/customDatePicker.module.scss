@@ -3,3 +3,16 @@
     width: 75px;
   }
 }
+
+.datePicker {
+  min-width: 436px;
+  margin: 0 16px 24px 0;
+
+  @media only all and (max-width: 1000px) {
+    min-width: 396px;
+  }
+
+  @media only all and (max-width: 880px) {
+    min-width: 346px;
+  }
+}

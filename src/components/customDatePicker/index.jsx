@@ -21,7 +21,7 @@ const CustomDatePicker = ({ onChange, value }) => {
 
   return (
     <LocalizationProvider dateAdapter={AdapterLuxon}>
-      <Stack spacing={10} sx={{ minWidth: 436, m: '0 16px 24px 0' }}>
+      <Stack spacing={10} className={styles.datePicker}>
         <DateTimePicker
           value={date}
           onChange={handleDateChange}

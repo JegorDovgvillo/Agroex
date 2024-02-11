@@ -4,7 +4,7 @@ import CloseIcon from '@mui/icons-material/Close';
 
 import styles from './dragAndDrop.module.scss';
 
-const Previews = ({
+const DragAndDrop = ({
   files,
   setFiles,
   maxFilesPerDrop,
@@ -12,6 +12,8 @@ const Previews = ({
   disabled,
   setDisabled,
 }) => {
+  const MAXIMUM_NUMBER_OF_IMG = import.meta.env.VITE_MAXIMUM_NUMBER_OF_IMG;
+
   const MIN_IMAGE_WIDTH = 120;
   const MIN_IMAGE_HEIGHT = 120;
   const MAX_IMAGE_WIDTH = 1024;
@@ -23,7 +25,6 @@ const Previews = ({
       acceptedFiles.forEach((file) => {
         const img = new Image();
         img.src = URL.createObjectURL(file);
-
         img.onload = () => {
           if (
             img.width >= MIN_IMAGE_WIDTH &&
@@ -33,7 +34,10 @@ const Previews = ({
           ) {
             setFiles((previousFiles) => [
               ...previousFiles,
-              Object.assign(file, { preview: URL.createObjectURL(file) }),
+              Object.assign(file, {
+                preview: URL.createObjectURL(file),
+                id: Math.random(),
+              }),
             ]);
           }
         };
@@ -71,8 +75,8 @@ const Previews = ({
   });
 
   useEffect(() => {
-    if (files.length < 6) {
-      setMaxFilesPerDrop(6 - files.length);
+    if (files.length < MAXIMUM_NUMBER_OF_IMG) {
+      setMaxFilesPerDrop(MAXIMUM_NUMBER_OF_IMG - files.length);
       setDisabled(false);
     } else {
       setDisabled(true);
@@ -83,8 +87,8 @@ const Previews = ({
     return () => files.forEach((file) => URL.revokeObjectURL(file.preview));
   }, [files]);
 
-  const removeFile = (preview) => {
-    setFiles((files) => files.filter((file) => file.preview !== preview));
+  const removeFile = (id) => {
+    setFiles((files) => files.filter((file) => file.id !== id));
   };
 
   return (
@@ -96,14 +100,17 @@ const Previews = ({
             <span>Choose a file</span> or drag and drop it here
           </p>
           <p className={styles.infoParagraph}>
-            Acceptable formats: jpeg, png. Maximum size: 10 MB.
+            Acceptable formats: .jpeg, .jpg, .tiff, .tif, .ico, .icon, .bmp,
+            .gif, .heic, .heif, .png, .webp, Maximum file size: 10 MB.
           </p>
         </div>
       </div>
-      <p className={styles.imageCount}>{files.length} of 6 images</p>
+      <p className={styles.imageCount}>
+        {files.length} of {MAXIMUM_NUMBER_OF_IMG} images
+      </p>
       <ul className={styles.imageWrapp}>
         {files.map((file) => (
-          <li key={file.preview}>
+          <li key={file.id}>
             <img
               src={file.preview}
               alt={file.name}
@@ -111,7 +118,7 @@ const Previews = ({
               height={120}
               onLoad={() => URL.revokeObjectURL(file.preview)}
             />
-            <CloseIcon onClick={() => removeFile(file.preview)} />
+            <CloseIcon onClick={() => removeFile(file.id)} />
           </li>
         ))}
       </ul>
@@ -119,4 +126,4 @@ const Previews = ({
   );
 };
 
-export default Previews;
+export default DragAndDrop;
