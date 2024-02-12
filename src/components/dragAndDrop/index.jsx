@@ -2,11 +2,18 @@ import { useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import CloseIcon from '@mui/icons-material/Close';
 import { v4 as uuidv4 } from 'uuid';
-
+import _ from 'lodash';
 import { IMAGE_URL } from '@helpers/endpoints';
 import ENDPOINTS from '@helpers/endpoints';
 
 import styles from './dragAndDrop.module.scss';
+
+const MAXIMUM_NUMBER_OF_IMG = import.meta.env.VITE_MAXIMUM_NUMBER_OF_IMG;
+const MIN_IMAGE_WIDTH = 120;
+const MIN_IMAGE_HEIGHT = 120;
+const MAX_IMAGE_WIDTH = 1024;
+const MAX_IMAGE_HEIGHT = 1024;
+const MAX_IMAGE_SIZE = 10 * 1024 * 1024;
 
 const DragAndDrop = ({
   files,
@@ -16,37 +23,30 @@ const DragAndDrop = ({
   disabled,
   setDisabled,
 }) => {
-  const MAXIMUM_NUMBER_OF_IMG = import.meta.env.VITE_MAXIMUM_NUMBER_OF_IMG;
-
-  const MIN_IMAGE_WIDTH = 120;
-  const MIN_IMAGE_HEIGHT = 120;
-  const MAX_IMAGE_WIDTH = 1024;
-  const MAX_IMAGE_HEIGHT = 1024;
-  const MAX_IMAGE_SIZE = 10 * 1024 * 1024;
-
   const validateImage = (acceptedFiles) => {
-    if (acceptedFiles?.length) {
-      acceptedFiles.forEach((file) => {
-        const img = new Image();
-        img.src = URL.createObjectURL(file);
-        img.onload = () => {
-          if (
-            img.width >= MIN_IMAGE_WIDTH &&
-            img.height >= MIN_IMAGE_HEIGHT &&
-            img.width <= MAX_IMAGE_WIDTH &&
-            img.height <= MAX_IMAGE_HEIGHT
-          ) {
-            setFiles((previousFiles) => [
-              ...previousFiles,
-              Object.assign(file, {
-                preview: URL.createObjectURL(file),
-                id: uuidv4(),
-              }),
-            ]);
-          }
-        };
-      });
-    }
+    acceptedFiles.forEach((file) => {
+      const img = new Image();
+      img.src = URL.createObjectURL(file);
+
+      img.onload = () => {
+        if (
+          _.inRange(img.width, MIN_IMAGE_WIDTH, MAX_IMAGE_WIDTH) &&
+          _.inRange(img.height, MIN_IMAGE_HEIGHT, MAX_IMAGE_HEIGHT)
+        ) {
+          setValidImages(file);
+        }
+      };
+    });
+  };
+
+  const setValidImages = (file) => {
+    setFiles((previousFiles) => [
+      ...previousFiles,
+      _.assign(file, {
+        preview: URL.createObjectURL(file),
+        id: uuidv4(),
+      }),
+    ]);
   };
 
   const onDrop = (acceptedFiles) => {
@@ -85,9 +85,6 @@ const DragAndDrop = ({
     } else {
       setDisabled(true);
     }
-  }, [files]);
-
-  useEffect(() => {
     return () => files.forEach((file) => URL.revokeObjectURL(file.preview));
   }, [files]);
 

@@ -13,9 +13,9 @@ import { createLot } from '@thunks/fetchLots';
 
 import LotForm from '@components/lotForm';
 
-const CreateNewLot = () => {
-  const MAXIMUM_NUMBER_OF_IMG = import.meta.env.VITE_MAXIMUM_NUMBER_OF_IMG;
+const MAXIMUM_NUMBER_OF_IMG = import.meta.env.VITE_MAXIMUM_NUMBER_OF_IMG;
 
+const CreateNewLot = () => {
   const users = useSelector(usersListSelector);
   const categories = useSelector(categoriesSelector);
   const country = useSelector(countrySelector);

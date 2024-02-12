@@ -16,9 +16,10 @@ import { fetchCategories } from '@thunks/fetchCategories';
 
 import LotForm from '@components/lotForm';
 
+const MAXIMUM_NUMBER_OF_IMG = import.meta.env.VITE_MAXIMUM_NUMBER_OF_IMG;
+
 const UpdateLot = () => {
   const { id: lotId } = useParams();
-  const MAXIMUM_NUMBER_OF_IMG = import.meta.env.VITE_MAXIMUM_NUMBER_OF_IMG;
 
   const users = useSelector(usersListSelector);
   const categories = useSelector(categoriesSelector);
@@ -69,7 +70,7 @@ const UpdateLot = () => {
     userId: selectedLot?.userId || '',
     title: selectedLot?.title || '',
     country: selectedLot?.location.countryId || '',
-    region: selectedLot.location?.region || '',
+    region: selectedLot?.location.region || '',
     category: selectedLot?.productCategoryId || '',
     subcategory: selectedLot?.subcategory || '',
     variety: selectedLot?.variety || '',
