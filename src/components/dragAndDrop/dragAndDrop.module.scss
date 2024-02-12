@@ -1,0 +1,70 @@
+@import "@scss/colorVariables.module.scss";
+@import "@scss/typography.module.scss";
+
+.wrapp {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  width: 888px;
+  height: 160px;
+  border: 4px dashed $monoGray;
+  cursor: pointer;
+  margin-bottom: 10px;
+
+  @media only all and (max-width: 1000px) {
+    width: 808px;
+  }
+
+  @media only all and (max-width: 880px) {
+    width: 708px;
+  }
+
+  p {
+    @include body2;
+    text-align: center;
+
+    span {
+      color: $mainBase;
+    }
+  }
+
+  .infoParagraph {
+    @include helper;
+    color: $monoGray;
+  }
+}
+
+.imageCount {
+  @include helper;
+  margin-bottom: 20px;
+}
+
+.imageWrapp {
+  display: grid;
+  flex-direction: row;
+  margin-bottom: 30px;
+  gap: 20px;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  
+  @media only all and (max-width: 1000px) {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+  }
+
+  img {
+    border: solid 3px $mainBase;
+    padding: 3px;
+    border-radius: 4px;
+  }
+
+  svg {
+    bottom: 20px;
+    position: relative;
+  }
+
+  li {
+    margin-right: 20px;
+    display: flex;
+    flex-direction: row;
+  }
+}

@@ -16,15 +16,36 @@ import { fetchCategories } from '@thunks/fetchCategories';
 
 import LotForm from '@components/lotForm';
 
+const MAXIMUM_NUMBER_OF_IMG = import.meta.env.VITE_MAXIMUM_NUMBER_OF_IMG;
+
 const UpdateLot = () => {
   const { id: lotId } = useParams();
+
   const users = useSelector(usersListSelector);
   const categories = useSelector(categoriesSelector);
   const country = useSelector(countrySelector);
   const selectedLot = useSelector((state) => selectLotDetailById(state, lotId));
+
   const [confirmStatus, setConfirmStatus] = useState(false);
+  const [files, setFiles] = useState([]);
+  const [disabled, setDisabled] = useState(false);
+  const [maxFilesPerDrop, setMaxFilesPerDrop] = useState(MAXIMUM_NUMBER_OF_IMG);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const convertImagesToFiles = (images) => {
+    const files = [];
+
+    images.forEach((images) => {
+      const { id, name } = images;
+      const file = new File([], name, { type: 'image/jpeg' });
+      file.id = id;
+      files.push(file);
+    });
+
+    setFiles(files);
+  };
 
   const showConfirm = () => {
     dispatch(toggleModal('confirmModal'));
@@ -39,6 +60,7 @@ const UpdateLot = () => {
   }, [confirmStatus]);
 
   useEffect(() => {
+    convertImagesToFiles(selectedLot?.images || []);
     dispatch(fetchUsers());
     dispatch(fetchCategories());
     dispatch(fetchCountries());
@@ -63,10 +85,11 @@ const UpdateLot = () => {
   };
 
   const handleUpdateClick = async (values) => {
+    const formData = new FormData();
     const lotData = {
       title: values.title,
       description: values.description,
-      variety: values.variety,
+      variety: 1,
       size: values.size,
       packaging: values.packaging,
       quantity: values.quantity,
@@ -82,7 +105,15 @@ const UpdateLot = () => {
       },
     };
 
-    dispatch(updateLot({ id: lotId, lotData }));
+    files.forEach((file) => {
+      formData.append(`file`, file);
+    });
+
+    formData.append('data', JSON.stringify(lotData));
+
+    dispatch(updateLot({ id: lotId, lotData: formData }));
+    dispatch(toggleModal('infoModal'));
+    setFiles([]);
     navigate(-1);
   };
 
@@ -96,6 +127,12 @@ const UpdateLot = () => {
       formType="update"
       setConfirmStatus={setConfirmStatus}
       showConfirm={showConfirm}
+      files={files}
+      setFiles={setFiles}
+      maxFilesPerDrop={maxFilesPerDrop}
+      setMaxFilesPerDrop={setMaxFilesPerDrop}
+      disabled={disabled}
+      setDisabled={setDisabled}
     />
   );
 };
