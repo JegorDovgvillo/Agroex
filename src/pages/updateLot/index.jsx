@@ -66,7 +66,7 @@ const UpdateLot = () => {
     dispatch(fetchCountries());
   }, [dispatch]);
 
-  const initialValues = {
+  /* const initialValues = {
     userId: selectedLot?.userId || '',
     title: selectedLot?.title || '',
     country: selectedLot?.location.countryId || '',
@@ -82,7 +82,7 @@ const UpdateLot = () => {
     lotType: selectedLot?.lotType || '',
     size: selectedLot?.size || '',
     expirationDate: selectedLot?.expirationDate || '',
-  };
+  }; */
 
   const handleUpdateClick = async (values) => {
     const formData = new FormData();
@@ -117,23 +117,34 @@ const UpdateLot = () => {
     navigate(-1);
   };
 
+  const isDataLoaded =
+    selectedLot &&
+    users.length > 0 &&
+    categories.length > 0 &&
+    country.length > 0;
+
   return (
-    <LotForm
-      initialValues={initialValues}
-      handleSubmitClick={handleUpdateClick}
-      country={country}
-      categories={categories}
-      users={users}
-      formType="update"
-      setConfirmStatus={setConfirmStatus}
-      showConfirm={showConfirm}
-      files={files}
-      setFiles={setFiles}
-      maxFilesPerDrop={maxFilesPerDrop}
-      setMaxFilesPerDrop={setMaxFilesPerDrop}
-      disabled={disabled}
-      setDisabled={setDisabled}
-    />
+    <>
+      {isDataLoaded && (
+        <LotForm
+          selectedLot={selectedLot}
+          // initialValues={initialValues}
+          handleSubmitClick={handleUpdateClick}
+          country={country}
+          categories={categories}
+          users={users}
+          formType="update"
+          setConfirmStatus={setConfirmStatus}
+          showConfirm={showConfirm}
+          files={files}
+          setFiles={setFiles}
+          maxFilesPerDrop={maxFilesPerDrop}
+          setMaxFilesPerDrop={setMaxFilesPerDrop}
+          disabled={disabled}
+          setDisabled={setDisabled}
+        />
+      )}
+    </>
   );
 };
 

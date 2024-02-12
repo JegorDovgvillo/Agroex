@@ -11,6 +11,7 @@ const CustomSelect = ({
   required = true,
   itemFieldName,
   label = '',
+  value,
 }) => {
   return (
     <div className={styles.wrapp}>
@@ -22,6 +23,7 @@ const CustomSelect = ({
         disabled={disabled}
         required={required}
         className={styles.select}
+        value={value || ''}
       >
         <MenuItem disabled value="">
           <em>{placeholder}</em>

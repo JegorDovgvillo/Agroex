@@ -83,21 +83,28 @@ const CreateNewLot = () => {
     resetForm();
   };
 
+  const isDataLoaded =
+    users.length > 0 && categories.length > 0 && country.length > 0;
+
   return (
-    <LotForm
-      initialValues={initialValues}
-      handleSubmitClick={handleSubmitClick}
-      country={country}
-      categories={categories}
-      users={users}
-      formType="create"
-      files={files}
-      setFiles={setFiles}
-      maxFilesPerDrop={maxFilesPerDrop}
-      setMaxFilesPerDrop={setMaxFilesPerDrop}
-      disabled={disabled}
-      setDisabled={setDisabled}
-    />
+    <>
+      {isDataLoaded && (
+        <LotForm
+          //initialValues={initialValues}
+          handleSubmitClick={handleSubmitClick}
+          country={country}
+          categories={categories}
+          users={users}
+          formType="create"
+          files={files}
+          setFiles={setFiles}
+          maxFilesPerDrop={maxFilesPerDrop}
+          setMaxFilesPerDrop={setMaxFilesPerDrop}
+          disabled={disabled}
+          setDisabled={setDisabled}
+        />
+      )}
+    </>
   );
 };
 

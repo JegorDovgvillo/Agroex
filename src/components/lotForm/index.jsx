@@ -12,7 +12,7 @@ import DragAndDrop from '../dragAndDrop';
 import styles from './lotForm.module.scss';
 
 const LotForm = ({
-  initialValues,
+  selectedLot,
   handleSubmitClick,
   country,
   categories,
@@ -27,6 +27,24 @@ const LotForm = ({
   disabled,
   setDisabled,
 }) => {
+  const initialValues = {
+    userId: selectedLot?.userId,
+    title: selectedLot?.title,
+    country: selectedLot?.location.countryId,
+    region: selectedLot?.location.region,
+    category: selectedLot?.productCategoryId,
+    subcategory: selectedLot?.subcategory,
+    variety: selectedLot?.variety,
+    description: selectedLot?.description,
+    packaging: selectedLot?.packaging,
+    quantity: selectedLot?.quantity,
+    price: selectedLot?.pricePerTon * selectedLot?.quantity || undefined,
+    priceUnits: 'USD',
+    lotType: selectedLot?.lotType,
+    size: selectedLot?.size,
+    expirationDate: selectedLot?.expirationDate,
+  };
+  console.log(initialValues);
   return (
     <Formik
       initialValues={initialValues}
@@ -42,12 +60,14 @@ const LotForm = ({
               id="title"
               placeholder="Enter the title"
               name="title"
+              value={values.title}
             />
             <CustomSelect
               units={users}
               itemFieldName="username"
               name="userId"
               placeholder="Choose user"
+              value={values.userId}
             />
             <CustomSelect
               label="Location"
@@ -55,6 +75,7 @@ const LotForm = ({
               itemFieldName="name"
               name="country"
               placeholder="Choose country"
+              value={values.country}
             />
             <CustomTextField
               id="region"
@@ -77,6 +98,7 @@ const LotForm = ({
               itemFieldName="title"
               name="category"
               placeholder="Choose category"
+              value={values.category}
             />
             <CustomTextField
               id="subcategory"
@@ -122,6 +144,7 @@ const LotForm = ({
               name="priceUnits"
               disabled={true}
               placeholder="Currency"
+              value={values.priceUnits}
             />
           </div>
           <div className={styles.inputBlock}>
@@ -134,6 +157,7 @@ const LotForm = ({
               name="lotType"
               units={['sell', 'buy']}
               placeholder="Lot type"
+              value={values.lotType}
             />
           </div>
           <DragAndDrop
