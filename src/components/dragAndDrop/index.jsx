@@ -1,6 +1,10 @@
 import { useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import CloseIcon from '@mui/icons-material/Close';
+import { v4 as uuidv4 } from 'uuid';
+
+import { IMAGE_URL } from '@helpers/endpoints';
+import ENDPOINTS from '@helpers/endpoints';
 
 import styles from './dragAndDrop.module.scss';
 
@@ -36,7 +40,7 @@ const DragAndDrop = ({
               ...previousFiles,
               Object.assign(file, {
                 preview: URL.createObjectURL(file),
-                id: Math.random(),
+                id: uuidv4(),
               }),
             ]);
           }
@@ -112,7 +116,9 @@ const DragAndDrop = ({
         {files.map((file) => (
           <li key={file.id}>
             <img
-              src={file.preview}
+              src={
+                file.preview || `${IMAGE_URL}${ENDPOINTS.IMAGES}/${file.name}`
+              }
               alt={file.name}
               width={120}
               height={120}

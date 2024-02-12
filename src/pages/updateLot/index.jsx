@@ -18,6 +18,7 @@ import LotForm from '@components/lotForm';
 
 const UpdateLot = () => {
   const { id: lotId } = useParams();
+  const MAXIMUM_NUMBER_OF_IMG = import.meta.env.VITE_MAXIMUM_NUMBER_OF_IMG;
 
   const users = useSelector(usersListSelector);
   const categories = useSelector(categoriesSelector);
@@ -27,8 +28,6 @@ const UpdateLot = () => {
   const [confirmStatus, setConfirmStatus] = useState(false);
   const [files, setFiles] = useState([]);
   const [disabled, setDisabled] = useState(false);
-  const [isRender, setIsRender] = useState(false);
-  const MAXIMUM_NUMBER_OF_IMG = import.meta.env.VITE_MAXIMUM_NUMBER_OF_IMG;
   const [maxFilesPerDrop, setMaxFilesPerDrop] = useState(MAXIMUM_NUMBER_OF_IMG);
 
   const dispatch = useDispatch();
@@ -64,25 +63,24 @@ const UpdateLot = () => {
     dispatch(fetchUsers());
     dispatch(fetchCategories());
     dispatch(fetchCountries());
-    setIsRender(true);
   }, [dispatch]);
 
   const initialValues = {
-    userId: isRender ? selectedLot?.userId : '',
-    title: isRender ? selectedLot?.title : '',
-    country: isRender ? selectedLot?.location.countryId : '',
-    region: isRender ? selectedLot?.location.region : '',
-    category: isRender ? selectedLot?.productCategoryId : '',
-    subcategory: isRender ? selectedLot?.subcategory : '',
-    variety: isRender ? selectedLot?.variety : '',
-    description: isRender ? selectedLot?.description : '',
-    packaging: isRender ? selectedLot?.packaging : '',
-    quantity: isRender ? selectedLot?.quantity : '',
-    price: isRender ? selectedLot?.pricePerTon * selectedLot?.quantity : '',
+    userId: selectedLot?.userId || '',
+    title: selectedLot?.title || '',
+    country: selectedLot?.location.countryId || '',
+    region: selectedLot.location?.region || '',
+    category: selectedLot?.productCategoryId || '',
+    subcategory: selectedLot?.subcategory || '',
+    variety: selectedLot?.variety || '',
+    description: selectedLot?.description || '',
+    packaging: selectedLot?.packaging || '',
+    quantity: selectedLot?.quantity || '',
+    price: selectedLot?.pricePerTon * selectedLot?.quantity || '',
     priceUnits: 'USD',
-    lotType: isRender ? selectedLot?.lotType : '',
-    size: isRender ? selectedLot?.size : '',
-    expirationDate: isRender ? selectedLot?.expirationDate : '',
+    lotType: selectedLot?.lotType || '',
+    size: selectedLot?.size || '',
+    expirationDate: selectedLot?.expirationDate || '',
   };
 
   const handleUpdateClick = async (values) => {

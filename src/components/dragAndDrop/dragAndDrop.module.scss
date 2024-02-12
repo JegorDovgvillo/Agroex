@@ -46,6 +46,10 @@
   margin-bottom: 30px;
   gap: 20px;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  
+  @media only all and (max-width: 1000px) {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+  }
 
   img {
     border: solid 3px $mainBase;
