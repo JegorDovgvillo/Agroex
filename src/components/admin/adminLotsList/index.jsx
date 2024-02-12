@@ -127,11 +127,11 @@ export default function AdminLotsList() {
                       className={lotImage}
                       alt="Lot image"
                       src={
-                        lot.images.length > 0 &&
-                        `${baseURL}/${lot.images[0].name}`
+                        lot.images.length > 0
+                          ? `${baseURL}/${lot.images[0].name}`
+                          : null
                       }
                       variant="rounded"
-                      ic
                     >
                       <ImageNotSupportedIcon />
                     </Avatar>

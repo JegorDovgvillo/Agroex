@@ -17,6 +17,11 @@ const ItemCard = ({ ...item }) => {
     navigate(ROUTES.LOTS_DETAILS.replace(':id', item.id));
   };
 
+  const handleUpdateLot = (event) => {
+    event.stopPropagation();
+    navigate(ROUTES.UPDATE_LOT.replace(':id', item.id));
+  };
+
   const handleClick = (event) => {
     event.stopPropagation();
   };
@@ -24,6 +29,9 @@ const ItemCard = ({ ...item }) => {
   return (
     <div className={styles.cardWrapp} onClick={viewDetailsCard}>
       <ItemCardInfoBlock item={item} />
+      <div className={styles.buttonWrap}>
+        <CustomButton size="S" text="Update" handleClick={handleUpdateLot} />
+      </div>
       <div className={styles.priceWrapp}>
         <div className={styles.priceBlock}>
           <PriceBlock

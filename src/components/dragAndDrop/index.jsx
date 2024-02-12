@@ -85,6 +85,7 @@ const DragAndDrop = ({
     } else {
       setDisabled(true);
     }
+
     return () => files.forEach((file) => URL.revokeObjectURL(file.preview));
   }, [files]);
 
