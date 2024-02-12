@@ -5,11 +5,14 @@ import AdminPage from '@pages/Admin';
 import { LotDetails } from '@pages/LotDetails';
 import CreateNewLot from '@pages/createNewLot';
 import UpdateLot from '@pages/updateLot';
+import UserProfile from '@pages/UserProfile';
 
 import UsersList from '@components/admin/usersList';
 import Layout from '@components/layout';
 import CategoriesList from '@components/admin/adminCategories';
 import AdminLotsList from '@components/admin/adminLotsList';
+import UserProfilePage from '@components/userProfile/userProfilePage';
+import CustomTabPanel from '@components/customTabPanel';
 
 import ROUTES from './routeNames';
 
@@ -58,6 +61,22 @@ const Router = () => {
             {
               path: ROUTES.ADMIN_LOTS,
               element: <AdminLotsList />,
+            },
+          ],
+        },
+        {
+          path: ROUTES.USER_PROFILE,
+          element: <UserProfile />,
+          children: [
+            {
+              path: ROUTES.USER_PROFILE_PAGE,
+              element: <UserProfilePage />,
+              children: [
+                {
+                  path: ROUTES.USER_PROFILE_PAGE_TAB,
+                  element: <CustomTabPanel />,
+                },
+              ],
             },
           ],
         },

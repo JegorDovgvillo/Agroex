@@ -94,3 +94,10 @@ $fontSizeMain: 16px;
   letter-spacing: 0px;
   text-align: center;
 }
+
+@mixin btnLarge {
+  font-size: 1.125rem;
+  font-weight: 500;
+  line-height: 175%;
+  letter-spacing: 0.4px;
+}

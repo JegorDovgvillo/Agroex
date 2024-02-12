@@ -8,14 +8,22 @@ const {
   monoGray,
   monoWhite,
   monoBlack,
-  systemDark,
   monoGrayDark50,
   grayLight1,
   grayLight2,
   errorBase,
   errorDark,
   errorLight,
+  warningExtraLight,
+  successBase,
+  successExtraLight,
+  successDark,
+  systemBase,
+  systemExtraLight,
+  systemDark,
 } = varibles;
+
+/* "warning" | "default" | "primary" | "secondary" | "error" | "info" | "success", */
 
 export const customTheme = createTheme({
   palette: {
@@ -32,6 +40,8 @@ export const customTheme = createTheme({
 
     warning: {
       main: warningBase,
+      light: warningExtraLight,
+      contrastText: warningBase,
     },
 
     secondary: {
@@ -49,7 +59,21 @@ export const customTheme = createTheme({
       main: errorBase,
       dark: errorDark,
       light: errorLight,
-      contrastText: monoBlack,
+      contrastText: errorBase,
+    },
+
+    success: {
+      main: successBase,
+      dark: successDark,
+      light: successExtraLight,
+      contrastText: successBase,
+    },
+
+    info: {
+      main: systemBase,
+      dark: systemDark,
+      light: systemExtraLight,
+      contrastText: systemBase,
     },
   },
 

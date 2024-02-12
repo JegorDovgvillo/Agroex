@@ -3,23 +3,25 @@ import { Outlet } from 'react-router-dom';
 
 import { CssBaseline, Toolbar } from '@mui/material';
 
-import { MainListItems } from '@components/admin/adminListItems';
+import UserProfileListItems from '@components/userProfile/userProfileListItems';
 import CustomAppBar from '@components/customAppBar';
 import CustomDrawer from '@components/customDrawer';
 
-import styles from './admin.module.scss';
+import styles from './userProfile.module.scss';
 
-const AdminPage = () => {
-  const [isOpen, setIsOpen] = useState(window.innerWidth > 1200);
+const { pageContainer, appBarContainer, contentContainer, content } = styles;
+
+const UserProfile = () => {
+  const [isOpen, setOpen] = useState(window.innerWidth > 1200);
   const [isBarVisible, setIsBarVisible] = useState(window.innerWidth > 1000);
 
   const toggleDrawer = () => {
-    setIsOpen(!isOpen);
+    setOpen(!isOpen);
   };
 
   useEffect(() => {
     const handleResize = () => {
-      setIsOpen(window.innerWidth > 1200);
+      setOpen(window.innerWidth > 1200);
       setIsBarVisible(window.innerWidth > 1200);
     };
 
@@ -31,18 +33,16 @@ const AdminPage = () => {
   }, []);
 
   return (
-    <div className={styles.pageContainer}>
-      <div className={styles.appBarContainer}>
+    <div className={pageContainer}>
+      <div className={appBarContainer}>
         <CssBaseline />
-        <div className={styles.aBar1}>
-          <CustomAppBar {...{ isOpen, toggleDrawer, isBarVisible }} />
-        </div>
+        <CustomAppBar {...{ isOpen, toggleDrawer, isBarVisible }} />
         <CustomDrawer {...{ isOpen, toggleDrawer, isBarVisible }}>
-          <MainListItems />
+          <UserProfileListItems />
         </CustomDrawer>
-        <div className={styles.contentContainer}>
+        <div className={contentContainer}>
           <Toolbar />
-          <div className={styles.content}>
+          <div className={content}>
             <Outlet />
           </div>
         </div>
@@ -51,4 +51,4 @@ const AdminPage = () => {
   );
 };
 
-export default AdminPage;
+export default UserProfile;

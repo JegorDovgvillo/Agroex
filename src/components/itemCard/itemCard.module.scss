@@ -8,7 +8,7 @@
   gap: 26px;
   flex: 1;
   cursor: pointer;
-
+  z-index: 1;
   @media only all and (max-width: 1500px) {
     flex-direction: column;
   }
@@ -17,11 +17,19 @@
     overflow: hidden;
     width: 340px;
     height: 176px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
     .image {
-      max-width: 100%;
       height: auto;
-      margin-right: 24px;
+      width: 100%;
+    }
+
+    .noImage svg {
+      width: 100px;
+      height: 100px;
+      fill: $mainBase;
     }
   }
 
@@ -33,9 +41,15 @@
     flex: 1 0 250px;
     align-self: stretch;
 
-    .title {
-      @include h6;
+    .titleBlock {
+      display: flex;
+      column-gap: 8px;
+      align-items: center;
       margin-bottom: 10px;
+
+      .title {
+        @include h6;
+      }
     }
 
     .info {
@@ -110,6 +124,18 @@
         opacity: 0.3;
       }
     }
+
+    .userProfilePriceBlock {
+      display: flex;
+      flex-direction: column;
+
+      .auctionSum {
+        p,
+        span {
+          color: $systemBase;
+        }
+      }
+    }
   }
 }
 
@@ -119,5 +145,44 @@
       transition: all 0.7s ease-in-out;
       opacity: 1;
     }
+  }
+}
+
+.priceContainer {
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 306px;
+
+  .priceBlock {
+    width: 50%;
+  }
+}
+
+.pending {
+  & > div:first-of-type {
+    display: none;
+  }
+
+  & > div:last-of-type {
+    width: 100%;
+    justify-self: center;
+  }
+
+  button {
+    display: none;
+  }
+}
+
+.inactive {
+  flex-wrap: nowrap;
+  column-gap: 20px;
+  width: 40%;
+
+  * {
+    color: $monoGray !important;
+  }
+
+  button {
+    display: none;
   }
 }
