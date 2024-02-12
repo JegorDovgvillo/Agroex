@@ -1,15 +1,24 @@
-import { Toolbar, IconButton } from '@mui/material';
+import { Toolbar, IconButton, AppBar } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-
-import AppBar from './appBar';
 
 import styles from './appBar.module.scss';
 
-const { appBar, toolBarHeader, toolBarBtn, hidden, toolBarTitle } = styles;
+const {
+  appBar,
+  toolBarHeader,
+  toolBarBtn,
+  hidden,
+  toolBarTitle,
+  appBarOpened,
+  appBarClosed,
+} = styles;
 
 const CustomAppBar = ({ isOpen, toggleDrawer, isBarVisible }) => {
   return (
-    <AppBar isOpen={isOpen} className={appBar}>
+    <AppBar
+      open={isOpen}
+      className={`${appBar}  ${isOpen ? appBarOpened : appBarClosed}`}
+    >
       <Toolbar className={toolBarHeader}>
         <IconButton
           className={`${toolBarBtn} ${isOpen && hidden}`}

@@ -1,15 +1,17 @@
-import { Toolbar, IconButton, Divider, List } from '@mui/material';
+import { Toolbar, IconButton, Divider, List, Drawer } from '@mui/material';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-
-import Drawer from './drawer';
 
 import styles from './customDrawer.module.scss';
 
-const { toolBar, toolBarRightHeader } = styles;
+const { toolBar, toolBarRightHeader, toolBarOpened, toolBarClosed } = styles;
 
 const CustomDrawer = ({ isOpen, isBarVisible, toggleDrawer, children }) => {
   return (
-    <Drawer variant="permanent" isOpen={isOpen} className={toolBar}>
+    <Drawer
+      variant="permanent"
+      open={isOpen}
+      className={`${toolBar} ${isOpen ? toolBarOpened : toolBarClosed}`}
+    >
       <Toolbar className={toolBarRightHeader}>
         {isBarVisible && (
           <IconButton onClick={toggleDrawer}>

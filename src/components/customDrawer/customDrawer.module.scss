@@ -1,4 +1,23 @@
 .toolBar {
+  transition: all 0.3s ease-out;
+
+  & > div {
+    overflow-x: hidden;
+    position: relative !important;
+  }
+
+  &.toolBarOpened {
+    width: 270px;
+  }
+
+  &.toolBarClosed {
+    width: 55px;
+  }
+  white-space: nowrap;
+
+  z-index: 2;
+  box-sizing: border-box;
+
   .toolBarRightHeader {
     display: flex;
     align-items: center;
