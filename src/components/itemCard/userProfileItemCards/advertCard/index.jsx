@@ -45,6 +45,7 @@ const AdvertCard = (item) => {
     .join(' ')
     .value();
 
+  const confirmButtonWidth = '306px';
   return (
     <div className={styles.cardWrapp}>
       <ItemCardInfoBlock item={item}>
@@ -76,7 +77,7 @@ const AdvertCard = (item) => {
           text={`Confirm for ${totalBet}`}
           icon={<CheckIcon />}
           handleClick={handleClick}
-          width="306px"
+          width={confirmButtonWidth}
         />
       </div>
     </div>

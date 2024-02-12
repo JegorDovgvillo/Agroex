@@ -12,6 +12,7 @@ import { CustomButton } from '@components/buttons/CustomButton';
 import styles from './userAccount.module.scss';
 
 const {
+  formContainer,
   input,
   buttonsContainer,
   formBtn,
@@ -63,9 +64,7 @@ const UserUpdateForm = ({ user, setFormDisabled, isFormDisabled }) => {
   return (
     <Box
       component="form"
-      sx={{
-        '& .MuiTextField-root': { m: 1, width: '376px' },
-      }}
+      className={formContainer}
       onSubmit={formik.handleSubmit}
     >
       <TextField
