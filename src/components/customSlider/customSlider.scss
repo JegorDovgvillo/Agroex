@@ -1,6 +1,14 @@
 @import "@scss/colorVariables.module.scss";
 
 .customSliderContainer {
+  .fullscreen {
+    margin: 50px;
+  }
+
+  .image-gallery::backdrop {
+    background-color: rgba(0, 0, 0, 0.812);
+  }
+
   .image-gallery-slide {
     height: 736px;
     display: flex !important;

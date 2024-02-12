@@ -46,6 +46,7 @@ const AdvertCard = (item) => {
     .value();
 
   const confirmButtonWidth = '306px';
+
   return (
     <div className={styles.cardWrapp}>
       <ItemCardInfoBlock item={item}>
