@@ -8,31 +8,35 @@ import { fetchLots } from '@thunks/fetchLots';
 import { lotListSelector } from '@slices/lotListSlice';
 
 import styles from './lotList.module.scss';
-
-const LotList = ({ lotType }) => {
+import { categoriesSelector } from '../../store/slices/categoriesSlice';
+import { fetchCategories } from '../../store/thunks/fetchCategories';
+import { countrySelector } from '../../store/slices/countriesSlice';
+import { fetchCountries } from '../../store/thunks/fetchCountries';
+const LotList = () => {
   const dispatch = useDispatch();
   const lots = useSelector(lotListSelector);
-
+  const categories = useSelector(categoriesSelector);
+  const countries = useSelector(countrySelector);
   useEffect(() => {
     dispatch(fetchLots());
+    dispatch(fetchCategories());
+    dispatch(fetchCountries());
   }, [dispatch]);
 
-  const filteringLotsByLotType = () => {
-    const filteredLots = lots
-      .filter((item) => !lotType || item.lotType === lotType)
-      .map((item) => {
-        return <ItemCard {...item} key={item.id} />;
-      });
+  const renderLots = () => {
+    const filteredLots = lots.map((item) => {
+      return <ItemCard {...item} key={item.id} />;
+    });
 
     return <>{filteredLots}</>;
   };
 
-  const filteredLots = filteringLotsByLotType();
+  const allLots = renderLots();
 
   return (
     <>
-      <Filters />
-      <div className={styles.lotListWrapp}>{filteredLots}</div>
+      <Filters categories={categories} countries={countries} />
+      <div className={styles.lotListWrapp}>{allLots}</div>
     </>
   );
 };
