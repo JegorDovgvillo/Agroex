@@ -1,32 +1,42 @@
-import styles from './filters.module.scss';
 import { Formik, Form } from 'formik';
 import { useDispatch } from 'react-redux';
-import { fetchLots, filteredLots } from '../../store/thunks/fetchLots';
-import { CustomButton } from '../buttons/CustomButton';
 import CloseIcon from '@mui/icons-material/Close';
+
+import { filteredLots } from '@thunks/fetchLots';
+
+import { CustomButton } from '../buttons/CustomButton';
 import CustomTextField from '../customTextField';
 import CustomSelect from '../customSelect';
 
-const Filters = ({ categories, countries }) => {
+import styles from './filters.module.scss';
+
+const Filters = ({
+  categories,
+  countries,
+  searchParams,
+  setSearchParams,
+  users,
+}) => {
   const dispatch = useDispatch();
 
   const initialValues = {
     title: '',
     description: '',
-    minQuantity: 0,
-    maxQuantity: 100,
-    minPrice: 0,
-    maxPrice: 1000,
-    productCategory: '',
+    minQuantity: '',
+    maxQuantity: '',
+    minPrice: '',
+    maxPrice: '',
+    user: [],
+    productCategory: [],
     lotType: '',
     varieties: '',
-    countries: '',
+    countries: [],
     enabledByAdmin: '',
     keyword: '',
   };
 
   const resetFilter = (resetForm) => {
-    dispatch(fetchLots());
+    setSearchParams('');
     resetForm();
   };
 
@@ -35,7 +45,19 @@ const Filters = ({ categories, countries }) => {
       <Formik
         initialValues={initialValues}
         onSubmit={(values) => {
-          dispatch(filteredLots(values));
+          // const selectedValues = {
+          //   ...values,
+          //   user: Array.isArray(values.user)
+          //     ? values.user.join(',')
+          //     : values.user,
+          //   productCategory: Array.isArray(values.productCategory)
+          //     ? values.productCategory.join(',')
+          //     : values.productCategory,
+          //   // countries: Array.isArray(values.countries) ? values.countries.join(',') : values.countries,
+          // };
+          // console.log(selectedValues);
+          setSearchParams(values);
+          dispatch(filteredLots(searchParams));
         }}
       >
         {({ resetForm }) => (
@@ -83,20 +105,31 @@ const Filters = ({ categories, countries }) => {
               required={false}
             />
             <CustomSelect
+              units={users}
+              name="user"
+              disabled={false}
+              placeholder="Select sellers"
+              itemFieldName="username"
+              label="Sellers"
+              required={false}
+              multiple={true}
+            />
+            <CustomSelect
               units={categories}
               name="productCategory"
               disabled={false}
-              placeholder="Enter the category"
+              placeholder="Select category"
               itemFieldName="title"
               label="Category"
               required={false}
+              multiple={true}
             />
             <CustomSelect
               label="Lot type"
               disabled={false}
               name="lotType"
               units={['sell', 'buy']}
-              placeholder="Enter the lot type"
+              placeholder="Select lot type"
               required={false}
             />
             <CustomTextField
@@ -112,8 +145,9 @@ const Filters = ({ categories, countries }) => {
               name="countries"
               units={countries}
               itemFieldName="name"
-              placeholder="Enter the countries"
+              placeholder="Select countries"
               required={false}
+              multiple={true}
             />
             <CustomSelect
               label="Enabled lots"
@@ -121,7 +155,7 @@ const Filters = ({ categories, countries }) => {
               name="enabledByAdmin"
               units={['true', 'false']}
               required={false}
-              // placeholder="Enter the countries"
+              placeholder="Select lot type"
             />
             <CustomTextField
               placeholder="Enter the keyword"

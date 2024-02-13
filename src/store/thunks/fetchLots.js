@@ -43,11 +43,8 @@ export const createLot = createAsyncThunk(
 
 export const deleteLot = createAsyncThunk(
   'lotList/deleteLot',
-  async ({ id, categoryData }) => {
-    const response = await axiosInstance.delete(
-      `${ENDPOINTS.LOTS}/${id}`,
-      categoryData
-    );
+  async ({ id }) => {
+    const response = await axiosInstance.delete(`${ENDPOINTS.LOTS}/${id}`);
 
     return response.data;
   }
@@ -56,24 +53,8 @@ export const deleteLot = createAsyncThunk(
 export const filteredLots = createAsyncThunk(
   'lotList/filteredLots',
   async (values) => {
-    const {
-      title,
-      description,
-      maxQuantity,
-      minQuantity,
-      minPrice,
-      maxPrice,
-      lotType,
-      varieties,
-      countries,
-      enabledByAdmin,
-      productCategory,
-      keyword,
-    } = values;
-    const response = await axiosInstance.get(
-      `${ENDPOINTS.LOTS}?title=${title}&description=${description}&minQuantity=${minQuantity}&maxQuantity=${maxQuantity}&minPrice=${minPrice}&maxPrice=${maxPrice}&productCategory=${productCategory}&lotType=${lotType}&varieties=${varieties}&countries=${countries}&enabledByAdmin=${enabledByAdmin}&keyword=${keyword}`
-    );
-    
+    const response = await axiosInstance.get(`${ENDPOINTS.LOTS}?${values}`);
+
     return response.data;
   }
 );
