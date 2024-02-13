@@ -10,13 +10,6 @@ import { CloseButton } from '../buttons/CloseButton';
 import CustomSelect from '../customSelect';
 
 import styles from './filters.module.scss';
-import { Formik, Form } from 'formik';
-import { useDispatch } from 'react-redux';
-import { fetchLots, filteredLots } from '../../store/thunks/fetchLots';
-import { CustomButton } from '../buttons/CustomButton';
-import CloseIcon from '@mui/icons-material/Close';
-import CustomTextField from '../customTextField';
-import CustomSelect from '../customSelect';
 
 const Filters = ({
   categories,
