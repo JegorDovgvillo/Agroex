@@ -11,8 +11,12 @@ const CustomTextField = ({
   name,
   multiline = null,
   rows,
-  required = true,
+  required = false,
+  value = '',
+  errors,
+  touched,
 }) => {
+  //console.log('errors', errors, 'touched', touched);
   return (
     <div className={styles.wrapp}>
       <label htmlFor={id}>{label}</label>
@@ -23,8 +27,13 @@ const CustomTextField = ({
         placeholder={placeholder}
         multiline={multiline}
         rows={rows}
+        value={value}
         required={required}
-        className={`${styles.input} ${styles[type]}`}
+        className={`${styles.input} ${styles[type]} ${
+          errors && touched && styles.error
+        }`}
+        error={errors && touched}
+        helperText={errors && touched ? errors : null}
       />
     </div>
   );
