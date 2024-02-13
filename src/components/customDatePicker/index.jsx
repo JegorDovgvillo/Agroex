@@ -19,15 +19,16 @@ const CustomDatePicker = ({ onChange, value, errors, touched }) => {
     onChange(newDate);
   };
 
+  const isError = !!errors && !!touched;
   return (
     <LocalizationProvider dateAdapter={AdapterLuxon}>
       <Stack
         spacing={10}
         className={`${styles.datePicker} ${
-          errors && touched ? styles.error : styles.default
+          isError ? styles.error : styles.default
         }`}
       >
-        <FormControl error={touched && errors}>
+        <FormControl error={isError}>
           <label>Expiration date</label>
           <DateTimePicker
             value={date}
@@ -40,7 +41,7 @@ const CustomDatePicker = ({ onChange, value, errors, touched }) => {
               },
             }}
           />
-          {errors && touched && <FormHelperText>{errors}</FormHelperText>}
+          {isError && <FormHelperText>{errors}</FormHelperText>}
         </FormControl>
       </Stack>
     </LocalizationProvider>

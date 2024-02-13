@@ -66,24 +66,6 @@ const UpdateLot = () => {
     dispatch(fetchCountries());
   }, [dispatch]);
 
-  /* const initialValues = {
-    userId: selectedLot?.userId || '',
-    title: selectedLot?.title || '',
-    country: selectedLot?.location.countryId || '',
-    region: selectedLot?.location.region || '',
-    category: selectedLot?.productCategoryId || '',
-    subcategory: selectedLot?.subcategory || '',
-    variety: selectedLot?.variety || '',
-    description: selectedLot?.description || '',
-    packaging: selectedLot?.packaging || '',
-    quantity: selectedLot?.quantity || '',
-    price: selectedLot?.pricePerTon * selectedLot?.quantity || '',
-    priceUnits: 'USD',
-    lotType: selectedLot?.lotType || '',
-    size: selectedLot?.size || '',
-    expirationDate: selectedLot?.expirationDate || '',
-  }; */
-
   const handleUpdateClick = async (values) => {
     const formData = new FormData();
     const lotData = {
@@ -128,7 +110,6 @@ const UpdateLot = () => {
       {isDataLoaded && (
         <LotForm
           selectedLot={selectedLot}
-          // initialValues={initialValues}
           handleSubmitClick={handleUpdateClick}
           country={country}
           categories={categories}

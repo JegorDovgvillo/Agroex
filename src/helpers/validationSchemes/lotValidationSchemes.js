@@ -37,8 +37,8 @@ export const lotValidationSchema = object().shape({
   userId: getSelectFieldValidationSchema('user'),
   country: getSelectFieldValidationSchema('country'),
   category: getSelectFieldValidationSchema('category'),
+  subcategory: getTextFieldValidationSchema(1, 35),
   description: getTextFieldValidationSchema(20, 1000),
-  subcategory: getTextFieldValidationSchema(1, 10),
   size: getTextFieldValidationSchema(1, 10),
   packaging: getTextFieldValidationSchema(1, 10),
   quantity: getNumberFieldValidationSchema(1, 999),
@@ -51,4 +51,8 @@ export const lotValidationSchema = object().shape({
       currentDate,
       'The field should be valid date greater or equal to current date'
     ),
+});
+
+export const categoryTitleValidationSchema = object().shape({
+  title: getTextFieldValidationSchema(1, 35),
 });

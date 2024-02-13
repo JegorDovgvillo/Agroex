@@ -32,25 +32,8 @@ const CreateNewLot = () => {
     dispatch(fetchCountries());
   }, [dispatch]);
 
-  const initialValues = {
-    userId: '',
-    title: '',
-    country: '',
-    region: '',
-    category: '',
-    subcategory: '',
-    variety: '',
-    description: '',
-    packaging: '',
-    quantity: '',
-    price: '',
-    priceUnits: 'USD',
-    lotType: '',
-    size: '',
-    expirationDate: '',
-  };
-
   const handleSubmitClick = async (values, resetForm) => {
+    console.log('v', values);
     const formData = new FormData();
     const lotData = {
       title: values.title,
@@ -90,7 +73,6 @@ const CreateNewLot = () => {
     <>
       {isDataLoaded && (
         <LotForm
-          //initialValues={initialValues}
           handleSubmitClick={handleSubmitClick}
           country={country}
           categories={categories}

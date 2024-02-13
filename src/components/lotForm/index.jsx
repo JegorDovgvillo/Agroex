@@ -7,7 +7,7 @@ import CustomDatePicker from '@components/customDatePicker';
 import InfoModal from '@customModals/infoModal';
 import ConfirmActionModal from '@customModals/confirmActionModal';
 
-import { lotValidationSchema } from '@helpers/validationSchemes/lotValidationSchema';
+import { lotValidationSchema } from '@helpers/validationSchemes/lotValidationSchemes';
 
 import DragAndDrop from '../dragAndDrop';
 
@@ -169,6 +169,7 @@ const LotForm = ({
             <CustomTextField
               label="Quantity"
               id="quantity"
+              type="number"
               placeholder="Enter the quantity"
               name="quantity"
               value={values.quantity}
@@ -179,6 +180,7 @@ const LotForm = ({
               label="Price"
               id="price"
               name="price"
+              type="number"
               placeholder="Enter the price"
               value={values.price}
               errors={errors.price}
@@ -240,7 +242,7 @@ const LotForm = ({
                 text="Update an item"
                 width="auto"
                 typeOfButton="submit"
-                disabled={!isValid}
+                //disabled={!isValid}
               />
               <CustomButton
                 text="Delete an item"

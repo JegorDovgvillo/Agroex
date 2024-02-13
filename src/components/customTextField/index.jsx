@@ -1,4 +1,4 @@
-import TextField from '@mui/material/TextField';
+import { TextField } from '@mui/material';
 import { Field } from 'formik';
 
 import styles from './customTextField.module.scss';
@@ -22,6 +22,7 @@ const CustomTextField = ({
       <label htmlFor={id}>{label}</label>
       <Field
         as={TextField}
+        type={type}
         name={name}
         id={id}
         placeholder={placeholder}
