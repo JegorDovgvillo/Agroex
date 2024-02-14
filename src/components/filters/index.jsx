@@ -5,11 +5,11 @@ import { filteredLots } from '@thunks/fetchLots';
 
 import { CustomButton } from '../buttons/CustomButton';
 import CustomTextField from '../customTextField';
-
-import styles from './filters.module.scss';
 import CustomMultiSelect from '../customMultiSelect';
 import { CloseButton } from '../buttons/CloseButton';
 import CustomSelect from '../customSelect';
+
+import styles from './filters.module.scss';
 
 const Filters = ({
   categories,
