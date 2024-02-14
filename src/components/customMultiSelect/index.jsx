@@ -1,10 +1,12 @@
-import { Select, MenuItem, FormHelperText, FormControl } from '@mui/material';
+import { Select, MenuItem } from '@mui/material';
 import { Field } from 'formik';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
 
 import styles from '@customTextField/customTextField.module.scss';
 
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
+const ITEM_HEIGHT = 68;
+const ITEM_PADDING_TOP = 18;
 const MenuProps = {
   PaperProps: {
     style: {
@@ -14,40 +16,33 @@ const MenuProps = {
   },
 };
 
-const CustomSelect = ({
+const CustomMultiSelect = ({
   units,
   name,
   disabled = false,
   placeholder,
-  required = false,
+  required = true,
   itemFieldName,
   label = '',
-  value,
-  errors,
-  touched,
   fieldType = '',
   wrappType = '',
 }) => {
-  console.log(name, touched);
   return (
     <div className={`${styles.wrapp} ${styles[wrappType]}`}>
-      <FormControl error={errors && touched}>
-        <label htmlFor={name}>{label}</label>
+      <label htmlFor={name}>{label}</label>
+      <FormControl>
+        <InputLabel>{placeholder}</InputLabel>
         <Field
           as={Select}
           name={name}
-          displayEmpty
           disabled={disabled}
           required={required}
-          className={`${styles.select} ${errors && touched && styles.error} ${
-            styles[fieldType]
-          }`}
-          value={value || ''}
+          displayEmpty
+          className={`${styles.select} ${styles[fieldType]}`}
+          label={placeholder}
           MenuProps={MenuProps}
+          multiple={true}
         >
-          <MenuItem disabled value="">
-            <em>{placeholder}</em>
-          </MenuItem>
           {units.map((item, index) => (
             <MenuItem
               key={index}
@@ -58,10 +53,9 @@ const CustomSelect = ({
             </MenuItem>
           ))}
         </Field>
-        {touched && <FormHelperText>{errors}</FormHelperText>}
       </FormControl>
     </div>
   );
 };
 
-export default CustomSelect;
+export default CustomMultiSelect;

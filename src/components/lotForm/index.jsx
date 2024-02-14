@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { Form, Formik } from 'formik';
-
 import { FormHelperText } from '@mui/material';
+
+import { lotValidationSchema } from '@helpers/validationSchemes/lotValidationSchemes';
 
 import CustomTextField from '@customTextField';
 import { CustomButton } from '@buttons/CustomButton';
@@ -9,9 +10,6 @@ import CustomSelect from '@customSelect';
 import CustomDatePicker from '@components/customDatePicker';
 import InfoModal from '@customModals/infoModal';
 import ConfirmActionModal from '@customModals/confirmActionModal';
-
-import { lotValidationSchema } from '@helpers/validationSchemes/lotValidationSchemes';
-
 import DragAndDrop from '../dragAndDrop';
 
 import styles from './lotForm.module.scss';
@@ -139,6 +137,7 @@ const LotForm = ({
             value={values.description}
             errors={errors.description}
             touched={!isCreateNotSubmittedForm || touched.description}
+            fieldType="textarea"
           />
           <div className={styles.inputBlock}>
             <CustomSelect

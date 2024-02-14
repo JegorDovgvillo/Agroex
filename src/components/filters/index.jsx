@@ -1,14 +1,15 @@
 import { Formik, Form } from 'formik';
 import { useDispatch } from 'react-redux';
-import CloseIcon from '@mui/icons-material/Close';
 
 import { filteredLots } from '@thunks/fetchLots';
 
 import { CustomButton } from '../buttons/CustomButton';
 import CustomTextField from '../customTextField';
-import CustomSelect from '../customSelect';
 
 import styles from './filters.module.scss';
+import CustomMultiSelect from '../customMultiSelect';
+import { CloseButton } from '../buttons/CloseButton';
+import CustomSelect from '../customSelect';
 
 const Filters = ({
   categories,
@@ -20,8 +21,7 @@ const Filters = ({
   const dispatch = useDispatch();
 
   const initialValues = {
-    title: '',
-    description: '',
+    keyword: '',
     minQuantity: '',
     maxQuantity: '',
     minPrice: '',
@@ -29,10 +29,7 @@ const Filters = ({
     user: [],
     productCategory: [],
     lotType: '',
-    varieties: '',
     countries: [],
-    enabledByAdmin: '',
-    keyword: '',
   };
 
   const resetFilter = (resetForm) => {
@@ -45,17 +42,6 @@ const Filters = ({
       <Formik
         initialValues={initialValues}
         onSubmit={(values) => {
-          // const selectedValues = {
-          //   ...values,
-          //   user: Array.isArray(values.user)
-          //     ? values.user.join(',')
-          //     : values.user,
-          //   productCategory: Array.isArray(values.productCategory)
-          //     ? values.productCategory.join(',')
-          //     : values.productCategory,
-          //   // countries: Array.isArray(values.countries) ? values.countries.join(',') : values.countries,
-          // };
-          // console.log(selectedValues);
           setSearchParams(values);
           dispatch(filteredLots(searchParams));
         }}
@@ -63,58 +49,65 @@ const Filters = ({
         {({ resetForm }) => (
           <Form>
             <CustomTextField
-              placeholder="Enter the title"
-              label="Title"
-              id="title"
-              name="title"
+              placeholder="Enter the keyword"
+              label="Keyword"
+              id="keyword"
+              name="keyword"
               required={false}
+              fieldType="filterInput"
             />
-            <CustomTextField
-              placeholder="Enter the description"
-              label="Description"
-              id="description"
-              name="description"
-              required={false}
-            />
-            <CustomTextField
-              placeholder="Enter the min Quantity"
-              label="Min quantity"
-              id="minQuantity"
-              name="minQuantity"
-              required={false}
-            />
-            <CustomTextField
-              placeholder="Enter the max quantity"
-              label="Max quantity"
-              id="maxQuantity"
-              name="maxQuantity"
-              required={false}
-            />
-            <CustomTextField
-              placeholder="Enter the min price"
-              label="Min price"
-              id="minPrice"
-              name="minPrice"
-              required={false}
-            />
-            <CustomTextField
-              placeholder="Enter the max price"
-              label="Max price"
-              id="maxPrice"
-              name="maxPrice"
-              required={false}
-            />
-            <CustomSelect
+            <div className={styles.inputWrapp}>
+              <CustomTextField
+                placeholder="Enter the min Quantity"
+                label="Min quantity"
+                id="minQuantity"
+                name="minQuantity"
+                required={false}
+                fieldType="filterInput"
+                type="number"
+              />
+              <CustomTextField
+                placeholder="Enter the max quantity"
+                label="Max quantity"
+                id="maxQuantity"
+                name="maxQuantity"
+                required={false}
+                fieldType="filterInput"
+                type="number"
+              />
+            </div>
+            <div className={styles.inputWrapp}>
+              <CustomTextField
+                placeholder="Enter the min price"
+                label="Min price"
+                id="minPrice"
+                name="minPrice"
+                required={false}
+                fieldType="filterInput"
+                type="number"
+              />
+              <CustomTextField
+                placeholder="Enter the max price"
+                label="Max price"
+                id="maxPrice"
+                name="maxPrice"
+                required={false}
+                fieldType="filterInput"
+                type="number"
+              />
+            </div>
+            <CustomMultiSelect
               units={users}
               name="user"
               disabled={false}
-              placeholder="Select sellers"
+              placeholder="Select owners"
               itemFieldName="username"
-              label="Sellers"
+              label="Owners"
               required={false}
-              multiple={true}
+              fieldType="filterSelect"
+              wrappType="filterWrapp"
             />
-            <CustomSelect
+            <CustomMultiSelect
               units={categories}
               name="productCategory"
               disabled={false}
@@ -122,7 +115,8 @@ const Filters = ({
               itemFieldName="title"
               label="Category"
               required={false}
-              multiple={true}
+              fieldType="filterSelect"
+              wrappType="filterWrapp"
             />
             <CustomSelect
               label="Lot type"
@@ -131,15 +125,10 @@ const Filters = ({
               units={['sell', 'buy']}
               placeholder="Select lot type"
               required={false}
+              fieldType="filterSelect"
+              wrappType="filterWrapp"
             />
-            <CustomTextField
-              placeholder="Enter the varieties"
-              label="Varieties"
-              id="varieties"
-              name="varieties"
-              required={false}
-            />
-            <CustomSelect
+            <CustomMultiSelect
               label="Countries"
               disabled={false}
               name="countries"
@@ -147,35 +136,19 @@ const Filters = ({
               itemFieldName="name"
               placeholder="Select countries"
               required={false}
-              multiple={true}
+              fieldType="filterSelect"
+              wrappType="filterWrapp"
             />
-            <CustomSelect
-              label="Enabled lots"
-              disabled={false}
-              name="enabledByAdmin"
-              units={['true', 'false']}
-              required={false}
-              placeholder="Select lot type"
-            />
-            <CustomTextField
-              placeholder="Enter the keyword"
-              label="Keyword"
-              id="keyword"
-              name="keyword"
-              required={false}
-            />
-            <div>
+            <div className={styles.buttonsWrap}>
               <CustomButton
                 text="Apply filter"
                 size="L"
                 type="primary"
                 typeOfButton="submit"
               />
-              <CustomButton
-                icon={<CloseIcon />}
-                size="S"
+              <CloseButton
+                size="L"
                 type="primary"
-                typeOfButton="button"
                 handleClick={() => resetFilter(resetForm)}
               />
             </div>

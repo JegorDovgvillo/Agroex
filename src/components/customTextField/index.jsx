@@ -6,15 +6,16 @@ import styles from './customTextField.module.scss';
 const CustomTextField = ({
   label = '',
   id,
-  type = '',
+  fieldType = '',
   placeholder = '',
   name,
   multiline = null,
-  rows,
   required = false,
   value = '',
   errors,
   touched,
+  rows = null,
+  type = '',
 }) => {
   const isError = !!errors && !!touched;
 
@@ -31,7 +32,9 @@ const CustomTextField = ({
         rows={rows}
         value={value}
         required={required}
-        className={`${styles.input} ${styles[type]} ${isError && styles.error}`}
+        className={`${styles.input} ${styles[type]} ${
+          isError && styles.error
+        } ${styles[fieldType]}`}
         error={isError}
         helperText={isError ? errors : null}
       />
