@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { DateTime } from 'luxon';
-import { Stack, FormHelperText, FormControl, InputLabel } from '@mui/material';
+import { Stack, FormHelperText, FormControl } from '@mui/material';
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
@@ -20,6 +20,7 @@ const CustomDatePicker = ({ onChange, value, errors, touched }) => {
   };
 
   const isError = !!errors && !!touched;
+
   return (
     <LocalizationProvider dateAdapter={AdapterLuxon}>
       <Stack

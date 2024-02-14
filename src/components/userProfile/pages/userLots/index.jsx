@@ -3,9 +3,9 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { fetchLots } from '@thunks/fetchLots';
 import { lotListSelector } from '@slices/lotListSlice';
-import AdvertCard from '@components/itemCard/userProfileItemCards/advertCard';
+import UserLotCard from '@components/itemCard/userProfileItemCards/userLotCard';
 
-const UserAdverts = () => {
+const UserLots = () => {
   //todo add filter by lot status (active, pending, inactive)
 
   const currUserId = 1; // todo should be replaced by real current user id
@@ -20,7 +20,7 @@ const UserAdverts = () => {
     const filteredLots = lots
       .filter((item) => item.userId === currUserId)
       .map((item) => {
-        return <AdvertCard {...item} key={item.id} />;
+        return <UserLotCard {...item} key={item.id} />;
       });
 
     return <>{filteredLots} </>;
@@ -31,4 +31,4 @@ const UserAdverts = () => {
   return <div>{filteredLots} </div>;
 };
 
-export default UserAdverts;
+export default UserLots;

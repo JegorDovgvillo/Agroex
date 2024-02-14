@@ -1,34 +1,13 @@
-import { string, number, object, date } from 'yup';
+import { object, date } from 'yup';
+
+import {
+  getTextFieldValidationSchema,
+  getNumberFieldValidationSchema,
+  getSelectFieldValidationSchema,
+  requiredMessage,
+} from './schemasForFields';
 
 const currentDate = new Date();
-const requiredMessage = 'Please fill in the field';
-
-const getTextFieldValidationSchema = (min, max) => {
-  const errorMessage = `The field should be from ${min} to ${max} characters long`;
-
-  return string()
-    .required(requiredMessage)
-    .min(min, errorMessage)
-    .max(max, errorMessage);
-};
-
-const getNumberFieldValidationSchema = (min, max) => {
-  const errorMessage = `The field should contain only numbers from ${min} to ${max} (integer or fractional)`;
-
-  return number()
-    .required(requiredMessage)
-    .typeError(errorMessage)
-    .min(min, errorMessage)
-    .max(max, errorMessage);
-};
-
-const getSelectFieldValidationSchema = (fieldName) => {
-  const errorMessage = `Please choose a ${fieldName}`;
-
-  return string().test('is-selected', errorMessage, function (value) {
-    return value !== undefined && value !== '';
-  });
-};
 
 export const lotValidationSchema = object().shape({
   title: getTextFieldValidationSchema(1, 30),
@@ -54,5 +33,10 @@ export const lotValidationSchema = object().shape({
 });
 
 export const categoryTitleValidationSchema = object().shape({
+  title: getTextFieldValidationSchema(1, 35),
+});
+
+export const subcategoryCreationValidationSchema = object().shape({
+  parentId: getSelectFieldValidationSchema('parentId'),
   title: getTextFieldValidationSchema(1, 35),
 });

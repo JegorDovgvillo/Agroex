@@ -1,4 +1,7 @@
+import { useEffect, useRef } from 'react';
 import { Form, Formik } from 'formik';
+
+import { FormHelperText } from '@mui/material';
 
 import CustomTextField from '@customTextField';
 import { CustomButton } from '@buttons/CustomButton';
@@ -28,6 +31,7 @@ const LotForm = ({
   setMaxFilesPerDrop,
   disabled,
   setDisabled,
+  isImageAdded,
 }) => {
   const initialValues = {
     userId: selectedLot?.userId,
@@ -46,6 +50,13 @@ const LotForm = ({
     size: selectedLot?.size,
     expirationDate: selectedLot?.expirationDate,
   };
+  const formRef = useRef(null);
+
+  useEffect(() => {
+    if (formRef.current) {
+      formRef.current.validateForm();
+    }
+  }, [formRef]);
 
   return (
     <Formik
@@ -54,6 +65,8 @@ const LotForm = ({
         handleSubmitClick(values, resetForm);
       }}
       validationSchema={lotValidationSchema}
+      innerRef={formRef}
+      enableReinitialize
     >
       {({
         values,
@@ -72,7 +85,7 @@ const LotForm = ({
               name="title"
               value={values.title}
               errors={errors.title}
-              touched={touched.title}
+              touched={formType === 'create' ? touched.title : true}
             />
             <CustomSelect
               label="User"
@@ -82,7 +95,7 @@ const LotForm = ({
               placeholder="Choose user"
               value={values.userId}
               errors={errors.userId}
-              touched={touched.userId}
+              touched={formType === 'create' ? touched.userId : true}
             />
             <CustomSelect
               label="Location"
@@ -92,7 +105,7 @@ const LotForm = ({
               placeholder="Choose country"
               value={values.country}
               errors={errors.country}
-              touched={touched.country}
+              touched={formType === 'create' ? touched.country : true}
             />
             <CustomTextField
               label="Region"
@@ -101,7 +114,7 @@ const LotForm = ({
               name="region"
               value={values.region}
               errors={errors.region}
-              touched={touched.region}
+              touched={formType === 'create' ? touched.region : true}
             />
           </div>
           <CustomTextField
@@ -113,7 +126,7 @@ const LotForm = ({
             type="textarea"
             value={values.description}
             errors={errors.description}
-            touched={touched.description}
+            touched={formType === 'create' ? touched.description : true}
           />
           <div className={styles.inputBlock}>
             <CustomSelect
@@ -124,7 +137,7 @@ const LotForm = ({
               placeholder="Choose category"
               value={values.category}
               errors={errors.category}
-              touched={touched.category}
+              touched={formType === 'create' ? touched.category : true}
             />
             <CustomTextField
               label="Subcategory"
@@ -133,7 +146,7 @@ const LotForm = ({
               name="subcategory"
               value={values.subcategory}
               errors={errors.subcategory}
-              touched={touched.subcategory}
+              touched={formType === 'create' ? touched.subcategory : true}
             />
             <CustomTextField
               label="Variety"
@@ -142,7 +155,7 @@ const LotForm = ({
               name="variety"
               value={values.variety}
               errors={errors.variety}
-              touched={touched.variety}
+              touched={formType === 'create' ? touched.variety : true}
             />
             <CustomTextField
               label="Size"
@@ -152,7 +165,7 @@ const LotForm = ({
               name="size"
               value={values.size}
               errors={errors.size}
-              touched={touched.size}
+              touched={formType === 'create' ? touched.size : true}
             />
           </div>
           <div className={styles.inputBlock}>
@@ -164,7 +177,7 @@ const LotForm = ({
               required={false}
               value={values.packaging}
               errors={errors.packaging}
-              touched={touched.packaging}
+              touched={formType === 'create' ? touched.packaging : true}
             />
             <CustomTextField
               label="Quantity"
@@ -174,7 +187,7 @@ const LotForm = ({
               name="quantity"
               value={values.quantity}
               errors={errors.quantity}
-              touched={touched.quantity}
+              touched={formType === 'create' ? touched.quantity : true}
             />
             <CustomTextField
               label="Price"
@@ -184,7 +197,7 @@ const LotForm = ({
               placeholder="Enter the price"
               value={values.price}
               errors={errors.price}
-              touched={touched.price}
+              touched={formType === 'create' ? touched.price : true}
             />
             <CustomSelect
               label="Currency"
@@ -194,7 +207,7 @@ const LotForm = ({
               placeholder="Currency"
               value={values.priceUnits}
               errors={errors.priceUnits}
-              touched={touched.priceUnits}
+              touched={formType === 'create' ? touched.priceUnits : true}
             />
           </div>
           <div className={styles.inputBlock}>
@@ -205,7 +218,7 @@ const LotForm = ({
                 setFieldValue('expirationDate', date);
               }}
               errors={errors.expirationDate}
-              touched={touched.expirationDate}
+              touched={formType === 'create' ? touched.expirationDate : true}
             />
             <CustomSelect
               label="Lot type"
@@ -215,7 +228,7 @@ const LotForm = ({
               placeholder="Lot type"
               value={values.lotType}
               errors={errors.lotType}
-              touched={touched.lotType}
+              touched={formType === 'create' ? touched.lotType : true}
             />
           </div>
           <DragAndDrop
@@ -226,13 +239,18 @@ const LotForm = ({
             disabled={disabled}
             setDisabled={setDisabled}
           />
+          {!isImageAdded && (
+            <FormHelperText error className={styles.dropDownHelperText}>
+              At least one picture must be uploaded
+            </FormHelperText>
+          )}
           {formType === 'create' ? (
             <>
               <CustomButton
                 text="Place an item"
                 width="auto"
                 typeOfButton="submit"
-                disabled={!isValid}
+                disabled={!isValid || !isImageAdded}
               />
               <InfoModal title="Success!" text="Your ad has been published" />
             </>
@@ -242,7 +260,7 @@ const LotForm = ({
                 text="Update an item"
                 width="auto"
                 typeOfButton="submit"
-                //disabled={!isValid}
+                disabled={!isValid || !isImageAdded}
               />
               <CustomButton
                 text="Delete an item"

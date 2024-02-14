@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
 import { Menu, MenuItem, ListItemIcon } from '@mui/material';
@@ -12,11 +13,14 @@ import { toggleModal } from '@slices/modalSlice';
 import { CustomButton } from '@buttons/CustomButton';
 import ConfirmActionModal from '@customModals/confirmActionModal';
 
+import ROUTES from '@helpers/routeNames';
+
 import styles from './manageCard.module.scss';
 
 const { deactivate } = styles;
 
-const ManageCardBlock = () => {
+const ManageCardBlock = ({ id }) => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [confirmStatus, setConfirmStatus] = useState(false);
 
@@ -45,6 +49,7 @@ const ManageCardBlock = () => {
 
   const handleEdit = () => {
     //todo redirect to the edit lot page
+    navigate(ROUTES.UPDATE_LOT.replace(':id', id));
   };
 
   return (

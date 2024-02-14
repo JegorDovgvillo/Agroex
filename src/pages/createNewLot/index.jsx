@@ -33,7 +33,6 @@ const CreateNewLot = () => {
   }, [dispatch]);
 
   const handleSubmitClick = async (values, resetForm) => {
-    console.log('v', values);
     const formData = new FormData();
     const lotData = {
       title: values.title,
@@ -84,6 +83,7 @@ const CreateNewLot = () => {
           setMaxFilesPerDrop={setMaxFilesPerDrop}
           disabled={disabled}
           setDisabled={setDisabled}
+          isImageAdded={files.length > 0}
         />
       )}
     </>

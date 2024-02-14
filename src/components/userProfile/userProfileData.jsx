@@ -5,7 +5,7 @@ import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined
 
 import { USER_PROFILE_PAGE_ROTES } from '@helpers/routeNames';
 
-import UserAdverts from './pages/userAdverts';
+import UserLots from './pages/userLots';
 import Betting from './pages/betting';
 import UserAccount from './pages/userAccount';
 
@@ -23,7 +23,7 @@ const userProfileData = [
       { id: 1, tabRoute: 'pending' },
       { id: 2, tabRoute: 'inactive' },
     ],
-    element: <UserAdverts />,
+    element: <UserLots />,
   },
   {
     id: 1,

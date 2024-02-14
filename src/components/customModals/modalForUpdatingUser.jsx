@@ -11,6 +11,8 @@ import { selectUserById } from '@slices/usersListSlice';
 import CustomTextField from '@customTextField';
 import { CustomButton } from '@buttons/CustomButton';
 
+import { createUserValidationSchema } from '@helpers/validationSchemes/userDataValidationSchemes';
+
 import styles from './infoModal.module.scss';
 
 const ModalForUpdatingUser = () => {
@@ -50,38 +52,56 @@ const ModalForUpdatingUser = () => {
             onSubmit={(values) => {
               handleSubmitClick(values);
             }}
+            validationSchema={createUserValidationSchema}
           >
-            <Form>
-              <CustomTextField
-                name="username"
-                placeholder="Username"
-                required
-                label="Username"
-                id="username"
-              />
-              <CustomTextField
-                label="Email"
-                id="email"
-                name="email"
-                placeholder="Email"
-                required
-              />
-              <CustomTextField
-                name="phoneNumber"
-                placeholder="Phone number"
-                required
-                label="Phone number"
-                id="phoneNumber"
-              />
-              <CustomTextField
-                name="password"
-                placeholder="password"
-                required
-                label="Password"
-                id="password"
-              />
-              <CustomButton text="Update" width="210px" typeOfButton="submit" />
-            </Form>
+            {({ values, errors, touched, isValid }) => (
+              <Form>
+                <CustomTextField
+                  name="username"
+                  placeholder="Username"
+                  label="Username"
+                  id="username"
+                  value={values.username}
+                  errors={errors.username}
+                  touched={touched.username}
+                />
+                <CustomTextField
+                  label="Email"
+                  id="email"
+                  type="email"
+                  name="email"
+                  placeholder="Email"
+                  value={values.email}
+                  errors={errors.email}
+                  touched={touched.email}
+                />
+                <CustomTextField
+                  name="phoneNumber"
+                  placeholder="Phone number"
+                  type="tel"
+                  label="Phone number"
+                  id="phoneNumber"
+                  value={values.phoneNumber}
+                  errors={errors.phoneNumber}
+                  touched={touched.phoneNumber}
+                />
+                <CustomTextField
+                  name="password"
+                  placeholder="password"
+                  label="Password"
+                  id="password"
+                  value={values.password}
+                  errors={errors.password}
+                  touched={touched.password}
+                />
+                <CustomButton
+                  text="Update"
+                  width="210px"
+                  typeOfButton="submit"
+                  dispatch={!isValid}
+                />
+              </Form>
+            )}
           </Formik>
         </Box>
       </Modal>

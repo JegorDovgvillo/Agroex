@@ -123,6 +123,7 @@ const UpdateLot = () => {
           setMaxFilesPerDrop={setMaxFilesPerDrop}
           disabled={disabled}
           setDisabled={setDisabled}
+          isImageAdded={files.length > 0}
         />
       )}
     </>

@@ -35,7 +35,7 @@ const ModalForUpdatingCategory = () => {
     dispatch(updateCategory({ id: categoryId, categoryData: values }));
     dispatch(toggleModal('updatingModal'));
   };
-  console.log('5', categoryData);
+
   return (
     <div>
       <Modal

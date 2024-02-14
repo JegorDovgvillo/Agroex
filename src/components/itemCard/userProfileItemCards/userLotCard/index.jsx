@@ -16,7 +16,7 @@ import styles from '../../itemCard.module.scss';
 
 const { priceBlock, priceContainer, pending, inactive } = styles;
 
-const AdvertCard = (item) => {
+const UserLotCard = (item) => {
   const { tab } = useParams();
 
   //todo replace the value of the const lotStatus by appropriate field from the lot
@@ -52,7 +52,7 @@ const AdvertCard = (item) => {
       <ItemCardInfoBlock item={item}>
         <>
           <LotStatusBlock lotStatus={lotStatus} />
-          <ManageCardBlock />
+          <ManageCardBlock id={item.id} />
         </>
       </ItemCardInfoBlock>
       <div className={containerClassNames}>
@@ -85,4 +85,4 @@ const AdvertCard = (item) => {
   );
 };
 
-export default AdvertCard;
+export default UserLotCard;
