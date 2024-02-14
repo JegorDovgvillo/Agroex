@@ -1,7 +1,3 @@
-import { useSelector } from 'react-redux';
-
-import { selectCategoryById } from '@slices/categoriesSlice';
-
 import getNumberWithCurrency from '@helpers/getNumberWithCurrency';
 import getFormattedDate from '@helpers/getFormattedDate';
 

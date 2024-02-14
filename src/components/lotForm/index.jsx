@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Form, Formik } from 'formik';
 
 import { FormHelperText } from '@mui/material';
@@ -50,13 +50,22 @@ const LotForm = ({
     size: selectedLot?.size,
     expirationDate: selectedLot?.expirationDate,
   };
+
+  const [isFirstSubmit, setIsFirstSubmit] = useState(true);
   const formRef = useRef(null);
 
   useEffect(() => {
-    if (formRef.current) {
+    if (
+      (formType !== 'create' && formRef.current) ||
+      (formType === 'create' && isFirstSubmit && isFirstSubmit)
+    ) {
       formRef.current.validateForm();
     }
-  }, [formRef]);
+  }, [formRef, isFirstSubmit, formType]);
+
+  const handlePlaceItemBtnClick = () => {
+    isFirstSubmit && setIsFirstSubmit(false);
+  };
 
   return (
     <Formik
@@ -85,7 +94,11 @@ const LotForm = ({
               name="title"
               value={values.title}
               errors={errors.title}
-              touched={formType === 'create' ? touched.title : true}
+              touched={
+                formType === 'create' && isFirstSubmit && isFirstSubmit
+                  ? touched.title
+                  : true
+              }
             />
             <CustomSelect
               label="User"
@@ -95,7 +108,9 @@ const LotForm = ({
               placeholder="Choose user"
               value={values.userId}
               errors={errors.userId}
-              touched={formType === 'create' ? touched.userId : true}
+              touched={
+                formType === 'create' && isFirstSubmit ? touched.userId : true
+              }
             />
             <CustomSelect
               label="Location"
@@ -105,7 +120,9 @@ const LotForm = ({
               placeholder="Choose country"
               value={values.country}
               errors={errors.country}
-              touched={formType === 'create' ? touched.country : true}
+              touched={
+                formType === 'create' && isFirstSubmit ? touched.country : true
+              }
             />
             <CustomTextField
               label="Region"
@@ -114,7 +131,9 @@ const LotForm = ({
               name="region"
               value={values.region}
               errors={errors.region}
-              touched={formType === 'create' ? touched.region : true}
+              touched={
+                formType === 'create' && isFirstSubmit ? touched.region : true
+              }
             />
           </div>
           <CustomTextField
@@ -126,7 +145,11 @@ const LotForm = ({
             type="textarea"
             value={values.description}
             errors={errors.description}
-            touched={formType === 'create' ? touched.description : true}
+            touched={
+              formType === 'create' && isFirstSubmit
+                ? touched.description
+                : true
+            }
           />
           <div className={styles.inputBlock}>
             <CustomSelect
@@ -137,7 +160,9 @@ const LotForm = ({
               placeholder="Choose category"
               value={values.category}
               errors={errors.category}
-              touched={formType === 'create' ? touched.category : true}
+              touched={
+                formType === 'create' && isFirstSubmit ? touched.category : true
+              }
             />
             <CustomTextField
               label="Subcategory"
@@ -146,7 +171,11 @@ const LotForm = ({
               name="subcategory"
               value={values.subcategory}
               errors={errors.subcategory}
-              touched={formType === 'create' ? touched.subcategory : true}
+              touched={
+                formType === 'create' && isFirstSubmit
+                  ? touched.subcategory
+                  : true
+              }
             />
             <CustomTextField
               label="Variety"
@@ -155,7 +184,9 @@ const LotForm = ({
               name="variety"
               value={values.variety}
               errors={errors.variety}
-              touched={formType === 'create' ? touched.variety : true}
+              touched={
+                formType === 'create' && isFirstSubmit ? touched.variety : true
+              }
             />
             <CustomTextField
               label="Size"
@@ -165,7 +196,9 @@ const LotForm = ({
               name="size"
               value={values.size}
               errors={errors.size}
-              touched={formType === 'create' ? touched.size : true}
+              touched={
+                formType === 'create' && isFirstSubmit ? touched.size : true
+              }
             />
           </div>
           <div className={styles.inputBlock}>
@@ -177,7 +210,11 @@ const LotForm = ({
               required={false}
               value={values.packaging}
               errors={errors.packaging}
-              touched={formType === 'create' ? touched.packaging : true}
+              touched={
+                formType === 'create' && isFirstSubmit
+                  ? touched.packaging
+                  : true
+              }
             />
             <CustomTextField
               label="Quantity"
@@ -187,7 +224,9 @@ const LotForm = ({
               name="quantity"
               value={values.quantity}
               errors={errors.quantity}
-              touched={formType === 'create' ? touched.quantity : true}
+              touched={
+                formType === 'create' && isFirstSubmit ? touched.quantity : true
+              }
             />
             <CustomTextField
               label="Price"
@@ -197,7 +236,9 @@ const LotForm = ({
               placeholder="Enter the price"
               value={values.price}
               errors={errors.price}
-              touched={formType === 'create' ? touched.price : true}
+              touched={
+                formType === 'create' && isFirstSubmit ? touched.price : true
+              }
             />
             <CustomSelect
               label="Currency"
@@ -207,7 +248,11 @@ const LotForm = ({
               placeholder="Currency"
               value={values.priceUnits}
               errors={errors.priceUnits}
-              touched={formType === 'create' ? touched.priceUnits : true}
+              touched={
+                formType === 'create' && isFirstSubmit
+                  ? touched.priceUnits
+                  : true
+              }
             />
           </div>
           <div className={styles.inputBlock}>
@@ -218,7 +263,11 @@ const LotForm = ({
                 setFieldValue('expirationDate', date);
               }}
               errors={errors.expirationDate}
-              touched={formType === 'create' ? touched.expirationDate : true}
+              touched={
+                formType === 'create' && isFirstSubmit
+                  ? touched.expirationDate
+                  : true
+              }
             />
             <CustomSelect
               label="Lot type"
@@ -228,7 +277,9 @@ const LotForm = ({
               placeholder="Lot type"
               value={values.lotType}
               errors={errors.lotType}
-              touched={formType === 'create' ? touched.lotType : true}
+              touched={
+                formType === 'create' && isFirstSubmit ? touched.lotType : true
+              }
             />
           </div>
           <DragAndDrop
@@ -250,7 +301,8 @@ const LotForm = ({
                 text="Place an item"
                 width="auto"
                 typeOfButton="submit"
-                disabled={!isValid || !isImageAdded}
+                handleClick={handlePlaceItemBtnClick}
+                disabled={!isFirstSubmit && (!isValid || !isImageAdded)}
               />
               <InfoModal title="Success!" text="Your ad has been published" />
             </>
