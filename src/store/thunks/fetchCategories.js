@@ -25,10 +25,10 @@ export const deleteCategory = createAsyncThunk(
 
 export const updateCategory = createAsyncThunk(
   'categories/updateCategory',
-  async ({ id, dataCategory }) => {
+  async ({ id, categoryData }) => {
     const response = await axiosInstance.put(
       `${ENDPOINTS.CATEGORIES}/${id}`,
-      dataCategory
+      categoryData
     );
 
     return response.data;
