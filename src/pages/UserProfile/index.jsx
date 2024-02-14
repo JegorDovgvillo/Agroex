@@ -12,16 +12,16 @@ import styles from './userProfile.module.scss';
 const { pageContainer, appBarContainer, contentContainer, content } = styles;
 
 const UserProfile = () => {
-  const [isOpen, setOpen] = useState(window.innerWidth > 1200);
+  const [isOpen, setIsOpen] = useState(window.innerWidth > 1200);
   const [isBarVisible, setIsBarVisible] = useState(window.innerWidth > 1000);
 
   const toggleDrawer = () => {
-    setOpen(!isOpen);
+    setIsOpen(!isOpen);
   };
 
   useEffect(() => {
     const handleResize = () => {
-      setOpen(window.innerWidth > 1200);
+      setIsOpen(window.innerWidth > 1200);
       setIsBarVisible(window.innerWidth > 1200);
     };
 

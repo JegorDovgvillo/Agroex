@@ -2,11 +2,12 @@ import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import CircularProgress from '@mui/material/CircularProgress';
-import ImageListItem from '@mui/material/ImageListItem';
+import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported';
 
 import PriceBlock from '@components/priceBlock';
 import { CustomButton } from '@components/buttons/CustomButton';
 import Timer from '@components/timer';
+import CustomSlider from '@components/customSlider';
 
 import getNumberWithCurrency from '@helpers/getNumberWithCurrency';
 import getFormattedDate from '@helpers/getFormattedDate';
@@ -17,7 +18,6 @@ import { fetchLotDetails } from '@thunks/fetchLots';
 import attentionIcon from '@icons/attention.svg';
 import cartIcon from '@icons/cartIcon.svg';
 import mapIcon from '@icons/mapIcon.svg';
-import sliderImage from '@assets/images/77d4dc59-3013-41aa-8a7b-cb27cb6fa425.jpg';
 
 import styles from './lotDetails.module.scss';
 
@@ -42,6 +42,7 @@ const {
   lotDetailsValue,
   lotDetailsKey,
   lotDetailsRow_bordered,
+  noImage,
 } = styles;
 
 export const LotDetails = () => {
@@ -80,6 +81,7 @@ export const LotDetails = () => {
     variety,
     size,
     packaging,
+    images,
   } = selectedLot;
 
   const totalPrice = quantity * pricePerTon;
@@ -119,13 +121,13 @@ export const LotDetails = () => {
           <>
             <div className={leftSide}>
               <div className={imageContainer}>
-                <ImageListItem key={sliderImage}>
-                  <img
-                    src={`${sliderImage}?w=164&h=164&fit=crop&auto=format`}
-                    alt="Slider image"
-                    loading="lazy"
-                  />
-                </ImageListItem>
+                {images.length > 0 ? (
+                  <CustomSlider images={images} />
+                ) : (
+                  <div className={noImage}>
+                    <ImageNotSupportedIcon />
+                  </div>
+                )}
               </div>
             </div>
             <div className={rightSide}>

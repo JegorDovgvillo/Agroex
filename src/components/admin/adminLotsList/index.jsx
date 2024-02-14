@@ -11,6 +11,7 @@ import {
   Typography,
 } from '@mui/material';
 
+import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CancelIcon from '@mui/icons-material/Cancel';
 import MoreIcon from '@mui/icons-material/More';
@@ -20,6 +21,7 @@ import { fetchAllCategories } from '@thunks/fetchCategories';
 import { toggleModal, selectModalState } from '@slices/modalSlice';
 import { lotListSelector, setLotId } from '@slices/lotListSlice';
 import { setUserId } from '@slices/usersListSlice';
+import ENDPOINTS, { IMAGE_URL } from '@helpers/endpoints';
 
 import getFormattedDate from '@helpers/getFormattedDate';
 import getNumberWithCurrency from '@helpers/getNumberWithCurrency';
@@ -27,10 +29,10 @@ import ConfirmActionModal from '@customModals/confirmActionModal';
 
 import DetailedLotViewModal from '../detailedLotViewModal';
 
-import image from '@assets/images/77d4dc59-3013-41aa-8a7b-cb27cb6fa425.jpg';
-
 import styles from './adminLotsList.module.scss';
 import tableStyles from '../usersList/usersList.module.scss';
+
+const baseURL = `${IMAGE_URL}${ENDPOINTS.IMAGES}`;
 
 const {
   lotImage,
@@ -124,9 +126,15 @@ export default function AdminLotsList() {
                     <Avatar
                       className={lotImage}
                       alt="Lot image"
-                      src={image}
+                      src={
+                        lot.images.length > 0
+                          ? `${baseURL}/${lot.images[0].name}`
+                          : null
+                      }
                       variant="rounded"
-                    />
+                    >
+                      <ImageNotSupportedIcon />
+                    </Avatar>
                     <p
                       className={`${userName} ${title}`}
                       onClick={() => handleEditClick(lot.id, lot.userId)}

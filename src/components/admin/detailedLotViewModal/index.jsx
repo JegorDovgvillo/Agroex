@@ -1,10 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
+import { Button, Dialog, DialogActions, DialogContent } from '@mui/material';
 
 import { fetchUser } from '@thunks/fetchUsers';
 import { fetchLotDetails } from '@thunks/fetchLots';

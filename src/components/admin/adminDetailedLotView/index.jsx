@@ -5,6 +5,8 @@ import { selectCategoryById } from '@slices/categoriesSlice';
 import getNumberWithCurrency from '@helpers/getNumberWithCurrency';
 import getFormattedDate from '@helpers/getFormattedDate';
 
+import CustomSlider from '@components/customSlider';
+
 import styles from './adminDetailedLotView.module.scss';
 
 const {
@@ -33,6 +35,7 @@ const AdminDetailedLotView = ({ lot, userData }) => {
     tags,
     title,
     variety,
+    images,
   } = lot;
 
   const category = useSelector((state) =>
@@ -104,6 +107,8 @@ const AdminDetailedLotView = ({ lot, userData }) => {
             <div className={lotDetailsValue}>{el.value}</div>
           </div>
         ))}
+
+        {images.length > 0 && <CustomSlider images={images} />}
       </>
     </div>
   );

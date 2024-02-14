@@ -54,20 +54,26 @@
     flex-direction: column;
     row-gap: 24px;
   }
-
-  .buttonsContainer {
-    padding: 8px;
-    width: 100%;
-    display: flex;
-    justify-content: flex-end;
-    column-gap: 16px;
-
-    .formBtnCancelHidden {
-      display: none;
+  .formContainer {
+    & > div {
+      margin: 8px;
+      width: 376px;
     }
 
-    .formBtnCancelVisible {
-      width: 84px;
+    .buttonsContainer {
+      padding: 8px;
+      width: 100%;
+      display: flex;
+      justify-content: flex-end;
+      column-gap: 16px;
+
+      .formBtnCancelHidden {
+        display: none;
+      }
+
+      .formBtnCancelVisible {
+        width: 84px;
+      }
     }
   }
 
