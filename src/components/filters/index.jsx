@@ -26,7 +26,7 @@ const Filters = ({
     maxQuantity: '',
     minPrice: '',
     maxPrice: '',
-    user: [],
+    users: [],
     productCategory: [],
     lotType: '',
     countries: [],
@@ -98,7 +98,7 @@ const Filters = ({
             </div>
             <CustomMultiSelect
               units={users}
-              name="user"
+              name="users"
               disabled={false}
               placeholder="Select owners"
               itemFieldName="username"
