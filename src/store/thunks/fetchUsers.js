@@ -11,7 +11,7 @@ export const fetchUsers = createAsyncThunk('usersList/fetchUsers', async () => {
 
 export const deleteUser = createAsyncThunk(
   'usersList/deleteUser',
-  async (id) => {
+  async ({ id }) => {
     const response = await axiosInstance.delete(`${ENDPOINTS.USERS}/${id}`);
 
     return response.data;

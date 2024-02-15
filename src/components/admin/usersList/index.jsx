@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -17,6 +17,7 @@ import { fetchUsers, deleteUser } from '@thunks/fetchUsers';
 import { toggleModal } from '@slices/modalSlice';
 import getFormattedDate from '@helpers/getFormattedDate';
 
+import ConfirmActionModal from '@customModals/confirmActionModal';
 import ModalForCreatingUser from '@customModals/modalForCreatingUser';
 import ModalForUpdatingUser from '@customModals/modalForUpdatingUser';
 
@@ -38,6 +39,8 @@ const {
 export default function UsersList() {
   const dispatch = useDispatch();
   const users = useSelector(usersListSelector);
+  const userId = useSelector((state) => state.usersList.userId);
+  const [confirmStatus, setConfirmStatus] = useState(false);
 
   useEffect(() => {
     dispatch(fetchUsers());
@@ -48,9 +51,18 @@ export default function UsersList() {
     dispatch(setUserId(id));
   };
 
-  const handleDeleteClick = (id) => {
-    dispatch(deleteUser(id));
+  const showConfirm = (id) => {
+    console.log(id);
+    dispatch(toggleModal('confirmModal'));
+    dispatch(setUserId(id));
   };
+
+  useEffect(() => {
+    if (confirmStatus) {
+      dispatch(deleteUser({ id: userId }));
+      setConfirmStatus(false);
+    }
+  }, [confirmStatus]);
 
   return (
     <>
@@ -110,7 +122,7 @@ export default function UsersList() {
                   <div className={editBlock}>
                     <DeleteForeverOutlinedIcon
                       className={deleteIcon}
-                      onClick={() => handleDeleteClick(user.id)}
+                      onClick={() => showConfirm(user.id)}
                     />
                     <BorderColorIcon
                       className={editIcon}
@@ -124,6 +136,10 @@ export default function UsersList() {
       </Table>
       <ModalForUpdatingUser title="Update user info" />
       <ModalForCreatingUser title="Create new user" />
+      <ConfirmActionModal
+        text="This action delete the user. Do you confirm the action?"
+        setConfirmStatus={setConfirmStatus}
+      />
     </>
   );
 }
