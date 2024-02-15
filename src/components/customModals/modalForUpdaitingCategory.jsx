@@ -24,7 +24,9 @@ const ModalForUpdatingCategory = () => {
   );
 
   const categoryData = {
+    id: categoryFields?.id || '',
     title: categoryFields?.title || '',
+    parentId: categoryFields?.parentId || '',
   };
 
   const handleSubmitClick = (values) => {
