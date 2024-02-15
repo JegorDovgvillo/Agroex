@@ -52,6 +52,7 @@ const LotForm = ({
   };
 
   const [isFirstSubmit, setIsFirstSubmit] = useState(true);
+
   const formRef = useRef(null);
 
   useEffect(() => {
@@ -66,6 +67,8 @@ const LotForm = ({
   const handlePlaceItemBtnClick = () => {
     isFirstSubmit && setIsFirstSubmit(false);
   };
+
+  const isCreateNotSubmittedForm = formType === 'create' && isFirstSubmit;
 
   return (
     <Formik
@@ -94,11 +97,7 @@ const LotForm = ({
               name="title"
               value={values.title}
               errors={errors.title}
-              touched={
-                formType === 'create' && isFirstSubmit && isFirstSubmit
-                  ? touched.title
-                  : true
-              }
+              touched={!isCreateNotSubmittedForm || touched.title}
             />
             <CustomSelect
               label="User"
@@ -108,9 +107,7 @@ const LotForm = ({
               placeholder="Choose user"
               value={values.userId}
               errors={errors.userId}
-              touched={
-                formType === 'create' && isFirstSubmit ? touched.userId : true
-              }
+              touched={!isCreateNotSubmittedForm || touched.userId}
             />
             <CustomSelect
               label="Location"
@@ -120,9 +117,7 @@ const LotForm = ({
               placeholder="Choose country"
               value={values.country}
               errors={errors.country}
-              touched={
-                formType === 'create' && isFirstSubmit ? touched.country : true
-              }
+              touched={!isCreateNotSubmittedForm || touched.country}
             />
             <CustomTextField
               label="Region"
@@ -131,9 +126,7 @@ const LotForm = ({
               name="region"
               value={values.region}
               errors={errors.region}
-              touched={
-                formType === 'create' && isFirstSubmit ? touched.region : true
-              }
+              touched={!isCreateNotSubmittedForm || touched.region}
             />
           </div>
           <CustomTextField
@@ -145,11 +138,7 @@ const LotForm = ({
             type="textarea"
             value={values.description}
             errors={errors.description}
-            touched={
-              formType === 'create' && isFirstSubmit
-                ? touched.description
-                : true
-            }
+            touched={!isCreateNotSubmittedForm || touched.description}
           />
           <div className={styles.inputBlock}>
             <CustomSelect
@@ -160,9 +149,7 @@ const LotForm = ({
               placeholder="Choose category"
               value={values.category}
               errors={errors.category}
-              touched={
-                formType === 'create' && isFirstSubmit ? touched.category : true
-              }
+              touched={!isCreateNotSubmittedForm || touched.category}
             />
             <CustomTextField
               label="Subcategory"
@@ -171,11 +158,7 @@ const LotForm = ({
               name="subcategory"
               value={values.subcategory}
               errors={errors.subcategory}
-              touched={
-                formType === 'create' && isFirstSubmit
-                  ? touched.subcategory
-                  : true
-              }
+              touched={!isCreateNotSubmittedForm || touched.subcategory}
             />
             <CustomTextField
               label="Variety"
@@ -184,9 +167,7 @@ const LotForm = ({
               name="variety"
               value={values.variety}
               errors={errors.variety}
-              touched={
-                formType === 'create' && isFirstSubmit ? touched.variety : true
-              }
+              touched={!isCreateNotSubmittedForm || touched.variety}
             />
             <CustomTextField
               label="Size"
@@ -196,9 +177,7 @@ const LotForm = ({
               name="size"
               value={values.size}
               errors={errors.size}
-              touched={
-                formType === 'create' && isFirstSubmit ? touched.size : true
-              }
+              touched={!isCreateNotSubmittedForm || touched.size}
             />
           </div>
           <div className={styles.inputBlock}>
@@ -210,11 +189,7 @@ const LotForm = ({
               required={false}
               value={values.packaging}
               errors={errors.packaging}
-              touched={
-                formType === 'create' && isFirstSubmit
-                  ? touched.packaging
-                  : true
-              }
+              touched={!isCreateNotSubmittedForm || touched.packaging}
             />
             <CustomTextField
               label="Quantity"
@@ -224,9 +199,7 @@ const LotForm = ({
               name="quantity"
               value={values.quantity}
               errors={errors.quantity}
-              touched={
-                formType === 'create' && isFirstSubmit ? touched.quantity : true
-              }
+              touched={!isCreateNotSubmittedForm || touched.quantity}
             />
             <CustomTextField
               label="Price"
@@ -236,9 +209,7 @@ const LotForm = ({
               placeholder="Enter the price"
               value={values.price}
               errors={errors.price}
-              touched={
-                formType === 'create' && isFirstSubmit ? touched.price : true
-              }
+              touched={!isCreateNotSubmittedForm || touched.price}
             />
             <CustomSelect
               label="Currency"
@@ -248,11 +219,7 @@ const LotForm = ({
               placeholder="Currency"
               value={values.priceUnits}
               errors={errors.priceUnits}
-              touched={
-                formType === 'create' && isFirstSubmit
-                  ? touched.priceUnits
-                  : true
-              }
+              touched={!isCreateNotSubmittedForm || touched.priceUnits}
             />
           </div>
           <div className={styles.inputBlock}>
@@ -263,11 +230,7 @@ const LotForm = ({
                 setFieldValue('expirationDate', date);
               }}
               errors={errors.expirationDate}
-              touched={
-                formType === 'create' && isFirstSubmit
-                  ? touched.expirationDate
-                  : true
-              }
+              touched={!isCreateNotSubmittedForm || touched.expirationDate}
             />
             <CustomSelect
               label="Lot type"
@@ -277,9 +240,7 @@ const LotForm = ({
               placeholder="Lot type"
               value={values.lotType}
               errors={errors.lotType}
-              touched={
-                formType === 'create' && isFirstSubmit ? touched.lotType : true
-              }
+              touched={!isCreateNotSubmittedForm || touched.lotType}
             />
           </div>
           <DragAndDrop
