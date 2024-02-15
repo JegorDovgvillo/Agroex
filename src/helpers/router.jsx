@@ -6,6 +6,7 @@ import { LotDetails } from '@pages/LotDetails';
 import CreateNewLot from '@pages/createNewLot';
 import UpdateLot from '@pages/updateLot';
 import UserProfile from '@pages/UserProfile';
+import HomePage from '@pages/HomePage';
 
 import UsersList from '@components/admin/usersList';
 import Layout from '@components/layout';
@@ -22,6 +23,10 @@ const Router = () => {
       path: '/',
       element: <Layout />,
       children: [
+        {
+          path: ROUTES.HOME_PAGE,
+          element: <HomePage />,
+        },
         {
           path: ROUTES.LOTS,
           element: <LotList />,
