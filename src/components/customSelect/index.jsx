@@ -15,6 +15,7 @@ const CustomSelect = ({
   errors,
   touched,
 }) => {
+  console.log(name, touched);
   return (
     <div className={styles.wrapp}>
       <FormControl error={errors && touched}>

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import _ from 'lodash';
 
 import { fetchUsers } from '@thunks/fetchUsers';
 import { fetchCategories } from '@thunks/fetchCategories';
@@ -65,8 +66,7 @@ const CreateNewLot = () => {
     resetForm();
   };
 
-  const isDataLoaded =
-    users.length > 0 && categories.length > 0 && country.length > 0;
+  const isDataLoaded = !_.every([users, categories, country], _.isEmpty);
 
   return (
     <>

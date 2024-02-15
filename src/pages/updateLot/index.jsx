@@ -2,6 +2,7 @@ import { useParams } from 'react-router';
 import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import _ from 'lodash';
 
 import { selectLotDetailById } from '@slices/lotListSlice';
 import { usersListSelector } from '@slices/usersListSlice';
@@ -100,10 +101,7 @@ const UpdateLot = () => {
   };
 
   const isDataLoaded =
-    selectedLot &&
-    users.length > 0 &&
-    categories.length > 0 &&
-    country.length > 0;
+    selectedLot && !_.every([users, categories, country], _.isEmpty);
 
   return (
     <>

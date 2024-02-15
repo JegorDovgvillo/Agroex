@@ -48,7 +48,6 @@ const ManageCardBlock = ({ id }) => {
   };
 
   const handleEdit = () => {
-    //todo redirect to the edit lot page
     navigate(ROUTES.UPDATE_LOT.replace(':id', id));
   };
 

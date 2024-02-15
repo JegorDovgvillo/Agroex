@@ -1,5 +1,6 @@
 import { useDispatch } from 'react-redux';
 import { useFormik } from 'formik';
+import _ from 'lodash';
 
 import { TextField, Box } from '@mui/material';
 
@@ -81,7 +82,7 @@ const UserUpdateForm = ({
         value={formik.values.username}
         onChange={formik.handleChange}
         onBlur={formik.handleBlur}
-        error={formik.touched.username && Boolean(formik.errors.username)}
+        error={Boolean(formik.errors.username)}
         helperText={formik.touched.username && formik.errors.username}
       />
       <TextField
@@ -92,7 +93,7 @@ const UserUpdateForm = ({
         value={formik.values.email}
         onChange={formik.handleChange}
         onBlur={formik.handleBlur}
-        error={formik.touched.email && Boolean(formik.errors.email)}
+        error={Boolean(formik.errors.email)}
         helperText={formik.touched.email && formik.errors.email}
       />
 
@@ -104,7 +105,7 @@ const UserUpdateForm = ({
         onChange={formik.handleChange}
         onBlur={formik.handleBlur}
         disabled={isFormDisabled}
-        error={formik.touched.phoneNumber && Boolean(formik.errors.phoneNumber)}
+        error={Boolean(formik.errors.phoneNumber)}
         helperText={formik.touched.phoneNumber && formik.errors.phoneNumber}
       />
 
@@ -127,7 +128,7 @@ const UserUpdateForm = ({
             <CustomButton
               {...saveBtnProps}
               typeOfButton="submit"
-              disabled={Object.keys(formik.errors).length > 0}
+              disabled={!_.isEmpty(formik.errors)}
             />
           </div>
         )}
