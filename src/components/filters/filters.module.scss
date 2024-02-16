@@ -1,6 +1,25 @@
-@import "../../index.scss";
+@import "@scss/colorVariables.module.scss";
 
 .filtersWrapp {
-  width: 292px;
   border-right: solid 1px $monoGraySelect;
+  width: 420px;
+
+  form {
+    padding: 16px 24px;
+    align-items: stretch;
+
+    .inputWrapp {
+      display: flex;
+      flex-direction: row;
+    }
+
+    .buttonsWrap {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      box-shadow: 0px 1px 16px 0px $monoGraySelect;
+    }
+  }
 }

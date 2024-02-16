@@ -27,12 +27,8 @@ const Router = () => {
           element: <LotList />,
         },
         {
-          path: ROUTES.LOTS_BUY,
-          element: <LotList lotType={'buy'} />,
-        },
-        {
-          path: ROUTES.LOTS_SELL,
-          element: <LotList lotType={'sell'} />,
+          path: ROUTES.LOTS,
+          element: <LotList />,
         },
         {
           path: ROUTES.LOTS_DETAILS,

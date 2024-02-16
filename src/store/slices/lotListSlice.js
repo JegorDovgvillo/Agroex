@@ -10,6 +10,7 @@ import {
   updateLot,
   deleteLot,
   createLot,
+  filteredLots,
 } from '@thunks/fetchLots';
 
 const lotListAdapter = createEntityAdapter();
@@ -77,6 +78,16 @@ const lotListSlice = createSlice({
         state.loadingStatus = 'fulfilled';
       })
       .addCase(createLot.rejected, (state) => {
+        state.loadingStatus = 'rejected';
+      })
+      .addCase(filteredLots.pending, (state) => {
+        state.loadingStatus = 'pending';
+      })
+      .addCase(filteredLots.fulfilled, (state, action) => {
+        lotListAdapter.setAll(state, action.payload);
+        state.loadingStatus = 'fulfilled';
+      })
+      .addCase(filteredLots.rejected, (state) => {
         state.loadingStatus = 'rejected';
       });
   },

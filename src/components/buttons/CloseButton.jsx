@@ -21,6 +21,7 @@ export const CloseButton = ({
   size = 'L',
   type = 'primary',
   disabled = false,
+  handleClick,
 }) => {
   const buttonStyles = getCloseClassName(size);
   const variant = getVariant(type);
@@ -29,6 +30,8 @@ export const CloseButton = ({
     <Button
       variant={variant}
       disabled={disabled}
+      type="button"
+      onClick={handleClick}
       className={`${styles.commonButtonStyles} ${buttonStyles}`}
     >
       <CloseIcon className={styles.icon} />

@@ -43,11 +43,17 @@ export const createLot = createAsyncThunk(
 
 export const deleteLot = createAsyncThunk(
   'lotList/deleteLot',
-  async ({ id, categoryData }) => {
-    const response = await axiosInstance.delete(
-      `${ENDPOINTS.LOTS}/${id}`,
-      categoryData
-    );
+  async ({ id }) => {
+    const response = await axiosInstance.delete(`${ENDPOINTS.LOTS}/${id}`);
+
+    return response.data;
+  }
+);
+
+export const filteredLots = createAsyncThunk(
+  'lotList/filteredLots',
+  async (values) => {
+    const response = await axiosInstance.get(`${ENDPOINTS.LOTS}?${values}`);
 
     return response.data;
   }

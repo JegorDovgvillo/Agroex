@@ -1,38 +1,54 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
 import Filters from '@components/filters';
 import ItemCard from '@components/itemCard';
 
-import { fetchLots } from '@thunks/fetchLots';
+import { fetchCategories } from '@thunks/fetchCategories';
+import { fetchCountries } from '@thunks/fetchCountries';
+import { filteredLots } from '@thunks/fetchLots';
+import { fetchUsers } from '@thunks/fetchUsers';
+
+import { usersListSelector } from '@slices/usersListSlice';
+import { categoriesSelector } from '@slices/categoriesSlice';
+import { countrySelector } from '@slices/countriesSlice';
 import { lotListSelector } from '@slices/lotListSlice';
 
 import styles from './lotList.module.scss';
 
-const LotList = ({ lotType }) => {
+const LotList = () => {
   const dispatch = useDispatch();
   const lots = useSelector(lotListSelector);
+  const categories = useSelector(categoriesSelector);
+  const countries = useSelector(countrySelector);
+  const users = useSelector(usersListSelector);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
-    dispatch(fetchLots());
+    dispatch(fetchCategories());
+    dispatch(fetchCountries());
+    dispatch(fetchUsers());
   }, [dispatch]);
 
-  const filteringLotsByLotType = () => {
-    const filteredLots = lots
-      .filter((item) => !lotType || item.lotType === lotType)
-      .map((item) => {
-        return <ItemCard {...item} key={item.id} />;
-      });
-
-    return <>{filteredLots}</>;
-  };
-
-  const filteredLots = filteringLotsByLotType();
+  useEffect(() => {
+    dispatch(filteredLots(searchParams));
+  }, [searchParams]);
 
   return (
     <>
-      <Filters />
-      <div className={styles.lotListWrapp}>{filteredLots}</div>
+      <Filters
+        categories={categories}
+        countries={countries}
+        searchParams={searchParams}
+        setSearchParams={setSearchParams}
+        users={users}
+      />
+      <div className={styles.lotListWrapp}>
+        {lots.map((item) => (
+          <ItemCard {...item} key={item.id} />
+        ))}
+      </div>
     </>
   );
 };

@@ -3,6 +3,7 @@ import { useDropzone } from 'react-dropzone';
 import CloseIcon from '@mui/icons-material/Close';
 import { v4 as uuidv4 } from 'uuid';
 import _ from 'lodash';
+
 import { IMAGE_URL } from '@helpers/endpoints';
 import ENDPOINTS from '@helpers/endpoints';
 
