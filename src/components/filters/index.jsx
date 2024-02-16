@@ -38,7 +38,6 @@ const Filters = ({
   };
 
   const applyFilters = (values) => {
-    console.log(values);
     setSearchParams(values);
     dispatch(filteredLots(searchParams));
   };
