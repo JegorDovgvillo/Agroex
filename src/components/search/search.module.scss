@@ -1,0 +1,50 @@
+@import "@scss/colorVariables.module.scss";
+@import "@scss/typography.module.scss";
+
+.link {
+  margin-right: 40px;
+}
+
+.sendIcon {
+  margin-right: 20px;
+}
+
+.closeIcon {
+  position: relative;
+  right: 115px;
+}
+
+.closeIcon,
+.sendIcon,
+.searchIcon {
+  font-size: 30px !important;
+}
+
+.searchIcon {
+  position: relative;
+  left: 45px;
+}
+
+.searchWrapp {
+  @include inputText;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  color: $monoGray;
+  flex: 1;
+
+  .searchInput {
+    @include inputText;
+    border: none;
+    color: $monoGray;
+    padding: 10px 10px 10px 50px;
+    margin-right: 20px;
+    border: solid 1px $monoGray;
+    border-radius: 4px;
+  }
+
+  .activeInput {
+    outline: solid 0 $monoGray;
+    width: 100%;
+  }
+}

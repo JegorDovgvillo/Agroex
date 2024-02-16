@@ -1,54 +1,12 @@
-@import "../../scss/typography.module.scss";
-@import "../../scss/colorVariables.module.scss";
+@import "@scss/colorVariables.module.scss";
+
 .header {
   width: 100%;
   display: flex;
   height: 96px;
   align-items: center;
   padding: 0 84px;
-  background-color: white;
+  background-color: $monoWhite;
   box-shadow: 0 4px 16px 0 #00000014;
   z-index: 5;
-
-  .link {
-    margin-right: 40px;
-  }
-
-  .sendButton {
-    margin-right: 20px;
-  }
-
-  .closeIcon {
-    position: relative;
-    right: 110px;
-  }
-
-  .searchWrapp {
-    @include inputText;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    color: $monoGray;
-    flex: 1;
-
-    .icon {
-      position: relative;
-      left: 30px;
-    }
-
-    .searchInput {
-      @include inputText;
-      border: none;
-      color: $monoGray;
-      padding: 10px 10px 10px 40px;
-      margin-right: 20px;
-      border: solid 1px $monoGray;
-      border-radius: 4px;
-
-      &:focus-visible {
-        outline: solid 0 $monoGray;
-        width: 100%;
-      }
-    }
-  }
 }

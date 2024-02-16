@@ -38,6 +38,7 @@ const Filters = ({
   };
 
   const applyFilters = (values) => {
+    console.log(values);
     setSearchParams(values);
     dispatch(filteredLots(searchParams));
   };
@@ -58,7 +59,7 @@ const Filters = ({
             />
             <div className={styles.inputWrapp}>
               <CustomTextField
-                placeholder="min quantity"
+                placeholder="Min quantity"
                 label="Min quantity"
                 id="minQuantity"
                 name="minQuantity"
@@ -68,7 +69,7 @@ const Filters = ({
                 value={values.minQuantity}
               />
               <CustomTextField
-                placeholder="max quantity"
+                placeholder="Max quantity"
                 label="Max quantity"
                 id="maxQuantity"
                 name="maxQuantity"
@@ -80,7 +81,7 @@ const Filters = ({
             </div>
             <div className={styles.inputWrapp}>
               <CustomTextField
-                placeholder="min price"
+                placeholder="Min price"
                 label="Min price"
                 id="minPrice"
                 name="minPrice"
@@ -90,7 +91,7 @@ const Filters = ({
                 value={values.minPrice}
               />
               <CustomTextField
-                placeholder="max price"
+                placeholder="Max price"
                 label="Max price"
                 id="maxPrice"
                 name="maxPrice"
