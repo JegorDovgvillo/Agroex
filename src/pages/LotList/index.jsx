@@ -35,16 +35,6 @@ const LotList = () => {
     dispatch(filteredLots(searchParams));
   }, [searchParams]);
 
-  const renderLots = () => {
-    const filteredLots = lots.map((item) => {
-      return <ItemCard {...item} key={item.id} />;
-    });
-
-    return <>{filteredLots}</>;
-  };
-
-  const allLots = renderLots();
-
   return (
     <>
       <Filters
@@ -54,7 +44,11 @@ const LotList = () => {
         setSearchParams={setSearchParams}
         users={users}
       />
-      <div className={styles.lotListWrapp}>{allLots}</div>
+      <div className={styles.lotListWrapp}>
+        {lots.map((item) => (
+          <ItemCard {...item} key={item.id} />
+        ))}
+      </div>
     </>
   );
 };

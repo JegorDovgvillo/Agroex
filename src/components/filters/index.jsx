@@ -37,14 +37,16 @@ const Filters = ({
     resetForm();
   };
 
+  const applyFilters = (values) => {
+    setSearchParams(values);
+    dispatch(filteredLots(searchParams));
+  };
+
   return (
     <div className={styles.filtersWrapp}>
       <Formik
         initialValues={initialValues}
-        onSubmit={(values) => {
-          setSearchParams(values);
-          dispatch(filteredLots(searchParams));
-        }}
+        onSubmit={(values) => applyFilters(values)}
       >
         {({ resetForm }) => (
           <Form>
