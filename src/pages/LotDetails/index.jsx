@@ -75,7 +75,7 @@ export const LotDetails = () => {
     description,
     lotType,
     currency,
-    pricePerTon,
+    price,
     quantity,
     location,
     variety,
@@ -84,12 +84,7 @@ export const LotDetails = () => {
     images,
   } = selectedLot;
 
-  const totalPrice = quantity * pricePerTon;
-
-  const totalPriceWithCurrency = getNumberWithCurrency(
-    quantity * pricePerTon,
-    currency
-  );
+  const totalPriceWithCurrency = getNumberWithCurrency(price, currency);
 
   const buySellBtnText = `${
     lotType[0].toUpperCase() + lotType.slice(1)
@@ -149,8 +144,8 @@ export const LotDetails = () => {
                     <p className={body2}>Total price</p>
                     <div>
                       <PriceBlock
-                        totalCost={totalPrice}
-                        unitCost={pricePerTon}
+                        totalCost={price}
+                        unitCost={price / quantity}
                         currency={currency}
                         className={['detailed']}
                       />

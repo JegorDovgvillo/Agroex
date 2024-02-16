@@ -47,8 +47,8 @@ const BettingCard = (item) => {
         <div className={userProfilePriceBlock}>
           <PriceBlock
             className={containerClassName}
-            totalCost={item.quantity * item.pricePerTon}
-            unitCost={item.pricePerTon}
+            totalCost={item.price}
+            unitCost={item.price / item.quantity}
             currency={item.currency}
           />
           <CustomButton
@@ -62,8 +62,8 @@ const BettingCard = (item) => {
         <div className={userProfilePriceBlock}>
           <PriceBlock
             className={['list']}
-            totalCost={item.quantity * item.pricePerTon}
-            unitCost={item.pricePerTon}
+            totalCost={item.price}
+            unitCost={item.price / item.quantity}
             currency={item.currency}
           />
           <CustomButton

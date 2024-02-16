@@ -27,11 +27,7 @@ const UserLotCard = (item) => {
     event.stopPropagation();
   };
 
-  // todo replace 'item.quantity * item.pricePerTon' by current bet
-  const totalBet = getNumberWithCurrency(
-    item.quantity * item.pricePerTon,
-    item.currency
-  );
+  const totalBet = getNumberWithCurrency(item.price, item.currency);
 
   const tabClasses = {
     [priceContainer]: true,
@@ -59,8 +55,8 @@ const UserLotCard = (item) => {
         <div className={priceBlock}>
           <PriceBlock
             className={['list', 'auctionSum']}
-            totalCost={item.quantity * item.pricePerTon}
-            unitCost={item.pricePerTon}
+            totalCost={item.price}
+            unitCost={item.price / item.quantity}
             currency={item.currency}
           />
         </div>
@@ -68,8 +64,8 @@ const UserLotCard = (item) => {
         <div className={priceBlock}>
           <PriceBlock
             className={['list']}
-            totalCost={item.quantity * item.pricePerTon}
-            unitCost={item.pricePerTon}
+            totalCost={item.price}
+            unitCost={item.price / item.quantity}
             currency={item.currency}
           />
         </div>

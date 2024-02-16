@@ -36,8 +36,8 @@ const ItemCard = ({ ...item }) => {
         <div className={styles.priceBlock}>
           <PriceBlock
             className={['list', 'auctionSum']}
-            totalCost={item.quantity * item.pricePerTon}
-            unitCost={item.pricePerTon}
+            totalCost={item.price}
+            unitCost={item.price / item.quantity}
             currency={item.currency}
           />
           <CustomButton
@@ -51,8 +51,8 @@ const ItemCard = ({ ...item }) => {
         <div className={styles.priceBlock}>
           <PriceBlock
             className={['list']}
-            totalCost={item.quantity * item.pricePerTon}
-            unitCost={item.pricePerTon}
+            totalCost={item.price}
+            unitCost={item.price / item.quantity}
             currency={item.currency}
           />
           <CustomButton

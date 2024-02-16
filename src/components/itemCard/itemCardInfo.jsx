@@ -39,9 +39,9 @@ const ItemCardInfoBlock = ({ item, children }) => {
         </div>
         <div className={styles.info}>
           <span>
-            {/*  {item.productCategory.title} */}
-            Apples, {item.variety}, {getNumberWithCurrency(item.quantity)} ton,{' '}
-            {item.size}, {item.packaging}
+            {item.productCategory.title}, {item.variety},{' '}
+            {getNumberWithCurrency(item.quantity)} ton, {item.size},{' '}
+            {item.packaging}
           </span>
           <span>
             {item.location.countryName}, {item.location.region}
