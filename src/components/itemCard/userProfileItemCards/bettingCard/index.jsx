@@ -40,7 +40,7 @@ const BettingCard = (item) => {
       <ItemCardInfoBlock item={item}>
         <>
           <LotStatusBlock lotStatus={lotStatus} />
-          <ManageCardBlock />
+          <ManageCardBlock id={item.id} />
         </>
       </ItemCardInfoBlock>
       <div className={priceWrapp}>

@@ -17,7 +17,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import MoreIcon from '@mui/icons-material/More';
 
 import { fetchLots, updateLot } from '@thunks/fetchLots';
-import { fetchAllCategories } from '@thunks/fetchCategories';
+import { fetchCategories } from '@thunks/fetchCategories';
 import { toggleModal, selectModalState } from '@slices/modalSlice';
 import { lotListSelector, setLotId } from '@slices/lotListSlice';
 import { setUserId } from '@slices/usersListSlice';
@@ -68,7 +68,7 @@ export default function AdminLotsList() {
 
   useEffect(() => {
     dispatch(fetchLots());
-    dispatch(fetchAllCategories());
+    dispatch(fetchCategories());
   }, [dispatch]);
 
   useEffect(() => {

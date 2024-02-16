@@ -1,5 +1,6 @@
 import { useDispatch } from 'react-redux';
 import { useFormik } from 'formik';
+import _ from 'lodash';
 
 import { TextField, Box } from '@mui/material';
 
@@ -8,6 +9,8 @@ import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
 
 import { updateUser } from '@thunks/fetchUsers';
 import { CustomButton } from '@components/buttons/CustomButton';
+
+import { updateUserValidationSchema } from '@helpers/validationSchemes/userDataValidationSchemes';
 
 import styles from './userAccount.module.scss';
 
@@ -56,7 +59,7 @@ const UserUpdateForm = ({
       email: email || '',
       phoneNumber: phoneNumber || '',
     },
-
+    validationSchema: updateUserValidationSchema,
     onSubmit: (values) => {
       dispatch(updateUser({ id: id, userData: values }));
       setFormDisabled(true);
@@ -79,6 +82,8 @@ const UserUpdateForm = ({
         value={formik.values.username}
         onChange={formik.handleChange}
         onBlur={formik.handleBlur}
+        error={Boolean(formik.errors.username)}
+        helperText={formik.touched.username && formik.errors.username}
       />
       <TextField
         id="email"
@@ -88,6 +93,8 @@ const UserUpdateForm = ({
         value={formik.values.email}
         onChange={formik.handleChange}
         onBlur={formik.handleBlur}
+        error={Boolean(formik.errors.email)}
+        helperText={formik.touched.email && formik.errors.email}
       />
 
       <TextField
@@ -98,6 +105,8 @@ const UserUpdateForm = ({
         onChange={formik.handleChange}
         onBlur={formik.handleBlur}
         disabled={isFormDisabled}
+        error={Boolean(formik.errors.phoneNumber)}
+        helperText={formik.touched.phoneNumber && formik.errors.phoneNumber}
       />
 
       <div className={buttonsContainer}>
@@ -116,7 +125,11 @@ const UserUpdateForm = ({
         )}
         {!isFormDisabled && (
           <div className={formBtn}>
-            <CustomButton {...saveBtnProps} typeOfButton="submit" />
+            <CustomButton
+              {...saveBtnProps}
+              typeOfButton="submit"
+              disabled={!_.isEmpty(formik.errors)}
+            />
           </div>
         )}
       </div>

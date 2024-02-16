@@ -8,6 +8,10 @@
   width: 210px;
   margin: 0 16px 24px 0 !important;
 
+  &.error {
+    margin: 0 16px 0 0 !important;
+  }
+
   @media only all and (max-width: 1000px) {
     width: 190px;
   }

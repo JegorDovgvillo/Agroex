@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import _ from 'lodash';
 
 import { fetchUsers } from '@thunks/fetchUsers';
 import { fetchCategories } from '@thunks/fetchCategories';
@@ -31,24 +32,6 @@ const CreateNewLot = () => {
     dispatch(fetchCategories());
     dispatch(fetchCountries());
   }, [dispatch]);
-
-  const initialValues = {
-    userId: '',
-    title: '',
-    country: '',
-    region: '',
-    category: '',
-    subcategory: '',
-    variety: '',
-    description: '',
-    packaging: '',
-    quantity: '',
-    price: '',
-    priceUnits: 'USD',
-    lotType: '',
-    size: '',
-    expirationDate: '',
-  };
 
   const handleSubmitClick = async (values, resetForm) => {
     const formData = new FormData();
@@ -83,21 +66,27 @@ const CreateNewLot = () => {
     resetForm();
   };
 
+  const isDataLoaded = !_.every([users, categories, country], _.isEmpty);
+
   return (
-    <LotForm
-      initialValues={initialValues}
-      handleSubmitClick={handleSubmitClick}
-      country={country}
-      categories={categories}
-      users={users}
-      formType="create"
-      files={files}
-      setFiles={setFiles}
-      maxFilesPerDrop={maxFilesPerDrop}
-      setMaxFilesPerDrop={setMaxFilesPerDrop}
-      disabled={disabled}
-      setDisabled={setDisabled}
-    />
+    <>
+      {isDataLoaded && (
+        <LotForm
+          handleSubmitClick={handleSubmitClick}
+          country={country}
+          categories={categories}
+          users={users}
+          formType="create"
+          files={files}
+          setFiles={setFiles}
+          maxFilesPerDrop={maxFilesPerDrop}
+          setMaxFilesPerDrop={setMaxFilesPerDrop}
+          disabled={disabled}
+          setDisabled={setDisabled}
+          isImageAdded={files.length > 0}
+        />
+      )}
+    </>
   );
 };
 

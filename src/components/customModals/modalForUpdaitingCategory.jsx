@@ -8,6 +8,8 @@ import { selectModalState } from '@slices/modalSlice';
 import { updateCategory } from '@thunks/fetchCategories';
 import { selectCategoryById } from '@slices/categoriesSlice';
 
+import { categoryTitleValidationSchema } from '@helpers/validationSchemes/lotValidationSchemes';
+
 import CustomTextField from '@customTextField';
 import { CustomButton } from '@buttons/CustomButton';
 
@@ -51,17 +53,27 @@ const ModalForUpdatingCategory = () => {
             onSubmit={async (values) => {
               handleSubmitClick(values);
             }}
+            validationSchema={categoryTitleValidationSchema}
           >
-            <Form>
-              <CustomTextField
-                name="title"
-                placeholder="Enter the category name"
-                required
-                label="Name of category"
-                id="title"
-              />
-              <CustomButton text="Update" width="210px" typeOfButton="submit" />
-            </Form>
+            {({ values, errors, touched, isValid }) => (
+              <Form>
+                <CustomTextField
+                  name="title"
+                  placeholder="Enter the category name"
+                  label="Name of category"
+                  id="category"
+                  value={values.title}
+                  errors={errors.title}
+                  touched={touched.title}
+                />
+                <CustomButton
+                  disabled={!isValid}
+                  text="Update"
+                  width="210px"
+                  typeOfButton="submit"
+                />
+              </Form>
+            )}
           </Formik>
         </Box>
       </Modal>

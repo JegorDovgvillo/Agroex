@@ -7,6 +7,8 @@ import { createUser } from '@thunks/fetchUsers';
 import { toggleModal } from '@slices/modalSlice';
 import { selectModalState } from '@slices/modalSlice';
 
+import { createUserValidationSchema } from '@helpers/validationSchemes/userDataValidationSchemes';
+
 import CustomTextField from '@customTextField';
 import { CustomButton } from '@buttons/CustomButton';
 
@@ -47,38 +49,56 @@ const ModalForCreatingUser = () => {
             onSubmit={(values) => {
               handleSubmitClick(values);
             }}
+            validationSchema={createUserValidationSchema}
           >
-            <Form>
-              <CustomTextField
-                name="username"
-                placeholder="Username"
-                required
-                label="Username"
-                id="username"
-              />
-              <CustomTextField
-                label="Email"
-                id="email"
-                name="email"
-                placeholder="Email"
-                required
-              />
-              <CustomTextField
-                name="phoneNumber"
-                placeholder="Phone number"
-                required
-                label="Phone number"
-                id="phoneNumber"
-              />
-              <CustomTextField
-                name="password"
-                placeholder="password"
-                required
-                label="Password"
-                id="password"
-              />
-              <CustomButton text="Create" width="210px" typeOfButton="submit" />
-            </Form>
+            {({ values, errors, touched, isValid }) => (
+              <Form>
+                <CustomTextField
+                  name="username"
+                  placeholder="Username"
+                  label="Username"
+                  id="username"
+                  value={values.username}
+                  errors={errors.username}
+                  touched={touched.username}
+                />
+                <CustomTextField
+                  label="Email"
+                  id="email"
+                  name="email"
+                  placeholder="Email"
+                  type="email"
+                  value={values.email}
+                  errors={errors.email}
+                  touched={touched.email}
+                />
+                <CustomTextField
+                  name="phoneNumber"
+                  placeholder="Phone number"
+                  label="Phone number"
+                  id="phoneNumber"
+                  type="tel"
+                  value={values.phoneNumber}
+                  errors={errors.phoneNumber}
+                  touched={touched.phoneNumber}
+                />
+                <CustomTextField
+                  name="password"
+                  placeholder="password"
+                  label="Password"
+                  id="password"
+                  value={values.password}
+                  errors={errors.password}
+                  touched={touched.password}
+                />
+                <CustomButton
+                  text="Create"
+                  width="210px"
+                  typeOfButton="submit"
+                  disabled={!isValid}
+                />
+              </Form>
+            )}
           </Formik>
         </Box>
       </Modal>

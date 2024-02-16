@@ -2,6 +2,7 @@ import { useParams } from 'react-router';
 import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import _ from 'lodash';
 
 import { selectLotDetailById } from '@slices/lotListSlice';
 import { usersListSelector } from '@slices/usersListSlice';
@@ -66,24 +67,6 @@ const UpdateLot = () => {
     dispatch(fetchCountries());
   }, [dispatch]);
 
-  const initialValues = {
-    userId: selectedLot?.userId || '',
-    title: selectedLot?.title || '',
-    country: selectedLot?.location.countryId || '',
-    region: selectedLot?.location.region || '',
-    category: selectedLot?.productCategoryId || '',
-    subcategory: selectedLot?.subcategory || '',
-    variety: selectedLot?.variety || '',
-    description: selectedLot?.description || '',
-    packaging: selectedLot?.packaging || '',
-    quantity: selectedLot?.quantity || '',
-    price: selectedLot?.pricePerTon * selectedLot?.quantity || '',
-    priceUnits: 'USD',
-    lotType: selectedLot?.lotType || '',
-    size: selectedLot?.size || '',
-    expirationDate: selectedLot?.expirationDate || '',
-  };
-
   const handleUpdateClick = async (values) => {
     const formData = new FormData();
     const lotData = {
@@ -117,23 +100,31 @@ const UpdateLot = () => {
     navigate(-1);
   };
 
+  const isDataLoaded =
+    selectedLot && !_.every([users, categories, country], _.isEmpty);
+
   return (
-    <LotForm
-      initialValues={initialValues}
-      handleSubmitClick={handleUpdateClick}
-      country={country}
-      categories={categories}
-      users={users}
-      formType="update"
-      setConfirmStatus={setConfirmStatus}
-      showConfirm={showConfirm}
-      files={files}
-      setFiles={setFiles}
-      maxFilesPerDrop={maxFilesPerDrop}
-      setMaxFilesPerDrop={setMaxFilesPerDrop}
-      disabled={disabled}
-      setDisabled={setDisabled}
-    />
+    <>
+      {isDataLoaded && (
+        <LotForm
+          selectedLot={selectedLot}
+          handleSubmitClick={handleUpdateClick}
+          country={country}
+          categories={categories}
+          users={users}
+          formType="update"
+          setConfirmStatus={setConfirmStatus}
+          showConfirm={showConfirm}
+          files={files}
+          setFiles={setFiles}
+          maxFilesPerDrop={maxFilesPerDrop}
+          setMaxFilesPerDrop={setMaxFilesPerDrop}
+          disabled={disabled}
+          setDisabled={setDisabled}
+          isImageAdded={files.length > 0}
+        />
+      )}
+    </>
   );
 };
 

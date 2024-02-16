@@ -7,6 +7,11 @@ import { toggleModal, selectModalState } from '@slices/modalSlice';
 import { createCategory } from '@thunks/fetchCategories';
 import { selectRootCategories } from '@slices/categoriesSlice';
 
+import {
+  categoryTitleValidationSchema,
+  subcategoryCreationValidationSchema,
+} from '../../helpers/validationSchemes/lotValidationSchemes';
+
 import CustomSelect from '../customSelect';
 import CustomTextField from '@customTextField';
 import { CustomButton } from '@buttons/CustomButton';
@@ -50,35 +55,53 @@ const ModalForCreatingCategory = () => {
           <Formik
             initialValues={initialValues}
             onSubmit={(values) => handleSubmit(values)}
+            validationSchema={
+              isCreatingCategory
+                ? categoryTitleValidationSchema
+                : subcategoryCreationValidationSchema
+            }
           >
-            <Form>
-              {!isCreatingCategory && (
-                <CustomSelect
-                  units={rootCategories}
-                  itemFieldName="title"
-                  name="parentId"
-                  width="210px"
-                  disabled={false}
-                  margin="0 16px 24px 0"
-                  placeholder="Choose category"
-                  label="Category"
+            {({ values, errors, touched, isValid }) => (
+              <Form>
+                {!isCreatingCategory && (
+                  <CustomSelect
+                    units={rootCategories}
+                    itemFieldName="title"
+                    name="parentId"
+                    width="210px"
+                    disabled={false}
+                    margin="0 16px 24px 0"
+                    placeholder="Choose category"
+                    label="Category"
+                    value={values.parentId}
+                    errors={errors.parentId}
+                    touched={touched.parentId}
+                  />
+                )}
+                <CustomTextField
+                  name="title"
+                  placeholder={
+                    isCreatingCategory
+                      ? 'Enter the category name'
+                      : 'Enter the subcategory'
+                  }
+                  required
+                  label={
+                    isCreatingCategory ? 'Category name' : 'Subcategory name'
+                  }
+                  id="title"
+                  value={values.title}
+                  errors={errors.title}
+                  touched={touched.title}
                 />
-              )}
-              <CustomTextField
-                name="title"
-                placeholder={
-                  isCreatingCategory
-                    ? 'Enter the category name'
-                    : 'Enter the subcategory'
-                }
-                required
-                label={
-                  isCreatingCategory ? 'Category name' : 'Subcategory name'
-                }
-                id="title"
-              />
-              <CustomButton text="Create" width="210px" typeOfButton="submit" />
-            </Form>
+                <CustomButton
+                  text="Create"
+                  width="210px"
+                  typeOfButton="submit"
+                  disabled={!isValid}
+                />
+              </Form>
+            )}
           </Formik>
           <div className={styles.radioButtons}>
             <label>

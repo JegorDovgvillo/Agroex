@@ -1,3 +1,5 @@
+@import "@scss/colorVariables.module.scss";
+
 .popper {
   ul {
     width: 75px;
@@ -7,6 +9,19 @@
 .datePicker {
   min-width: 436px;
   margin: 0 16px 24px 0;
+
+  .default {
+    border-radius: 4px;
+  }
+
+  &.error,
+  &.error:focus-visible {
+    margin: 0 16px 0 0;
+
+    * {
+      outline-color: $errorBase;
+    }
+  }
 
   @media only all and (max-width: 1000px) {
     min-width: 396px;
