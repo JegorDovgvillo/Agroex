@@ -13,7 +13,7 @@ import Layout from '@components/layout';
 import CategoriesList from '@components/admin/adminCategories';
 import AdminLotsList from '@components/admin/adminLotsList';
 import UserProfilePage from '@components/userProfile/userProfilePage';
-import CustomTabPanel from '@components/customTabPanel';
+import UserProfileTabPanel from '@components/customTabPanels/userProfileTabPanel';
 
 import ROUTES from './routeNames';
 
@@ -24,8 +24,12 @@ const Router = () => {
       element: <Layout />,
       children: [
         {
-          path: ROUTES.HOME_PAGE,
+          path: ROUTES.CATEGORY_PAGE,
           element: <HomePage />,
+        },
+        {
+          path: ROUTES.SUBCATEGORY_LOTS_PAGE,
+          element: <LotList />,
         },
         {
           path: ROUTES.LOTS,
@@ -75,7 +79,7 @@ const Router = () => {
               children: [
                 {
                   path: ROUTES.USER_PROFILE_PAGE_TAB,
-                  element: <CustomTabPanel />,
+                  element: <UserProfileTabPanel />,
                 },
               ],
             },

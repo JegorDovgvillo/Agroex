@@ -1,0 +1,31 @@
+@import "@scss/colorVariables.module.scss";
+
+.container {
+  position: relative;
+  overflow: hidden;
+  height: 304px;
+  box-shadow: inset 0px -1px 0px 0px rgb(255, 255, 255);
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
+
+  @media screen and (max-width: 1250px) {
+    height: 204px;
+  }
+
+  .titleRow {
+    padding: 16px 24px;
+    background: rgba(19, 19, 20, 0.5);
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    color: $monoWhite;
+  }
+}

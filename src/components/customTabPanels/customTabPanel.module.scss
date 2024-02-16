@@ -1,0 +1,77 @@
+@import "@scss/colorVariables.module.scss";
+@import "@scss/typography.module.scss";
+
+.tabItem {
+  @include btnLarge;
+  text-transform: none !important;
+
+  font-size: 1.125rem !important;
+  font-weight: 500 !important;
+  line-height: 175% !important;
+  letter-spacing: 0.4px !important;
+  color: $monoBlack !important;
+}
+
+.userProfileTabPanelContainer {
+  .tabItem {
+    width: 236px;
+  }
+}
+
+.homePageContainer {
+  width: 100%;
+
+  .tabsContainer {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+
+    .categoriesTabsPanel {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+
+      .tabItem {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-end;
+        flex-wrap: nowrap;
+        column-gap: 16px;
+        max-width: none;
+        flex-grow: 1;
+      }
+
+      .tabItemActive {
+        svg {
+          color: $mainBase;
+        }
+      }
+    }
+  }
+
+  .subcategoriesContainer > div {
+    width: 100%;
+    display: flex;
+
+    .subcategoriesListContainer {
+      display: flex;
+      flex-direction: column;
+      padding: 8px 0;
+      width: 268px;
+
+      .listItem {
+        text-decoration: none;
+        color: $monoBlack;
+        @include checkbox;
+        padding: 6px 16px;
+
+        &:hover {
+          color: $mainBase;
+          text-decoration: underline;
+        }
+      }
+    }
+
+    .subcategoriesLinksContainer {
+      flex-grow: 1;
+    }
+  }
+}

@@ -1,9 +1,28 @@
-.lotListWrapp {
+.lotListContainer {
   display: flex;
   flex-direction: column;
-  flex: 1;
-  
-  @media only all and (max-width: 1500px) {
-      flex-direction: row;
+  padding: 0 24px;
+
+  .breadCrumbsContainer {
+    padding: 24px 0;
+    width: 100%;
+
+    .title {
+      padding: 0 0 0 40px;
+    }
+  }
+
+  .contentContainer {
+    display: flex;
+
+    .lotListWrapp {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+
+      @media only all and (max-width: 1500px) {
+        flex-direction: row;
+      }
+    }
   }
 }

@@ -1,8 +1,10 @@
 const ROUTES = {
-  HOME_PAGE: '/:category/:subcategory?',
-
+  CATEGORY_PAGE: '/:category?',
+  SUBCATEGORY_LOTS_PAGE: '/:category/:subcategory?',
   LOTS: '/lots',
-  LOTS_DETAILS: '/lots/:id/details',
+  LOTS_SELL: '/lots-sell',
+  LOTS_BUY: '/lots-buy',
+  LOTS_DETAILS: '/:category/:subcategory/:id/details',
   ADMIN: '/admin',
   ADMIN_CATEGORIES: '/admin/categories',
   ADMIN_USERS: '/admin/users',

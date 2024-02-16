@@ -88,9 +88,9 @@ $fontSizeMain: 16px;
 }
 
 @mixin helper {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 400;
-  line-height: 16px;
+  line-height: 1rem;
   letter-spacing: 0px;
   text-align: center;
 }
@@ -98,6 +98,13 @@ $fontSizeMain: 16px;
 @mixin btnLarge {
   font-size: 1.125rem;
   font-weight: 500;
+  line-height: 175%;
+  letter-spacing: 0.4px;
+}
+
+@mixin checkbox {
+  font-size: 1.125rem;
+  font-weight: 400;
   line-height: 175%;
   letter-spacing: 0.4px;
 }

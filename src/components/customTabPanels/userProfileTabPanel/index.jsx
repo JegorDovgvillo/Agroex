@@ -1,15 +1,16 @@
 import { useParams, useNavigate, generatePath } from 'react-router-dom';
+import _ from 'lodash';
 
 import { Tabs, Tab, Box } from '@mui/material';
 
 import ROUTES from '@helpers/routeNames';
 
-import TabPanel from './tabPanel';
-import userProfileData from '../userProfile/userProfileData';
+import TabPanel from '../tabPanel';
+import userProfileData from '@components/userProfile/userProfileData';
 
-import styles from './customTabPanel.module.scss';
+import styles from '../customTabPanel.module.scss';
 
-const { tabItem } = styles;
+const { userProfileTabPanelContainer, tabItem } = styles;
 
 function a11yProps(index) {
   return {
@@ -20,15 +21,13 @@ function a11yProps(index) {
 
 const { USER_PROFILE_PAGE_TAB } = ROUTES;
 
-const CustomTabPanel = () => {
+const UserProfileTabPanel = () => {
   const navigate = useNavigate();
   const { page, tab } = useParams();
 
-  const { tabs, element } = userProfileData.find(
-    (dataItem) => dataItem.route === page
-  );
+  const { tabs, element } = _.find(userProfileData, { route: page });
 
-  const currTabId = tabs.find((tabEl) => tabEl.tabRoute === tab).id;
+  const currTabId = _.get(_.find(tabs, { tabRoute: tab }), 'id', tabs[0].id);
 
   const handleChange = (event, newValue) => {
     const path = generatePath(USER_PROFILE_PAGE_TAB, {
@@ -40,13 +39,9 @@ const CustomTabPanel = () => {
   };
 
   return (
-    <Box sx={{ width: '100%' }}>
+    <Box sx={{ width: '100%' }} className={userProfileTabPanelContainer}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs
-          value={currTabId}
-          onChange={handleChange}
-          aria-label="basic tabs example"
-        >
+        <Tabs value={currTabId} onChange={handleChange}>
           {tabs.map((tab) => (
             <Tab
               className={tabItem}
@@ -69,4 +64,4 @@ const CustomTabPanel = () => {
   );
 };
 
-export default CustomTabPanel;
+export default UserProfileTabPanel;

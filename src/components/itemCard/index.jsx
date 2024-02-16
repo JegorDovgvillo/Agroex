@@ -1,8 +1,11 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, generatePath } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import _ from 'lodash';
 
 import ROUTES from '@helpers/routeNames';
 import { CustomButton } from '@buttons/CustomButton';
 import PriceBlock from '@components/priceBlock';
+import { selectCategoryById } from '@slices/categoriesSlice';
 
 import shoppingIcon from '@icons/shopping.svg';
 import betIcon from '@icons/bet.svg';
@@ -12,9 +15,17 @@ import styles from './itemCard.module.scss';
 
 const ItemCard = ({ ...item }) => {
   const navigate = useNavigate();
+  const parentCategory = useSelector((state) =>
+    selectCategoryById(state, item.productCategory.parentId)
+  );
 
   const viewDetailsCard = () => {
-    navigate(ROUTES.LOTS_DETAILS.replace(':id', item.id));
+    const path = generatePath(ROUTES.LOTS_DETAILS, {
+      category: _.toLower(parentCategory.title),
+      subcategory: _.toLower(item.productCategory.title),
+      id: item.id,
+    });
+    navigate(path);
   };
 
   const handleUpdateLot = (event) => {

@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, generatePath } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
+import _ from 'lodash';
+
 import CircularProgress from '@mui/material/CircularProgress';
 import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported';
 
@@ -8,9 +10,11 @@ import PriceBlock from '@components/priceBlock';
 import { CustomButton } from '@components/buttons/CustomButton';
 import Timer from '@components/timer';
 import CustomSlider from '@components/customSlider';
+import CustomBreadcrumbs from '@components/customBreadcrumbs';
 
 import getNumberWithCurrency from '@helpers/getNumberWithCurrency';
 import getFormattedDate from '@helpers/getFormattedDate';
+import ROUTES from '@helpers/routeNames';
 
 import { selectLotDetailById, setLotId } from '@slices/lotListSlice';
 import { fetchLotDetails } from '@thunks/fetchLots';
@@ -20,6 +24,8 @@ import cartIcon from '@icons/cartIcon.svg';
 import mapIcon from '@icons/mapIcon.svg';
 
 import styles from './lotDetails.module.scss';
+
+const { CATEGORY_PAGE, SUBCATEGORY_LOTS_PAGE } = ROUTES;
 
 const {
   body2,
@@ -47,7 +53,7 @@ const {
 
 export const LotDetails = () => {
   const dispatch = useDispatch();
-  const { id: lotId } = useParams();
+  const { id: lotId, category, subcategory } = useParams();
 
   const { loadingStatus } = useSelector((state) => state.lotList);
   const selectedLot = useSelector((state) => selectLotDetailById(state, lotId));
@@ -108,9 +114,31 @@ export const LotDetails = () => {
     { key: 'Created', value: getFormattedDate(creationDate) },
   ];
 
+  const breadCrumbsProps = [
+    { id: 1, link: '/', value: 'Categories' },
+    {
+      id: 2,
+      link: generatePath(CATEGORY_PAGE, {
+        category: category,
+      }),
+      value: _.capitalize(category),
+    },
+    {
+      id: 3,
+      link: generatePath(SUBCATEGORY_LOTS_PAGE, {
+        category: category,
+        subcategory: subcategory,
+      }),
+      value: _.capitalize(subcategory),
+    },
+    { id: 4, link: null, value: title },
+  ];
+
   return (
     <div className={pageContainer}>
-      <div className={breadCrumbs} />
+      <div className={breadCrumbs}>
+        <CustomBreadcrumbs props={breadCrumbsProps} />
+      </div>
       <div className={container}>
         {
           <>

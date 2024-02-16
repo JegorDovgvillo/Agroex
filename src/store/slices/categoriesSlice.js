@@ -100,7 +100,7 @@ export const selectCategoryById = createSelector(
 );
 
 export const selectCategoryByParentId = createSelector(
-  [selectAll, (state, parentId) => parentId],
+  [selectAll, (_, parentId) => parentId],
   (categories, parentId) => {
     return filter(categories, { parentId });
   }
