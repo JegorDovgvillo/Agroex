@@ -48,8 +48,8 @@ const Filters = ({
         {({ resetForm, values }) => (
           <Form>
             <CustomTextField
-              placeholder="Enter the keyword"
-              label="Keyword"
+              placeholder="Enter the text"
+              label="Search (title, description, variety)"
               id="keyword"
               name="keyword"
               required={false}
@@ -58,7 +58,7 @@ const Filters = ({
             />
             <div className={styles.inputWrapp}>
               <CustomTextField
-                placeholder="Enter the min Quantity"
+                placeholder="Min quantity"
                 label="Min quantity"
                 id="minQuantity"
                 name="minQuantity"
@@ -68,7 +68,7 @@ const Filters = ({
                 value={values.minQuantity}
               />
               <CustomTextField
-                placeholder="Enter the max quantity"
+                placeholder="Max quantity"
                 label="Max quantity"
                 id="maxQuantity"
                 name="maxQuantity"
@@ -80,7 +80,7 @@ const Filters = ({
             </div>
             <div className={styles.inputWrapp}>
               <CustomTextField
-                placeholder="Enter the min price"
+                placeholder="Min price"
                 label="Min price"
                 id="minPrice"
                 name="minPrice"
@@ -90,7 +90,7 @@ const Filters = ({
                 value={values.minPrice}
               />
               <CustomTextField
-                placeholder="Enter the max price"
+                placeholder="Max price"
                 label="Max price"
                 id="maxPrice"
                 name="maxPrice"
