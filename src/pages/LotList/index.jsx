@@ -8,7 +8,7 @@ import Filters from '@components/filters';
 import ItemCard from '@components/itemCard';
 import CustomBreadcrumbs from '@components/customBreadcrumbs';
 
-import { fetchCategories } from '@thunks/fetchCategories';
+import { fetchAllCategories } from '@thunks/fetchCategories';
 import { fetchCountries } from '@thunks/fetchCountries';
 import { filteredLots } from '@thunks/fetchLots';
 import { fetchUsers } from '@thunks/fetchUsers';
@@ -33,7 +33,7 @@ const LotList = ({ lotType }) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
-    dispatch(fetchCategories());
+    dispatch(fetchAllCategories());
     dispatch(fetchCountries());
     dispatch(fetchUsers());
   }, [dispatch]);
