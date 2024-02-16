@@ -44,11 +44,8 @@ const Filters = ({
 
   return (
     <div className={styles.filtersWrapp}>
-      <Formik
-        initialValues={initialValues}
-        onSubmit={(values) => applyFilters(values)}
-      >
-        {({ resetForm }) => (
+      <Formik initialValues={initialValues} onSubmit={applyFilters}>
+        {({ resetForm, values }) => (
           <Form>
             <CustomTextField
               placeholder="Enter the keyword"
@@ -57,6 +54,7 @@ const Filters = ({
               name="keyword"
               required={false}
               fieldType="filterInput"
+              value={values.keyword}
             />
             <div className={styles.inputWrapp}>
               <CustomTextField
@@ -67,6 +65,7 @@ const Filters = ({
                 required={false}
                 fieldType="filterInput"
                 type="number"
+                value={values.minQuantity}
               />
               <CustomTextField
                 placeholder="Enter the max quantity"
@@ -76,6 +75,7 @@ const Filters = ({
                 required={false}
                 fieldType="filterInput"
                 type="number"
+                value={values.maxQuantity}
               />
             </div>
             <div className={styles.inputWrapp}>
@@ -87,6 +87,7 @@ const Filters = ({
                 required={false}
                 fieldType="filterInput"
                 type="number"
+                value={values.minPrice}
               />
               <CustomTextField
                 placeholder="Enter the max price"
@@ -96,6 +97,7 @@ const Filters = ({
                 required={false}
                 fieldType="filterInput"
                 type="number"
+                value={values.maxPrice}
               />
             </div>
             <CustomMultiSelect
@@ -129,6 +131,7 @@ const Filters = ({
               required={false}
               fieldType="filterSelect"
               wrappType="filterWrapp"
+              value={values.lotType}
             />
             <CustomMultiSelect
               label="Countries"

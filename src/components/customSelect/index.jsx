@@ -28,7 +28,6 @@ const CustomSelect = ({
   fieldType = '',
   wrappType = '',
 }) => {
-  console.log(name, touched);
   return (
     <div className={`${styles.wrapp} ${styles[wrappType]}`}>
       <FormControl error={errors && touched}>
