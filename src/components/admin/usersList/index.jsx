@@ -52,7 +52,6 @@ export default function UsersList() {
   };
 
   const showConfirm = (id) => {
-    console.log(id);
     dispatch(toggleModal('confirmModal'));
     dispatch(setUserId(id));
   };
