@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -16,9 +16,11 @@ import { toggleModal } from '@slices/modalSlice';
 import { setCategoryId } from '@slices/categoriesSlice';
 import { deleteCategory } from '@thunks/fetchCategories';
 
-import styles from '../usersList/usersList.module.scss';
+import ConfirmActionModal from '@customModals/confirmActionModal';
 import ModalForCreatingCategory from '@customModals/modalForCreatingCategory';
 import ModalForUpdatingCategory from '@customModals/modalForUpdaitingCategory';
+
+import styles from '../usersList/usersList.module.scss';
 
 const {
   tableRow,
@@ -33,6 +35,8 @@ const {
 export default function CategoriesList() {
   const dispatch = useDispatch();
   const categories = useSelector(categoriesSelector);
+  const categoryId = useSelector((state) => state.categories.categoryId);
+  const [confirmStatus, setConfirmStatus] = useState(false);
 
   useEffect(() => {
     dispatch(fetchCategories());
@@ -43,9 +47,17 @@ export default function CategoriesList() {
     dispatch(setCategoryId(id));
   };
 
-  const handleDeleteClick = (id) => {
-    dispatch(deleteCategory(id));
+  const showConfirm = (id) => {
+    dispatch(toggleModal('confirmModal'));
+    dispatch(setCategoryId(id));
   };
+
+  useEffect(() => {
+    if (confirmStatus) {
+      dispatch(deleteCategory({ id: categoryId }));
+      setConfirmStatus(false);
+    }
+  }, [confirmStatus]);
 
   return (
     <>
@@ -90,7 +102,7 @@ export default function CategoriesList() {
                   <div className={editBlock}>
                     <DeleteForeverOutlinedIcon
                       className={deleteIcon}
-                      onClick={() => handleDeleteClick(category.id)}
+                      onClick={() => showConfirm(category.id)}
                     />
                     <BorderColorIcon
                       className={editIcon}
@@ -104,6 +116,10 @@ export default function CategoriesList() {
       </Table>
       <ModalForCreatingCategory />
       <ModalForUpdatingCategory />
+      <ConfirmActionModal
+        text="This action delete the category. Do you confirm the action?"
+        setConfirmStatus={setConfirmStatus}
+      />
     </>
   );
 }
