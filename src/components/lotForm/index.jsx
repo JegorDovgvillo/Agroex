@@ -1,10 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Form, Formik } from 'formik';
 import { FormHelperText } from '@mui/material';
 
 import { lotValidationSchema } from '@helpers/validationSchemes/lotValidationSchemes';
+import { selectCategoryByParentId } from '@slices/categoriesSlice';
+import { fetchSubcategories } from '@thunks/fetchCategories';
 
 import CustomTextField from '@customTextField';
+import CustomAutocompleteField from '../customAutocomplete';
 import { CustomButton } from '@buttons/CustomButton';
 import CustomSelect from '@customSelect';
 import CustomDatePicker from '@components/customDatePicker';
@@ -31,18 +35,19 @@ const LotForm = ({
   setDisabled,
   isImageAdded,
 }) => {
+  const dispatch = useDispatch();
   const initialValues = {
     userId: selectedLot?.userId,
     title: selectedLot?.title,
     country: selectedLot?.location.countryId,
     region: selectedLot?.location.region,
-    category: selectedLot?.productCategoryId,
-    subcategory: selectedLot?.subcategory,
+    category: selectedLot?.productCategory.parentId,
+    subcategory: selectedLot?.productCategory.title,
     variety: selectedLot?.variety,
     description: selectedLot?.description,
     packaging: selectedLot?.packaging,
     quantity: selectedLot?.quantity,
-    price: selectedLot?.pricePerTon * selectedLot?.quantity || undefined,
+    price: selectedLot?.price,
     priceUnits: 'USD',
     lotType: selectedLot?.lotType,
     size: selectedLot?.size,
@@ -50,6 +55,17 @@ const LotForm = ({
   };
 
   const [isFirstSubmit, setIsFirstSubmit] = useState(true);
+  const [selectedCategoryId, setSelectedCategoryId] = useState(
+    initialValues.category
+  );
+
+  const subcategories = useSelector((state) =>
+    selectCategoryByParentId(state, selectedCategoryId)
+  );
+
+  const handleCategorySelect = (value) => {
+    setSelectedCategoryId(value);
+  };
 
   const formRef = useRef(null);
 
@@ -62,6 +78,12 @@ const LotForm = ({
     }
   }, [formRef, isFirstSubmit, formType]);
 
+  useEffect(() => {
+    if (selectedCategoryId) {
+      dispatch(fetchSubcategories(selectedCategoryId));
+    }
+  }, [selectedCategoryId]);
+
   const handlePlaceItemBtnClick = () => {
     isFirstSubmit && setIsFirstSubmit(false);
   };
@@ -72,7 +94,15 @@ const LotForm = ({
     <Formik
       initialValues={initialValues}
       onSubmit={(values, { resetForm }) => {
-        handleSubmitClick(values, resetForm);
+        let newValues = { ...values };
+        const subcategory = subcategories.find(
+          (s) => s.title === values.subcategory
+        );
+
+        if (subcategory) {
+          newValues.subcategory = subcategory.id;
+        }
+        handleSubmitClick(newValues, resetForm);
       }}
       validationSchema={lotValidationSchema}
       innerRef={formRef}
@@ -106,6 +136,7 @@ const LotForm = ({
               value={values.userId}
               errors={errors.userId}
               touched={!isCreateNotSubmittedForm || touched.userId}
+              setFieldValue={setFieldValue}
             />
             <CustomSelect
               label="Location"
@@ -116,6 +147,7 @@ const LotForm = ({
               value={values.country}
               errors={errors.country}
               touched={!isCreateNotSubmittedForm || touched.country}
+              setFieldValue={setFieldValue}
             />
             <CustomTextField
               label="Region"
@@ -141,7 +173,7 @@ const LotForm = ({
           />
           <div className={styles.inputBlock}>
             <CustomSelect
-              label="Categories"
+              label="Category"
               units={categories}
               itemFieldName="title"
               name="category"
@@ -149,8 +181,11 @@ const LotForm = ({
               value={values.category}
               errors={errors.category}
               touched={!isCreateNotSubmittedForm || touched.category}
+              handleChange={(value) => handleCategorySelect(value)}
+              setFieldValue={setFieldValue}
             />
-            <CustomTextField
+
+            <CustomAutocompleteField
               label="Subcategory"
               id="subcategory"
               placeholder="Enter the subcategory"
@@ -158,7 +193,10 @@ const LotForm = ({
               value={values.subcategory}
               errors={errors.subcategory}
               touched={!isCreateNotSubmittedForm || touched.subcategory}
+              options={subcategories}
+              setFieldValue={setFieldValue}
             />
+
             <CustomTextField
               label="Variety"
               id="variety"
@@ -219,6 +257,7 @@ const LotForm = ({
               value={values.priceUnits}
               errors={errors.priceUnits}
               touched={!isCreateNotSubmittedForm || touched.priceUnits}
+              setFieldValue={setFieldValue}
             />
           </div>
           <div className={styles.inputBlock}>
@@ -240,6 +279,7 @@ const LotForm = ({
               value={values.lotType}
               errors={errors.lotType}
               touched={!isCreateNotSubmittedForm || touched.lotType}
+              setFieldValue={setFieldValue}
             />
           </div>
           <DragAndDrop

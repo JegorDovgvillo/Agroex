@@ -6,7 +6,7 @@ import _ from 'lodash';
 
 import { selectLotDetailById } from '@slices/lotListSlice';
 import { usersListSelector } from '@slices/usersListSlice';
-import { categoriesSelector } from '@slices/categoriesSlice';
+import { selectRootCategories } from '@slices/categoriesSlice';
 import { countrySelector } from '@slices/countriesSlice';
 import { toggleModal } from '@slices/modalSlice';
 
@@ -14,6 +14,9 @@ import { fetchCountries } from '@thunks/fetchCountries';
 import { fetchUsers } from '@thunks/fetchUsers';
 import { deleteLot, updateLot } from '@thunks/fetchLots';
 import { fetchCategories } from '@thunks/fetchCategories';
+
+import { IMAGE_URL } from '@helpers/endpoints';
+import ENDPOINTS from '@helpers/endpoints';
 
 import LotForm from '@components/lotForm';
 
@@ -23,7 +26,7 @@ const UpdateLot = () => {
   const { id: lotId } = useParams();
 
   const users = useSelector(usersListSelector);
-  const categories = useSelector(categoriesSelector);
+  const categories = useSelector(selectRootCategories);
   const country = useSelector(countrySelector);
   const selectedLot = useSelector((state) => selectLotDetailById(state, lotId));
 
@@ -35,16 +38,17 @@ const UpdateLot = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const convertImagesToFiles = (images) => {
+  const convertImagesToFiles = async (images) => {
     const files = [];
 
-    images.forEach((images) => {
-      const { id, name } = images;
-      const file = new File([], name, { type: 'image/jpeg' });
+    for (const { id, name } of images) {
+      const URL = `${IMAGE_URL}${ENDPOINTS.IMAGES}`;
+      const response = await fetch(`${URL}/${name}`);
+      const blob = await response.blob();
+      const file = new File([blob], name, { type: 'image/jpeg' });
       file.id = id;
       files.push(file);
-    });
-
+    }
     setFiles(files);
   };
 
@@ -69,6 +73,7 @@ const UpdateLot = () => {
 
   const handleUpdateClick = async (values) => {
     const formData = new FormData();
+
     const lotData = {
       title: values.title,
       description: values.description,
@@ -76,10 +81,15 @@ const UpdateLot = () => {
       size: values.size,
       packaging: values.packaging,
       quantity: values.quantity,
-      pricePerTon: (values.price / values.quantity).toFixed(2),
+      price: values.price,
       currency: values.priceUnits,
       expirationDate: values.expirationDate,
-      productCategoryId: values.category,
+      productCategory: {
+        ...(typeof values.subcategory === 'number'
+          ? { id: values.subcategory }
+          : { title: values.subcategory }),
+        parentId: values.category,
+      },
       lotType: values.lotType,
       userId: values.userId,
       location: {

@@ -97,4 +97,11 @@ export const selectCategoryById = createSelector(
   }
 );
 
+export const selectCategoryByParentId = createSelector(
+  [selectAll, (state, parentId) => parentId],
+  (categories, parentId) => {
+    return categories.filter((category) => category.parentId === parentId);
+  }
+);
+
 export default reducer;

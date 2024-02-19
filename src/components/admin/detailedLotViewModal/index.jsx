@@ -5,9 +5,11 @@ import { Button, Dialog, DialogActions, DialogContent } from '@mui/material';
 
 import { fetchUser } from '@thunks/fetchUsers';
 import { fetchLotDetails } from '@thunks/fetchLots';
+import { fetchCategories } from '@thunks/fetchCategories';
 import { selectUserById } from '@slices/usersListSlice';
 import { toggleModal, selectModalState } from '@slices/modalSlice';
 import { selectLotDetailById } from '@slices/lotListSlice';
+import { selectRootCategories } from '@slices/categoriesSlice';
 
 import AdminDetailedLotView from '../adminDetailedLotView';
 import ConfirmActionModal from '@customModals/confirmActionModal';
@@ -24,10 +26,12 @@ const DetailedLotViewModal = ({ handleChangeLot }) => {
   const { userId } = useSelector((state) => state.usersList);
   const userData = useSelector((state) => selectUserById(state, userId));
   const [confirm, setConfirm] = useState(false);
+  const categories = useSelector(selectRootCategories);
 
   useEffect(() => {
     dispatch(fetchLotDetails(lotId));
     dispatch(fetchUser(userId));
+    dispatch(fetchCategories());
   }, [dispatch, lotId, userId]);
 
   useEffect(() => {
@@ -47,7 +51,7 @@ const DetailedLotViewModal = ({ handleChangeLot }) => {
 
   return (
     <>
-      {lot && userData && (
+      {lot && userData && categories && (
         <Dialog
           maxWidth="none"
           className={dialog}
@@ -57,7 +61,11 @@ const DetailedLotViewModal = ({ handleChangeLot }) => {
           aria-describedby="alert-dialog-description"
         >
           <DialogContent>
-            <AdminDetailedLotView lot={lot} userData={userData} />
+            <AdminDetailedLotView
+              lot={lot}
+              userData={userData}
+              categories={categories}
+            />
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose} variant="outlined" color="error">

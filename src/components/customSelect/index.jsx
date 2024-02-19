@@ -27,6 +27,8 @@ const CustomSelect = ({
   touched,
   fieldType = '',
   wrappType = '',
+  handleChange = null,
+  setFieldValue,
 }) => {
   return (
     <div className={`${styles.wrapp} ${styles[wrappType]}`}>
@@ -42,6 +44,10 @@ const CustomSelect = ({
             styles[fieldType]
           }`}
           value={value || ''}
+          onChange={(event) => {
+            setFieldValue(name, event.target.value);
+            handleChange && handleChange(event.target.value);
+          }}
           MenuProps={MenuProps}
         >
           <MenuItem disabled value="">

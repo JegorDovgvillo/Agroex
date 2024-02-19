@@ -9,7 +9,7 @@ import { createLot } from '@thunks/fetchLots';
 
 import { usersListSelector } from '@slices/usersListSlice';
 import { toggleModal } from '@slices/modalSlice';
-import { categoriesSelector } from '@slices/categoriesSlice';
+import { selectRootCategories } from '@slices/categoriesSlice';
 import { countrySelector } from '@slices/countriesSlice';
 
 import LotForm from '@components/lotForm';
@@ -18,7 +18,7 @@ const MAXIMUM_NUMBER_OF_IMG = import.meta.env.VITE_MAXIMUM_NUMBER_OF_IMG;
 
 const CreateNewLot = () => {
   const users = useSelector(usersListSelector);
-  const categories = useSelector(categoriesSelector);
+  const categories = useSelector(selectRootCategories);
   const country = useSelector(countrySelector);
 
   const [files, setFiles] = useState([]);
@@ -42,10 +42,15 @@ const CreateNewLot = () => {
       size: values.size,
       packaging: values.packaging,
       quantity: values.quantity,
-      pricePerTon: (values.price / values.quantity).toFixed(2),
+      price: values.price,
       currency: values.priceUnits,
       expirationDate: values.expirationDate,
-      productCategoryId: values.category,
+      productCategory: {
+        ...(typeof values.subcategory === 'number'
+          ? { id: values.subcategory }
+          : { title: values.subcategory }),
+        parentId: values.category,
+      },
       lotType: values.lotType,
       userId: values.userId,
       location: {

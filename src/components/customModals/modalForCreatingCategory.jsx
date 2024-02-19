@@ -1,39 +1,61 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Box, Modal } from '@mui/material';
 import { Formik, Form } from 'formik';
 
 import { toggleModal, selectModalState } from '@slices/modalSlice';
-import { createCategory } from '@thunks/fetchCategories';
-import { selectRootCategories } from '@slices/categoriesSlice';
+import { createCategory, fetchSubcategories } from '@thunks/fetchCategories';
+
+import {
+  selectRootCategories,
+  selectCategoryByParentId,
+} from '@slices/categoriesSlice';
 
 import {
   categoryTitleValidationSchema,
   subcategoryCreationValidationSchema,
-} from '../../helpers/validationSchemes/lotValidationSchemes';
+} from '@helpers/validationSchemes/lotValidationSchemes';
 
 import CustomSelect from '../customSelect';
-import CustomTextField from '@customTextField';
 import { CustomButton } from '@buttons/CustomButton';
 
 import styles from './infoModal.module.scss';
+import CustomAutocompleteField from '../customAutocomplete';
 
 const ModalForCreatingCategory = () => {
   const dispatch = useDispatch();
+
+  const initialValues = {
+    title: '',
+    parentId: '',
+  };
+
   const isOpen = useSelector((state) =>
     selectModalState(state, 'creatingModal')
   );
   const rootCategories = useSelector(selectRootCategories);
   const [isCreatingCategory, setIsCreatingCategory] = useState(true);
+  const [selectedCategoryId, setSelectedCategoryId] = useState(
+    initialValues.parentId
+  );
 
   const handleSubmit = (values) => {
     dispatch(createCategory(values));
     dispatch(toggleModal('creatingModal'));
   };
 
-  const initialValues = {
-    title: '',
-    parentId: '',
+  useEffect(() => {
+    if (selectedCategoryId) {
+      dispatch(fetchSubcategories(selectedCategoryId));
+    }
+  }, [selectedCategoryId]);
+
+  const subcategories = useSelector((state) =>
+    selectCategoryByParentId(state, selectedCategoryId)
+  );
+
+  const handleCategorySelect = (value) => {
+    setSelectedCategoryId(value);
   };
 
   return (
@@ -61,7 +83,7 @@ const ModalForCreatingCategory = () => {
                 : subcategoryCreationValidationSchema
             }
           >
-            {({ values, errors, touched, isValid }) => (
+            {({ values, errors, touched, isValid, setFieldValue }) => (
               <Form>
                 {!isCreatingCategory && (
                   <CustomSelect
@@ -76,9 +98,11 @@ const ModalForCreatingCategory = () => {
                     value={values.parentId}
                     errors={errors.parentId}
                     touched={touched.parentId}
+                    handleChange={(value) => handleCategorySelect(value)}
+                    setFieldValue={setFieldValue}
                   />
                 )}
-                <CustomTextField
+                <CustomAutocompleteField
                   name="title"
                   placeholder={
                     isCreatingCategory
@@ -93,7 +117,10 @@ const ModalForCreatingCategory = () => {
                   value={values.title}
                   errors={errors.title}
                   touched={touched.title}
+                  setFieldValue={setFieldValue}
+                  options={subcategories}
                 />
+
                 <CustomButton
                   text="Create"
                   width="210px"
