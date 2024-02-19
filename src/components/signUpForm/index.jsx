@@ -1,7 +1,7 @@
 import { signUp } from 'aws-amplify/auth';
 import { Authenticator } from '@aws-amplify/ui-react';
-import { useState } from 'react';
-import '@aws-amplify/ui-react/styles.css';
+// import { useState } from 'react';
+// import '@aws-amplify/ui-react/styles.css';
 
 const SignUpForm = () => {
   const [email, setEmail] = useState('');
@@ -28,7 +28,6 @@ const SignUpForm = () => {
   return (
     <Authenticator
       initialState="signUp"
-      socialProviders={['amazon', 'apple', 'facebook', 'google']}
     />
   );
 };
