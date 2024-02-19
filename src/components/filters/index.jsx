@@ -27,7 +27,7 @@ const Filters = ({
     minPrice: '',
     maxPrice: '',
     users: [],
-    productCategory: [],
+    categories: [],
     lotType: '',
     countries: [],
   };
@@ -38,7 +38,11 @@ const Filters = ({
   };
 
   const applyFilters = (values) => {
-    setSearchParams(values);
+    const filteredParams = Object.entries(values).filter(
+      ([_, value]) => value && !(Array.isArray(value) && !value.length)
+    );
+
+    setSearchParams(filteredParams);
     dispatch(filteredLots(searchParams));
   };
 
@@ -113,7 +117,7 @@ const Filters = ({
             />
             <CustomMultiSelect
               units={categories}
-              name="productCategory"
+              name="categories"
               disabled={false}
               placeholder="Select category"
               itemFieldName="title"
