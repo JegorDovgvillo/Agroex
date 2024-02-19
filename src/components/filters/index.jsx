@@ -1,6 +1,6 @@
 import { Formik, Form } from 'formik';
 import { useDispatch } from 'react-redux';
-
+import _ from 'lodash';
 import { filteredLots } from '@thunks/fetchLots';
 
 import { CustomButton } from '../buttons/CustomButton';
@@ -38,8 +38,11 @@ const Filters = ({
   };
 
   const applyFilters = (values) => {
-    const filteredParams = Object.entries(values).filter(
-      ([_, value]) => value && !(Array.isArray(value) && !value.length)
+    const filteredParams = _.toPairs(
+      _.pickBy(
+        values,
+        (value) => value && !(Array.isArray(value) && !value.length)
+      )
     );
 
     setSearchParams(filteredParams);
