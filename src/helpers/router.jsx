@@ -32,6 +32,10 @@ const Router = () => {
           element: <LotList />,
         },
         {
+          path: ROUTES.SIGN_UP_PAGE,
+          element: <SignUp />,
+        },
+        {
           path: ROUTES.LOTS_DETAILS,
           element: <LotDetails />,
         },

@@ -13,6 +13,8 @@ const ROUTES = {
   USER_PROFILE: '/user-profile',
   USER_PROFILE_PAGE: '/user-profile/:page',
   USER_PROFILE_PAGE_TAB: '/user-profile/:page/:tab',
+
+  SIGN_UP_PAGE:'sign-up'
 };
 
 export const USER_PROFILE_PAGE_ROTES = {
