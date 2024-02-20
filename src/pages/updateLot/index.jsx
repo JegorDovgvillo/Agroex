@@ -15,8 +15,7 @@ import { fetchUsers } from '@thunks/fetchUsers';
 import { deleteLot, updateLot } from '@thunks/fetchLots';
 import { fetchCategories } from '@thunks/fetchCategories';
 
-import { IMAGE_URL } from '@helpers/endpoints';
-import ENDPOINTS from '@helpers/endpoints';
+import convertImagesToFiles from '@helpers/convertImagesToFiles';
 
 import LotForm from '@components/lotForm';
 
@@ -38,20 +37,6 @@ const UpdateLot = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const convertImagesToFiles = async (images) => {
-    const files = [];
-
-    for (const { id, name } of images) {
-      const URL = `${IMAGE_URL}${ENDPOINTS.IMAGES}`;
-      const response = await fetch(`${URL}/${name}`);
-      const blob = await response.blob();
-      const file = new File([blob], name, { type: 'image/jpeg' });
-      file.id = id;
-      files.push(file);
-    }
-    setFiles(files);
-  };
-
   const showConfirm = () => {
     dispatch(toggleModal('confirmModal'));
   };
@@ -65,7 +50,7 @@ const UpdateLot = () => {
   }, [confirmStatus]);
 
   useEffect(() => {
-    convertImagesToFiles(selectedLot?.images || []);
+    convertImagesToFiles(selectedLot?.images || [], setFiles);
     dispatch(fetchUsers());
     dispatch(fetchCategories());
     dispatch(fetchCountries());

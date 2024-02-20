@@ -24,6 +24,7 @@ import { lotListSelector, setLotId } from '@slices/lotListSlice';
 import { setUserId } from '@slices/usersListSlice';
 
 import ENDPOINTS, { IMAGE_URL } from '@helpers/endpoints';
+import convertImagesToFiles from '@helpers/convertImagesToFiles';
 
 import getFormattedDate from '@helpers/getFormattedDate';
 import getNumberWithCurrency from '@helpers/getNumberWithCurrency';
@@ -61,20 +62,6 @@ export default function AdminLotsList() {
     selectModalState(state, 'infoModal')
   );
 
-  const convertImagesToFiles = async (images) => {
-    const files = [];
-
-    for (const { id, name } of images) {
-      const URL = `${IMAGE_URL}${ENDPOINTS.IMAGES}`;
-      const response = await fetch(`${URL}/${name}`);
-      const blob = await response.blob();
-      const file = new File([blob], name, { type: 'image/jpeg' });
-      file.id = id;
-      files.push(file);
-    }
-    setFiles(files);
-  };
-
   const handleChangeLot = useCallback(
     (lot) => {
       const formData = new FormData();
@@ -107,7 +94,7 @@ export default function AdminLotsList() {
   }, [handleChangeLot, confirmStatus, openedLot]);
 
   const handleEditClick = async (lot) => {
-    await convertImagesToFiles(lot.images || []);
+    await convertImagesToFiles(lot.images || [], setFiles);
 
     dispatch(toggleModal('infoModal'));
     dispatch(setLotId(lot.id));
@@ -115,7 +102,7 @@ export default function AdminLotsList() {
   };
 
   const handleChangeLotStatusClick = async (lot) => {
-    await convertImagesToFiles(lot.images || []);
+    await convertImagesToFiles(lot.images || [], setFiles);
 
     setOpenedLot(lot);
     dispatch(toggleModal('confirmModal'));
