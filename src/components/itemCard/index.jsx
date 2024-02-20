@@ -21,8 +21,8 @@ const ItemCard = ({ ...item }) => {
 
   const viewDetailsCard = () => {
     const path = generatePath(ROUTES.LOTS_DETAILS, {
-      category: _.toLower(parentCategory.title),
-      subcategory: _.toLower(item.productCategory.title),
+      category: parentCategory.title,
+      subcategory: item.productCategory.title,
       id: item.id,
     });
     navigate(path);

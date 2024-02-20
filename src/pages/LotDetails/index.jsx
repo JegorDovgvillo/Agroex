@@ -92,9 +92,9 @@ export const LotDetails = () => {
 
   const totalPriceWithCurrency = getNumberWithCurrency(price, currency);
 
-  const buySellBtnText = `${
-    lotType[0].toUpperCase() + lotType.slice(1)
-  } for ${totalPriceWithCurrency}`;
+  const buySellBtnText = `${_.capitalize(
+    lotType
+  )} for ${totalPriceWithCurrency}`;
 
   const getLocation = () => {
     return (
@@ -121,7 +121,7 @@ export const LotDetails = () => {
       link: generatePath(CATEGORY_PAGE, {
         category: category,
       }),
-      value: _.capitalize(category),
+      value: category,
     },
     {
       id: 3,
@@ -129,7 +129,7 @@ export const LotDetails = () => {
         category: category,
         subcategory: subcategory,
       }),
-      value: _.capitalize(subcategory),
+      value: subcategory,
     },
     { id: 4, link: null, value: title },
   ];

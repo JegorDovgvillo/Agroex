@@ -42,7 +42,7 @@ const HomePageTabPanel = ({ categories }) => {
   const navigate = useNavigate();
 
   const categoryIndex = _.findIndex(categories, (categoryEl) =>
-    _.isEqual(_.toLower(categoryEl.title), category)
+    _.isEqual(categoryEl.title, category)
   );
 
   const [currTabIndex, setCurrTabIndex] = useState(
@@ -56,7 +56,7 @@ const HomePageTabPanel = ({ categories }) => {
   useEffect(() => {
     if (!category) {
       const path = generatePath(CATEGORY_PAGE, {
-        category: _.toLower(categories[0].title),
+        category: categories[0].title,
       });
       navigate(path);
     }
@@ -66,7 +66,7 @@ const HomePageTabPanel = ({ categories }) => {
     setCurrTabIndex(newValue);
 
     const path = generatePath(CATEGORY_PAGE, {
-      category: _.toLower(categories[newValue].title),
+      category: categories[newValue].title,
     });
 
     navigate(path);
@@ -76,7 +76,7 @@ const HomePageTabPanel = ({ categories }) => {
     if (category) {
       return generatePath(SUBCATEGORY_LOTS_PAGE, {
         category: category,
-        subcategory: _.toLower(subcategory),
+        subcategory: subcategory,
       });
     }
   };

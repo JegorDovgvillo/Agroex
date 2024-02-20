@@ -1,5 +1,7 @@
 import { Formik, Form } from 'formik';
 import { useDispatch } from 'react-redux';
+import { useParams } from 'react-router-dom';
+
 import _ from 'lodash';
 import { filteredLots } from '@thunks/fetchLots';
 
@@ -19,6 +21,10 @@ const Filters = ({
   users,
 }) => {
   const dispatch = useDispatch();
+  const { subcategory } = useParams();
+  const categoriesInitValue = subcategory
+    ? [_.find(categories, { title: subcategory }).id]
+    : [];
 
   const initialValues = {
     keyword: '',
@@ -27,7 +33,7 @@ const Filters = ({
     minPrice: '',
     maxPrice: '',
     users: [],
-    categories: [],
+    categories: categoriesInitValue,
     lotType: '',
     countries: [],
   };
@@ -44,7 +50,7 @@ const Filters = ({
         (value) => value && !(Array.isArray(value) && !value.length)
       )
     );
-
+    console.log(filteredParams);
     setSearchParams(filteredParams);
     dispatch(filteredLots(searchParams));
   };

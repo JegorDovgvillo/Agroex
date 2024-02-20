@@ -30,17 +30,24 @@ const LotList = ({ lotType }) => {
   const categories = useSelector(categoriesSelector);
   const countries = useSelector(countrySelector);
   const users = useSelector(usersListSelector);
-  const [searchParams, setSearchParams] = useSearchParams();
+
+  const subcategoryId =
+    subcategory && _.find(categories, { title: subcategory }).id;
+  const subcategorySearchParams = subcategoryId && [
+    ['categories', [subcategoryId]],
+  ];
+
+  const [searchParams, setSearchParams] = useSearchParams(
+    subcategorySearchParams
+  );
 
   useEffect(() => {
     dispatch(fetchAllCategories());
     dispatch(fetchCountries());
     dispatch(fetchUsers());
-  }, [dispatch]);
 
-  useEffect(() => {
     dispatch(filteredLots(searchParams));
-  }, [searchParams]);
+  }, [dispatch, searchParams]);
 
   const breadCrumbsProps = [
     { id: 1, link: '/', value: 'Categories' },
@@ -49,18 +56,16 @@ const LotList = ({ lotType }) => {
       link: generatePath(CATEGORY_PAGE, {
         category: category,
       }),
-      value: _.capitalize(category),
+      value: category,
     },
-    { id: 3, link: null, value: _.capitalize(subcategory) },
+    { id: 3, link: null, value: subcategory },
   ];
 
   return (
     <div className={styles.lotListContainer}>
       <div className={styles.breadCrumbsContainer}>
         <CustomBreadcrumbs props={breadCrumbsProps} />
-        {subcategory && (
-          <h4 className={styles.title}>{_.capitalize(subcategory)}</h4>
-        )}
+        {subcategory && <h4 className={styles.title}>{subcategory}</h4>}
       </div>
       <div className={styles.contentContainer}>
         <Filters
