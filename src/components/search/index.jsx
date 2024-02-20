@@ -15,10 +15,10 @@ const Search = () => {
   const [isActive, setIsActive] = useState(false);
 
   const handleKeyPress = (event) => {
-    if (event.key === 'Enter' || event.target.id == 'sendIcon') {
+    if (event.key === 'Enter' || event.target.id === 'sendIcon') {
       setIsActive(false);
       navigate(ROUTES.LOTS);
-      setSearchParams({ keyword: inputValue });
+      setSearchParams(inputValue ? { keyword: inputValue.trim() } : '');
     }
   };
 

@@ -1,6 +1,6 @@
 import { Formik, Form } from 'formik';
 import { useDispatch } from 'react-redux';
-
+import _ from 'lodash';
 import { filteredLots } from '@thunks/fetchLots';
 
 import { CustomButton } from '../buttons/CustomButton';
@@ -27,7 +27,7 @@ const Filters = ({
     minPrice: '',
     maxPrice: '',
     users: [],
-    productCategory: [],
+    categories: [],
     lotType: '',
     countries: [],
   };
@@ -38,7 +38,14 @@ const Filters = ({
   };
 
   const applyFilters = (values) => {
-    setSearchParams(values);
+    const filteredParams = _.toPairs(
+      _.pickBy(
+        values,
+        (value) => value && !(Array.isArray(value) && !value.length)
+      )
+    );
+
+    setSearchParams(filteredParams);
     dispatch(filteredLots(searchParams));
   };
 
@@ -113,7 +120,7 @@ const Filters = ({
             />
             <CustomMultiSelect
               units={categories}
-              name="productCategory"
+              name="categories"
               disabled={false}
               placeholder="Select category"
               itemFieldName="title"
