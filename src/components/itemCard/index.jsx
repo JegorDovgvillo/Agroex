@@ -21,8 +21,8 @@ const ItemCard = ({ ...item }) => {
 
   const viewDetailsCard = () => {
     const path = generatePath(ROUTES.LOTS_DETAILS, {
-      category: parentCategory.title,
-      subcategory: item.productCategory.title,
+      category: _.toLower(parentCategory.title),
+      subcategory: _.toLower(item.productCategory.title),
       id: item.id,
     });
     navigate(path);
@@ -30,7 +30,10 @@ const ItemCard = ({ ...item }) => {
 
   const handleUpdateLot = (event) => {
     event.stopPropagation();
-    navigate(ROUTES.UPDATE_LOT.replace(':id', item.id));
+    const path = generatePath(ROUTES.UPDATE_LOT, {
+      id: item.id,
+    });
+    navigate(path);
   };
 
   const handleClick = (event) => {

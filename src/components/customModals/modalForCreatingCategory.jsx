@@ -4,7 +4,10 @@ import { Box, Modal } from '@mui/material';
 import { Formik, Form } from 'formik';
 
 import { toggleModal, selectModalState } from '@slices/modalSlice';
-import { createCategory, fetchSubcategories } from '@thunks/fetchCategories';
+import {
+  createCategory,
+  fetchSubcategoryByParentId,
+} from '@thunks/fetchCategories';
 
 import {
   selectRootCategories,
@@ -46,7 +49,7 @@ const ModalForCreatingCategory = () => {
 
   useEffect(() => {
     if (selectedCategoryId) {
-      dispatch(fetchSubcategories(selectedCategoryId));
+      dispatch(fetchSubcategoryByParentId(selectedCategoryId));
     }
   }, [selectedCategoryId]);
 

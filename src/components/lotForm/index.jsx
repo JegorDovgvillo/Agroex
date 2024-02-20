@@ -7,7 +7,7 @@ import { FormHelperText } from '@mui/material';
 
 import { lotValidationSchema } from '@helpers/validationSchemes/lotValidationSchemes';
 import { selectCategoryByParentId } from '@slices/categoriesSlice';
-import { fetchSubcategories } from '@thunks/fetchCategories';
+import { fetchSubcategoryByParentId } from '@thunks/fetchCategories';
 
 import CustomTextField from '@customTextField';
 import CustomAutocompleteField from '../customAutocomplete';
@@ -78,7 +78,7 @@ const LotForm = ({
 
   useEffect(() => {
     if (selectedCategoryId) {
-      dispatch(fetchSubcategories(selectedCategoryId));
+      dispatch(fetchSubcategoryByParentId(selectedCategoryId));
     }
   }, [selectedCategoryId]);
 

@@ -106,4 +106,9 @@ export const selectCategoryByParentId = createSelector(
   }
 );
 
+export const selectSubcategories = createSelector(
+  [categoriesSelector],
+  (categories) => filter(categories, (category) => category.parentId)
+);
+
 export default reducer;

@@ -57,7 +57,7 @@ export default function CategoriesList() {
       dispatch(deleteCategory({ id: categoryId }));
       setConfirmStatus(false);
     }
-  }, [confirmStatus]);
+  }, [confirmStatus, categoryId, dispatch]);
 
   return (
     <>

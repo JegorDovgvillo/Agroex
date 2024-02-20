@@ -1,11 +1,14 @@
+import { useNavigate } from 'react-router-dom';
 import styles from './banner.module.scss';
 import bannerImage from '@assets/images/banner.png';
 
 const { container, titleRow } = styles;
 
-const SubcategoryBanner = ({ title }) => {
+const SubcategoryBanner = ({ title, path }) => {
+  const navigate = useNavigate();
+
   const handleClick = () => {
-    //todo write logic to  redirect user
+    navigate(path);
   };
 
   return (

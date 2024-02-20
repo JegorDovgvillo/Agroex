@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams, generatePath } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import _ from 'lodash';
@@ -14,25 +14,28 @@ import { filteredLots } from '@thunks/fetchLots';
 import { fetchUsers } from '@thunks/fetchUsers';
 
 import { usersListSelector } from '@slices/usersListSlice';
-import { categoriesSelector } from '@slices/categoriesSlice';
+import {
+  categoriesSelector,
+  selectSubcategories,
+} from '@slices/categoriesSlice';
 import { countrySelector } from '@slices/countriesSlice';
 import { lotListSelector } from '@slices/lotListSlice';
-import ROUTES from '@helpers/routeNames';
 
 import styles from './lotList.module.scss';
 
-const { CATEGORY_PAGE } = ROUTES;
-
-const LotList = ({ lotType }) => {
+const LotList = () => {
   const dispatch = useDispatch();
-  const { category, subcategory } = useParams();
+  const { subcategory } = useParams();
   const lots = useSelector(lotListSelector);
   const categories = useSelector(categoriesSelector);
+  const subcategories = useSelector(selectSubcategories);
   const countries = useSelector(countrySelector);
   const users = useSelector(usersListSelector);
 
   const subcategoryId =
-    subcategory && _.find(categories, { title: subcategory }).id;
+    subcategory &&
+    _.find(categories, (cat) => _.toLower(cat.title) === subcategory)?.id;
+
   const subcategorySearchParams = subcategoryId && [
     ['categories', [subcategoryId]],
   ];
@@ -45,31 +48,18 @@ const LotList = ({ lotType }) => {
     dispatch(fetchAllCategories());
     dispatch(fetchCountries());
     dispatch(fetchUsers());
-
     dispatch(filteredLots(searchParams));
   }, [dispatch, searchParams]);
-
-  const breadCrumbsProps = [
-    { id: 1, link: '/', value: 'Categories' },
-    {
-      id: 2,
-      link: generatePath(CATEGORY_PAGE, {
-        category: category,
-      }),
-      value: category,
-    },
-    { id: 3, link: null, value: subcategory },
-  ];
 
   return (
     <div className={styles.lotListContainer}>
       <div className={styles.breadCrumbsContainer}>
-        <CustomBreadcrumbs props={breadCrumbsProps} />
+        <CustomBreadcrumbs />
         {subcategory && <h4 className={styles.title}>{subcategory}</h4>}
       </div>
       <div className={styles.contentContainer}>
         <Filters
-          categories={categories}
+          categories={subcategories}
           countries={countries}
           searchParams={searchParams}
           setSearchParams={setSearchParams}

@@ -6,7 +6,7 @@ import _ from 'lodash';
 import { Tabs, Tab, Box } from '@mui/material';
 import GrassOutlinedIcon from '@mui/icons-material/GrassOutlined';
 
-import { selectSubcategoriesByParentId } from '@slices/categoriesSlice';
+import { selectCategoryByParentId } from '@slices/categoriesSlice';
 
 import ROUTES from '@helpers/routeNames';
 
@@ -31,7 +31,7 @@ const { CATEGORY_PAGE, SUBCATEGORY_LOTS_PAGE } = ROUTES;
 
 function a11yProps(index) {
   return {
-    id: `simple-tab-${index}`,
+    'id': `simple-tab-${index}`,
     'aria-controls': `simple-tabpanel-${index}`,
   };
 }
@@ -50,13 +50,13 @@ const HomePageTabPanel = ({ categories }) => {
   );
 
   const subcategories = useSelector((state) =>
-    selectSubcategoriesByParentId(state, categories?.[currTabIndex]?.id)
+    selectCategoryByParentId(state, categories?.[currTabIndex]?.id)
   );
 
   useEffect(() => {
     if (!category) {
       const path = generatePath(CATEGORY_PAGE, {
-        category: categories[0].title,
+        category: _.toLower(categories[0].title),
       });
       navigate(path);
     }
@@ -66,7 +66,7 @@ const HomePageTabPanel = ({ categories }) => {
     setCurrTabIndex(newValue);
 
     const path = generatePath(CATEGORY_PAGE, {
-      category: categories[newValue].title,
+      category: _.toLower(categories[newValue].title),
     });
 
     navigate(path);
@@ -76,7 +76,7 @@ const HomePageTabPanel = ({ categories }) => {
     if (category) {
       return generatePath(SUBCATEGORY_LOTS_PAGE, {
         category: category,
-        subcategory: subcategory,
+        subcategory: _.toLower(subcategory),
       });
     }
   };
@@ -122,7 +122,11 @@ const HomePageTabPanel = ({ categories }) => {
         </div>
         <div className={subcategoriesLinksContainer}>
           {subcategories.map((subcategory) => (
-            <SubcategoryBanner key={subcategory.id} {...subcategory} />
+            <SubcategoryBanner
+              key={subcategory.id}
+              {...subcategory}
+              path={getPath(subcategory.title)}
+            />
           ))}
         </div>
       </TabPanel>

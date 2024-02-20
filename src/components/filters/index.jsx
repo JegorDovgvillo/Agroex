@@ -1,6 +1,6 @@
 import { Formik, Form } from 'formik';
 import { useDispatch } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 import _ from 'lodash';
 import { filteredLots } from '@thunks/fetchLots';
@@ -21,9 +21,16 @@ const Filters = ({
   users,
 }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const { subcategory } = useParams();
   const categoriesInitValue = subcategory
-    ? [_.find(categories, { title: subcategory }).id]
+    ? [
+        _.find(
+          categories,
+          (cat) => _.toLower(cat.title) === _.toLower(subcategory)
+        )?.id,
+      ]
     : [];
 
   const initialValues = {
@@ -44,14 +51,17 @@ const Filters = ({
   };
 
   const applyFilters = (values) => {
+    values.categories.length > 1 && navigate('/filters');
+
     const filteredParams = _.toPairs(
       _.pickBy(
         values,
         (value) => value && !(Array.isArray(value) && !value.length)
       )
     );
-    console.log(filteredParams);
+
     setSearchParams(filteredParams);
+
     dispatch(filteredLots(searchParams));
   };
 
