@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Form, Formik } from 'formik';
+import _ from 'lodash';
+
 import { FormHelperText } from '@mui/material';
 
 import { lotValidationSchema } from '@helpers/validationSchemes/lotValidationSchemes';
@@ -63,10 +65,6 @@ const LotForm = ({
     selectCategoryByParentId(state, selectedCategoryId)
   );
 
-  const handleCategorySelect = (value) => {
-    setSelectedCategoryId(value);
-  };
-
   const formRef = useRef(null);
 
   useEffect(() => {
@@ -91,10 +89,8 @@ const LotForm = ({
   const isCreateNotSubmittedForm = formType === 'create' && isFirstSubmit;
 
   const handleSubmit = (values, { resetForm }) => {
-    let newValues = { ...values };
-    const subcategory = subcategories.find(
-      (s) => s.title === values.subcategory
-    );
+    const newValues = { ...values };
+    const subcategory = _.find(subcategories, { title: values.subcategory });
 
     if (subcategory) {
       newValues.subcategory = subcategory.id;
@@ -183,7 +179,7 @@ const LotForm = ({
               value={values.category}
               errors={errors.category}
               touched={!isCreateNotSubmittedForm || touched.category}
-              handleChange={(value) => handleCategorySelect(value)}
+              handleChange={(value) => setSelectedCategoryId(value)}
               setFieldValue={setFieldValue}
             />
 
