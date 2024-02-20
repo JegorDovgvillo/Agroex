@@ -179,7 +179,7 @@ const LotForm = ({
               value={values.category}
               errors={errors.category}
               touched={!isCreateNotSubmittedForm || touched.category}
-              handleChange={(value) => setSelectedCategoryId(value)}
+              handleChange={setSelectedCategoryId}
               setFieldValue={setFieldValue}
             />
 

@@ -54,10 +54,6 @@ const ModalForCreatingCategory = () => {
     selectCategoryByParentId(state, selectedCategoryId)
   );
 
-  const handleCategorySelect = (value) => {
-    setSelectedCategoryId(value);
-  };
-
   return (
     <div>
       <Modal
@@ -98,7 +94,7 @@ const ModalForCreatingCategory = () => {
                     value={values.parentId}
                     errors={errors.parentId}
                     touched={touched.parentId}
-                    handleChange={(value) => handleCategorySelect(value)}
+                    handleChange={setSelectedCategoryId}
                     setFieldValue={setFieldValue}
                   />
                 )}
