@@ -68,7 +68,7 @@ const Filters = ({
   return (
     <div className={styles.filtersWrapp}>
       <Formik initialValues={initialValues} onSubmit={applyFilters}>
-        {({ resetForm, values }) => (
+        {({ resetForm, values, setFieldValue }) => (
           <Form>
             <CustomTextField
               placeholder="Enter the text"
@@ -155,6 +155,7 @@ const Filters = ({
               fieldType="filterSelect"
               wrappType="filterWrapp"
               value={values.lotType}
+              setFieldValue={setFieldValue}
             />
             <CustomMultiSelect
               label="Countries"

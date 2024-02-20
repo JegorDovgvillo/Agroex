@@ -40,14 +40,19 @@ const LotList = () => {
     ['categories', [subcategoryId]],
   ];
 
-  const [searchParams, setSearchParams] = useSearchParams(
-    subcategorySearchParams
-  );
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(() => {
+    if (subcategory) {
+      setSearchParams(subcategorySearchParams);
+    }
+  }, []);
 
   useEffect(() => {
     dispatch(fetchAllCategories());
     dispatch(fetchCountries());
     dispatch(fetchUsers());
+
     dispatch(filteredLots(searchParams));
   }, [dispatch, searchParams]);
 
