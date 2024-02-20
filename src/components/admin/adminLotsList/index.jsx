@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import _ from 'lodash';
 
 import {
   Table,
@@ -17,11 +18,13 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import MoreIcon from '@mui/icons-material/More';
 
 import { fetchLots, updateLot } from '@thunks/fetchLots';
-import { fetchCategories } from '@thunks/fetchCategories';
+
 import { toggleModal, selectModalState } from '@slices/modalSlice';
 import { lotListSelector, setLotId } from '@slices/lotListSlice';
 import { setUserId } from '@slices/usersListSlice';
+
 import ENDPOINTS, { IMAGE_URL } from '@helpers/endpoints';
+import convertImagesToFiles from '@helpers/convertImagesToFiles';
 
 import getFormattedDate from '@helpers/getFormattedDate';
 import getNumberWithCurrency from '@helpers/getNumberWithCurrency';
@@ -48,8 +51,10 @@ const {
 const { tableRow, userName } = tableStyles;
 
 export default function AdminLotsList() {
+  const [files, setFiles] = useState([]);
   const dispatch = useDispatch();
   const lots = useSelector(lotListSelector);
+
   const [confirmStatus, setConfirmStatus] = useState(false);
   const [openedLot, setOpenedLot] = useState(null);
 
@@ -59,16 +64,26 @@ export default function AdminLotsList() {
 
   const handleChangeLot = useCallback(
     (lot) => {
-      const lotData = { ...lot, enabledByAdmin: !lot.enabledByAdmin };
+      const formData = new FormData();
+      const lotData = _.omit(
+        { ...lot, enabledByAdmin: !lot.enabledByAdmin },
+        'images'
+      );
       const { id } = lot;
-      lotData && id && dispatch(updateLot({ id, lotData }));
+
+      _.forEach(files, (file) => {
+        formData.append('file', file);
+      });
+
+      formData.append('data', JSON.stringify(lotData));
+
+      dispatch(updateLot({ id: id, lotData: formData }));
     },
-    [dispatch]
+    [files, dispatch]
   );
 
   useEffect(() => {
     dispatch(fetchLots());
-    dispatch(fetchCategories());
   }, [dispatch]);
 
   useEffect(() => {
@@ -78,13 +93,17 @@ export default function AdminLotsList() {
     }
   }, [handleChangeLot, confirmStatus, openedLot]);
 
-  const handleEditClick = (id, userId) => {
+  const handleEditClick = async (lot) => {
+    await convertImagesToFiles(lot.images || [], setFiles);
+
     dispatch(toggleModal('infoModal'));
-    dispatch(setLotId(id));
-    dispatch(setUserId(userId));
+    dispatch(setLotId(lot.id));
+    dispatch(setUserId(lot.userId));
   };
 
-  const handleChangeLotStatusClick = (lot) => {
+  const handleChangeLotStatusClick = async (lot) => {
+    await convertImagesToFiles(lot.images || [], setFiles);
+
     setOpenedLot(lot);
     dispatch(toggleModal('confirmModal'));
   };
@@ -137,7 +156,7 @@ export default function AdminLotsList() {
                     </Avatar>
                     <p
                       className={`${userName} ${title}`}
-                      onClick={() => handleEditClick(lot.id, lot.userId)}
+                      onClick={() => handleEditClick(lot)}
                     >
                       {lot.title}
                     </p>
@@ -147,7 +166,10 @@ export default function AdminLotsList() {
                   lot.quantity
                 )} ton`}</TableCell>
                 <TableCell>
-                  {getNumberWithCurrency(lot.pricePerTon, lot.currency)}
+                  {getNumberWithCurrency(
+                    lot.price / lot.quantity,
+                    lot.currency
+                  )}
                 </TableCell>
 
                 <TableCell>{getFormattedDate(lot.creationDate)}</TableCell>
@@ -157,7 +179,7 @@ export default function AdminLotsList() {
                   {
                     <div className={priceBet}>
                       <div>{`${getNumberWithCurrency(
-                        lot.quantity * lot.pricePerTon,
+                        lot.price,
                         lot.currency
                       )} / `}</div>
                       <div>no bets</div>
@@ -191,7 +213,7 @@ export default function AdminLotsList() {
                   <div>
                     <MoreIcon
                       className={moreInfoIcon}
-                      onClick={() => handleEditClick(lot.id, lot.userId)}
+                      onClick={() => handleEditClick(lot)}
                     />
                   </div>
                 </TableCell>

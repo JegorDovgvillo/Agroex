@@ -10,7 +10,7 @@ import BorderColorIcon from '@mui/icons-material/BorderColor';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 import AddIcon from '@mui/icons-material/Add';
 
-import { fetchCategories } from '@thunks/fetchCategories';
+import { fetchAllCategories } from '@thunks/fetchCategories';
 import { categoriesSelector } from '@slices/categoriesSlice';
 import { toggleModal } from '@slices/modalSlice';
 import { setCategoryId } from '@slices/categoriesSlice';
@@ -39,7 +39,7 @@ export default function CategoriesList() {
   const [confirmStatus, setConfirmStatus] = useState(false);
 
   useEffect(() => {
-    dispatch(fetchCategories());
+    dispatch(fetchAllCategories());
   }, [dispatch]);
 
   const handleEditClick = (id) => {

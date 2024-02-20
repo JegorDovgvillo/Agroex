@@ -4,6 +4,8 @@ import {
   createSelector,
 } from '@reduxjs/toolkit';
 
+import { filter } from 'lodash';
+
 import {
   fetchCategories,
   deleteCategory,
@@ -85,7 +87,7 @@ export const categoriesSelector = createSelector([selectAll], (categories) =>
 
 export const selectRootCategories = createSelector(
   [categoriesSelector],
-  (categories) => categories.filter((category) => !category.parentId)
+  (categories) => filter(categories, (category) => !category.parentId)
 );
 
 export const selectCategoryById = createSelector(
@@ -94,6 +96,13 @@ export const selectCategoryById = createSelector(
     return categoriesAdapter
       .getSelectors()
       .selectById(categoriesState, categoryId);
+  }
+);
+
+export const selectCategoryByParentId = createSelector(
+  [selectAll, (state, parentId) => parentId],
+  (categories, parentId) => {
+    return filter(categories, { parentId });
   }
 );
 

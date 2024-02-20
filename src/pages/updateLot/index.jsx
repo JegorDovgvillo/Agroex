@@ -6,7 +6,7 @@ import _ from 'lodash';
 
 import { selectLotDetailById } from '@slices/lotListSlice';
 import { usersListSelector } from '@slices/usersListSlice';
-import { categoriesSelector } from '@slices/categoriesSlice';
+import { selectRootCategories } from '@slices/categoriesSlice';
 import { countrySelector } from '@slices/countriesSlice';
 import { toggleModal } from '@slices/modalSlice';
 
@@ -14,6 +14,8 @@ import { fetchCountries } from '@thunks/fetchCountries';
 import { fetchUsers } from '@thunks/fetchUsers';
 import { deleteLot, updateLot } from '@thunks/fetchLots';
 import { fetchCategories } from '@thunks/fetchCategories';
+
+import convertImagesToFiles from '@helpers/convertImagesToFiles';
 
 import LotForm from '@components/lotForm';
 
@@ -23,7 +25,7 @@ const UpdateLot = () => {
   const { id: lotId } = useParams();
 
   const users = useSelector(usersListSelector);
-  const categories = useSelector(categoriesSelector);
+  const categories = useSelector(selectRootCategories);
   const country = useSelector(countrySelector);
   const selectedLot = useSelector((state) => selectLotDetailById(state, lotId));
 
@@ -34,19 +36,6 @@ const UpdateLot = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  const convertImagesToFiles = (images) => {
-    const files = [];
-
-    images.forEach((images) => {
-      const { id, name } = images;
-      const file = new File([], name, { type: 'image/jpeg' });
-      file.id = id;
-      files.push(file);
-    });
-
-    setFiles(files);
-  };
 
   const showConfirm = () => {
     dispatch(toggleModal('confirmModal'));
@@ -61,7 +50,7 @@ const UpdateLot = () => {
   }, [confirmStatus]);
 
   useEffect(() => {
-    convertImagesToFiles(selectedLot?.images || []);
+    convertImagesToFiles(selectedLot?.images || [], setFiles);
     dispatch(fetchUsers());
     dispatch(fetchCategories());
     dispatch(fetchCountries());
@@ -69,6 +58,11 @@ const UpdateLot = () => {
 
   const handleUpdateClick = async (values) => {
     const formData = new FormData();
+    const subcategory =
+      typeof values.subcategory === 'number'
+        ? { id: values.subcategory }
+        : { title: values.subcategory };
+
     const lotData = {
       title: values.title,
       description: values.description,
@@ -76,10 +70,13 @@ const UpdateLot = () => {
       size: values.size,
       packaging: values.packaging,
       quantity: values.quantity,
-      pricePerTon: (values.price / values.quantity).toFixed(2),
+      price: values.price,
       currency: values.priceUnits,
       expirationDate: values.expirationDate,
-      productCategoryId: values.category,
+      productCategory: {
+        ...subcategory,
+        parentId: values.category,
+      },
       lotType: values.lotType,
       userId: values.userId,
       location: {

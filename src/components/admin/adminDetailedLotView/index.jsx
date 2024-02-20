@@ -1,3 +1,5 @@
+import { find } from 'lodash';
+
 import getNumberWithCurrency from '@helpers/getNumberWithCurrency';
 import getFormattedDate from '@helpers/getFormattedDate';
 
@@ -13,7 +15,7 @@ const {
   userDataContainer,
 } = styles;
 
-const AdminDetailedLotView = ({ lot, userData }) => {
+const AdminDetailedLotView = ({ lot, userData, categories }) => {
   const {
     id,
     creationDate,
@@ -24,7 +26,7 @@ const AdminDetailedLotView = ({ lot, userData }) => {
     location,
     lotType,
     packaging,
-    pricePerTon,
+    price,
     productCategory,
     quantity,
     size,
@@ -53,14 +55,18 @@ const AdminDetailedLotView = ({ lot, userData }) => {
     { key: 'Quantity', value: `${getNumberWithCurrency(quantity)} ton` },
     {
       key: 'Price Per Ton',
-      value: `${getNumberWithCurrency(pricePerTon, currency)}/ton`,
+      value: `${getNumberWithCurrency(price / quantity, currency)}/ton`,
     },
     {
       key: 'Total price',
-      value: `${getNumberWithCurrency(quantity * pricePerTon, currency)}`,
+      value: `${getNumberWithCurrency(price, currency)}`,
     },
     {
-      key: 'Product Category',
+      key: 'Product category',
+      value: find(categories, { id: productCategory.parentId }).title,
+    },
+    {
+      key: 'Product subcategory',
       value: productCategory.title,
     },
     { key: 'Variety', value: variety },
