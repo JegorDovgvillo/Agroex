@@ -90,20 +90,22 @@ const LotForm = ({
 
   const isCreateNotSubmittedForm = formType === 'create' && isFirstSubmit;
 
+  const handleSubmit = (values, { resetForm }) => {
+    let newValues = { ...values };
+    const subcategory = subcategories.find(
+      (s) => s.title === values.subcategory
+    );
+
+    if (subcategory) {
+      newValues.subcategory = subcategory.id;
+    }
+    handleSubmitClick(newValues, resetForm);
+  };
+
   return (
     <Formik
       initialValues={initialValues}
-      onSubmit={(values, { resetForm }) => {
-        let newValues = { ...values };
-        const subcategory = subcategories.find(
-          (s) => s.title === values.subcategory
-        );
-
-        if (subcategory) {
-          newValues.subcategory = subcategory.id;
-        }
-        handleSubmitClick(newValues, resetForm);
-      }}
+      onSubmit={handleSubmit}
       validationSchema={lotValidationSchema}
       innerRef={formRef}
       enableReinitialize

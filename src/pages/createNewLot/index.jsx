@@ -35,6 +35,11 @@ const CreateNewLot = () => {
 
   const handleSubmitClick = async (values, resetForm) => {
     const formData = new FormData();
+    const subcategory =
+      typeof values.subcategory === 'number'
+        ? { id: values.subcategory }
+        : { title: values.subcategory };
+
     const lotData = {
       title: values.title,
       description: values.description,
@@ -46,9 +51,7 @@ const CreateNewLot = () => {
       currency: values.priceUnits,
       expirationDate: values.expirationDate,
       productCategory: {
-        ...(typeof values.subcategory === 'number'
-          ? { id: values.subcategory }
-          : { title: values.subcategory }),
+        ...subcategory,
         parentId: values.category,
       },
       lotType: values.lotType,

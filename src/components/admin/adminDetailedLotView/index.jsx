@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { find } from 'lodash';
 
 import getNumberWithCurrency from '@helpers/getNumberWithCurrency';
 import getFormattedDate from '@helpers/getFormattedDate';
@@ -63,7 +63,7 @@ const AdminDetailedLotView = ({ lot, userData, categories }) => {
     },
     {
       key: 'Product category',
-      value: _.find(categories, { id: productCategory.parentId }).title,
+      value: find(categories, { id: productCategory.parentId }).title,
     },
     {
       key: 'Product subcategory',

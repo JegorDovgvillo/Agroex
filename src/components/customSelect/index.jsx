@@ -30,6 +30,11 @@ const CustomSelect = ({
   handleChange = null,
   setFieldValue,
 }) => {
+  const handleSelectChange = (e) => {
+    setFieldValue(name, e.target.value);
+    handleChange && handleChange(e.target.value);
+  };
+
   return (
     <div className={`${styles.wrapp} ${styles[wrappType]}`}>
       <FormControl error={errors && touched}>
@@ -44,10 +49,7 @@ const CustomSelect = ({
             styles[fieldType]
           }`}
           value={value || ''}
-          onChange={(event) => {
-            setFieldValue(name, event.target.value);
-            handleChange && handleChange(event.target.value);
-          }}
+          onChange={handleSelectChange}
           MenuProps={MenuProps}
         >
           <MenuItem disabled value="">
