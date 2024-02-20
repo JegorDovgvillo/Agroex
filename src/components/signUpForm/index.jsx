@@ -1,34 +1,32 @@
-import { signUp } from 'aws-amplify/auth';
+import { Amplify } from 'aws-amplify';
 import { Authenticator } from '@aws-amplify/ui-react';
-// import { useState } from 'react';
-// import '@aws-amplify/ui-react/styles.css';
+import { useNavigate } from 'react-router';
+import awsConfig from '@helpers/aws-config';
+
+import '@aws-amplify/ui-react/styles.css';
+import styles from './signUpForm.module.scss';
+
+Amplify.configure(awsConfig);
 
 const SignUpForm = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
-  async function handleSignUp({ username, password, email }) {
-    try {
-      const { isSignUpComplete, userId, nextStep } = await signUp({
-        username,
-        password,
-        options: {
-          userAttributes: {
-            email,
-          },
-        },
-      });
-
-      console.log(userId);
-    } catch (error) {
-      console.log('error signing up:', error);
-    }
-  }
-
+  const navigate = useNavigate();
+  const navigateToUserProfile = () => {
+    navigate('/lots');
+  };
   return (
-    <Authenticator
-      initialState="signUp"
-    />
+    <div className={styles.wrapp}>
+      <Authenticator
+        signUpAttributes={['email', 'name']}
+        // socialProviders={['google']}
+      >
+        {({ signOut, user }) => (
+          <div>
+            <p>Welcome {user.username}</p>
+            <button onClick={navigateToUserProfile}>Sign out</button>
+          </div>
+        )}
+      </Authenticator>
+    </div>
   );
 };
 

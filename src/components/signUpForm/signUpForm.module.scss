@@ -1,0 +1,10 @@
+.wrapp {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+
+  form {
+    display: flex;
+    align-items: center;
+  }
+}
