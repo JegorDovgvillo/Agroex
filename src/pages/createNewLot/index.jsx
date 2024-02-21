@@ -60,6 +60,7 @@ const CreateNewLot = () => {
         countryId: values.country,
         region: values.region,
       },
+      tags: values.tags,
     };
 
     files.forEach((file) => {

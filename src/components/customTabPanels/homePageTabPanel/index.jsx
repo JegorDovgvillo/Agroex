@@ -52,15 +52,6 @@ const HomePageTabPanel = ({ categories }) => {
     selectCategoryByParentId(state, categories?.[currTabIndex]?.id)
   );
 
-  useEffect(() => {
-    if (!category) {
-      const path = generatePath(CATEGORY_PAGE, {
-        category: _.toLower(categories[0].title),
-      });
-      navigate(path);
-    }
-  }, []);
-
   const handleChange = (event, newValue) => {
     setCurrTabIndex(newValue);
 
@@ -82,6 +73,16 @@ const HomePageTabPanel = ({ categories }) => {
       return `${lotListPath}${query}`;
     }
   };
+
+  useEffect(() => {
+    if (!category) {
+      const path = generatePath(CATEGORY_PAGE, {
+        category: _.toLower(categories[0].title),
+      });
+
+      navigate(path);
+    }
+  }, []);
 
   return (
     <Box className={homePageContainer}>

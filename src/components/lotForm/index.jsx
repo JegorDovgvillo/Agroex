@@ -95,6 +95,8 @@ const LotForm = ({
     if (subcategory) {
       newValues.subcategory = subcategory.id;
     }
+    newValues.tags = [];
+
     handleSubmitClick(newValues, resetForm);
   };
 

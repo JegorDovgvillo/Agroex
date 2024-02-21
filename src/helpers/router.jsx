@@ -40,10 +40,6 @@ const Router = () => {
           element: <LotList listType={'filters'} />,
         },
         {
-          path: ROUTES.LOTS,
-          element: <LotList />,
-        },
-        {
           path: ROUTES.LOTS_DETAILS,
           element: <LotDetails />,
         },

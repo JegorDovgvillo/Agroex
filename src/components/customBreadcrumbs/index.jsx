@@ -13,7 +13,7 @@ const { CATEGORY_PAGE, SUBCATEGORY_LOTS_PAGE } = ROUTES;
 const CustomBreadcrumbs = ({ title = '', categories }) => {
   const { category, subcategory, id: lotId } = useParams();
 
-  const categoryValue = (param) =>
+  const getCategoryTitle = (param) =>
     categories.length > 0 &&
     find(categories, (cat) => toLower(cat.title) === param).title;
 
@@ -25,21 +25,19 @@ const CustomBreadcrumbs = ({ title = '', categories }) => {
 
   const categoryPart = category && {
     id: 2,
-    link: generatePath(CATEGORY_PAGE, {
-      category: category,
-    }),
-    value: categoryValue(category),
+    link: generatePath(CATEGORY_PAGE, { category }),
+    value: getCategoryTitle(category),
   };
 
   const subcategoryPart = subcategory && {
     id: 3,
     link: lotId
       ? generatePath(SUBCATEGORY_LOTS_PAGE, {
-          category: category,
-          subcategory: subcategory,
+          category,
+          subcategory,
         })
       : null,
-    value: categoryValue(subcategory),
+    value: getCategoryTitle(subcategory),
   };
 
   const lotIdPart = lotId && {
