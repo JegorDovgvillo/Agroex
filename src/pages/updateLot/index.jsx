@@ -12,7 +12,7 @@ import { toggleModal } from '@slices/modalSlice';
 
 import { fetchCountries } from '@thunks/fetchCountries';
 import { fetchUsers } from '@thunks/fetchUsers';
-import { deleteLot, updateLot } from '@thunks/fetchLots';
+import { deleteLot, updateLot, fetchLotDetails } from '@thunks/fetchLots';
 import { fetchCategories } from '@thunks/fetchCategories';
 
 import convertImagesToFiles from '@helpers/convertImagesToFiles';
@@ -51,6 +51,7 @@ const UpdateLot = () => {
 
   useEffect(() => {
     convertImagesToFiles(selectedLot?.images || [], setFiles);
+    dispatch(fetchLotDetails(lotId));
     dispatch(fetchUsers());
     dispatch(fetchCategories());
     dispatch(fetchCountries());
@@ -98,7 +99,11 @@ const UpdateLot = () => {
   };
 
   const isDataLoaded =
-    selectedLot && !_.every([users, categories, country], _.isEmpty);
+    selectedLot &&
+    _.every(
+      [users, categories, country],
+      (arr) => _.isArray(arr) && !_.isEmpty(arr)
+    );
 
   return (
     <>

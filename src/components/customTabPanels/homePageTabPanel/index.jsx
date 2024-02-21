@@ -31,7 +31,7 @@ const { CATEGORY_PAGE, SUBCATEGORY_LOTS_PAGE } = ROUTES;
 
 function a11yProps(index) {
   return {
-    'id': `simple-tab-${index}`,
+    id: `simple-tab-${index}`,
     'aria-controls': `simple-tabpanel-${index}`,
   };
 }
@@ -42,9 +42,8 @@ const HomePageTabPanel = ({ categories }) => {
   const navigate = useNavigate();
 
   const categoryIndex = _.findIndex(categories, (categoryEl) =>
-    _.isEqual(categoryEl.title, category)
+    _.isEqual(_.toLower(categoryEl.title), category)
   );
-
   const [currTabIndex, setCurrTabIndex] = useState(
     categoryIndex > -1 ? categoryIndex : 0
   );

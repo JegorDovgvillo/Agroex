@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import { Formik, Form } from 'formik';
 import { useNavigate } from 'react-router-dom';
 
@@ -21,41 +20,28 @@ const Filters = ({
 }) => {
   const navigate = useNavigate();
 
-  const initValues = {
-    keyword: '',
-    minQuantity: '',
-    maxQuantity: '',
-    minPrice: '',
-    maxPrice: '',
-    users: [],
-    categories: [],
-    lotType: '',
-    countries: [],
+  const getNumbersArray = (searchParams) => searchParams.split(',').map(Number);
+
+  const initialValues = {
+    keyword: searchParams.get('keyword') || '',
+    minQuantity: searchParams.get('minQuantity') || '',
+    maxQuantity: searchParams.get('maxQuantity') || '',
+    minPrice: searchParams.get('minPrice') || '',
+    maxPrice: searchParams.get('maxPrice') || '',
+    users: searchParams.get('users')
+      ? getNumbersArray(searchParams.get('users'))
+      : [],
+    categories: searchParams.get('categories')
+      ? getNumbersArray(searchParams.get('categories'))
+      : [],
+    lotType: searchParams.get('lotType') || '',
+    countries: searchParams.get('countries')
+      ? getNumbersArray(searchParams.get('countries'))
+      : [],
   };
-
-  const [initialValues, setInitialValues] = useState(initValues);
-
-  useEffect(() => {
-    setInitialValues({
-      keyword: searchParams.get('keyword') || '',
-      minQuantity: searchParams.get('minQuantity') || '',
-      maxQuantity: searchParams.get('maxQuantity') || '',
-      minPrice: searchParams.get('minPrice') || '',
-      maxPrice: searchParams.get('maxPrice') || '',
-      users: searchParams.get('users') ? [searchParams.get('users')] : [],
-      categories: searchParams.get('categories')
-        ? [searchParams.get('categories')]
-        : [],
-      lotType: searchParams.get('lotType') || '',
-      countries: searchParams.get('countries')
-        ? [searchParams.get('countries')]
-        : [],
-    });
-  }, [searchParams]);
 
   const resetFilter = (resetForm) => {
     setSearchParams('');
-    setInitialValues(initValues);
     navigate('/filters');
     resetForm();
   };
@@ -76,9 +62,9 @@ const Filters = ({
   return (
     <div className={styles.filtersWrapp}>
       <Formik
-        key={JSON.stringify(initialValues)}
         initialValues={initialValues}
         onSubmit={applyFilters}
+        key={JSON.stringify(initialValues)}
       >
         {({ resetForm, values, setFieldValue }) => (
           <Form>
