@@ -19,7 +19,7 @@
     "@mui/material": "^5.15.6",
     "@mui/x-date-pickers": "^6.19.2",
     "@reduxjs/toolkit": "^2.0.1",
-    "aws-amplify": "^6.0.16",
+    "aws-amplify": "^6.0.17",
     "axios": "^1.6.7",
     "formik": "^2.4.5",
     "json-server": "^1.0.0-alpha.22",
