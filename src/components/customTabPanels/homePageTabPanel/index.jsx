@@ -31,7 +31,7 @@ const { CATEGORY_PAGE, SUBCATEGORY_LOTS_PAGE } = ROUTES;
 
 function a11yProps(index) {
   return {
-    'id': `simple-tab-${index}`,
+    id: `simple-tab-${index}`,
     'aria-controls': `simple-tabpanel-${index}`,
   };
 }
@@ -72,12 +72,14 @@ const HomePageTabPanel = ({ categories }) => {
     navigate(path);
   };
 
-  const getPath = (subcategory) => {
+  const getPath = ({ title, id }) => {
     if (category) {
-      return generatePath(SUBCATEGORY_LOTS_PAGE, {
+      const query = `?categories=${id}`;
+      const lotListPath = generatePath(SUBCATEGORY_LOTS_PAGE, {
         category: category,
-        subcategory: _.toLower(subcategory),
+        subcategory: _.toLower(title),
       });
+      return `${lotListPath}${query}`;
     }
   };
 
@@ -112,7 +114,7 @@ const HomePageTabPanel = ({ categories }) => {
         <div className={subcategoriesListContainer}>
           {subcategories.map((subcategory) => (
             <Link
-              to={getPath(subcategory.title)}
+              to={`${getPath({ ...subcategory })}`}
               className={listItem}
               key={subcategory.id}
             >
@@ -125,7 +127,7 @@ const HomePageTabPanel = ({ categories }) => {
             <SubcategoryBanner
               key={subcategory.id}
               {...subcategory}
-              path={getPath(subcategory.title)}
+              path={`${getPath({ ...subcategory })}`}
             />
           ))}
         </div>

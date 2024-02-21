@@ -19,7 +19,7 @@ import {
   selectSubcategories,
 } from '@slices/categoriesSlice';
 import { countrySelector } from '@slices/countriesSlice';
-import { lotListSelector } from '@slices/lotListSlice';
+import { lotListSelector, clearLots } from '@slices/lotListSlice';
 
 import styles from './lotList.module.scss';
 
@@ -32,44 +32,37 @@ const LotList = () => {
   const countries = useSelector(countrySelector);
   const users = useSelector(usersListSelector);
 
-  const subcategoryId =
-    subcategory &&
-    _.find(categories, (cat) => _.toLower(cat.title) === subcategory)?.id;
-
-  const subcategorySearchParams = subcategoryId && [
-    ['categories', [subcategoryId]],
-  ];
-
   const [searchParams, setSearchParams] = useSearchParams();
-
-  useEffect(() => {
-    if (subcategory) {
-      setSearchParams(subcategorySearchParams);
-    }
-  }, []);
 
   useEffect(() => {
     dispatch(fetchAllCategories());
     dispatch(fetchCountries());
     dispatch(fetchUsers());
 
+    return () => {
+      dispatch(clearLots());
+    };
+  }, []);
+
+  useEffect(() => {
     dispatch(filteredLots(searchParams));
-  }, [dispatch, searchParams]);
+  }, [searchParams]);
 
   return (
     <div className={styles.lotListContainer}>
       <div className={styles.breadCrumbsContainer}>
-        <CustomBreadcrumbs />
+        <CustomBreadcrumbs categories={categories} />
         {subcategory && <h4 className={styles.title}>{subcategory}</h4>}
       </div>
       <div className={styles.contentContainer}>
         <Filters
+          key={JSON.stringify(subcategories)}
           categories={subcategories}
           countries={countries}
-          searchParams={searchParams}
           setSearchParams={setSearchParams}
           users={users}
         />
+
         <div className={styles.lotListWrapp}>
           {lots.map((item) => (
             <ItemCard {...item} key={item.id} />

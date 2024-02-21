@@ -15,8 +15,10 @@ import CustomBreadcrumbs from '@components/customBreadcrumbs';
 import getNumberWithCurrency from '@helpers/getNumberWithCurrency';
 import getFormattedDate from '@helpers/getFormattedDate';
 
+import { categoriesSelector } from '@slices/categoriesSlice';
 import { selectLotDetailById, setLotId } from '@slices/lotListSlice';
 import { fetchLotDetails } from '@thunks/fetchLots';
+import { fetchAllCategories } from '@thunks/fetchCategories';
 
 import attentionIcon from '@icons/attention.svg';
 import cartIcon from '@icons/cartIcon.svg';
@@ -54,10 +56,13 @@ export const LotDetails = () => {
 
   const { loadingStatus } = useSelector((state) => state.lotList);
   const selectedLot = useSelector((state) => selectLotDetailById(state, lotId));
+  const categories = useSelector(categoriesSelector);
 
   useEffect(() => {
     dispatch(setLotId(lotId));
     dispatch(fetchLotDetails(lotId));
+
+    dispatch(fetchAllCategories());
   }, [dispatch, lotId]);
 
   if (loadingStatus !== 'fulfilled') {
@@ -114,7 +119,7 @@ export const LotDetails = () => {
   return (
     <div className={pageContainer}>
       <div className={breadCrumbs}>
-        <CustomBreadcrumbs title={title} />
+        <CustomBreadcrumbs title={title} categories={categories} />
       </div>
       <div className={container}>
         {

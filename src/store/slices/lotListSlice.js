@@ -27,6 +27,9 @@ const lotListSlice = createSlice({
     setLotId: (state, action) => {
       state.lotId = action.payload;
     },
+    clearLots: (state) => {
+      lotListAdapter.removeAll(state);
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -104,6 +107,6 @@ export const { selectById: selectLotDetailById } = lotListAdapter.getSelectors(
 );
 
 const { actions, reducer } = lotListSlice;
-export const { setLotId } = actions;
+export const { setLotId, clearLots } = actions;
 
 export default reducer;

@@ -1,6 +1,6 @@
 import { Formik, Form } from 'formik';
 import { useDispatch } from 'react-redux';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 
 import _ from 'lodash';
 import { filteredLots } from '@thunks/fetchLots';
@@ -13,45 +13,32 @@ import CustomSelect from '../customSelect';
 
 import styles from './filters.module.scss';
 
-const Filters = ({
-  categories,
-  countries,
-  searchParams,
-  setSearchParams,
-  users,
-}) => {
+const Filters = ({ categories, countries, setSearchParams, users }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { subcategory } = useParams();
-  const categoriesInitValue = subcategory
-    ? [
-        _.find(
-          categories,
-          (cat) => _.toLower(cat.title) === _.toLower(subcategory)
-        )?.id,
-      ]
-    : [];
+  const [searchParams] = useSearchParams();
 
   const initialValues = {
-    keyword: '',
-    minQuantity: '',
-    maxQuantity: '',
-    minPrice: '',
-    maxPrice: '',
-    users: [],
-    categories: categoriesInitValue,
-    lotType: '',
-    countries: [],
+    keyword: searchParams.get('keyword') || '',
+    minQuantity: searchParams.get('minQuantity') || '',
+    maxQuantity: searchParams.get('maxQuantity') || '',
+    minPrice: searchParams.get('minPrice') || '',
+    maxPrice: searchParams.get('maxPrice') || '',
+    users: [searchParams.get('users')] || [],
+    categories: [searchParams.get('categories')] || [],
+    lotType: searchParams.get('keyword') || '',
+    countries: [searchParams.get('countries')] || [],
   };
 
   const resetFilter = (resetForm) => {
+    navigate('/filters');
     setSearchParams('');
     resetForm();
   };
 
   const applyFilters = (values) => {
-    values.categories.length > 1 && navigate('/filters');
+    navigate('/filters');
 
     const filteredParams = _.toPairs(
       _.pickBy(

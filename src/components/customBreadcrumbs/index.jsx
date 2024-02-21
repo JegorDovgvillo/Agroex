@@ -1,12 +1,8 @@
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { Link, useParams, generatePath } from 'react-router-dom';
 import { compact, find, toLower } from 'lodash';
 import { Breadcrumbs, Typography } from '@mui/material';
 
 import ROUTES from '@helpers/routeNames';
-import { categoriesSelector } from '@slices/categoriesSlice';
-import { fetchAllCategories } from '@thunks/fetchCategories';
 
 import styles from './customBreadcrumbs.module.scss';
 
@@ -14,20 +10,12 @@ const { container, link } = styles;
 
 const { CATEGORY_PAGE, SUBCATEGORY_LOTS_PAGE } = ROUTES;
 
-const CustomBreadcrumbs = ({ title = '' }) => {
-  const dispatch = useDispatch();
-
+const CustomBreadcrumbs = ({ title = '', categories }) => {
   const { category, subcategory, id: lotId } = useParams();
-
-  const categories = useSelector(categoriesSelector);
 
   const categoryValue = (param) =>
     categories.length > 0 &&
     find(categories, (cat) => toLower(cat.title) === param).title;
-
-  useEffect(() => {
-    dispatch(fetchAllCategories());
-  }, [dispatch]);
 
   const rootPart = {
     id: 1,
