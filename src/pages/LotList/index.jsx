@@ -2,7 +2,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import _ from 'lodash';
 
 import Filters from '@components/filters';
 import ItemCard from '@components/itemCard';
@@ -35,6 +34,10 @@ const LotList = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
+    dispatch(filteredLots(searchParams));
+  }, [searchParams]);
+
+  useEffect(() => {
     dispatch(fetchAllCategories());
     dispatch(fetchCountries());
     dispatch(fetchUsers());
@@ -44,10 +47,6 @@ const LotList = () => {
     };
   }, []);
 
-  useEffect(() => {
-    dispatch(filteredLots(searchParams));
-  }, [searchParams]);
-
   return (
     <div className={styles.lotListContainer}>
       <div className={styles.breadCrumbsContainer}>
@@ -56,9 +55,9 @@ const LotList = () => {
       </div>
       <div className={styles.contentContainer}>
         <Filters
-          key={JSON.stringify(subcategories)}
           categories={subcategories}
           countries={countries}
+          searchParams={searchParams}
           setSearchParams={setSearchParams}
           users={users}
         />

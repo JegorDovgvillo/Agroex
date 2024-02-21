@@ -1,9 +1,8 @@
+import { useState, useEffect } from 'react';
 import { Formik, Form } from 'formik';
-import { useDispatch } from 'react-redux';
-import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import _ from 'lodash';
-import { filteredLots } from '@thunks/fetchLots';
 
 import { CustomButton } from '../buttons/CustomButton';
 import CustomTextField from '../customTextField';
@@ -13,27 +12,51 @@ import CustomSelect from '../customSelect';
 
 import styles from './filters.module.scss';
 
-const Filters = ({ categories, countries, setSearchParams, users }) => {
-  const dispatch = useDispatch();
+const Filters = ({
+  categories,
+  countries,
+  searchParams,
+  setSearchParams,
+  users,
+}) => {
   const navigate = useNavigate();
 
-  const [searchParams] = useSearchParams();
-
-  const initialValues = {
-    keyword: searchParams.get('keyword') || '',
-    minQuantity: searchParams.get('minQuantity') || '',
-    maxQuantity: searchParams.get('maxQuantity') || '',
-    minPrice: searchParams.get('minPrice') || '',
-    maxPrice: searchParams.get('maxPrice') || '',
-    users: [searchParams.get('users')] || [],
-    categories: [searchParams.get('categories')] || [],
-    lotType: searchParams.get('keyword') || '',
-    countries: [searchParams.get('countries')] || [],
+  const initValues = {
+    keyword: '',
+    minQuantity: '',
+    maxQuantity: '',
+    minPrice: '',
+    maxPrice: '',
+    users: [],
+    categories: [],
+    lotType: '',
+    countries: [],
   };
 
+  const [initialValues, setInitialValues] = useState(initValues);
+
+  useEffect(() => {
+    setInitialValues({
+      keyword: searchParams.get('keyword') || '',
+      minQuantity: searchParams.get('minQuantity') || '',
+      maxQuantity: searchParams.get('maxQuantity') || '',
+      minPrice: searchParams.get('minPrice') || '',
+      maxPrice: searchParams.get('maxPrice') || '',
+      users: searchParams.get('users') ? [searchParams.get('users')] : [],
+      categories: searchParams.get('categories')
+        ? [searchParams.get('categories')]
+        : [],
+      lotType: searchParams.get('lotType') || '',
+      countries: searchParams.get('countries')
+        ? [searchParams.get('countries')]
+        : [],
+    });
+  }, [searchParams]);
+
   const resetFilter = (resetForm) => {
-    navigate('/filters');
     setSearchParams('');
+    setInitialValues(initValues);
+    navigate('/filters');
     resetForm();
   };
 
@@ -48,13 +71,15 @@ const Filters = ({ categories, countries, setSearchParams, users }) => {
     );
 
     setSearchParams(filteredParams);
-
-    dispatch(filteredLots(searchParams));
   };
 
   return (
     <div className={styles.filtersWrapp}>
-      <Formik initialValues={initialValues} onSubmit={applyFilters}>
+      <Formik
+        key={JSON.stringify(initialValues)}
+        initialValues={initialValues}
+        onSubmit={applyFilters}
+      >
         {({ resetForm, values, setFieldValue }) => (
           <Form>
             <CustomTextField

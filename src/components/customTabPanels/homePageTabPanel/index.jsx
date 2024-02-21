@@ -31,7 +31,7 @@ const { CATEGORY_PAGE, SUBCATEGORY_LOTS_PAGE } = ROUTES;
 
 function a11yProps(index) {
   return {
-    id: `simple-tab-${index}`,
+    'id': `simple-tab-${index}`,
     'aria-controls': `simple-tabpanel-${index}`,
   };
 }
@@ -79,6 +79,7 @@ const HomePageTabPanel = ({ categories }) => {
         category: category,
         subcategory: _.toLower(title),
       });
+
       return `${lotListPath}${query}`;
     }
   };
