@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import _ from 'lodash';
 
@@ -17,7 +17,7 @@ import getFormattedDate from '@helpers/getFormattedDate';
 
 import { categoriesSelector } from '@slices/categoriesSlice';
 import { selectLotDetailById, setLotId } from '@slices/lotListSlice';
-import { fetchLotDetails } from '@thunks/fetchLots';
+import { fetchLotDetails, filteredLots } from '@thunks/fetchLots';
 import { fetchAllCategories } from '@thunks/fetchCategories';
 
 import attentionIcon from '@icons/attention.svg';
@@ -54,9 +54,14 @@ export const LotDetails = () => {
   const dispatch = useDispatch();
   const { id: lotId } = useParams();
 
+  const [searchParams, setSearchParams] = useSearchParams();
   const { loadingStatus } = useSelector((state) => state.lotList);
   const selectedLot = useSelector((state) => selectLotDetailById(state, lotId));
   const categories = useSelector(categoriesSelector);
+
+  useEffect(() => {
+    dispatch(filteredLots(searchParams));
+  }, [searchParams]);
 
   useEffect(() => {
     dispatch(setLotId(lotId));
@@ -119,7 +124,11 @@ export const LotDetails = () => {
   return (
     <div className={pageContainer}>
       <div className={breadCrumbs}>
-        <CustomBreadcrumbs title={title} categories={categories} />
+        <CustomBreadcrumbs
+          lot={selectedLot}
+          categories={categories}
+          setSearchParams={setSearchParams}
+        />
       </div>
       <div className={container}>
         {

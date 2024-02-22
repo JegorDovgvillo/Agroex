@@ -26,6 +26,7 @@ const CustomMultiSelect = ({
   label = '',
   fieldType = '',
   wrappType = '',
+  onChange,
 }) => {
   return (
     <div className={`${styles.wrapp} ${styles[wrappType]}`}>
@@ -42,6 +43,7 @@ const CustomMultiSelect = ({
           label={placeholder}
           MenuProps={MenuProps}
           multiple={true}
+          onChange={onChange}
         >
           {units.map((item, index) => (
             <MenuItem

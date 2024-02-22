@@ -11,6 +11,7 @@
     color: $mainBase;
 
     &:hover {
+      cursor: pointer;
       color: $mainDark;
       text-decoration: underline;
     }

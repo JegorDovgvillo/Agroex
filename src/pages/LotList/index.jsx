@@ -1,7 +1,9 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
+
+import _ from 'lodash';
 
 import Filters from '@components/filters';
 import ItemCard from '@components/itemCard';
@@ -27,10 +29,17 @@ const LotList = () => {
   const { subcategory } = useParams();
   const lots = useSelector(lotListSelector);
   const categories = useSelector(categoriesSelector);
+
   const subcategories = useSelector(selectSubcategories);
   const countries = useSelector(countrySelector);
   const users = useSelector(usersListSelector);
 
+  //const [currCategory, setCurrCategory] = useState(null);
+  const [isCategoryFieldVisible, setIsCategoryFieldVisible] = useState(true);
+  const [isSubcategoryFieldVisible, setIsSubcategoryFieldVisible] =
+    useState(true);
+  const [selectedCategoriesIds, setSelectedCategoriesIds] = useState([]);
+  const [selectedSubcategoriesIds, setSelectedSubcategoriesIds] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
@@ -50,16 +59,29 @@ const LotList = () => {
   return (
     <div className={styles.lotListContainer}>
       <div className={styles.breadCrumbsContainer}>
-        <CustomBreadcrumbs categories={categories} />
+        <CustomBreadcrumbs
+          categories={categories}
+          setIsCategoryFieldVisible={setIsCategoryFieldVisible}
+          setIsSubcategoryFieldVisible={setIsSubcategoryFieldVisible}
+          setSearchParams={setSearchParams}
+          setSelectedCategoriesIds={setSelectedCategoriesIds}
+          setSelectedSubcategoriesIds={setSelectedSubcategoriesIds}
+        />
         {subcategory && <h4 className={styles.title}>{subcategory}</h4>}
       </div>
       <div className={styles.contentContainer}>
         <Filters
-          categories={subcategories}
+          categories={categories}
           countries={countries}
           searchParams={searchParams}
           setSearchParams={setSearchParams}
           users={users}
+          isCategoryFieldVisible={isCategoryFieldVisible}
+          isSubcategoryFieldVisible={isSubcategoryFieldVisible}
+          selectedCategoriesIds={selectedCategoriesIds}
+          setSelectedCategoriesIds={setSelectedCategoriesIds}
+          selectedSubcategoriesIds={selectedSubcategoriesIds}
+          setSelectedSubcategoriesIds={setSelectedSubcategoriesIds}
         />
 
         <div className={styles.lotListWrapp}>

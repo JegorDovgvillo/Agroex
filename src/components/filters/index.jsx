@@ -1,5 +1,6 @@
+import { useState, useEffect } from 'react';
 import { Formik, Form } from 'formik';
-import { useNavigate } from 'react-router-dom';
+//import { useNavigate } from 'react-router-dom';
 
 import _ from 'lodash';
 
@@ -17,10 +18,19 @@ const Filters = ({
   searchParams,
   setSearchParams,
   users,
+  isCategoryFieldVisible,
+  isSubcategoryFieldVisible,
+  selectedCategoriesIds,
+  setSelectedCategoriesIds,
+  selectedSubcategoriesIds,
+  setSelectedSubcategoriesIds,
 }) => {
-  const navigate = useNavigate();
-
   const getNumbersArray = (searchParams) => searchParams.split(',').map(Number);
+
+  const parentCategories = _.filter(categories, ['parentId', 0]);
+  const subcategories = _.filter(categories, 'parentId');
+
+  const [subcategoryUnits, setSubcategoryUnits] = useState([]);
 
   const initialValues = {
     keyword: searchParams.get('keyword') || '',
@@ -31,9 +41,8 @@ const Filters = ({
     users: searchParams.get('users')
       ? getNumbersArray(searchParams.get('users'))
       : [],
-    categories: searchParams.get('categories')
-      ? getNumbersArray(searchParams.get('categories'))
-      : [],
+    categories: selectedCategoriesIds,
+    subcategories: selectedSubcategoriesIds,
     lotType: searchParams.get('lotType') || '',
     countries: searchParams.get('countries')
       ? getNumbersArray(searchParams.get('countries'))
@@ -41,17 +50,34 @@ const Filters = ({
   };
 
   const resetFilter = (resetForm) => {
+    setSelectedCategoriesIds([]);
+    setSelectedSubcategoriesIds([]);
     setSearchParams('');
-    navigate('/filters');
     resetForm();
   };
 
   const applyFilters = (values) => {
-    navigate('/filters');
+    setSelectedCategoriesIds(values.categories);
+    const isSubcategorySelected = values.subcategories.length > 0;
 
+    const categoriesIdsFromParentIds =
+      !isSubcategorySelected &&
+      _.map(values.categories, (categoryId) =>
+        _.map(_.filter(subcategories, ['parentId', categoryId]), 'id')
+      );
+
+    const valuesToSubmit = _.omit(
+      _.set(
+        values,
+        'categories',
+        categoriesIdsFromParentIds || values.subcategories
+      ),
+      'subcategories'
+    );
+    console.log(values, valuesToSubmit, isSubcategorySelected);
     const filteredParams = _.toPairs(
       _.pickBy(
-        values,
+        valuesToSubmit,
         (value) => value && !(Array.isArray(value) && !value.length)
       )
     );
@@ -59,6 +85,34 @@ const Filters = ({
     setSearchParams(filteredParams);
   };
 
+  useEffect(() => {
+    const filteredSubcategories = _.chain(categories)
+      .filter((item) => _.includes(selectedCategoriesIds, item.parentId))
+      .value();
+    const subcategories = _.filter(categories, 'parentId');
+
+    setSubcategoryUnits(
+      !_.isEmpty(filteredSubcategories) ? filteredSubcategories : subcategories
+    );
+
+    const filteredSelectedSubcategoriesIds = _.intersection(
+      selectedSubcategoriesIds,
+      filteredSubcategories
+    );
+    console.log(
+      selectedSubcategoriesIds,
+      filteredSubcategories,
+      filteredSelectedSubcategoriesIds
+    );
+    setSelectedSubcategoriesIds(filteredSelectedSubcategoriesIds);
+  }, [selectedCategoriesIds, categories]);
+
+  console.log(
+    selectedCategoriesIds,
+
+    selectedSubcategoriesIds,
+    initialValues
+  );
   return (
     <div className={styles.filtersWrapp}>
       <Formik
@@ -131,9 +185,14 @@ const Filters = ({
               required={false}
               fieldType="filterSelect"
               wrappType="filterWrapp"
+              onChange={(e) => {
+                setFieldValue('users', e.target.value);
+                //setSelectedCategoriesIds(e.target.value);
+              }}
             />
+
             <CustomMultiSelect
-              units={categories}
+              units={parentCategories}
               name="categories"
               disabled={false}
               placeholder="Select category"
@@ -141,7 +200,27 @@ const Filters = ({
               label="Category"
               required={false}
               fieldType="filterSelect"
-              wrappType="filterWrapp"
+              wrappType={isCategoryFieldVisible ? 'filterWrapp' : 'hidden'}
+              onChange={(e) => {
+                setFieldValue('categories', e.target.value);
+                setSelectedCategoriesIds(e.target.value);
+              }}
+            />
+
+            <CustomMultiSelect
+              units={subcategoryUnits}
+              name="subcategories"
+              disabled={false}
+              placeholder="Select subcategory"
+              itemFieldName="title"
+              label="Subcategory"
+              required={false}
+              fieldType="filterSelect"
+              wrappType={isSubcategoryFieldVisible ? 'filterWrapp' : 'hidden'}
+              onChange={(e) => {
+                setFieldValue('subcategories', e.target.value);
+                setSelectedSubcategoriesIds(e.target.value);
+              }}
             />
             <CustomSelect
               label="Lot type"
@@ -165,6 +244,10 @@ const Filters = ({
               required={false}
               fieldType="filterSelect"
               wrappType="filterWrapp"
+              onChange={(e) => {
+                setFieldValue('countries', e.target.value);
+                //setSelectedCategoriesIds(e.target.value);
+              }}
             />
             <div className={styles.buttonsWrap}>
               <CustomButton

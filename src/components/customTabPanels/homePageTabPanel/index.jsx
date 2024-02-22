@@ -27,7 +27,7 @@ const {
   subcategoriesLinksContainer,
 } = styles;
 
-const { CATEGORY_PAGE, SUBCATEGORY_LOTS_PAGE } = ROUTES;
+const { LOTS, CATEGORY_PAGE, SUBCATEGORY_LOTS_PAGE } = ROUTES;
 
 function a11yProps(index) {
   return {
@@ -62,16 +62,10 @@ const HomePageTabPanel = ({ categories }) => {
     navigate(path);
   };
 
-  const getPath = ({ title, id }) => {
-    if (category) {
-      const query = `?categories=${id}`;
-      const lotListPath = generatePath(SUBCATEGORY_LOTS_PAGE, {
-        category: category,
-        subcategory: _.toLower(title),
-      });
+  const getPath = (id) => {
+    const query = `?categories=${id}`;
 
-      return `${lotListPath}${query}`;
-    }
+    return `${LOTS}${query}`;
   };
 
   useEffect(() => {
@@ -115,7 +109,7 @@ const HomePageTabPanel = ({ categories }) => {
         <div className={subcategoriesListContainer}>
           {subcategories.map((subcategory) => (
             <Link
-              to={`${getPath({ ...subcategory })}`}
+              to={`${getPath(subcategory.id)}`}
               className={listItem}
               key={subcategory.id}
             >
@@ -128,7 +122,7 @@ const HomePageTabPanel = ({ categories }) => {
             <SubcategoryBanner
               key={subcategory.id}
               {...subcategory}
-              path={`${getPath({ ...subcategory })}`}
+              path={`${getPath(subcategory.id)}`}
             />
           ))}
         </div>

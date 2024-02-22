@@ -3,7 +3,7 @@ const ROUTES = {
   SUBCATEGORY_LOTS_PAGE: '/:category/:subcategory?',
   LOTS: '/lots',
   LOTS_FILTERS: '/filters',
-  LOTS_DETAILS: '/:category/:subcategory/:id/details',
+  LOTS_DETAILS: '/lots/:id/details',
 
   ADMIN: '/admin',
   ADMIN_CATEGORIES: '/admin/categories',

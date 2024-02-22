@@ -15,14 +15,9 @@ import styles from './itemCard.module.scss';
 
 const ItemCard = ({ ...item }) => {
   const navigate = useNavigate();
-  const parentCategory = useSelector((state) =>
-    selectCategoryById(state, item.productCategory.parentId)
-  );
 
   const viewDetailsCard = () => {
     const path = generatePath(ROUTES.LOTS_DETAILS, {
-      category: _.toLower(parentCategory.title),
-      subcategory: _.toLower(item.productCategory.title),
       id: item.id,
     });
     navigate(path);
