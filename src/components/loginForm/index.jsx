@@ -1,16 +1,15 @@
 import { Amplify } from 'aws-amplify';
 import { Authenticator } from '@aws-amplify/ui-react';
-import TextField from '@mui/material/TextField';
-import Autocomplete from '@mui/material/Autocomplete';
-// import { Auth } from 'aws-amplify';
 import '@aws-amplify/ui-react/styles.css';
 
-import awsConfig from '@helpers/aws-config';
-import timeZones from '../../data/timeZones';
+import awsConfigUsers from '@helpers/cognito/aws-config-users.js';
+
+import TextField from '@mui/material/TextField';
+import Autocomplete from '@mui/material/Autocomplete';
 
 import './signUpForm.scss';
 
-Amplify.configure(awsConfig);
+Amplify.configure(awsConfigUsers);
 
 const formFields = {
   signUp: {
@@ -29,21 +28,11 @@ const formFields = {
   },
 };
 
-const SignUpForm = () => {
-  const filteredTimeZone = timeZones.filter(
-    (zone) => zone.value === 'Europe/London'
-  );
-
-  // const services = {
-  //   async handleSignUp() {
-  //     return Auth.signUp({});
-  //   },
-  // };
-
+const LoginForm = ({ services, filteredTimeZone, timeZones }) => {
   return (
     <div className="wrapp">
       <Authenticator
-        // services={services}
+        services={services}
         formFields={formFields}
         signUpAttributes={['email', 'name']}
         components={{
@@ -71,17 +60,10 @@ const SignUpForm = () => {
             },
           },
         }}
-        // socialProviders={['google']}
-      >
-        {({ signOut, user }) => (
-          <div>
-            <p>Welcome {user.username}</p>
-            <button onClick={signOut}>Sign out</button>
-          </div>
-        )}
-      </Authenticator>
+        //will be realized later  socialProviders={['google']}
+      />
     </div>
   );
 };
 
-export default SignUpForm;
+export default LoginForm;

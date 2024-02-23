@@ -16,6 +16,8 @@ const usersListAdapter = createEntityAdapter();
 const initialState = usersListAdapter.getInitialState({
   loadingStatus: 'idle',
   userId: null,
+  accessToken: null,
+  idToken: null,
 });
 
 const usersListSlice = createSlice({
@@ -24,6 +26,12 @@ const usersListSlice = createSlice({
   reducers: {
     setUserId: (state, action) => {
       state.userId = action.payload;
+    },
+    setIdToken: (state, action) => {
+      state.idToken = action.payload;
+    },
+    setAccessToken: (state, action) => {
+      state.accessToken = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -93,6 +101,6 @@ export const { selectById: selectUserById } = usersListAdapter.getSelectors(
 
 const { actions, reducer } = usersListSlice;
 
-export const { setUserId } = actions;
+export const { setUserId, setIdToken, setAccessToken } = actions;
 
 export default reducer;

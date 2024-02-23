@@ -7,6 +7,7 @@ import CreateNewLot from '@pages/createNewLot';
 import UpdateLot from '@pages/updateLot';
 import UserProfile from '@pages/UserProfile';
 import HomePage from '@pages/HomePage';
+import Login from '@pages/login';
 
 import UsersList from '@components/admin/usersList';
 import Layout from '@components/layout';
@@ -32,8 +33,8 @@ const Router = () => {
           element: <LotList />,
         },
         {
-          path: ROUTES.SIGN_UP_PAGE,
-          element: <SignUp />,
+          path: ROUTES.LOG_IN,
+          element: <Login />,
         },
         {
           path: ROUTES.LOTS_DETAILS,

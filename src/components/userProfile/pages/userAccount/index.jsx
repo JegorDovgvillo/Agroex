@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { signOut } from 'aws-amplify/auth';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 
 import { fetchUsers } from '@thunks/fetchUsers';
 
@@ -33,6 +36,7 @@ const {
 const UserAccount = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => selectUserById(state, 1));
+  const navigate = useNavigate();
 
   useEffect(() => {
     dispatch(fetchUsers());
@@ -63,6 +67,11 @@ const UserAccount = () => {
     .map((el) => el.slice(0, 1))
     .join('')
     .toUpperCase();
+
+  const redirectAfterSignOut = () => {
+    navigate('/log-in');
+    signOut();
+  };
 
   return (
     <>
@@ -101,6 +110,14 @@ const UserAccount = () => {
             size="M"
             width="198px"
             onClick={handleChangePassword}
+          />
+          <CustomButton
+            text="Sign out"
+            icon={<ExitToAppIcon />}
+            type="secondary"
+            size="M"
+            width="125px"
+            handleClick={redirectAfterSignOut}
           />
         </div>
 

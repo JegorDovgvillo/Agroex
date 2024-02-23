@@ -14,7 +14,7 @@ const ROUTES = {
   USER_PROFILE_PAGE: '/user-profile/:page',
   USER_PROFILE_PAGE_TAB: '/user-profile/:page/:tab',
 
-  SIGN_UP_PAGE:'sign-up'
+  LOG_IN: 'log-in',
 };
 
 export const USER_PROFILE_PAGE_ROTES = {
