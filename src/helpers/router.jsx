@@ -28,16 +28,8 @@ const Router = () => {
           element: <HomePage />,
         },
         {
-          path: ROUTES.SUBCATEGORY_LOTS_PAGE,
-          element: <LotList />,
-        },
-        {
           path: ROUTES.LOTS,
           element: <LotList />,
-        },
-        {
-          path: ROUTES.LOTS_FILTERS,
-          element: <LotList listType={'filters'} />,
         },
         {
           path: ROUTES.LOTS_DETAILS,
