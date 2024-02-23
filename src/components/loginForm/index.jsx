@@ -4,6 +4,8 @@ import { TextField, Autocomplete } from '@mui/material';
 import '@aws-amplify/ui-react/styles.css';
 import './loginForm.scss';
 
+cognitoUserPoolsTokenProvider.setKeyValueStorage(new CookieStorage());
+
 const formFields = {
   signUp: {
     email: {
