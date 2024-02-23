@@ -1,8 +1,11 @@
+const USER_POOL_ID = import.meta.env.VITE_BASE_USER_POOL_ID;
+const USER_POOL_CLIENT_ID = import.meta.env.VITE_BASE_USER_POOL_CLIENT_ID;
+
 const awsConfigUsers = {
   Auth: {
     Cognito: {
-      userPoolClientId: '5n4iencc2c5afpos8edngcgp3t',
-      userPoolId: 'us-east-1_q32CiA5C2',
+      userPoolClientId: USER_POOL_CLIENT_ID,
+      userPoolId: USER_POOL_ID,
       loginWith: {
         email: 'true',
       },

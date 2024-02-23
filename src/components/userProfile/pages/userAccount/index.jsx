@@ -3,17 +3,18 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { signOut } from 'aws-amplify/auth';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
-
-import { fetchUsers } from '@thunks/fetchUsers';
-
 import { Avatar, FormControlLabel, CircularProgress } from '@mui/material';
-
 import EditIcon from '@mui/icons-material/Edit';
 import HttpsOutlinedIcon from '@mui/icons-material/HttpsOutlined';
 
+import { fetchUsers } from '@thunks/fetchUsers';
+
 import { selectUserById } from '@slices/usersListSlice';
+
 import { CustomButton } from '@components/buttons/CustomButton';
 import { CheckBoxInput } from '@components/checkBox';
+
+import ROUTES from '@helpers/routeNames';
 
 import UserUpdateForm from './userUpdateForm';
 
@@ -68,9 +69,9 @@ const UserAccount = () => {
     .join('')
     .toUpperCase();
 
-  const redirectAfterSignOut = () => {
-    navigate('/log-in');
+  const handleSignOut = () => {
     signOut();
+    navigate(ROUTES.LOG_IN);
   };
 
   return (
@@ -117,7 +118,7 @@ const UserAccount = () => {
             type="secondary"
             size="M"
             width="125px"
-            handleClick={redirectAfterSignOut}
+            handleClick={handleSignOut}
           />
         </div>
 
