@@ -54,11 +54,14 @@ const Filters = ({
   const applyFilters = (values) => {
     const isSubcategorySelected = values.subcategories.length > 0;
 
+    const selectedCategoryIds = values.categories;
+    const subcategoriesByParentId = _.groupBy(currSubcategories, 'parentId');
+    const selectedCategorySubcategoryIds = _.map(
+      selectedCategoryIds,
+      (categoryId) => _.map(subcategoriesByParentId[categoryId], 'id')
+    );
     const categoriesIdsFromParentIds =
-      !isSubcategorySelected &&
-      _.map(values.categories, (categoryId) =>
-        _.map(_.filter(currSubcategories, ['parentId', categoryId]), 'id')
-      );
+      !isSubcategorySelected && selectedCategorySubcategoryIds;
 
     const valuesToSubmit = _.omit(
       {
@@ -80,11 +83,9 @@ const Filters = ({
 
   useEffect(() => {
     if (selectedCategoriesIds.length > 0) {
-      const filteredSubcategories = _.chain(categories)
-        .filter((item) =>
-          _.includes(_.flatten(selectedCategoriesIds), item.parentId)
-        )
-        .value();
+      const filteredSubcategories = _.filter(categories, (item) =>
+        _.includes(_.flatten(selectedCategoriesIds), item.parentId)
+      );
       const subcategories = _.filter(categories, 'parentId');
 
       setSubcategoryUnits(

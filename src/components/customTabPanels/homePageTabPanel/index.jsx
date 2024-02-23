@@ -35,7 +35,7 @@ const {
   listItemAllLink,
 } = styles;
 
-const { LOTS, CATEGORY_PAGE } = ROUTES;
+const { LOTS, HOME_PAGE } = ROUTES;
 
 function a11yProps(index) {
   return {
@@ -65,7 +65,7 @@ const HomePageTabPanel = ({ categories }) => {
   const handleChange = (event, newValue) => {
     setCurrTabIndex(newValue);
 
-    const path = generatePath(CATEGORY_PAGE, {
+    const path = generatePath(HOME_PAGE, {
       category: _.toLower(categories[newValue].title),
     });
 
@@ -91,7 +91,7 @@ const HomePageTabPanel = ({ categories }) => {
 
   useEffect(() => {
     if (!category) {
-      const path = generatePath(CATEGORY_PAGE, {
+      const path = generatePath(HOME_PAGE, {
         category: _.toLower(categories[0].title),
       });
 

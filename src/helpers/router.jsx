@@ -24,7 +24,7 @@ const Router = () => {
       element: <Layout />,
       children: [
         {
-          path: ROUTES.CATEGORY_PAGE,
+          path: ROUTES.HOME_PAGE,
           element: <HomePage />,
         },
         {

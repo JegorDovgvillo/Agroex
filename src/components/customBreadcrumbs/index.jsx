@@ -55,14 +55,14 @@ const CustomBreadcrumbs = ({
   };
 
   const breadcrumbs = compact([
-    { id: 1, value: { title: 'Lots' } },
-    parentCategory && { id: 2, value: parentCategory },
-    subcategory && { id: 3, value: subcategory },
-    lotId && { id: 4, value: { title } },
+    { id: 'lots', value: { title: 'Lots' } },
+    parentCategory && { id: 'parentCategory', value: parentCategory },
+    subcategory && { id: 'subcategory', value: subcategory },
+    lotId && { id: 'title', value: { title } },
   ]);
 
   const handleClick = ({ id, value }) => {
-    if (id === 1) {
+    if (id === 'lots') {
       if (!lotId) {
         setSearchParams('');
         setSelectedCategoriesIds([]);
@@ -73,8 +73,8 @@ const CustomBreadcrumbs = ({
     } else {
       lotId && navigate(LOTS);
       getPath({
-        category: id === 2 ? value.title : null,
-        subcategory: id === 3 ? value.title : null,
+        category: id === 'parentCategory' ? value.title : null,
+        subcategory: id === 'subcategory' ? value.title : null,
       });
     }
   };

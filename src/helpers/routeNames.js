@@ -1,5 +1,5 @@
 const ROUTES = {
-  CATEGORY_PAGE: '/:category?',
+  HOME_PAGE: '/:category?',
   LOTS: '/lots',
   LOTS_DETAILS: '/lots/:id/details',
 

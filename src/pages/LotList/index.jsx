@@ -51,21 +51,11 @@ const LotList = () => {
     const searchParamsCategoryIds = searchParams.get('categories');
 
     if (categories.length > 0 && searchParamsCategoryIds) {
-      const parentIds = _.chain(searchParamsCategoryIds)
-        .split(',')
-        .map(_.toNumber)
-        .map((id) => _.find(categories, { id }))
-        .map((cat) => _.find(categories, { id: cat.parentId }))
-        .uniqBy('id')
-        .map('id')
-        .value();
-
-      const selectedSubcategoriesIds = _.chain(searchParamsCategoryIds)
-        .split(',')
-        .map(_.toNumber)
-        .map((id) => _.find(categories, { id }))
-        .map('id')
-        .value();
+      const selectedCategories = _.split(searchParamsCategoryIds, ',').map(
+        (id) => _.find(categories, { id: _.toNumber(id) })
+      );
+      const selectedSubcategoriesIds = _.map(selectedCategories, 'id');
+      const parentIds = _.uniqBy(_.map(selectedCategories, 'parentId'));
 
       setSelectedCategoriesIds(parentIds);
       setSelectedSubcategoriesIds(selectedSubcategoriesIds);
