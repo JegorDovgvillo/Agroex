@@ -1,127 +1,83 @@
-import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams, useParams } from 'react-router-dom';
 
-import { compact, uniqBy, find, filter } from 'lodash';
+import { compact, uniqBy, find, filter, toNumber, chain, map } from 'lodash';
 import { Breadcrumbs, Typography } from '@mui/material';
 
 import ROUTES from '@helpers/routeNames';
-import { selectCategoryById } from '@slices/categoriesSlice';
 
 import styles from './customBreadcrumbs.module.scss';
-import { useSelector } from 'react-redux';
 
 const { container, link } = styles;
 
 const { LOTS } = ROUTES;
 
 const CustomBreadcrumbs = ({
-  lot = [],
+  lot: { productCategory, title } = {},
   categories,
-  setIsCategoryFieldVisible,
-  setIsSubcategoryFieldVisible,
   setSearchParams,
+
   setSelectedCategoriesIds,
   setSelectedSubcategoriesIds,
 }) => {
   const navigate = useNavigate();
   const { id: lotId } = useParams();
   const [searchParams] = useSearchParams();
-  const categoryIds = searchParams.get('categories');
 
-  const currCategories = categoryIds
-    ?.split(',')
-    .map((id) => categories.find((cat) => cat.id === Number(id)));
+  const searchParamsCategoryIds = searchParams.get('categories');
 
-  const categoryId =
-    uniqBy(currCategories, 'parentId').length === 1
-      ? currCategories[0]?.parentId
-      : false;
+  const currSearchedCategories = chain(searchParamsCategoryIds)
+    .split(',')
+    .map((id) => find(categories, { id: toNumber(id) }))
+    .value();
 
-  const category = lotId
-    ? find(categories, ['id', lot.productCategory.parentId])
-    : useSelector((state) => selectCategoryById(state, categoryId));
+  const isOnlyOneParentCategory =
+    uniqBy(currSearchedCategories, 'parentId').length === 1;
+  const parentCategoryId =
+    isOnlyOneParentCategory && currSearchedCategories[0]?.parentId;
+  const parentCategory = find(categories, [
+    'id',
+    lotId ? productCategory.parentId : parentCategoryId,
+  ]);
 
-  const isOneSubcategory = currCategories?.length === 1 && categoryId;
-
+  const isOnlyOneSubcategory = currSearchedCategories?.length === 1;
   const subcategory =
-    (isOneSubcategory && currCategories[0]) ||
-    find(categories, ['id', lot.productCategory?.id]);
+    (isOnlyOneSubcategory && currSearchedCategories[0]) ||
+    find(categories, ['id', productCategory?.id]);
 
   const getPath = ({ category, subcategory }) => {
     const categoryId = find(categories, ['title', category || subcategory])?.id;
-
     const subcategories = filter(categories, [
       category ? 'parentId' : 'id',
       categoryId,
     ]);
 
-    const params = ['categories', subcategories.map((cat) => cat.id)];
-    setSearchParams([params]);
-  };
-
-  const rootPart = {
-    id: 1,
-    link: `${LOTS}`,
-    value: { title: 'Lots' },
-  };
-
-  const categoryPart = category && {
-    id: 2,
-    link: null,
-    value: category,
-  };
-
-  const subcategoryPart = subcategory && {
-    id: 3,
-    link: null,
-    value: subcategory,
-  };
-
-  const lotIdPart = lotId && {
-    id: 4,
-    link: null,
-    value: { title: lot.title },
+    setSearchParams([['categories', map(subcategories, 'id')]]);
   };
 
   const breadcrumbs = compact([
-    rootPart,
-    categoryPart,
-    subcategoryPart,
-    lotIdPart,
+    { id: 1, value: { title: 'Lots' } },
+    parentCategory && { id: 2, value: parentCategory },
+    subcategory && { id: 3, value: subcategory },
+    lotId && { id: 4, value: { title } },
   ]);
 
   const handleClick = ({ id, value }) => {
-    switch (id) {
-      case 1:
-        !lotId && setIsCategoryFieldVisible(true);
-        !lotId && setSearchParams('');
-        !lotId && setSelectedCategoriesIds([]);
-        navigate(LOTS);
+    if (id === 1) {
+      if (!lotId) {
+        setSearchParams('');
+        setSelectedCategoriesIds([]);
+        setSelectedSubcategoriesIds([]);
+      }
 
-        break;
-      case 2:
-        !lotId && setIsSubcategoryFieldVisible(true);
-        lotId && navigate(LOTS);
-        getPath({ category: value.title });
-
-        !lotId && setSelectedCategoriesIds([value.id]);
-        !lotId && setSelectedSubcategoriesIds([]);
-
-        break;
-      case 3:
-        lotId && navigate(LOTS);
-        getPath({ subcategory: value.title });
-
-        break;
+      navigate(LOTS);
+    } else {
+      lotId && navigate(LOTS);
+      getPath({
+        category: id === 2 ? value.title : null,
+        subcategory: id === 3 ? value.title : null,
+      });
     }
   };
-
-  useEffect(() => {
-    if (!lotId) {
-      setIsCategoryFieldVisible(!categoryId);
-      setIsSubcategoryFieldVisible(!subcategory);
-    }
-  }, [category, subcategory]);
 
   return (
     <div role="presentation" className={container}>

@@ -1,8 +1,6 @@
 const ROUTES = {
   CATEGORY_PAGE: '/:category?',
-  SUBCATEGORY_LOTS_PAGE: '/:category/:subcategory?',
   LOTS: '/lots',
-  LOTS_FILTERS: '/filters',
   LOTS_DETAILS: '/lots/:id/details',
 
   ADMIN: '/admin',

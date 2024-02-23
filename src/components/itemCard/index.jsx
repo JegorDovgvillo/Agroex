@@ -1,11 +1,8 @@
 import { useNavigate, generatePath } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import _ from 'lodash';
 
 import ROUTES from '@helpers/routeNames';
 import { CustomButton } from '@buttons/CustomButton';
 import PriceBlock from '@components/priceBlock';
-import { selectCategoryById } from '@slices/categoriesSlice';
 
 import shoppingIcon from '@icons/shopping.svg';
 import betIcon from '@icons/bet.svg';

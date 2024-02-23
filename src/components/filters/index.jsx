@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { Formik, Form } from 'formik';
-//import { useNavigate } from 'react-router-dom';
 
 import _ from 'lodash';
 
@@ -18,8 +17,6 @@ const Filters = ({
   searchParams,
   setSearchParams,
   users,
-  isCategoryFieldVisible,
-  isSubcategoryFieldVisible,
   selectedCategoriesIds,
   setSelectedCategoriesIds,
   selectedSubcategoriesIds,
@@ -28,26 +25,24 @@ const Filters = ({
   const getNumbersArray = (searchParams) => searchParams.split(',').map(Number);
 
   const parentCategories = _.filter(categories, ['parentId', 0]);
-  const subcategories = _.filter(categories, 'parentId');
+  const currSubcategories = _.filter(categories, 'parentId');
 
-  const [subcategoryUnits, setSubcategoryUnits] = useState([]);
+  const [subcategoryUnits, setSubcategoryUnits] = useState(currSubcategories);
 
-  const initialValues = {
-    keyword: searchParams.get('keyword') || '',
-    minQuantity: searchParams.get('minQuantity') || '',
-    maxQuantity: searchParams.get('maxQuantity') || '',
-    minPrice: searchParams.get('minPrice') || '',
-    maxPrice: searchParams.get('maxPrice') || '',
-    users: searchParams.get('users')
-      ? getNumbersArray(searchParams.get('users'))
-      : [],
-    categories: selectedCategoriesIds,
-    subcategories: selectedSubcategoriesIds,
-    lotType: searchParams.get('lotType') || '',
-    countries: searchParams.get('countries')
-      ? getNumbersArray(searchParams.get('countries'))
-      : [],
+  const initValues = {
+    keyword: '',
+    minQuantity: '',
+    maxQuantity: '',
+    minPrice: '',
+    maxPrice: '',
+    users: [],
+    categories: [],
+    subcategories: [],
+    lotType: '',
+    countries: [],
   };
+
+  const [initialValues, setInitialValues] = useState(initValues);
 
   const resetFilter = (resetForm) => {
     setSelectedCategoriesIds([]);
@@ -57,24 +52,22 @@ const Filters = ({
   };
 
   const applyFilters = (values) => {
-    setSelectedCategoriesIds(values.categories);
     const isSubcategorySelected = values.subcategories.length > 0;
 
     const categoriesIdsFromParentIds =
       !isSubcategorySelected &&
       _.map(values.categories, (categoryId) =>
-        _.map(_.filter(subcategories, ['parentId', categoryId]), 'id')
+        _.map(_.filter(currSubcategories, ['parentId', categoryId]), 'id')
       );
 
     const valuesToSubmit = _.omit(
-      _.set(
-        values,
-        'categories',
-        categoriesIdsFromParentIds || values.subcategories
-      ),
+      {
+        ...values,
+        categories: categoriesIdsFromParentIds || values.subcategories,
+      },
       'subcategories'
     );
-    console.log(values, valuesToSubmit, isSubcategorySelected);
+
     const filteredParams = _.toPairs(
       _.pickBy(
         valuesToSubmit,
@@ -86,33 +79,48 @@ const Filters = ({
   };
 
   useEffect(() => {
-    const filteredSubcategories = _.chain(categories)
-      .filter((item) => _.includes(selectedCategoriesIds, item.parentId))
-      .value();
-    const subcategories = _.filter(categories, 'parentId');
+    if (selectedCategoriesIds.length > 0) {
+      const filteredSubcategories = _.chain(categories)
+        .filter((item) =>
+          _.includes(_.flatten(selectedCategoriesIds), item.parentId)
+        )
+        .value();
+      const subcategories = _.filter(categories, 'parentId');
 
-    setSubcategoryUnits(
-      !_.isEmpty(filteredSubcategories) ? filteredSubcategories : subcategories
-    );
+      setSubcategoryUnits(
+        !_.isEmpty(filteredSubcategories)
+          ? filteredSubcategories
+          : subcategories
+      );
 
-    const filteredSelectedSubcategoriesIds = _.intersection(
-      selectedSubcategoriesIds,
-      filteredSubcategories
-    );
-    console.log(
-      selectedSubcategoriesIds,
-      filteredSubcategories,
-      filteredSelectedSubcategoriesIds
-    );
-    setSelectedSubcategoriesIds(filteredSelectedSubcategoriesIds);
+      const filteredSelectedSubcategoriesIds = _.intersection(
+        _.flatten(selectedSubcategoriesIds),
+        _.map(filteredSubcategories, 'id')
+      );
+
+      setSelectedSubcategoriesIds(filteredSelectedSubcategoriesIds);
+    }
   }, [selectedCategoriesIds, categories]);
 
-  console.log(
-    selectedCategoriesIds,
+  useEffect(() => {
+    setInitialValues({
+      keyword: searchParams.get('keyword') || '',
+      minQuantity: searchParams.get('minQuantity') || '',
+      maxQuantity: searchParams.get('maxQuantity') || '',
+      minPrice: searchParams.get('minPrice') || '',
+      maxPrice: searchParams.get('maxPrice') || '',
+      users: searchParams.get('users')
+        ? getNumbersArray(searchParams.get('users'))
+        : [],
+      categories: selectedCategoriesIds,
+      subcategories: selectedSubcategoriesIds,
+      lotType: searchParams.get('lotType') || '',
+      countries: searchParams.get('countries')
+        ? getNumbersArray(searchParams.get('countries'))
+        : [],
+    });
+  }, [searchParams, selectedCategoriesIds, selectedSubcategoriesIds]);
 
-    selectedSubcategoriesIds,
-    initialValues
-  );
   return (
     <div className={styles.filtersWrapp}>
       <Formik
@@ -187,7 +195,6 @@ const Filters = ({
               wrappType="filterWrapp"
               onChange={(e) => {
                 setFieldValue('users', e.target.value);
-                //setSelectedCategoriesIds(e.target.value);
               }}
             />
 
@@ -200,7 +207,7 @@ const Filters = ({
               label="Category"
               required={false}
               fieldType="filterSelect"
-              wrappType={isCategoryFieldVisible ? 'filterWrapp' : 'hidden'}
+              wrappType="filterWrapp"
               onChange={(e) => {
                 setFieldValue('categories', e.target.value);
                 setSelectedCategoriesIds(e.target.value);
@@ -216,7 +223,7 @@ const Filters = ({
               label="Subcategory"
               required={false}
               fieldType="filterSelect"
-              wrappType={isSubcategoryFieldVisible ? 'filterWrapp' : 'hidden'}
+              wrappType="filterWrapp"
               onChange={(e) => {
                 setFieldValue('subcategories', e.target.value);
                 setSelectedSubcategoriesIds(e.target.value);
@@ -246,7 +253,6 @@ const Filters = ({
               wrappType="filterWrapp"
               onChange={(e) => {
                 setFieldValue('countries', e.target.value);
-                //setSelectedCategoriesIds(e.target.value);
               }}
             />
             <div className={styles.buttonsWrap}>

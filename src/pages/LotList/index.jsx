@@ -15,10 +15,7 @@ import { filteredLots } from '@thunks/fetchLots';
 import { fetchUsers } from '@thunks/fetchUsers';
 
 import { usersListSelector } from '@slices/usersListSlice';
-import {
-  categoriesSelector,
-  selectSubcategories,
-} from '@slices/categoriesSlice';
+import { categoriesSelector } from '@slices/categoriesSlice';
 import { countrySelector } from '@slices/countriesSlice';
 import { lotListSelector, clearLots } from '@slices/lotListSlice';
 
@@ -26,25 +23,15 @@ import styles from './lotList.module.scss';
 
 const LotList = () => {
   const dispatch = useDispatch();
-  const { subcategory } = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const lots = useSelector(lotListSelector);
   const categories = useSelector(categoriesSelector);
 
-  const subcategories = useSelector(selectSubcategories);
   const countries = useSelector(countrySelector);
   const users = useSelector(usersListSelector);
 
-  //const [currCategory, setCurrCategory] = useState(null);
-  const [isCategoryFieldVisible, setIsCategoryFieldVisible] = useState(true);
-  const [isSubcategoryFieldVisible, setIsSubcategoryFieldVisible] =
-    useState(true);
   const [selectedCategoriesIds, setSelectedCategoriesIds] = useState([]);
   const [selectedSubcategoriesIds, setSelectedSubcategoriesIds] = useState([]);
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  useEffect(() => {
-    dispatch(filteredLots(searchParams));
-  }, [searchParams]);
 
   useEffect(() => {
     dispatch(fetchAllCategories());
@@ -56,18 +43,44 @@ const LotList = () => {
     };
   }, []);
 
+  useEffect(() => {
+    dispatch(filteredLots(searchParams));
+  }, [searchParams]);
+
+  useEffect(() => {
+    const searchParamsCategoryIds = searchParams.get('categories');
+
+    if (categories.length > 0 && searchParamsCategoryIds) {
+      const parentIds = _.chain(searchParamsCategoryIds)
+        .split(',')
+        .map(_.toNumber)
+        .map((id) => _.find(categories, { id }))
+        .map((cat) => _.find(categories, { id: cat.parentId }))
+        .uniqBy('id')
+        .map('id')
+        .value();
+
+      const selectedSubcategoriesIds = _.chain(searchParamsCategoryIds)
+        .split(',')
+        .map(_.toNumber)
+        .map((id) => _.find(categories, { id }))
+        .map('id')
+        .value();
+
+      setSelectedCategoriesIds(parentIds);
+      setSelectedSubcategoriesIds(selectedSubcategoriesIds);
+    }
+  }, [categories, searchParams]);
+
   return (
     <div className={styles.lotListContainer}>
       <div className={styles.breadCrumbsContainer}>
         <CustomBreadcrumbs
           categories={categories}
-          setIsCategoryFieldVisible={setIsCategoryFieldVisible}
-          setIsSubcategoryFieldVisible={setIsSubcategoryFieldVisible}
           setSearchParams={setSearchParams}
           setSelectedCategoriesIds={setSelectedCategoriesIds}
           setSelectedSubcategoriesIds={setSelectedSubcategoriesIds}
         />
-        {subcategory && <h4 className={styles.title}>{subcategory}</h4>}
       </div>
       <div className={styles.contentContainer}>
         <Filters
@@ -76,8 +89,6 @@ const LotList = () => {
           searchParams={searchParams}
           setSearchParams={setSearchParams}
           users={users}
-          isCategoryFieldVisible={isCategoryFieldVisible}
-          isSubcategoryFieldVisible={isSubcategoryFieldVisible}
           selectedCategoriesIds={selectedCategoriesIds}
           setSelectedCategoriesIds={setSelectedCategoriesIds}
           selectedSubcategoriesIds={selectedSubcategoriesIds}
