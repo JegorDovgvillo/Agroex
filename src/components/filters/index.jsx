@@ -1,7 +1,7 @@
+import { useState, useEffect } from 'react';
 import { Formik, Form } from 'formik';
-import { useDispatch } from 'react-redux';
+
 import _ from 'lodash';
-import { filteredLots } from '@thunks/fetchLots';
 
 import { CustomButton } from '../buttons/CustomButton';
 import CustomTextField from '../customTextField';
@@ -17,10 +17,19 @@ const Filters = ({
   searchParams,
   setSearchParams,
   users,
+  selectedCategoriesIds,
+  setSelectedCategoriesIds,
+  selectedSubcategoriesIds,
+  setSelectedSubcategoriesIds,
 }) => {
-  const dispatch = useDispatch();
+  const getNumbersArray = (searchParams) => searchParams.split(',').map(Number);
 
-  const initialValues = {
+  const parentCategories = _.filter(categories, ['parentId', 0]);
+  const currSubcategories = _.filter(categories, 'parentId');
+
+  const [subcategoryUnits, setSubcategoryUnits] = useState(currSubcategories);
+
+  const initValues = {
     keyword: '',
     minQuantity: '',
     maxQuantity: '',
@@ -28,31 +37,99 @@ const Filters = ({
     maxPrice: '',
     users: [],
     categories: [],
+    subcategories: [],
     lotType: '',
     countries: [],
   };
 
+  const [initialValues, setInitialValues] = useState(initValues);
+
   const resetFilter = (resetForm) => {
+    setSelectedCategoriesIds([]);
+    setSelectedSubcategoriesIds([]);
     setSearchParams('');
     resetForm();
   };
 
   const applyFilters = (values) => {
+    const isSubcategorySelected = values.subcategories.length > 0;
+
+    const selectedCategoryIds = values.categories;
+    const subcategoriesByParentId = _.groupBy(currSubcategories, 'parentId');
+    const selectedCategorySubcategoryIds = _.map(
+      selectedCategoryIds,
+      (categoryId) => _.map(subcategoriesByParentId[categoryId], 'id')
+    );
+    const categoriesIdsFromParentIds =
+      !isSubcategorySelected && selectedCategorySubcategoryIds;
+
+    const valuesToSubmit = _.omit(
+      {
+        ...values,
+        categories: categoriesIdsFromParentIds || values.subcategories,
+      },
+      'subcategories'
+    );
+
     const filteredParams = _.toPairs(
       _.pickBy(
-        values,
+        valuesToSubmit,
         (value) => value && !(Array.isArray(value) && !value.length)
       )
     );
 
     setSearchParams(filteredParams);
-    dispatch(filteredLots(searchParams));
   };
+
+  useEffect(() => {
+    if (selectedCategoriesIds.length > 0) {
+      const filteredSubcategories = _.filter(categories, (item) =>
+        _.includes(_.flatten(selectedCategoriesIds), item.parentId)
+      );
+      const subcategories = _.filter(categories, 'parentId');
+
+      setSubcategoryUnits(
+        !_.isEmpty(filteredSubcategories)
+          ? filteredSubcategories
+          : subcategories
+      );
+
+      const filteredSelectedSubcategoriesIds = _.intersection(
+        _.flatten(selectedSubcategoriesIds),
+        _.map(filteredSubcategories, 'id')
+      );
+
+      setSelectedSubcategoriesIds(filteredSelectedSubcategoriesIds);
+    }
+  }, [selectedCategoriesIds, categories]);
+
+  useEffect(() => {
+    setInitialValues({
+      keyword: searchParams.get('keyword') || '',
+      minQuantity: searchParams.get('minQuantity') || '',
+      maxQuantity: searchParams.get('maxQuantity') || '',
+      minPrice: searchParams.get('minPrice') || '',
+      maxPrice: searchParams.get('maxPrice') || '',
+      users: searchParams.get('users')
+        ? getNumbersArray(searchParams.get('users'))
+        : [],
+      categories: selectedCategoriesIds,
+      subcategories: selectedSubcategoriesIds,
+      lotType: searchParams.get('lotType') || '',
+      countries: searchParams.get('countries')
+        ? getNumbersArray(searchParams.get('countries'))
+        : [],
+    });
+  }, [searchParams, selectedCategoriesIds, selectedSubcategoriesIds]);
 
   return (
     <div className={styles.filtersWrapp}>
-      <Formik initialValues={initialValues} onSubmit={applyFilters}>
-        {({ resetForm, values }) => (
+      <Formik
+        initialValues={initialValues}
+        onSubmit={applyFilters}
+        key={JSON.stringify(initialValues)}
+      >
+        {({ resetForm, values, setFieldValue }) => (
           <Form>
             <CustomTextField
               placeholder="Enter the text"
@@ -117,9 +194,13 @@ const Filters = ({
               required={false}
               fieldType="filterSelect"
               wrappType="filterWrapp"
+              onChange={(e) => {
+                setFieldValue('users', e.target.value);
+              }}
             />
+
             <CustomMultiSelect
-              units={categories}
+              units={parentCategories}
               name="categories"
               disabled={false}
               placeholder="Select category"
@@ -128,6 +209,26 @@ const Filters = ({
               required={false}
               fieldType="filterSelect"
               wrappType="filterWrapp"
+              onChange={(e) => {
+                setFieldValue('categories', e.target.value);
+                setSelectedCategoriesIds(e.target.value);
+              }}
+            />
+
+            <CustomMultiSelect
+              units={subcategoryUnits}
+              name="subcategories"
+              disabled={false}
+              placeholder="Select subcategory"
+              itemFieldName="title"
+              label="Subcategory"
+              required={false}
+              fieldType="filterSelect"
+              wrappType="filterWrapp"
+              onChange={(e) => {
+                setFieldValue('subcategories', e.target.value);
+                setSelectedSubcategoriesIds(e.target.value);
+              }}
             />
             <CustomSelect
               label="Lot type"
@@ -139,6 +240,7 @@ const Filters = ({
               fieldType="filterSelect"
               wrappType="filterWrapp"
               value={values.lotType}
+              setFieldValue={setFieldValue}
             />
             <CustomMultiSelect
               label="Countries"
@@ -150,6 +252,9 @@ const Filters = ({
               required={false}
               fieldType="filterSelect"
               wrappType="filterWrapp"
+              onChange={(e) => {
+                setFieldValue('countries', e.target.value);
+              }}
             />
             <div className={styles.buttonsWrap}>
               <CustomButton

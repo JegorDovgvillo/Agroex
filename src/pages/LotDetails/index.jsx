@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
+import _ from 'lodash';
+
 import CircularProgress from '@mui/material/CircularProgress';
 import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported';
 
@@ -8,12 +10,15 @@ import PriceBlock from '@components/priceBlock';
 import { CustomButton } from '@components/buttons/CustomButton';
 import Timer from '@components/timer';
 import CustomSlider from '@components/customSlider';
+import CustomBreadcrumbs from '@components/customBreadcrumbs';
 
 import getNumberWithCurrency from '@helpers/getNumberWithCurrency';
 import getFormattedDate from '@helpers/getFormattedDate';
 
+import { categoriesSelector } from '@slices/categoriesSlice';
 import { selectLotDetailById, setLotId } from '@slices/lotListSlice';
-import { fetchLotDetails } from '@thunks/fetchLots';
+import { fetchLotDetails, filteredLots } from '@thunks/fetchLots';
+import { fetchAllCategories } from '@thunks/fetchCategories';
 
 import attentionIcon from '@icons/attention.svg';
 import cartIcon from '@icons/cartIcon.svg';
@@ -49,12 +54,20 @@ export const LotDetails = () => {
   const dispatch = useDispatch();
   const { id: lotId } = useParams();
 
+  const [searchParams, setSearchParams] = useSearchParams();
   const { loadingStatus } = useSelector((state) => state.lotList);
   const selectedLot = useSelector((state) => selectLotDetailById(state, lotId));
+  const categories = useSelector(categoriesSelector);
+
+  useEffect(() => {
+    dispatch(filteredLots(searchParams));
+  }, [searchParams]);
 
   useEffect(() => {
     dispatch(setLotId(lotId));
     dispatch(fetchLotDetails(lotId));
+
+    dispatch(fetchAllCategories());
   }, [dispatch, lotId]);
 
   if (loadingStatus !== 'fulfilled') {
@@ -86,9 +99,9 @@ export const LotDetails = () => {
 
   const totalPriceWithCurrency = getNumberWithCurrency(price, currency);
 
-  const buySellBtnText = `${
-    lotType[0].toUpperCase() + lotType.slice(1)
-  } for ${totalPriceWithCurrency}`;
+  const buySellBtnText = `${_.capitalize(
+    lotType
+  )} for ${totalPriceWithCurrency}`;
 
   const getLocation = () => {
     return (
@@ -110,7 +123,13 @@ export const LotDetails = () => {
 
   return (
     <div className={pageContainer}>
-      <div className={breadCrumbs} />
+      <div className={breadCrumbs}>
+        <CustomBreadcrumbs
+          lot={selectedLot}
+          categories={categories}
+          setSearchParams={setSearchParams}
+        />
+      </div>
       <div className={container}>
         {
           <>

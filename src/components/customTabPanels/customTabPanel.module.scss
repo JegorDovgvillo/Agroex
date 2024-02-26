@@ -1,0 +1,106 @@
+@import "@scss/colorVariables.module.scss";
+@import "@scss/typography.module.scss";
+
+.tabItem {
+  @include btnLarge;
+  text-transform: none !important;
+
+  font-size: 1.125rem !important;
+  font-weight: 500 !important;
+  line-height: 175% !important;
+  letter-spacing: 0.4px !important;
+  color: $monoBlack !important;
+}
+
+.userProfileTabPanelContainer {
+  .tabItem {
+    width: 236px;
+  }
+}
+
+.homePageContainer {
+  width: 100%;
+
+  .tabsContainer {
+    display: flex;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+
+    .showAllLink {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-end;
+      justify-content: center;
+      @include btnLarge;
+      line-height: 100%;
+      column-gap: 16px;
+      width: 268px;
+      padding: 8px 0;
+      border-bottom: 2px solid transparent;
+
+      &:hover {
+        cursor: pointer;
+        border-bottom: 2px solid $mainBase;
+
+        svg {
+          color: $mainBase;
+        }
+      }
+    }
+
+    .categoriesTabsPanel {
+      display: flex;
+      justify-content: space-between;
+      width: calc(100% - 268px);
+
+      .tabItem {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-end;
+        flex-wrap: nowrap;
+        column-gap: 16px;
+        max-width: none;
+        flex-grow: 1;
+      }
+
+      .tabItemActive {
+        svg {
+          color: $mainBase;
+        }
+      }
+    }
+  }
+
+  .subcategoriesContainer > div {
+    width: 100%;
+    display: flex;
+
+    .subcategoriesListContainer {
+      display: flex;
+      flex-direction: column;
+      padding: 8px 0;
+      width: 268px;
+
+      .listItem {
+        text-decoration: none;
+        color: $monoBlack;
+        @include checkbox;
+        padding: 6px 25px;
+
+        &.listItemAllLink {
+          font-weight: 500;
+          padding: 6px 16px;
+        }
+
+        &:hover {
+          cursor: pointer;
+          color: $mainBase;
+          text-decoration: underline;
+        }
+      }
+    }
+
+    .subcategoriesLinksContainer {
+      flex-grow: 1;
+    }
+  }
+}

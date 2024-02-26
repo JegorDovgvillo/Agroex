@@ -1,6 +1,8 @@
 const ROUTES = {
+  HOME_PAGE: '/:category?',
   LOTS: '/lots',
   LOTS_DETAILS: '/lots/:id/details',
+
   ADMIN: '/admin',
   ADMIN_CATEGORIES: '/admin/categories',
   ADMIN_USERS: '/admin/users',

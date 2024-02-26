@@ -6,13 +6,14 @@ import { LotDetails } from '@pages/LotDetails';
 import CreateNewLot from '@pages/createNewLot';
 import UpdateLot from '@pages/updateLot';
 import UserProfile from '@pages/UserProfile';
+import HomePage from '@pages/HomePage';
 
 import UsersList from '@components/admin/usersList';
 import Layout from '@components/layout';
 import CategoriesList from '@components/admin/adminCategories';
 import AdminLotsList from '@components/admin/adminLotsList';
 import UserProfilePage from '@components/userProfile/userProfilePage';
-import CustomTabPanel from '@components/customTabPanel';
+import UserProfileTabPanel from '@components/customTabPanels/userProfileTabPanel';
 
 import ROUTES from './routeNames';
 
@@ -23,8 +24,8 @@ const Router = () => {
       element: <Layout />,
       children: [
         {
-          path: ROUTES.LOTS,
-          element: <LotList />,
+          path: ROUTES.HOME_PAGE,
+          element: <HomePage />,
         },
         {
           path: ROUTES.LOTS,
@@ -70,7 +71,7 @@ const Router = () => {
               children: [
                 {
                   path: ROUTES.USER_PROFILE_PAGE_TAB,
-                  element: <CustomTabPanel />,
+                  element: <UserProfileTabPanel />,
                 },
               ],
             },

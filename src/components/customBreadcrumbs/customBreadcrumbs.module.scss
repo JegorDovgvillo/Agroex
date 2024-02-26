@@ -1,0 +1,19 @@
+@import "@scss/colorVariables.module.scss";
+
+.container {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0 40px;
+
+  .link {
+    text-decoration: none;
+    color: $mainBase;
+
+    &:hover {
+      cursor: pointer;
+      color: $mainDark;
+      text-decoration: underline;
+    }
+  }
+}

@@ -100,10 +100,15 @@ export const selectCategoryById = createSelector(
 );
 
 export const selectCategoryByParentId = createSelector(
-  [selectAll, (state, parentId) => parentId],
+  [selectAll, (_, parentId) => parentId],
   (categories, parentId) => {
     return filter(categories, { parentId });
   }
+);
+
+export const selectSubcategories = createSelector(
+  [categoriesSelector],
+  (categories) => filter(categories, (category) => category.parentId)
 );
 
 export default reducer;

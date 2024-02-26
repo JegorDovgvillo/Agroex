@@ -7,6 +7,7 @@ const ENDPOINTS = {
   LOTS_DETAILS: '/lots/details',
   USERS: '/users',
   CATEGORIES: '/categories',
+  CATEGORIES_ALL: '/categories/all',
   COUNTRIES: '/countries',
 };
 

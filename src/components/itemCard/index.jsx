@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, generatePath } from 'react-router-dom';
 
 import ROUTES from '@helpers/routeNames';
 import { CustomButton } from '@buttons/CustomButton';
@@ -14,12 +14,18 @@ const ItemCard = ({ ...item }) => {
   const navigate = useNavigate();
 
   const viewDetailsCard = () => {
-    navigate(ROUTES.LOTS_DETAILS.replace(':id', item.id));
+    const path = generatePath(ROUTES.LOTS_DETAILS, {
+      id: item.id,
+    });
+    navigate(path);
   };
 
   const handleUpdateLot = (event) => {
     event.stopPropagation();
-    navigate(ROUTES.UPDATE_LOT.replace(':id', item.id));
+    const path = generatePath(ROUTES.UPDATE_LOT, {
+      id: item.id,
+    });
+    navigate(path);
   };
 
   const handleClick = (event) => {
