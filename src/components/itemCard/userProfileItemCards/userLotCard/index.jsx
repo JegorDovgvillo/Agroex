@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import _ from 'lodash';
 
@@ -20,7 +21,7 @@ const UserLotCard = (item) => {
   const { tab } = useParams();
 
   //todo replace the value of the const lotStatus by appropriate field from the lot
-  const lotStatus = 'Rejected';
+  const [lotStatus, setLotStatus] = useState(null);
 
   //todo write confirm lot by user logic
   const handleClick = (event) => {
@@ -43,22 +44,34 @@ const UserLotCard = (item) => {
 
   const confirmButtonWidth = '306px';
 
+  useEffect(() => {
+    tab === 'pending' && setLotStatus(item.innerStatus);
+  }, [tab]);
+
+  const isAuctionLotType = item.lotType === 'auctionSell';
+
+  const isLotEditable =
+    (isAuctionLotType && item.innerStatus === 'new') ||
+    (!isAuctionLotType && item.status !== 'inactive');
+
   return (
     <div className={styles.cardWrapp}>
       <ItemCardInfoBlock item={item}>
         <>
-          <LotStatusBlock lotStatus={lotStatus} />
-          <ManageCardBlock id={item.id} />
+          {lotStatus && <LotStatusBlock lotStatus={lotStatus} />}
+          {isLotEditable && <ManageCardBlock id={item.id} />}
         </>
       </ItemCardInfoBlock>
       <div className={containerClassNames}>
         <div className={priceBlock}>
-          <PriceBlock
-            className={['list', 'auctionSum']}
-            totalCost={item.price}
-            unitCost={item.price / item.quantity}
-            currency={item.currency}
-          />
+          {isAuctionLotType && (
+            <PriceBlock
+              className={['list', 'auctionSum']}
+              totalCost={item.price}
+              unitCost={item.price / item.quantity}
+              currency={item.currency}
+            />
+          )}
         </div>
 
         <div className={priceBlock}>

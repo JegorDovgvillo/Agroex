@@ -22,15 +22,15 @@ const { deactivate } = styles;
 const ManageCardBlock = ({ id }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [confirmStatus, setConfirmStatus] = useState(false);
+  const [confirmDeactivateStatus, setConfirmStatus] = useState(false);
 
   useEffect(() => {
-    if (confirmStatus) {
+    if (confirmDeactivateStatus) {
       //todo set lot status to inactivated by user
 
       setConfirmStatus(false);
     }
-  }, [confirmStatus]);
+  }, [confirmDeactivateStatus]);
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);

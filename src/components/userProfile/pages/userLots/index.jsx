@@ -1,34 +1,47 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
 
-import { fetchLots } from '@thunks/fetchLots';
+import { fetchLots, filteredLots } from '@thunks/fetchLots';
 import { lotListSelector } from '@slices/lotListSlice';
 import UserLotCard from '@components/itemCard/userProfileItemCards/userLotCard';
 
 const UserLots = () => {
-  //todo add filter by lot status (active, pending, inactive)
+  const { tab } = useParams();
 
   const currUserId = 1; // todo should be replaced by real current user id
   const dispatch = useDispatch();
-  const lots = useSelector(lotListSelector); // todo could be get already filtered from back-end endpoint
+  const lots = useSelector(lotListSelector);
+
+  const filteredLotsByUserId = lots.filter(
+    (item) => item.userId === currUserId
+  );
+
+  const filteredLotsByActiveTab = filteredLotsByUserId.filter((item) => {
+    const isAuctionPendingLot =
+      item.innerStatus === 'new' || item.innerStatus === 'moderated';
+
+    switch (tab) {
+      case 'active':
+        return item.status === tab;
+
+      case 'pending':
+        return isAuctionPendingLot;
+
+      case 'inactive':
+        return item.status === 'inactive' && !isAuctionPendingLot;
+    }
+  });
+
+  const filteredLotsArr = filteredLotsByActiveTab.map((item) => {
+    return <UserLotCard {...item} key={item.id} />;
+  });
 
   useEffect(() => {
-    dispatch(fetchLots());
-  }, [dispatch]);
+    dispatch(filteredLots(`users=${currUserId}`));
+  }, []);
 
-  const filteringLotsByUserId = () => {
-    const filteredLots = lots
-      .filter((item) => item.userId === currUserId)
-      .map((item) => {
-        return <UserLotCard {...item} key={item.id} />;
-      });
-
-    return <>{filteredLots} </>;
-  };
-
-  const filteredLots = filteringLotsByUserId();
-
-  return <div>{filteredLots} </div>;
+  return <div>{filteredLotsArr} </div>;
 };
 
 export default UserLots;
