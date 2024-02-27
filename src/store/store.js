@@ -5,6 +5,7 @@ import usersList from './slices/usersListSlice';
 import modal from './slices/modalSlice';
 import categories from './slices/categoriesSlice';
 import countries from './slices/countriesSlice';
+import tags from './slices/tagsSlice';
 
 const store = configureStore({
   reducer: {
@@ -13,6 +14,7 @@ const store = configureStore({
     modal,
     categories,
     countries,
+    tags,
   },
   devTools: import.meta.env.DEV,
 });

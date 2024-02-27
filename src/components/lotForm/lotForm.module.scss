@@ -1,7 +1,6 @@
 form {
   display: flex;
   flex-direction: column;
-
   align-items: flex-start;
   font-size: 18px;
   font-style: normal;
@@ -17,8 +16,16 @@ form {
   .inputBlock {
     display: flex;
     flex-direction: row;
-
     align-items: flex-start;
+  }
+
+  .auctionLotDurationBlock {
+    display: flex;
+    flex-direction: column;
+
+    .auctionLotDurationInputs {
+      display: flex;
+    }
   }
 
   .buttonsWrap {

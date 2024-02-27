@@ -1,16 +1,22 @@
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Form, Formik } from 'formik';
+import { Duration } from 'luxon';
 import _ from 'lodash';
 
 import { FormHelperText } from '@mui/material';
 
-import { lotValidationSchema } from '@helpers/validationSchemes/lotValidationSchemes';
+import {
+  lotValidationSchema,
+  auctionLotValidationSchema,
+} from '@helpers/validationSchemes/lotValidationSchemes';
+import getSanitizedString from '@helpers/getSanitizedString';
 import { selectCategoryByParentId } from '@slices/categoriesSlice';
 import { fetchSubcategoryByParentId } from '@thunks/fetchCategories';
 
 import CustomTextField from '@customTextField';
 import CustomAutocompleteField from '../customAutocomplete';
+import CustomMultipleAutocompleteField from '../customMultipleAutocomplete';
 import { CustomButton } from '@buttons/CustomButton';
 import CustomSelect from '@customSelect';
 import CustomDatePicker from '@components/customDatePicker';
@@ -26,6 +32,7 @@ const LotForm = ({
   country,
   categories,
   users,
+  tags,
   formType,
   setConfirmStatus,
   showConfirm,
@@ -50,22 +57,79 @@ const LotForm = ({
     packaging: selectedLot?.packaging,
     quantity: selectedLot?.quantity,
     price: selectedLot?.price,
+    minPrice: selectedLot?.minPrice,
     priceUnits: 'USD',
     lotType: selectedLot?.lotType,
     size: selectedLot?.size,
     expirationDate: selectedLot?.expirationDate,
+    duration: selectedLot?.expirationDate,
+    tags: selectedLot?.tags,
+    days: 0,
+    hours: 0,
+    minutes: 0,
   };
 
   const [isFirstSubmit, setIsFirstSubmit] = useState(true);
   const [selectedCategoryId, setSelectedCategoryId] = useState(
     initialValues.category
   );
+  const [selectedLotType, setSelectedLotType] = useState(initialValues.lotType);
+  const [isAuctionLot, setIsAuctionLot] = useState(
+    selectedLotType === 'auctionSell'
+  );
+  const [validationSchema, setValidationSchema] = useState(lotValidationSchema);
 
   const subcategories = useSelector((state) =>
     selectCategoryByParentId(state, selectedCategoryId)
   );
 
   const formRef = useRef(null);
+
+  const handlePlaceItemBtnClick = () => {
+    isFirstSubmit && setIsFirstSubmit(false);
+  };
+
+  const isCreateNotSubmittedForm = formType === 'create' && isFirstSubmit;
+
+  const handleSubmit = (values, { resetForm }) => {
+    const newValues = _.omit(values, ['days', 'hours', 'minutes']);
+
+    const subcategory = _.find(subcategories, { title: values.subcategory });
+
+    if (subcategory) {
+      newValues.subcategory = subcategory.id;
+    }
+
+    const totalMilliseconds = Duration.fromObject({
+      days: _.toNumber(values.days),
+      hours: _.toNumber(values.hours),
+      minutes: _.toNumber(values.minutes),
+    }).as('milliseconds');
+
+    newValues.duration = totalMilliseconds;
+
+    const newTags = _.map(values.tags, (tagTitle) => {
+      const clearedTagTitle = _.toLower(getSanitizedString(tagTitle));
+      const tag = _.find(
+        tags,
+        (tag) => _.toLower(tag.title) === clearedTagTitle
+      );
+
+      return tag || { title: getSanitizedString(tagTitle) };
+    });
+
+    newValues.tags = newTags;
+
+    const sanitizedValues = _.mapValues(newValues, (value) => {
+      if (_.isString(value)) {
+        return getSanitizedString(value);
+      }
+
+      return value;
+    });
+
+    handleSubmitClick(sanitizedValues, resetForm);
+  };
 
   useEffect(() => {
     if (
@@ -82,29 +146,22 @@ const LotForm = ({
     }
   }, [selectedCategoryId]);
 
-  const handlePlaceItemBtnClick = () => {
-    isFirstSubmit && setIsFirstSubmit(false);
-  };
-
-  const isCreateNotSubmittedForm = formType === 'create' && isFirstSubmit;
-
-  const handleSubmit = (values, { resetForm }) => {
-    const newValues = { ...values };
-    const subcategory = _.find(subcategories, { title: values.subcategory });
-
-    if (subcategory) {
-      newValues.subcategory = subcategory.id;
+  useEffect(() => {
+    if (selectedLotType) {
+      setIsAuctionLot(selectedLotType === 'auctionSell');
+      setValidationSchema(
+        selectedLotType === 'auctionSell'
+          ? auctionLotValidationSchema
+          : lotValidationSchema
+      );
     }
-    newValues.tags = [];
-
-    handleSubmitClick(newValues, resetForm);
-  };
+  }, [selectedLotType]);
 
   return (
     <Formik
       initialValues={initialValues}
       onSubmit={handleSubmit}
-      validationSchema={lotValidationSchema}
+      validationSchema={validationSchema}
       innerRef={formRef}
       enableReinitialize
     >
@@ -118,15 +175,6 @@ const LotForm = ({
       }) => (
         <Form>
           <div className={styles.inputBlock}>
-            <CustomTextField
-              label="Title"
-              id="title"
-              placeholder="Enter the title"
-              name="title"
-              value={values.title}
-              errors={errors.title}
-              touched={!isCreateNotSubmittedForm || touched.title}
-            />
             <CustomSelect
               label="User"
               units={users}
@@ -138,6 +186,28 @@ const LotForm = ({
               touched={!isCreateNotSubmittedForm || touched.userId}
               setFieldValue={setFieldValue}
             />
+            <CustomSelect
+              label="Lot type"
+              id="lotType"
+              name="lotType"
+              units={['sell', 'buy', 'auctionSell']}
+              placeholder="Lot type"
+              value={values.lotType}
+              errors={errors.lotType}
+              touched={!isCreateNotSubmittedForm || touched.lotType}
+              handleChange={setSelectedLotType}
+              setFieldValue={setFieldValue}
+            />
+            <CustomTextField
+              label="Title"
+              id="title"
+              placeholder="Enter the title"
+              name="title"
+              value={values.title}
+              errors={errors.title}
+              touched={!isCreateNotSubmittedForm || touched.title}
+            />
+
             <CustomSelect
               label="Location"
               units={country}
@@ -238,16 +308,58 @@ const LotForm = ({
               errors={errors.quantity}
               touched={!isCreateNotSubmittedForm || touched.quantity}
             />
-            <CustomTextField
-              label="Price"
-              id="price"
-              name="price"
-              type="number"
-              placeholder="Enter the price"
-              value={values.price}
-              errors={errors.price}
-              touched={!isCreateNotSubmittedForm || touched.price}
-            />
+
+            {!isAuctionLot ? (
+              <CustomDatePicker
+                value={values.expirationDate}
+                onChange={(date) => {
+                  setFieldTouched('expirationDate', true);
+                  setFieldValue('expirationDate', date);
+                }}
+                errors={errors.expirationDate}
+                touched={!isCreateNotSubmittedForm || touched.expirationDate}
+              />
+            ) : (
+              <div className={styles.auctionLotDurationBlock}>
+                <h6 className={styles.auctionLotDurationTitle}>
+                  Auction duration
+                </h6>
+                <div className={styles.auctionLotDurationInputs}>
+                  <CustomTextField
+                    id="days"
+                    name="days"
+                    type="number"
+                    fieldType={'lotDuration'}
+                    placeholder="Days"
+                    value={values.days}
+                    errors={errors.days}
+                    touched={!isCreateNotSubmittedForm || touched.days}
+                  />
+                  <CustomTextField
+                    id="hours"
+                    name="hours"
+                    type="number"
+                    fieldType={'lotDuration'}
+                    placeholder="Hours"
+                    value={values.hours}
+                    errors={errors.hours}
+                    touched={!isCreateNotSubmittedForm || touched.hours}
+                  />
+                  <CustomTextField
+                    id="minutes"
+                    name="minutes"
+                    type="number"
+                    fieldType={'lotDuration'}
+                    placeholder="Minutes"
+                    value={values.minutes}
+                    errors={errors.minutes}
+                    touched={!isCreateNotSubmittedForm || touched.minutes}
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+          <div className={styles.inputBlock}>
             <CustomSelect
               label="Currency"
               units={['USD']}
@@ -259,29 +371,44 @@ const LotForm = ({
               touched={!isCreateNotSubmittedForm || touched.priceUnits}
               setFieldValue={setFieldValue}
             />
+            <CustomTextField
+              label="Price"
+              id="price"
+              name="price"
+              type="number"
+              placeholder="Enter the price"
+              value={values.price}
+              errors={errors.price}
+              touched={!isCreateNotSubmittedForm || touched.price}
+            />
+            {isAuctionLot && (
+              <CustomTextField
+                label="Min price"
+                id="minPrice"
+                name="minPrice"
+                type="number"
+                placeholder="Enter the min price"
+                value={values.minPrice}
+                errors={errors.minPrice}
+                touched={!isCreateNotSubmittedForm || touched.minPrice}
+              />
+            )}
           </div>
           <div className={styles.inputBlock}>
-            <CustomDatePicker
-              value={values.expirationDate}
-              onChange={(date) => {
-                setFieldTouched('expirationDate', true);
-                setFieldValue('expirationDate', date);
-              }}
-              errors={errors.expirationDate}
-              touched={!isCreateNotSubmittedForm || touched.expirationDate}
-            />
-            <CustomSelect
-              label="Lot type"
-              id="lotType"
-              name="lotType"
-              units={['sell', 'buy']}
-              placeholder="Lot type"
-              value={values.lotType}
-              errors={errors.lotType}
-              touched={!isCreateNotSubmittedForm || touched.lotType}
+            <CustomMultipleAutocompleteField
+              label="Tags"
+              id="tags"
+              fieldType="tags"
+              limitTags={4}
+              placeholder="Select or type a tag"
+              name="tags"
+              value={values.tags}
+              errors={errors.tags}
+              options={tags}
               setFieldValue={setFieldValue}
             />
           </div>
+
           <DragAndDrop
             files={files}
             setFiles={setFiles}
