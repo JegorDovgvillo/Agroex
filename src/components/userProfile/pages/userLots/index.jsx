@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-import { fetchLots, filteredLots } from '@thunks/fetchLots';
+import { filteredLots } from '@thunks/fetchLots';
 import { lotListSelector } from '@slices/lotListSlice';
 import UserLotCard from '@components/itemCard/userProfileItemCards/userLotCard';
 

@@ -7,7 +7,7 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
 import { CustomButton } from '@buttons/CustomButton';
 import PriceBlock from '@components/priceBlock';
-s;
+
 import getNumberWithCurrency from '@helpers/getNumberWithCurrency';
 
 import ItemCardInfoBlock from '../../itemCardInfo';
