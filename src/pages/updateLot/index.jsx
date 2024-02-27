@@ -14,7 +14,7 @@ import { toggleModal } from '@slices/modalSlice';
 import { fetchCountries } from '@thunks/fetchCountries';
 import { fetchUsers } from '@thunks/fetchUsers';
 import { deleteLot, updateLot, fetchLotDetails } from '@thunks/fetchLots';
-import { fetchCategories } from '@thunks/fetchCategories';
+import { fetchAllCategories } from '@thunks/fetchCategories';
 import { fetchTags } from '@thunks/fetchTags';
 
 import convertImagesToFiles from '@helpers/convertImagesToFiles';
@@ -56,7 +56,7 @@ const UpdateLot = () => {
     convertImagesToFiles(selectedLot?.images || [], setFiles);
     dispatch(fetchLotDetails(lotId));
     dispatch(fetchUsers());
-    dispatch(fetchCategories());
+    dispatch(fetchAllCategories());
     dispatch(fetchCountries());
     dispatch(fetchTags());
   }, [dispatch]);
@@ -68,6 +68,10 @@ const UpdateLot = () => {
         ? { id: values.subcategory }
         : { title: values.subcategory };
 
+    const filteredImages = _.filter(selectedLot?.images, (image) =>
+      _.some(files, { id: image.id })
+    );
+
     const lotData = {
       title: values.title,
       description: values.description,
@@ -77,7 +81,7 @@ const UpdateLot = () => {
       duration: values.duration,
       quantity: values.quantity,
       originalPrice: values.price,
-      minPrice: values.minPrice,
+      originalMinPrice: values.minPrice,
       originalCurrency: values.priceUnits,
       expirationDate: values.expirationDate,
       productCategory: {
@@ -91,10 +95,13 @@ const UpdateLot = () => {
         region: values.region,
       },
       tags: values.tags,
+      images: filteredImages,
     };
 
     files.forEach((file) => {
-      formData.append(`file`, file);
+      const { id } = file;
+      const isImageNew = !_.some(selectedLot?.images, { id });
+      isImageNew && formData.append(`file`, file);
     });
 
     formData.append('data', JSON.stringify(lotData));

@@ -16,7 +16,7 @@ const {
   errorLight,
   warningExtraLight,
   successBase,
-  successExtraLight,
+  successLight,
   successDark,
   systemBase,
   systemExtraLight,
@@ -65,7 +65,7 @@ export const customTheme = createTheme({
     success: {
       main: successBase,
       dark: successDark,
-      light: successExtraLight,
+      light: successLight,
       contrastText: successBase,
     },
 

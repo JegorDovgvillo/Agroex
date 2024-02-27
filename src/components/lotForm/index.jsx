@@ -11,6 +11,7 @@ import {
   auctionLotValidationSchema,
 } from '@helpers/validationSchemes/lotValidationSchemes';
 import getSanitizedString from '@helpers/getSanitizedString';
+import { getDHMSFromMilliseconds } from '@helpers/getDHMSFromMilliseconds';
 import { selectCategoryByParentId } from '@slices/categoriesSlice';
 import { fetchSubcategoryByParentId } from '@thunks/fetchCategories';
 
@@ -45,6 +46,12 @@ const LotForm = ({
   isImageAdded,
 }) => {
   const dispatch = useDispatch();
+  const {
+    days = 0,
+    hours = 0,
+    minutes = 0,
+  } = getDHMSFromMilliseconds(selectedLot?.duration);
+
   const initialValues = {
     userId: selectedLot?.userId,
     title: selectedLot?.title,
@@ -64,9 +71,9 @@ const LotForm = ({
     expirationDate: selectedLot?.expirationDate,
     duration: selectedLot?.expirationDate,
     tags: selectedLot?.tags,
-    days: 0,
-    hours: 0,
-    minutes: 0,
+    days: days,
+    hours: hours,
+    minutes: minutes,
   };
 
   const [isFirstSubmit, setIsFirstSubmit] = useState(true);

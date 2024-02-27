@@ -150,10 +150,27 @@
 .priceContainer {
   display: flex;
   flex-wrap: wrap;
-  max-width: 306px;
+  width: 306px;
 
   .priceBlock {
     width: 50%;
+  }
+
+  .adminComment {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    column-gap: 4px;
+    @include body2;
+    border: 1px solid #eb3d26;
+    border-radius: 4px;
+    background-color: #fdece9;
+    padding: 10px;
+    width: 100%;
+
+    svg {
+      color: #eb3d26;
+    }
   }
 }
 

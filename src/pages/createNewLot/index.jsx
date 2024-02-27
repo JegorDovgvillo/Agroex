@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import _ from 'lodash';
 
 import { fetchUsers } from '@thunks/fetchUsers';
-import { fetchCategories } from '@thunks/fetchCategories';
+import { fetchAllCategories } from '@thunks/fetchCategories';
 import { fetchCountries } from '@thunks/fetchCountries';
 import { fetchTags } from '@thunks/fetchTags';
 import { createLot } from '@thunks/fetchLots';
@@ -32,7 +32,7 @@ const CreateNewLot = () => {
 
   useEffect(() => {
     dispatch(fetchUsers());
-    dispatch(fetchCategories());
+    dispatch(fetchAllCategories());
     dispatch(fetchCountries());
     dispatch(fetchTags());
   }, [dispatch]);
@@ -52,9 +52,9 @@ const CreateNewLot = () => {
       packaging: values.packaging,
       duration: values.duration,
       quantity: values.quantity,
-      price: values.price,
-      minPrice: values.minPrice,
-      currency: values.priceUnits,
+      originalPrice: values.price,
+      originalMinPrice: values.minPrice,
+      originalCurrency: values.priceUnits,
       expirationDate: values.expirationDate,
       productCategory: {
         ...subcategory,

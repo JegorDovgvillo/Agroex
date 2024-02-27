@@ -3,10 +3,11 @@ import { useParams } from 'react-router-dom';
 import _ from 'lodash';
 
 import CheckIcon from '@mui/icons-material/Check';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
 import { CustomButton } from '@buttons/CustomButton';
 import PriceBlock from '@components/priceBlock';
-
+s;
 import getNumberWithCurrency from '@helpers/getNumberWithCurrency';
 
 import ItemCardInfoBlock from '../../itemCardInfo';
@@ -15,12 +16,11 @@ import LotStatusBlock from '../lotStatusBlock';
 
 import styles from '../../itemCard.module.scss';
 
-const { priceBlock, priceContainer, pending, inactive } = styles;
+const { priceBlock, priceContainer, pending, inactive, adminComment } = styles;
 
 const UserLotCard = (item) => {
   const { tab } = useParams();
 
-  //todo replace the value of the const lotStatus by appropriate field from the lot
   const [lotStatus, setLotStatus] = useState(null);
 
   //todo write confirm lot by user logic
@@ -82,13 +82,21 @@ const UserLotCard = (item) => {
             currency={item.currency}
           />
         </div>
-        <CustomButton
-          size="L"
-          text={`Confirm for ${totalBet}`}
-          icon={<CheckIcon />}
-          handleClick={handleClick}
-          width={confirmButtonWidth}
-        />
+        {isAuctionLotType && (
+          <CustomButton
+            size="L"
+            text={`Confirm for ${totalBet}`}
+            icon={<CheckIcon />}
+            handleClick={handleClick}
+            width={confirmButtonWidth}
+          />
+        )}
+        {item.adminComment && (
+          <div className={adminComment}>
+            <ErrorOutlineIcon />
+            {item.adminComment}
+          </div>
+        )}
       </div>
     </div>
   );

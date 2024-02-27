@@ -11,6 +11,7 @@ import {
   deleteLot,
   createLot,
   filteredLots,
+  changeLotStatusByUser,
 } from '@thunks/fetchLots';
 
 const lotListAdapter = createEntityAdapter();
@@ -91,6 +92,16 @@ const lotListSlice = createSlice({
         state.loadingStatus = 'fulfilled';
       })
       .addCase(filteredLots.rejected, (state) => {
+        state.loadingStatus = 'rejected';
+      })
+      .addCase(changeLotStatusByUser.pending, (state) => {
+        state.loadingStatus = 'pending';
+      })
+      .addCase(changeLotStatusByUser.fulfilled, (state, action) => {
+        lotListAdapter.setOne(state, action.payload);
+        state.loadingStatus = 'fulfilled';
+      })
+      .addCase(changeLotStatusByUser.rejected, (state) => {
         state.loadingStatus = 'rejected';
       });
   },
