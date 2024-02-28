@@ -12,6 +12,7 @@
   form {
     display: flex;
     align-items: center;
+    justify-content: center;
 
     .amplify-button--primary {
       background-color: $mainDark;

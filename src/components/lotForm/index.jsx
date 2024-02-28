@@ -32,7 +32,6 @@ const LotForm = ({
   handleSubmitClick,
   country,
   categories,
-  users,
   tags,
   formType,
   setConfirmStatus,
@@ -53,7 +52,6 @@ const LotForm = ({
   } = getDHMSFromMilliseconds(selectedLot?.duration);
 
   const initialValues = {
-    userId: selectedLot?.userId,
     title: selectedLot?.title,
     country: selectedLot?.location.countryId,
     region: selectedLot?.location.region,
@@ -186,41 +184,8 @@ const LotForm = ({
         setFieldValue,
         setFieldTouched,
       }) => (
-        <Form>
+        <Form className={styles.newLotForm}>
           <div className={styles.inputBlock}>
-            <CustomSelect
-              label="User"
-              units={users}
-              itemFieldName="username"
-              name="userId"
-              placeholder="Choose user"
-              value={values.userId}
-              errors={errors.userId}
-              touched={!isCreateNotSubmittedForm || touched.userId}
-              setFieldValue={setFieldValue}
-            />
-            <CustomSelect
-              label="Lot type"
-              id="lotType"
-              name="lotType"
-              units={['sell', 'buy', 'auctionSell']}
-              placeholder="Lot type"
-              value={values.lotType}
-              errors={errors.lotType}
-              touched={!isCreateNotSubmittedForm || touched.lotType}
-              handleChange={setSelectedLotType}
-              setFieldValue={setFieldValue}
-            />
-            <CustomTextField
-              label="Title"
-              id="title"
-              placeholder="Enter the title"
-              name="title"
-              value={values.title}
-              errors={errors.title}
-              touched={!isCreateNotSubmittedForm || touched.title}
-            />
-
             <CustomSelect
               label="Location"
               units={country}
@@ -240,6 +205,17 @@ const LotForm = ({
               value={values.region}
               errors={errors.region}
               touched={!isCreateNotSubmittedForm || touched.region}
+            />
+            <CustomSelect
+              label="Lot type"
+              id="lotType"
+              name="lotType"
+              units={['sell', 'buy']}
+              placeholder="Lot type"
+              value={values.lotType}
+              errors={errors.lotType}
+              touched={!isCreateNotSubmittedForm || touched.lotType}
+              setFieldValue={setFieldValue}
             />
           </div>
           <CustomTextField

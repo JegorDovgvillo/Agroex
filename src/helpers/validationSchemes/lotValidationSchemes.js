@@ -15,7 +15,7 @@ const commonLotFieldsValidationSchema = {
   title: getTextFieldValidationSchema(1, 30),
   region: getTextFieldValidationSchema(1, 30),
   variety: getTextFieldValidationSchema(1, 30),
-  userId: getSelectFieldValidationSchema('user'),
+  // userId: getSelectFieldValidationSchema('user'),
   country: getSelectFieldValidationSchema('country'),
   category: getSelectFieldValidationSchema('category'),
   subcategory: getTextFieldValidationSchema(1, 35),

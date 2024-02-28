@@ -24,9 +24,9 @@ const AuthenticatedPage = ({ Component }) => {
   });
 
   return (
-    <div className="wrapp">
+    // <div className="wrapp">
       <AuthenticatedComponent />
-    </div>
+    // </div>
   );
 };
 
