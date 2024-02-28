@@ -15,6 +15,7 @@ import { selectRootCategories } from '@slices/categoriesSlice';
 import { countrySelector } from '@slices/countriesSlice';
 
 import LotForm from '@components/lotForm';
+import { withAuthenticator } from '@aws-amplify/ui-react';
 
 const MAXIMUM_NUMBER_OF_IMG = import.meta.env.VITE_MAXIMUM_NUMBER_OF_IMG;
 
