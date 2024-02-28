@@ -1,5 +1,4 @@
 import axios from 'axios';
-import _ from 'lodash';
 
 import getToken from '@helpers/getToken';
 
