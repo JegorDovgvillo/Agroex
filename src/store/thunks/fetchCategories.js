@@ -2,7 +2,6 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 
 import axiosInstance from '@helpers/axiosInstance';
 import ENDPOINTS from '@helpers/endpoints';
-import getCookie from '@helpers/getCookie';
 
 export const fetchCategories = createAsyncThunk(
   'categories/fetchCategories',
@@ -16,13 +15,9 @@ export const fetchCategories = createAsyncThunk(
 export const deleteCategory = createAsyncThunk(
   'categories/deleteCategory',
   async ({ id }) => {
-    const cookie = await getCookie();
-
     const response = await axiosInstance.delete(
       `${ENDPOINTS.CATEGORIES}/${id}`,
-      {
-        headers: { Authorization: `Bearer ${cookie}` },
-      }
+      { needAuthorization: true }
     );
 
     return response.data;
@@ -32,14 +27,10 @@ export const deleteCategory = createAsyncThunk(
 export const updateCategory = createAsyncThunk(
   'categories/updateCategory',
   async ({ id, categoryData }) => {
-    const cookie = await getCookie();
-
     const response = await axiosInstance.put(
       `${ENDPOINTS.CATEGORIES}/${id}`,
       categoryData,
-      {
-        headers: { Authorization: `Bearer ${cookie}` },
-      }
+      { needAuthorization: true }
     );
 
     return response.data;
@@ -49,14 +40,10 @@ export const updateCategory = createAsyncThunk(
 export const createCategory = createAsyncThunk(
   'categories/createCategory',
   async (dataCategory) => {
-    const cookie = await getCookie();
-
     const response = await axiosInstance.post(
       ENDPOINTS.CATEGORIES,
       dataCategory,
-      {
-        headers: { Authorization: `Bearer ${cookie}` },
-      }
+      { needAuthorization: true }
     );
 
     return response.data;

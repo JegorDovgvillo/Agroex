@@ -6,8 +6,8 @@ import {
 import {
   fetchUsers,
   deleteUser,
-  createUser,
-  updateUser,
+  // createUser,
+  // updateUser,
   fetchUser,
   getUserFromCognito,
   updateToken,
@@ -54,26 +54,16 @@ const usersListSlice = createSlice({
       .addCase(deleteUser.rejected, (state) => {
         state.loadingStatus = 'rejected';
       })
-      .addCase(createUser.pending, (state) => {
-        state.loadingStatus = 'pending';
-      })
-      .addCase(createUser.fulfilled, (state, action) => {
-        state.loadingStatus = 'fulfilled';
-        usersListAdapter.setOne(state, action.payload);
-      })
-      .addCase(createUser.rejected, (state) => {
-        state.loadingStatus = 'rejected';
-      })
-      .addCase(updateUser.pending, (state) => {
-        state.loadingStatus = 'pending';
-      })
-      .addCase(updateUser.fulfilled, (state, action) => {
-        state.loadingStatus = 'fulfilled';
-        usersListAdapter.upsertOne(state, action.payload);
-      })
-      .addCase(updateUser.rejected, (state) => {
-        state.loadingStatus = 'rejected';
-      })
+      // .addCase(updateUser.pending, (state) => {
+      //   state.loadingStatus = 'pending';
+      // })
+      // .addCase(updateUser.fulfilled, (state, action) => {
+      //   state.loadingStatus = 'fulfilled';
+      //   usersListAdapter.upsertOne(state, action.payload);
+      // })
+      // .addCase(updateUser.rejected, (state) => {
+      //   state.loadingStatus = 'rejected';
+      // })
       .addCase(fetchUser.pending, (state) => {
         state.loadingStatus = 'pending';
       })

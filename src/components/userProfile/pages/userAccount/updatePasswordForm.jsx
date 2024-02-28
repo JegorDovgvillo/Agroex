@@ -19,6 +19,7 @@ const { formContainer, passwordsBlock, buttonsWrapp } = styles;
 const UpdatePasswordForm = ({ setIsChanged }) => {
   const dispatch = useDispatch();
   const [confirmStatus, setConfirmStatus] = useState(false);
+
   useEffect(() => {
     if (confirmStatus) {
       setConfirmStatus(false);
@@ -34,17 +35,19 @@ const UpdatePasswordForm = ({ setIsChanged }) => {
     setIsChanged(false);
   };
 
-  async function handleUpdatePassword(oldPassword, newPassword) {
+  const handleUpdatePassword = async (oldPassword, newPassword) => {
     try {
       await updatePassword({
         oldPassword,
         newPassword,
       });
+
       setIsChanged(false);
     } catch (err) {
       console.log(err);
     }
-  }
+  };
+
   const showConfirm = () => {
     dispatch(toggleModal('confirmModal'));
   };
@@ -55,9 +58,7 @@ const UpdatePasswordForm = ({ setIsChanged }) => {
       newPassword: '',
     },
     validationSchema: createUserValidationSchema,
-    onSubmit: () => {
-      showConfirm();
-    },
+    onSubmit: showConfirm,
   });
 
   return (
@@ -95,7 +96,6 @@ const UpdatePasswordForm = ({ setIsChanged }) => {
             type="secondary"
             size="M"
             typeOfButton="submit"
-            // handleClick={showConfirm}
           />
           <CustomButton
             text="Cancel"

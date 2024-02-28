@@ -5,8 +5,7 @@ import { confirmUserAttribute } from 'aws-amplify/auth';
 
 import { updateToken, updateUser } from '@thunks/fetchUsers';
 
-import { selectModalState } from '@slices/modalSlice';
-import { toggleModal } from '@slices/modalSlice';
+import { selectModalState, toggleModal } from '@slices/modalSlice';
 
 import { CustomButton } from '../buttons/CustomButton';
 
@@ -14,25 +13,27 @@ import styles from './infoModal.module.scss';
 
 const ConfirmCodeModal = ({ values, sub, zoneinfo }) => {
   const dispatch = useDispatch();
+
+  const [value, setValue] = useState('');
+
   const isOpen = useSelector((state) =>
     selectModalState(state, 'updatingModal')
   );
-
-  const [value, setValue] = useState('');
 
   const handleSubmitClick = async () => {
     await confirmUserAttribute({
       userAttributeKey: 'email',
       confirmationCode: value,
     });
+
     const updateDataUser = {
       ...values,
       zoneinfo,
-      sub,
     };
+
     dispatch(updateToken());
-    dispatch(updateUser({ id: sub, userData: updateDataUser })),
-      dispatch(toggleModal('updatingModal'));
+    dispatch(updateUser({ id: sub, userData: updateDataUser }));
+    dispatch(toggleModal('updatingModal'));
   };
 
   return (

@@ -2,7 +2,6 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 
 import axiosInstance from '@helpers/axiosInstance';
 import ENDPOINTS from '@helpers/endpoints';
-import getCookie from '@helpers/getCookie';
 
 export const fetchLots = createAsyncThunk('lotList/fetchLots', async () => {
   const response = await axiosInstance.get(ENDPOINTS.LOTS);
@@ -13,14 +12,10 @@ export const fetchLots = createAsyncThunk('lotList/fetchLots', async () => {
 export const updateLot = createAsyncThunk(
   'lotList/updateLot',
   async ({ id, lotData }) => {
-    const cookie = await getCookie();
-
     const response = await axiosInstance.put(
       `${ENDPOINTS.LOTS}/${id}`,
       lotData,
-      {
-        headers: { Authorization: `Bearer ${cookie}` },
-      }
+      { needAuthorization: true }
     );
 
     return response.data;
@@ -39,13 +34,8 @@ export const fetchLotDetails = createAsyncThunk(
 export const createLot = createAsyncThunk(
   'lotList/createLot',
   async (formData) => {
-    const cookie = await getCookie();
-
     const response = await axiosInstance.post(ENDPOINTS.LOTS, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        Authorization: `Bearer ${cookie}`,
-      },
+      needAuthorization: true,
     });
 
     return response.data;
@@ -55,10 +45,8 @@ export const createLot = createAsyncThunk(
 export const deleteLot = createAsyncThunk(
   'lotList/deleteLot',
   async ({ id }) => {
-    const cookie = await getCookie();
-
     const response = await axiosInstance.delete(`${ENDPOINTS.LOTS}/${id}`, {
-      headers: { Authorization: `Bearer ${cookie}` },
+      needAuthorization: true,
     });
 
     return response.data;

@@ -20,6 +20,7 @@ const Login = () => {
   async function currentSession() {
     try {
       const { idToken } = (await fetchAuthSession()).tokens ?? {};
+
       return idToken.payload;
     } catch (err) {}
   }
@@ -28,6 +29,7 @@ const Login = () => {
     Hub.listen('auth', async (data) => {
       if (data?.payload?.event === 'signedIn') {
         const response = await currentSession();
+
         dispatch(createUser(response.sub));
         navigate(ROUTES.LOTS);
       }

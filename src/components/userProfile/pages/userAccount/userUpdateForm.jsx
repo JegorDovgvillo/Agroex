@@ -46,6 +46,7 @@ const UserUpdateForm = ({
 }) => {
   const dispatch = useDispatch();
   const [code, setCode] = useState();
+
   const handleEditClick = () => {
     setFormDisabled(false);
   };
@@ -54,7 +55,11 @@ const UserUpdateForm = ({
     formik.resetForm();
     setFormDisabled(true);
   };
-  async function handleUpdateEmailAndNameAttributes(updatedEmail, updatedName) {
+
+  const handleUpdateEmailAndNameAttributes = async (
+    updatedEmail,
+    updatedName
+  ) => {
     try {
       const output = await updateUserAttributes({
         userAttributes: {
@@ -62,12 +67,14 @@ const UserUpdateForm = ({
           name: updatedName,
         },
       });
+
       handleUpdateUserAttributeNextSteps(output, updatedName);
     } catch (error) {
       console.log(error);
     }
-  }
-  async function handleUpdateUserAttributeNextSteps(output, updatedName) {
+  };
+
+  const handleUpdateUserAttributeNextSteps = async (output, updatedName) => {
     const nextStepEmail = output.email.nextStep.updateAttributeStep;
     const nextStepName = output.name.nextStep.updateAttributeStep;
 
@@ -75,9 +82,9 @@ const UserUpdateForm = ({
       case 'CONFIRM_ATTRIBUTE_WITH_CODE':
         dispatch(toggleModal('updatingModal'));
         break;
+
       case 'DONE':
         const updateDataUser = {
-          sub,
           email,
           zoneinfo,
           updatedName,
@@ -87,7 +94,7 @@ const UserUpdateForm = ({
         dispatch(updateToken());
         break;
     }
-  }
+  };
 
   const handleSubmit = (values) => {
     handleUpdateEmailAndNameAttributes(values.email, values.name);
