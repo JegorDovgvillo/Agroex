@@ -6,8 +6,6 @@ import {
 import {
   fetchUsers,
   deleteUser,
-  // createUser,
-  // updateUser,
   fetchUser,
   getUserFromCognito,
   updateToken,
@@ -54,16 +52,6 @@ const usersListSlice = createSlice({
       .addCase(deleteUser.rejected, (state) => {
         state.loadingStatus = 'rejected';
       })
-      // .addCase(updateUser.pending, (state) => {
-      //   state.loadingStatus = 'pending';
-      // })
-      // .addCase(updateUser.fulfilled, (state, action) => {
-      //   state.loadingStatus = 'fulfilled';
-      //   usersListAdapter.upsertOne(state, action.payload);
-      // })
-      // .addCase(updateUser.rejected, (state) => {
-      //   state.loadingStatus = 'rejected';
-      // })
       .addCase(fetchUser.pending, (state) => {
         state.loadingStatus = 'pending';
       })
