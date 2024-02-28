@@ -7,7 +7,8 @@ import { selectModalState } from '@slices/modalSlice';
 
 // severity could be "success", "info", "warning", "error"
 
-export const CustomSnackbar = ({ message, severity }) => {
+export const CustomSnackbar = ({ snackbarProps }) => {
+  //const { message, severity } = snackbarProps;
   const dispatch = useDispatch();
   const isOpen = useSelector((state) => selectModalState(state, 'snackbar'));
 
@@ -18,24 +19,26 @@ export const CustomSnackbar = ({ message, severity }) => {
 
     dispatch(toggleModal('snackbar'));
   };
-
+  //console.log(isOpen, message, severity);
   return (
     <div>
-      <Snackbar
-        open={isOpen}
-        autoHideDuration={6000}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-        onClose={handleClose}
-      >
-        <Alert
+      {snackbarProps && (
+        <Snackbar
+          open={isOpen}
+          autoHideDuration={6000}
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
           onClose={handleClose}
-          severity={severity}
-          variant="outlined"
-          sx={{ bgcolor: 'background.paper', width: '100%' }}
         >
-          {message}
-        </Alert>
-      </Snackbar>
+          <Alert
+            onClose={handleClose}
+            severity={snackbarProps.severity}
+            variant="outlined"
+            sx={{ bgcolor: 'background.paper', width: '100%' }}
+          >
+            {snackbarProps.message}
+          </Alert>
+        </Snackbar>
+      )}
     </div>
   );
 };

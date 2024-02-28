@@ -5,7 +5,7 @@ import { Button, Dialog, DialogActions, DialogContent } from '@mui/material';
 
 import { fetchUser } from '@thunks/fetchUsers';
 import { fetchLotDetails } from '@thunks/fetchLots';
-import { fetchCategories } from '@thunks/fetchCategories';
+import { fetchAllCategories } from '@thunks/fetchCategories';
 import { selectUserById } from '@slices/usersListSlice';
 import { toggleModal, selectModalState } from '@slices/modalSlice';
 import { selectLotDetailById } from '@slices/lotListSlice';
@@ -18,7 +18,7 @@ import styles from './detailedLotViewModal.module.scss';
 
 const { dialog } = styles;
 
-const DetailedLotViewModal = ({ handleChangeLot }) => {
+const DetailedLotViewModal = () => {
   const dispatch = useDispatch();
   const { lotId } = useSelector((state) => state.lotList);
   const lot = useSelector((state) => selectLotDetailById(state, lotId));
@@ -31,23 +31,18 @@ const DetailedLotViewModal = ({ handleChangeLot }) => {
   useEffect(() => {
     dispatch(fetchLotDetails(lotId));
     dispatch(fetchUser(userId));
-    dispatch(fetchCategories());
+    dispatch(fetchAllCategories());
   }, [dispatch, lotId, userId]);
 
   useEffect(() => {
     if (confirm) {
-      handleChangeLot({ ...lot });
       setConfirm(false);
     }
-  }, [handleChangeLot, confirm, lot]);
+  }, [confirm, lot]);
 
   const handleClose = () => {
     dispatch(toggleModal('infoModal'));
   };
-
-  function handleChangeLotByAdmin() {
-    dispatch(toggleModal('confirmNestedModal'));
-  }
 
   return (
     <>
@@ -71,21 +66,9 @@ const DetailedLotViewModal = ({ handleChangeLot }) => {
             <Button onClick={handleClose} variant="outlined" color="error">
               Close
             </Button>
-            <Button
-              onClick={handleChangeLotByAdmin}
-              variant="contained"
-              autoFocus
-            >
-              {`${!lot.enabledByAdmin ? 'Enable' : 'Disable'} lot`}
-            </Button>
           </DialogActions>
         </Dialog>
       )}
-      <ConfirmActionModal
-        text="This action changes the lot status. Do you confirm the action?"
-        setConfirmStatus={setConfirm}
-        isNested={true}
-      />
     </>
   );
 };

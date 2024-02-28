@@ -51,15 +51,23 @@ const UserLotCard = (item) => {
   const isAuctionLotType = item.lotType === 'auctionSell';
 
   const isLotEditable =
-    (isAuctionLotType && item.innerStatus === 'new') ||
+    (isAuctionLotType &&
+      item.innerStatus === 'new' &&
+      item.userStatus !== 'inactive') ||
     (!isAuctionLotType && item.status !== 'inactive');
 
+  const isLotDeletable = item.userStatus === 'inactive';
   return (
     <div className={styles.cardWrapp}>
       <ItemCardInfoBlock item={item}>
         <>
           {lotStatus && <LotStatusBlock lotStatus={lotStatus} />}
-          {isLotEditable && <ManageCardBlock id={item.id} />}
+          {isLotEditable && (
+            <ManageCardBlock id={item.id} actions={'editDeactivate'} />
+          )}
+          {isLotDeletable && (
+            <ManageCardBlock id={item.id} actions={'activateDelete'} />
+          )}
         </>
       </ItemCardInfoBlock>
       <div className={containerClassNames}>
