@@ -7,7 +7,7 @@ import { Avatar, FormControlLabel, CircularProgress } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import HttpsOutlinedIcon from '@mui/icons-material/HttpsOutlined';
 
-import { fetchUsers } from '@thunks/fetchUsers';
+import { getUserFromCognito } from '@thunks/fetchUsers';
 
 import { selectUserById } from '@slices/usersListSlice';
 
@@ -17,6 +17,7 @@ import { CheckBoxInput } from '@components/checkBox';
 import ROUTES from '@helpers/routeNames';
 
 import UserUpdateForm from './userUpdateForm';
+import UpdatePasswordForm from './updatePasswordForm';
 
 import styles from './userAccount.module.scss';
 
@@ -36,14 +37,16 @@ const {
 
 const UserAccount = () => {
   const dispatch = useDispatch();
-  const user = useSelector((state) => selectUserById(state, 1));
   const navigate = useNavigate();
-
-  useEffect(() => {
-    dispatch(fetchUsers());
-  }, [dispatch]);
+  const userId = useSelector((state) => state.usersList.userId);
+  const user = useSelector((state) => selectUserById(state, userId));
 
   const [isFormDisabled, setFormDisabled] = useState(true);
+  const [isChanged, setIsChanged] = useState(false);
+
+  useEffect(() => {
+    dispatch(getUserFromCognito());
+  }, []);
 
   if (!user) {
     return (
@@ -53,17 +56,11 @@ const UserAccount = () => {
     );
   }
 
-  const { username } = user;
-
   const handlePhotoEdit = () => {
     //todo write upload user photo logic
   };
 
-  const handleChangePassword = () => {
-    //todo write change password logic
-  };
-
-  const initials = username
+  const initials = user.name
     .split(' ')
     .map((el) => el.slice(0, 1))
     .join('')
@@ -101,7 +98,6 @@ const UserAccount = () => {
             </div>
           </div>
         </div>
-
         <div className={security}>
           <p className={title}>Security</p>
           <CustomButton
@@ -110,8 +106,9 @@ const UserAccount = () => {
             type="secondary"
             size="M"
             width="198px"
-            onClick={handleChangePassword}
+            handleClick={() => setIsChanged(true)}
           />
+          {isChanged && <UpdatePasswordForm setIsChanged={setIsChanged} />}
           <CustomButton
             text="Sign out"
             icon={<ExitToAppIcon />}
@@ -121,7 +118,6 @@ const UserAccount = () => {
             handleClick={handleSignOut}
           />
         </div>
-
         <div className={security}>
           <p className={title}>Additional settings</p>
           <div>

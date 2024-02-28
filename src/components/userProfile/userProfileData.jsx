@@ -52,10 +52,6 @@ const userProfileData = [
     name: 'My account',
     icon: <AccountCircleOutlinedIcon />,
     route: USER_ACCOUNT,
-    tabs: [
-      { id: 0, tabRoute: 'active' },
-      { id: 1, tabRoute: 'completed' },
-    ],
     element: <UserAccount />,
   },
 ];

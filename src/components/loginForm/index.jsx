@@ -1,18 +1,8 @@
-import { Amplify } from 'aws-amplify';
 import { Authenticator } from '@aws-amplify/ui-react';
-import { CookieStorage } from 'aws-amplify/utils';
-import { cognitoUserPoolsTokenProvider } from 'aws-amplify/auth/cognito';
-import TextField from '@mui/material/TextField';
-import Autocomplete from '@mui/material/Autocomplete';
+import { TextField, Autocomplete } from '@mui/material';
+
 import '@aws-amplify/ui-react/styles.css';
-
-import awsConfigUsers from '@helpers/cognito/aws-config-users.js';
-
-import './signUpForm.scss';
-
-Amplify.configure(awsConfigUsers);
-
-cognitoUserPoolsTokenProvider.setKeyValueStorage(new CookieStorage());
+import './loginForm.scss';
 
 const formFields = {
   signUp: {
@@ -31,11 +21,10 @@ const formFields = {
   },
 };
 
-const LoginForm = ({ services, filteredTimeZone, timeZones }) => {
+const LoginForm = ({ filteredTimeZone, timeZones }) => {
   return (
     <div className="wrapp">
       <Authenticator
-        services={services}
         formFields={formFields}
         signUpAttributes={['email', 'name']}
         components={{
@@ -58,6 +47,21 @@ const LoginForm = ({ services, filteredTimeZone, timeZones }) => {
                       </label>
                     )}
                   />
+                </>
+              );
+            },
+          },
+          ForceNewPassword: {
+            FormFields() {
+              return (
+                <>
+                  <input
+                    type="text"
+                    hidden
+                    autoComplete="username"
+                    name="username"
+                  />
+                  <Authenticator.ForceNewPassword.FormFields />
                 </>
               );
             },

@@ -15,6 +15,8 @@ import CategoriesList from '@components/admin/adminCategories';
 import AdminLotsList from '@components/admin/adminLotsList';
 import UserProfilePage from '@components/userProfile/userProfilePage';
 import UserProfileTabPanel from '@components/customTabPanels/userProfileTabPanel';
+import CustomTabPanel from '@components/customTabPanel';
+import AuthenticatedPage from '@components/AuthenticatedPage';
 
 import ROUTES from './routeNames';
 
@@ -42,7 +44,7 @@ const Router = () => {
         },
         {
           path: ROUTES.CREATE_NEW_LOT,
-          element: <CreateNewLot />,
+          element: <AuthenticatedPage Component={CreateNewLot} />,
         },
         {
           path: ROUTES.UPDATE_LOT,
@@ -68,7 +70,7 @@ const Router = () => {
         },
         {
           path: ROUTES.USER_PROFILE,
-          element: <UserProfile />,
+          element: <AuthenticatedPage Component={UserProfile} />,
           children: [
             {
               path: ROUTES.USER_PROFILE_PAGE,

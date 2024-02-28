@@ -1,4 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import { fetchAuthSession } from 'aws-amplify/auth';
 
 import axiosInstance from '@helpers/axiosInstance';
 import ENDPOINTS from '@helpers/endpoints';
@@ -44,3 +45,22 @@ export const fetchUser = createAsyncThunk('usersList/fetchUser', async (id) => {
 
   return response.data;
 });
+
+export const getUserFromCognito = createAsyncThunk(
+  'usersList/getUserFromCognito',
+  async () => {
+    const { idToken } = (await fetchAuthSession()).tokens ?? {};
+    const userInfo = { ...idToken.payload, id: idToken.payload.sub };
+    return userInfo;
+  }
+);
+
+export const updateToken = createAsyncThunk(
+  'usersList/updateToken',
+  async () => {
+    const { idToken } =
+      (await fetchAuthSession({ forceRefresh: true })).tokens ?? {};
+    const userInfo = { ...idToken.payload, id: idToken.payload.sub };
+    return userInfo;
+  }
+);

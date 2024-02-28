@@ -53,11 +53,30 @@
     display: flex;
     flex-direction: column;
     row-gap: 24px;
+    align-items: flex-start;
+
+    form {
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .passwordsBlock {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+
+      .buttonsWrapp {
+        display: flex;
+        flex-direction: row;
+        gap: 20px;
+      }
+    }
   }
   .formContainer {
     & > div {
-      margin: 8px;
       width: 376px;
+      margin-bottom: 16px;
     }
 
     .buttonsContainer {
