@@ -1,11 +1,15 @@
 import _ from 'lodash';
 
-export async function getCookie() {
-  const cookies = _.map(document.cookie.split(';'), (cookie) =>
+const getCookie = async () => {
+  const cookiePairs = _.map(document.cookie.split(';'), (cookie) =>
     cookie.split('=')
   );
-  const cookie = _.find(cookies, ([name]) =>
+
+  const cookieWithIdToken = _.find(cookiePairs, ([name]) =>
     _.includes(name.trim(), 'idToken')
   );
-  return cookie ? cookie[1] : null;
-}
+
+  return cookieWithIdToken ? cookieWithIdToken[1] : null;
+};
+
+export default getCookie;
