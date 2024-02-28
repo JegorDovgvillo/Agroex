@@ -29,13 +29,14 @@ const CustomMultipleAutocompleteField = ({
 
     return {
       backgroundColor: selectedTagColors?.bgColorHex,
-      color: selectedTagColors && selectedTagColors.textColorHex,
+      color: selectedTagColors?.textColorHex,
       border: selectedTagColors && '1px solid transparent',
     };
   };
 
   const handleDeleteTagButtonClick = (index) => {
     const newValue = [...value];
+
     newValue.splice(index, 1);
     setCurrValue(newValue);
   };
