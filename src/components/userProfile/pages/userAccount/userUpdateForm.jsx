@@ -7,6 +7,7 @@ import { TextField, Box } from '@mui/material';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
 
+import { updateToken, updateUser } from '@thunks/fetchUsers';
 import { toggleModal } from '@slices/modalSlice';
 
 import { CustomButton } from '@components/buttons/CustomButton';
@@ -39,11 +40,9 @@ const saveBtnProps = {
 };
 
 const UserUpdateForm = ({
-  user: { sub, name, email },
+  user: { sub, name, email, zoneinfo },
   setFormDisabled,
   isFormDisabled,
-  setIsChanged,
-  isChanged,
 }) => {
   const dispatch = useDispatch();
   const [code, setCode] = useState();
@@ -63,27 +62,37 @@ const UserUpdateForm = ({
           name: updatedName,
         },
       });
-
-      handleUpdateUserAttributeNextSteps(output);
+      handleUpdateUserAttributeNextSteps(output, updatedName);
     } catch (error) {
       console.log(error);
     }
   }
-  async function handleUpdateUserAttributeNextSteps(output) {
+  async function handleUpdateUserAttributeNextSteps(output, updatedName) {
     const nextStepEmail = output.email.nextStep.updateAttributeStep;
     const nextStepName = output.name.nextStep.updateAttributeStep;
 
     switch (nextStepEmail || nextStepName) {
       case 'CONFIRM_ATTRIBUTE_WITH_CODE':
         dispatch(toggleModal('updatingModal'));
-
         break;
-      // case 'DONE':
-      //   setIsChanged(true);
-      //   dispatch(updateToken());
-      //   break;
+      case 'DONE':
+        const updateDataUser = {
+          sub,
+          email,
+          zoneinfo,
+          updatedName,
+        };
+
+        dispatch(updateUser({ id: sub, userData: updateDataUser }));
+        dispatch(updateToken());
+        break;
     }
   }
+
+  const handleSubmit = (values) => {
+    handleUpdateEmailAndNameAttributes(values.email, values.name);
+    setFormDisabled(true);
+  };
 
   const formik = useFormik({
     initialValues: {
@@ -92,10 +101,7 @@ const UserUpdateForm = ({
     },
     validationSchema: updateUserValidationSchema,
     onSubmit: (values) => {
-      // dispatch(updateUser({ id: sub, userData: values }));
-      handleUpdateEmailAndNameAttributes(values.email, values.name);
-      setIsChanged(!isChanged);
-      setFormDisabled(true);
+      handleSubmit(values);
     },
   });
 
@@ -152,7 +158,12 @@ const UserUpdateForm = ({
           </div>
         )}
       </div>
-      <ConfirmCodeModal setCode={setCode} />
+      <ConfirmCodeModal
+        setCode={setCode}
+        values={formik.values}
+        sub={sub}
+        zoneinfo={zoneinfo}
+      />
     </Box>
   );
 };

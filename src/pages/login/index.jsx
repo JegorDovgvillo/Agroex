@@ -1,20 +1,21 @@
 import { useNavigate } from 'react-router-dom';
 import { Hub } from 'aws-amplify/utils';
 import { useEffect } from 'react';
-import axios from 'axios';
 import _ from 'lodash';
 import { fetchAuthSession } from 'aws-amplify/auth';
+import { useDispatch } from 'react-redux';
+
+import { createUser } from '@thunks/fetchUsers.js';
 
 import LoginForm from '@components/loginForm';
 
 import ROUTES from '@helpers/routeNames.js';
 
 import timeZones from '../../data/timeZones.js';
-import axiosInstance from '@helpers/axiosInstance.js';
-import { getCookie } from '@helpers/getCookie.js';
 
 const Login = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   async function currentSession() {
     try {
@@ -27,22 +28,7 @@ const Login = () => {
     Hub.listen('auth', async (data) => {
       if (data?.payload?.event === 'signedIn') {
         const response = await currentSession();
-        // const cookie = await getCookie();
-        const userData = {
-          name: response.name,
-          email: response.email,
-          zoneinfo: response?.zoneinfo || 'Europe/London',
-          sub: response.sub,
-        };
-        const axios = await axiosInstance();
-        console.log(axios);
-        const registerResponse = await axios.post(
-          '/auth/register',
-          userData
-          // {
-          //   headers: { Authorization: Bearer ${cookie} },
-          // }
-        );
+        dispatch(createUser(response.sub));
         navigate(ROUTES.LOTS);
       }
     });

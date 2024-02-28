@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-export async function getCookie() {
+const getCookie = async () => {
   const cookies = _.map(document.cookie.split(';'), (cookie) =>
     cookie.split('=')
   );
@@ -8,4 +8,6 @@ export async function getCookie() {
     _.includes(name.trim(), 'idToken')
   );
   return cookie ? cookie[1] : null;
-}
+};
+
+export default getCookie;

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Modal, TextField, Box } from '@mui/material';
 import { confirmUserAttribute } from 'aws-amplify/auth';
 
-import { updateToken } from '@thunks/fetchUsers';
+import { updateToken, updateUser } from '@thunks/fetchUsers';
 
 import { selectModalState } from '@slices/modalSlice';
 import { toggleModal } from '@slices/modalSlice';
@@ -12,7 +12,7 @@ import { CustomButton } from '../buttons/CustomButton';
 
 import styles from './infoModal.module.scss';
 
-const ConfirmCodeModal = () => {
+const ConfirmCodeModal = ({ values, sub, zoneinfo }) => {
   const dispatch = useDispatch();
   const isOpen = useSelector((state) =>
     selectModalState(state, 'updatingModal')
@@ -25,8 +25,14 @@ const ConfirmCodeModal = () => {
       userAttributeKey: 'email',
       confirmationCode: value,
     });
+    const updateDataUser = {
+      ...values,
+      zoneinfo,
+      sub,
+    };
     dispatch(updateToken());
-    dispatch(toggleModal('updatingModal'));
+    dispatch(updateUser({ id: sub, userData: updateDataUser })),
+      dispatch(toggleModal('updatingModal'));
   };
 
   return (
