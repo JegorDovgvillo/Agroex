@@ -41,24 +41,15 @@ export const lotValidationSchema = object().shape({
 
 export const auctionLotValidationSchema = object().shape({
   ...commonLotFieldsValidationSchema,
-  minPrice: getNumberFieldValidationSchema(1, 9999)
-    .transform((value, originalValue) => {
-      if (isNaN(value)) return NaN;
-      if (value < 1 || value > 9999) return NaN;
-      if (value >= originalValue.price) return NaN;
+  minPrice: getNumberFieldValidationSchema(1, 9999).test(
+    'lessThanPrice',
+    'Minimum price should be less than price',
+    function (value) {
+      const price = this.parent.price;
 
-      return value;
-    })
-    .typeError('The field should contain only numbers from 1 to 9999')
-    .test(
-      'lessThanPrice',
-      'Minimum price should be less than price',
-      function (value) {
-        const price = this.parent.price;
-
-        return value < price;
-      }
-    ),
+      return value < price;
+    }
+  ),
   days: getNumberFieldValidationSchema(0, 31, false, true),
   hours: getNumberFieldValidationSchema(0, 23, false, true),
   minutes: getNumberFieldValidationSchema(0, 59, false, true).test(

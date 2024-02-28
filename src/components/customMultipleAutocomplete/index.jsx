@@ -23,15 +23,21 @@ const CustomMultipleAutocompleteField = ({
   const tagsTitle = options.map((tag) => tag.title);
   const isError = !!errors;
 
-  const getTagColor = (option) => {
+  const getTagStyles = (option) => {
     const selectedTag = _.find(options, { title: option });
     const selectedTagColors = selectedTag?.color;
 
     return {
-      backgroundColor: selectedTagColors && selectedTagColors.bgColorHex,
+      backgroundColor: selectedTagColors?.bgColorHex,
       color: selectedTagColors && selectedTagColors.textColorHex,
       border: selectedTagColors && '1px solid transparent',
     };
+  };
+
+  const handleDeleteTagButtonClick = (index) => {
+    const newValue = [...value];
+    newValue.splice(index, 1);
+    setCurrValue(newValue);
   };
 
   const getRenderedTags = (value) =>
@@ -39,21 +45,21 @@ const CustomMultipleAutocompleteField = ({
       <div
         className={styles.tag}
         key={`${option}${index}`}
-        style={getTagColor(option)}
+        style={getTagStyles(option)}
       >
         {option}
         <button
           className={styles.tagRemoveButton}
-          onClick={() => {
-            const newValue = [...value];
-            newValue.splice(index, 1);
-            setCurrValue(newValue);
-          }}
+          onClick={handleDeleteTagButtonClick}
         >
           &#10006;
         </button>
       </div>
     ));
+
+  const handleBlur = () => {
+    inputValue && setLastInputValue([inputValue]);
+  };
 
   useEffect(() => {
     setCurrValue((currValue) => [...currValue, ...lastInputValue]);
@@ -92,9 +98,7 @@ const CustomMultipleAutocompleteField = ({
             }`}
             name={name}
             value={inputValue}
-            onBlur={() => {
-              inputValue && setLastInputValue([inputValue]);
-            }}
+            onBlur={handleBlur}
             error={isError}
             helperText={isError ? errors : null}
           />

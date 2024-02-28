@@ -91,23 +91,17 @@ const LotForm = ({
 
   const isCreateNotSubmittedForm = formType === 'create' && isFirstSubmit;
 
-  const handleSubmit = (values, { resetForm }) => {
-    const newValues = _.omit(values, ['days', 'hours', 'minutes']);
+  const getTotalMilliseconds = (values) => {
+    const { days, hours, minutes } = values;
 
-    const subcategory = _.find(subcategories, { title: values.subcategory });
-
-    if (subcategory) {
-      newValues.subcategory = subcategory.id;
-    }
-
-    const totalMilliseconds = Duration.fromObject({
-      days: _.toNumber(values.days),
-      hours: _.toNumber(values.hours),
-      minutes: _.toNumber(values.minutes),
+    return Duration.fromObject({
+      days: _.toNumber(days),
+      hours: _.toNumber(hours),
+      minutes: _.toNumber(minutes),
     }).as('milliseconds');
+  };
 
-    newValues.duration = totalMilliseconds;
-
+  const getNewTags = (values) => {
     const newTags = _.map(values.tags, (tagTitle) => {
       const clearedTagTitle = _.toLower(getSanitizedString(tagTitle));
       const tag = _.find(
@@ -118,7 +112,19 @@ const LotForm = ({
       return tag || { title: getSanitizedString(tagTitle) };
     });
 
-    newValues.tags = newTags;
+    return newTags;
+  };
+
+  const handleSubmit = (values, { resetForm }) => {
+    const newValues = _.omit(values, ['days', 'hours', 'minutes']);
+    const subcategory = _.find(subcategories, { title: values.subcategory });
+
+    if (subcategory) {
+      newValues.subcategory = subcategory.id;
+    }
+
+    newValues.duration = getTotalMilliseconds(values);
+    newValues.tags = getNewTags(values);
 
     const sanitizedValues = _.mapValues(newValues, (value) => {
       if (_.isString(value)) {
@@ -148,11 +154,11 @@ const LotForm = ({
 
   useEffect(() => {
     if (selectedLotType) {
-      setIsAuctionLot(selectedLotType === 'auctionSell');
+      const isAuctionLot = selectedLotType === 'auctionSell';
+
+      setIsAuctionLot(isAuctionLot);
       setValidationSchema(
-        selectedLotType === 'auctionSell'
-          ? auctionLotValidationSchema
-          : lotValidationSchema
+        isAuctionLot ? auctionLotValidationSchema : lotValidationSchema
       );
     }
   }, [selectedLotType]);
