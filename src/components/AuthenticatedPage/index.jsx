@@ -23,11 +23,7 @@ const AuthenticatedPage = ({ Component }) => {
     },
   });
 
-  return (
-    // <div className="wrapp">
-      <AuthenticatedComponent />
-    // </div>
-  );
+  return <AuthenticatedComponent />;
 };
 
 export default AuthenticatedPage;
