@@ -1,16 +1,15 @@
 @import "@scss/colorVariables.module.scss";
 
-.lotsListContainer {
-  width: 100%;
+.container {
+  max-width: 100%;
+  overflow-x: auto;
 
-  .lotImage {
-    width: 100px;
-    height: 70px;
+  .cell {
+    text-align: center !important;
+    justify-content: center !important;
   }
-}
-.lotTitleBlockCell {
-  & .lotTitleBlock {
-    max-width: 130px;
+  .lotTitleBlock {
+    //max-width: 150px;
     display: flex;
     column-gap: 8px;
     align-items: center;
@@ -24,45 +23,38 @@
       text-align: center;
       overflow: hidden;
       white-space: nowrap;
+
+      &:hover {
+        text-decoration: underline;
+        cursor: pointer;
+      }
     }
   }
-}
 
-.priceBet {
-  display: flex;
-  flex-direction: column;
-}
-
-.moreInfoIcon {
-  color: $mainDark;
-
-  &:hover {
-    cursor: pointer;
-    color: $mainBase;
+  .statusSelectField {
+    width: 100%;
   }
-}
 
-.disableIcon {
-  color: $errorDark;
-
-  &:hover {
-    cursor: pointer;
-    color: $errorLight;
+  .saveIcon {
+    svg {
+      color: $mainBase;
+    }
   }
-}
 
-.enableIcon {
-  color: $successDark;
-
-  &:hover {
-    cursor: pointer;
-    color: $successLight;
+  .cancelIcon {
+    svg {
+      color: $errorBase;
+    }
   }
-}
 
-.statusCell {
-  display: flex;
-  align-items: center;
-  column-gap: 8px;
-  justify-content: center;
+  .editIcon,
+  .showMoreIcon {
+    svg {
+      color: $monoBlack;
+
+      &:hover {
+        color: $mainDark;
+      }
+    }
+  }
 }

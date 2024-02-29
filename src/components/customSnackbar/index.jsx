@@ -19,6 +19,7 @@ export const CustomSnackbar = ({ snackbarProps }) => {
 
     dispatch(toggleModal('snackbar'));
   };
+
   //console.log(isOpen, message, severity);
   return (
     <div>

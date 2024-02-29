@@ -64,6 +64,7 @@ const UserLotCard = (item) => {
     (!isAuctionLotType && item.status !== 'inactive');
 
   const isLotDeletable = item.userStatus === 'inactive';
+
   return (
     <div className={styles.cardWrapp}>
       <ItemCardInfoBlock item={item}>

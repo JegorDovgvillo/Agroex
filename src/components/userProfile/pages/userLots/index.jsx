@@ -19,8 +19,7 @@ const UserLots = () => {
 
   const filteredLotsByActiveTab = filteredLotsByUserId.filter((item) => {
     const isAuctionPendingLot =
-      item.userStatus !== 'inactive' &&
-      (item.innerStatus === 'new' || item.innerStatus === 'moderated');
+      item.innerStatus === 'new' || item.innerStatus === 'moderated';
 
     switch (tab) {
       case 'active':

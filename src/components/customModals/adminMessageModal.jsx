@@ -1,44 +1,31 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { Formik, Form } from 'formik';
 
-import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
+
 import { CustomButton } from '@buttons/CustomButton';
-
-import { toggleModal } from '@slices/modalSlice';
-import { selectModalState } from '@slices/modalSlice';
-
-import CustomTextField from '@customTextField';
+import { toggleModal, selectModalState } from '@slices/modalSlice';
 import { adminMessageValidationSchema } from '@helpers/validationSchemes/adminMessageValidationSchema.js';
+import CustomTextField from '@customTextField';
 
 import styles from './adminMessageModal.module.scss';
 
 const { modalContainer, modalContent, buttonsContainer } = styles;
 
-const AdminMessageModal = ({ setAdminMessage }) => {
+const AdminMessageModal = ({ setAdminMessage, setConfirmStatus }) => {
   const dispatch = useDispatch();
   const isOpen = useSelector((state) =>
     selectModalState(state, 'adminMessageModal')
   );
 
   const handleClose = () => {
+    setConfirmStatus(false);
     dispatch(toggleModal('adminMessageModal'));
   };
 
   const handleSubmit = (values) => {
     setAdminMessage(values.message);
     dispatch(toggleModal('adminMessageModal'));
-  };
-
-  const adminCommentData = {
-    message: '',
   };
 
   return (
@@ -52,7 +39,7 @@ const AdminMessageModal = ({ setAdminMessage }) => {
       >
         <div className={modalContent}>
           <Formik
-            initialValues={adminCommentData}
+            initialValues={{ message: '' }}
             onSubmit={(values) => {
               handleSubmit(values);
             }}
@@ -77,7 +64,7 @@ const AdminMessageModal = ({ setAdminMessage }) => {
                     text="Cancel"
                     width="100px"
                     typeOfButton="button"
-                    onClick={handleClose}
+                    handleClick={handleClose}
                   />
                   <CustomButton
                     text="Submit"
