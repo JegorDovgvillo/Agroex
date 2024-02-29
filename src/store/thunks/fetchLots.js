@@ -1,4 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import { get } from 'lodash';
 
 import axiosInstance from '@helpers/axiosInstance';
 import ENDPOINTS from '@helpers/endpoints';
@@ -63,6 +64,25 @@ export const changeLotStatusByUser = createAsyncThunk(
     const response = await axiosInstance.post(
       `${ENDPOINTS.LOTS}/${lotId}/userStatus`,
       { status: isActive }
+    );
+
+    return response.data;
+  }
+);
+
+export const changeLotStatusByAdmin = createAsyncThunk(
+  'lotList/changeLotStatusByAdmin',
+  async ({ lotId, status, adminComment }) => {
+    const endpoints = {
+      onModeration: 'moderate',
+      approved: 'approve',
+      rejected: 'reject',
+    };
+
+    const targetEndpoint = endpoints[status];
+    const response = await axiosInstance.post(
+      `${ENDPOINTS.LOTS}/${lotId}/${targetEndpoint}`,
+      { lotId, adminComment }
     );
 
     return response.data;

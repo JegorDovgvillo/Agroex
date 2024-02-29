@@ -23,22 +23,18 @@ import {
   randomId,
   randomArrayItem,
 } from '@mui/x-data-grid-generator';
-/* import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Avatar,
-  Typography,
-} from '@mui/material';
- */
+import { Select, MenuItem, LinearProgress } from '@mui/material';
+import AdminMessageModal from '../../customModals/adminMessageModal';
 import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 //import CancelIcon from '@mui/icons-material/Cancel';
 import MoreIcon from '@mui/icons-material/More';
 
-import { fetchLots, updateLot } from '@thunks/fetchLots';
+import {
+  fetchLots,
+  updateLot,
+  changeLotStatusByAdmin,
+} from '@thunks/fetchLots';
 
 import { toggleModal, selectModalState } from '@slices/modalSlice';
 import { lotListSelector, setLotId } from '@slices/lotListSlice';
@@ -78,49 +74,12 @@ export default function AdminLotsList() {
 
   const [confirmStatus, setConfirmStatus] = useState(false);
   const [openedLot, setOpenedLot] = useState(null);
-
+  const [currLotId, setCurrLotId] = useState(null);
   const isModalOpened = useSelector((state) =>
     selectModalState(state, 'infoModal')
   );
+  const [adminComment, setAdminComment] = useState(null);
 
-  /* const handleChangeLot = useCallback(
-    (lot) => {
-      const formData = new FormData();
-      const lotData = _.omit(
-        { ...lot, enabledByAdmin: !lot.enabledByAdmin },
-        'images'
-      );
-      const { id } = lot;
-
-      _.forEach(files, (file) => {
-        formData.append('file', file);
-      });
-
-      formData.append('data', JSON.stringify(lotData));
-
-      dispatch(updateLot({ id: id, lotData: formData }));
-    },
-    [files, dispatch]
-  );
- */
-  useEffect(() => {
-    dispatch(fetchLots());
-  }, [dispatch]);
-
-  /*   useEffect(() => {
-    if (confirmStatus && openedLot) {
-      handleChangeLot({ ...openedLot });
-      setConfirmStatus(false);
-    }
-  }, [handleChangeLot, confirmStatus, openedLot]); */
-
-  /*   const handleEditClick = async (lot) => {
-    await convertImagesToFiles(lot.images || [], setFiles);
-
-    dispatch(toggleModal('infoModal'));
-    dispatch(setLotId(lot.id));
-    dispatch(setUserId(lot.userId));
-  }; */
   const initialRows = lots.map((lot) => {
     const row = {
       id: lot.id,
@@ -140,12 +99,13 @@ export default function AdminLotsList() {
       minPrice: getNumberWithCurrency(lot.minPrice, lot.currency),
       userStatus: lot.userStatus,
       bets: !!lot.bets.length,
-      status: lot.innerStatus,
+      innerStatus: lot.innerStatus,
     };
     return row;
   });
 
   const [rows, setRows] = useState(initialRows);
+  const [editedValue, setEditedValue] = useState('');
   const [rowModesModel, setRowModesModel] = useState({});
   const [isStatusFieldEditable, setIsStatusFieldEditable] = useState(null);
   const [columnVisibilityModel, setColumnVisibilityModel] = useState({
@@ -155,13 +115,6 @@ export default function AdminLotsList() {
     packaging: false,
   });
 
-  const handleChangeLotStatusClick = async (lot) => {
-    await convertImagesToFiles(lot.images || [], setFiles);
-
-    setOpenedLot(lot);
-    dispatch(toggleModal('confirmModal'));
-  };
-
   const handleRowEditStop = (params, event) => {
     if (params.reason === GridRowEditStopReasons.rowFocusOut) {
       event.defaultMuiPrevented = true;
@@ -169,11 +122,17 @@ export default function AdminLotsList() {
   };
 
   const handleEditClick = (id) => () => {
+    setCurrLotId(id);
+
+    setEditedValue('');
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
   };
 
-  const handleSaveClick = (id) => () => {
-    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+  const handleSaveClick = () => {
+    const lot = _.find(lots, { id: currLotId });
+
+    dispatch(toggleModal('confirmModal'));
+    setOpenedLot(lot);
   };
 
   const handleShowMoreClick = (id) => () => {
@@ -205,11 +164,46 @@ export default function AdminLotsList() {
     setRowModesModel(newRowModesModel);
   };
 
+  useEffect(() => {
+    console.log(confirmStatus, editedValue, adminComment, currLotId);
+    if (confirmStatus && editedValue) {
+      editedValue === 'rejected' && dispatch(toggleModal('adminMessageModal'));
+      const isRejectWithMessage = editedValue === 'rejected' && adminComment;
+
+      if (isRejectWithMessage || editedValue !== 'rejected') {
+        dispatch(
+          changeLotStatusByAdmin({
+            lotId: currLotId,
+            status: editedValue,
+            adminComment: adminComment,
+          })
+        );
+
+        setRowModesModel({
+          ...rowModesModel,
+          [currLotId]: {
+            mode: GridRowModes.View,
+          },
+        });
+        setConfirmStatus(false);
+        setAdminComment(null);
+      }
+    }
+  }, [confirmStatus, editedValue, adminComment, currLotId]);
+
+  const handleSelectChange = (params, newValue) => {
+    setEditedValue(newValue);
+    params.api.setEditCellValue({
+      id: params.id,
+      field: params.field,
+      value: newValue,
+    });
+  };
+
   const getStatusSelectOptions = (params) => {
     const lot = _.find(lots, { id: params.id });
-    const { innerStatus } = lot;
 
-    switch (innerStatus) {
+    switch (lot?.innerStatus) {
       case 'new':
         return ['new', 'onModeration', 'rejected', 'approved'];
       case 'onModeration':
@@ -219,6 +213,7 @@ export default function AdminLotsList() {
       case 'approved':
         return ['approved', 'rejected'];
     }
+    return ['new', 'onModeration', 'rejected', 'approved'];
   };
 
   const tableHead = [
@@ -278,12 +273,25 @@ export default function AdminLotsList() {
     },
 
     {
-      field: 'status',
+      field: 'innerStatus',
       headerName: 'Status',
       editable: true,
       width: 120,
       type: 'singleSelect',
       valueOptions: (params) => getStatusSelectOptions(params),
+      renderEditCell: (params) => (
+        <Select
+          value={params.value}
+          onChange={(e) => handleSelectChange(params, e.target.value)}
+          sx={{ width: '100%' }}
+        >
+          {getStatusSelectOptions(params).map((option) => (
+            <MenuItem key={option} value={option}>
+              {option}
+            </MenuItem>
+          ))}
+        </Select>
+      ),
     },
     {
       field: 'actions',
@@ -306,7 +314,7 @@ export default function AdminLotsList() {
               sx={{
                 color: 'primary.main',
               }}
-              onClick={handleSaveClick(id)}
+              onClick={handleSaveClick}
             />,
             <GridActionsCellItem
               icon={<CancelIcon />}
@@ -341,33 +349,40 @@ export default function AdminLotsList() {
     },
   ];
 
+  useEffect(() => {
+    dispatch(fetchLots());
+  }, [dispatch]);
+
   return (
     <div style={{ maxWidth: '100%', overflowX: 'auto' }}>
-      <DataGrid
-        isCellEditable={(params) => !params.bets}
-        scrollbarSize={20}
-        autoHeight
-        rows={rows}
-        columns={tableHead}
-        editMode="row"
-        rowModesModel={rowModesModel}
-        onRowModesModelChange={handleRowModesModelChange}
-        onRowEditStop={handleRowEditStop}
-        processRowUpdate={processRowUpdate}
-        slotProps={{
-          toolbar: { setRows, setRowModesModel },
-        }}
-        columnVisibilityModel={columnVisibilityModel}
-        onColumnVisibilityModelChange={(newModel) =>
-          setColumnVisibilityModel(newModel)
-        }
-      />
+      {lots && (
+        <DataGrid
+          isCellEditable={(params) => !params.bets}
+          scrollbarSize={20}
+          autoHeight
+          rows={rows}
+          columns={tableHead}
+          editMode="row"
+          rowModesModel={rowModesModel}
+          onRowModesModelChange={handleRowModesModelChange}
+          onRowEditStop={handleRowEditStop}
+          processRowUpdate={processRowUpdate}
+          slotProps={{
+            toolbar: { setRows, setRowModesModel },
+          }}
+          columnVisibilityModel={columnVisibilityModel}
+          onColumnVisibilityModelChange={(newModel) =>
+            setColumnVisibilityModel(newModel)
+          }
+        />
+      )}
 
       {isModalOpened && <DetailedLotViewModal />}
       <ConfirmActionModal
         text="This action changes the lot status. Do you confirm the action?"
         setConfirmStatus={setConfirmStatus}
       />
+      <AdminMessageModal setAdminMessage={setAdminComment} />
     </div>
   );
 }

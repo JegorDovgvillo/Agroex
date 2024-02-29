@@ -16,7 +16,14 @@ import LotStatusBlock from '../lotStatusBlock';
 
 import styles from '../../itemCard.module.scss';
 
-const { priceBlock, priceContainer, pending, inactive, adminComment } = styles;
+const {
+  priceBlock,
+  priceContainer,
+  pending,
+  inactive,
+  adminComment,
+  pricesContainer,
+} = styles;
 
 const UserLotCard = (item) => {
   const { tab } = useParams();
@@ -71,25 +78,28 @@ const UserLotCard = (item) => {
         </>
       </ItemCardInfoBlock>
       <div className={containerClassNames}>
-        <div className={priceBlock}>
-          {isAuctionLotType && (
+        <div className={pricesContainer}>
+          <div className={priceBlock}>
+            {isAuctionLotType && (
+              <PriceBlock
+                className={['list', 'auctionSum']}
+                totalCost={item.price}
+                unitCost={item.price / item.quantity}
+                currency={item.currency}
+              />
+            )}
+          </div>
+
+          <div className={priceBlock}>
             <PriceBlock
-              className={['list', 'auctionSum']}
+              className={['list']}
               totalCost={item.price}
               unitCost={item.price / item.quantity}
               currency={item.currency}
             />
-          )}
+          </div>
         </div>
 
-        <div className={priceBlock}>
-          <PriceBlock
-            className={['list']}
-            totalCost={item.price}
-            unitCost={item.price / item.quantity}
-            currency={item.currency}
-          />
-        </div>
         {isAuctionLotType && (
           <CustomButton
             size="L"
