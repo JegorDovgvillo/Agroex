@@ -19,7 +19,7 @@ export const getNumberFieldValidationSchema = (
   rounding = 2
 ) => {
   const errorMessage = `The field should contain only numbers from ${min} to ${max} (integer${
-    !integer && ' or fractional'
+    !integer ? ' or fractional' : ''
   })`;
 
   let schema = number()

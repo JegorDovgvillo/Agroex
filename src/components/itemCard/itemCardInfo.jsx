@@ -34,7 +34,7 @@ const ItemCardInfoBlock = ({ item, children }) => {
         </div>
 
         <div className={styles.technicalInfo}>
-          <Timer endDate={item.expirationDate} />
+          {item.expirationDate && <Timer endDate={item.expirationDate} />}
           <span className={styles.itemId}>ID{item.id}</span>
         </div>
         <div className={styles.info}>

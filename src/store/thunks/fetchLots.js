@@ -56,3 +56,15 @@ export const filteredLots = createAsyncThunk(
     return response.data;
   }
 );
+
+export const changeLotStatusByUser = createAsyncThunk(
+  'lotList/changeLotStatusByUser',
+  async ({ lotId, isActive }) => {
+    const response = await axiosInstance.post(
+      `${ENDPOINTS.LOTS}/${lotId}/userStatus`,
+      { status: isActive }
+    );
+
+    return response.data;
+  }
+);

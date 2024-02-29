@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { Menu, MenuItem, ListItemIcon } from '@mui/material';
 
@@ -14,6 +14,8 @@ import { CustomButton } from '@buttons/CustomButton';
 import ConfirmActionModal from '@customModals/confirmActionModal';
 
 import ROUTES from '@helpers/routeNames';
+import { changeLotStatusByUser } from '@thunks/fetchLots';
+import { CustomSnackbar } from '@components/customSnackbar';
 
 import styles from './manageCard.module.scss';
 
@@ -22,15 +24,9 @@ const { deactivate } = styles;
 const ManageCardBlock = ({ id }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [confirmStatus, setConfirmStatus] = useState(false);
-
-  useEffect(() => {
-    if (confirmStatus) {
-      //todo set lot status to inactivated by user
-
-      setConfirmStatus(false);
-    }
-  }, [confirmStatus]);
+  const { loadingStatus } = useSelector((state) => state.lotList);
+  const [confirmDeactivateStatus, setConfirmStatus] = useState(false);
+  const [snackbarProps, setSnackbarProps] = useState(null);
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -45,11 +41,27 @@ const ManageCardBlock = ({ id }) => {
 
   const handleDeactivate = () => {
     dispatch(toggleModal('confirmModal'));
+    handleClose();
   };
 
   const handleEdit = () => {
     navigate(ROUTES.UPDATE_LOT.replace(':id', id));
   };
+
+  useEffect(() => {
+    if (confirmDeactivateStatus) {
+      dispatch(changeLotStatusByUser({ lotId: id, isActive: false }));
+      setConfirmStatus(false);
+
+      if (loadingStatus === 'fulfilled') {
+        setSnackbarProps({
+          message: 'Lot has been successfully deactivated',
+          severity: 'success',
+        });
+        dispatch(toggleModal('snackbar'));
+      }
+    }
+  }, [confirmDeactivateStatus]);
 
   return (
     <>
@@ -95,6 +107,7 @@ const ManageCardBlock = ({ id }) => {
         text="This action changes the lot status. Do you confirm the action?"
         setConfirmStatus={setConfirmStatus}
       />
+      <CustomSnackbar {...snackbarProps} />
     </>
   );
 };
