@@ -165,11 +165,9 @@ export default function AdminLotsList() {
   };
 
   useEffect(() => {
-    console.log(confirmStatus, editedValue, adminComment, currLotId);
     if (confirmStatus && editedValue) {
-      editedValue === 'rejected' && dispatch(toggleModal('adminMessageModal'));
       const isRejectWithMessage = editedValue === 'rejected' && adminComment;
-
+      editedValue === 'rejected' && dispatch(toggleModal('adminMessageModal'));
       if (isRejectWithMessage || editedValue !== 'rejected') {
         dispatch(
           changeLotStatusByAdmin({
@@ -185,6 +183,7 @@ export default function AdminLotsList() {
             mode: GridRowModes.View,
           },
         });
+
         setConfirmStatus(false);
         setAdminComment(null);
       }

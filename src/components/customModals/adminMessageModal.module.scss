@@ -1,0 +1,23 @@
+@import "@scss/colorVariables.module.scss";
+
+.modalContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .modalContent {
+    background-color: $monoWhite;
+    display: flex;
+
+    .buttonsContainer {
+      display: flex;
+      column-gap: 16px;
+      width: 100%;
+      justify-content: end;
+
+      & button:first-child {
+        background-color: $errorBase;
+      }
+    }
+  }
+}
