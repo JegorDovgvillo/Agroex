@@ -13,9 +13,7 @@ export const fetchUsers = createAsyncThunk('usersList/fetchUsers', async () => {
 export const deleteUser = createAsyncThunk(
   'usersList/deleteUser',
   async ({ id }) => {
-    const response = await axiosInstance.delete(`${ENDPOINTS.USERS}/${id}`, {
-      needAuthorization: true,
-    });
+    const response = await axiosInstance.delete(`${ENDPOINTS.USERS}/${id}`);
 
     return response.data;
   }
@@ -26,8 +24,7 @@ export const updateUser = createAsyncThunk(
   async ({ id, userData }) => {
     const response = await axiosInstance.put(
       `${ENDPOINTS.USERS}/${id}`,
-      userData,
-      { needAuthorization: true }
+      userData
     );
 
     return response.data;
@@ -64,11 +61,7 @@ export const updateToken = createAsyncThunk(
 export const createUser = createAsyncThunk(
   'usersList/createUser',
   async (id) => {
-    const response = await axiosInstance.post(
-      `${ENDPOINTS.AUTH}${id}`,
-      {},
-      { needAuthorization: true }
-    );
+    const response = await axiosInstance.post(`${ENDPOINTS.AUTH}${id}`, {});
 
     return response.data;
   }

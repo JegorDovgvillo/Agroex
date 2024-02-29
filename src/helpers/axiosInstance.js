@@ -14,10 +14,10 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
   async (config) => {
     if (config.method.toUpperCase() !== 'GET') {
-      const cookie = await getToken();
+      const token = await getToken();
 
-      if (cookie) {
-        config.headers.Authorization = `Bearer ${cookie}`;
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
       }
     }
 

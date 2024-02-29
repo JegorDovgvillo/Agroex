@@ -14,8 +14,7 @@ export const updateLot = createAsyncThunk(
   async ({ id, lotData }) => {
     const response = await axiosInstance.put(
       `${ENDPOINTS.LOTS}/${id}`,
-      lotData,
-      { needAuthorization: true }
+      lotData
     );
 
     return response.data;
@@ -34,9 +33,7 @@ export const fetchLotDetails = createAsyncThunk(
 export const createLot = createAsyncThunk(
   'lotList/createLot',
   async (formData) => {
-    const response = await axiosInstance.post(ENDPOINTS.LOTS, formData, {
-      needAuthorization: true,
-    });
+    const response = await axiosInstance.post(ENDPOINTS.LOTS, formData);
 
     return response.data;
   }
@@ -45,9 +42,7 @@ export const createLot = createAsyncThunk(
 export const deleteLot = createAsyncThunk(
   'lotList/deleteLot',
   async ({ id }) => {
-    const response = await axiosInstance.delete(`${ENDPOINTS.LOTS}/${id}`, {
-      needAuthorization: true,
-    });
+    const response = await axiosInstance.delete(`${ENDPOINTS.LOTS}/${id}`);
 
     return response.data;
   }

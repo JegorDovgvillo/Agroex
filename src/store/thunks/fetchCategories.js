@@ -16,8 +16,7 @@ export const deleteCategory = createAsyncThunk(
   'categories/deleteCategory',
   async ({ id }) => {
     const response = await axiosInstance.delete(
-      `${ENDPOINTS.CATEGORIES}/${id}`,
-      { needAuthorization: true }
+      `${ENDPOINTS.CATEGORIES}/${id}`
     );
 
     return response.data;
@@ -29,8 +28,7 @@ export const updateCategory = createAsyncThunk(
   async ({ id, categoryData }) => {
     const response = await axiosInstance.put(
       `${ENDPOINTS.CATEGORIES}/${id}`,
-      categoryData,
-      { needAuthorization: true }
+      categoryData
     );
 
     return response.data;
@@ -42,8 +40,7 @@ export const createCategory = createAsyncThunk(
   async (dataCategory) => {
     const response = await axiosInstance.post(
       ENDPOINTS.CATEGORIES,
-      dataCategory,
-      { needAuthorization: true }
+      dataCategory
     );
 
     return response.data;
