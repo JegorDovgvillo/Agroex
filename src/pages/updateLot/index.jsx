@@ -8,12 +8,14 @@ import { selectLotDetailById } from '@slices/lotListSlice';
 import { usersListSelector } from '@slices/usersListSlice';
 import { selectRootCategories } from '@slices/categoriesSlice';
 import { countrySelector } from '@slices/countriesSlice';
+import { tagsSelector } from '@slices/tagsSlice';
 import { toggleModal } from '@slices/modalSlice';
 
 import { fetchCountries } from '@thunks/fetchCountries';
 import { fetchUsers } from '@thunks/fetchUsers';
 import { deleteLot, updateLot, fetchLotDetails } from '@thunks/fetchLots';
 import { fetchCategories } from '@thunks/fetchCategories';
+import { fetchTags } from '@thunks/fetchTags';
 
 import convertImagesToFiles from '@helpers/convertImagesToFiles';
 
@@ -28,6 +30,7 @@ const UpdateLot = () => {
   const categories = useSelector(selectRootCategories);
   const country = useSelector(countrySelector);
   const selectedLot = useSelector((state) => selectLotDetailById(state, lotId));
+  const tags = useSelector(tagsSelector);
 
   const [confirmStatus, setConfirmStatus] = useState(false);
   const [files, setFiles] = useState([]);
@@ -55,6 +58,7 @@ const UpdateLot = () => {
     dispatch(fetchUsers());
     dispatch(fetchCategories());
     dispatch(fetchCountries());
+    dispatch(fetchTags());
   }, [dispatch]);
 
   const handleUpdateClick = async (values) => {
@@ -70,9 +74,11 @@ const UpdateLot = () => {
       variety: 1,
       size: values.size,
       packaging: values.packaging,
+      duration: values.duration,
       quantity: values.quantity,
-      price: values.price,
-      currency: values.priceUnits,
+      originalPrice: values.price,
+      minPrice: values.minPrice,
+      originalCurrency: values.priceUnits,
       expirationDate: values.expirationDate,
       productCategory: {
         ...subcategory,
@@ -84,6 +90,7 @@ const UpdateLot = () => {
         countryId: values.country,
         region: values.region,
       },
+      tags: values.tags,
     };
 
     files.forEach((file) => {
@@ -101,7 +108,7 @@ const UpdateLot = () => {
   const isDataLoaded =
     selectedLot &&
     _.every(
-      [users, categories, country],
+      [users, categories, country, tags],
       (arr) => _.isArray(arr) && !_.isEmpty(arr)
     );
 
@@ -124,6 +131,7 @@ const UpdateLot = () => {
           disabled={disabled}
           setDisabled={setDisabled}
           isImageAdded={files.length > 0}
+          tags={tags}
         />
       )}
     </>

@@ -5,9 +5,11 @@ import _ from 'lodash';
 import { fetchUsers } from '@thunks/fetchUsers';
 import { fetchCategories } from '@thunks/fetchCategories';
 import { fetchCountries } from '@thunks/fetchCountries';
+import { fetchTags } from '@thunks/fetchTags';
 import { createLot } from '@thunks/fetchLots';
 
 import { usersListSelector } from '@slices/usersListSlice';
+import { tagsSelector } from '@slices/tagsSlice';
 import { toggleModal } from '@slices/modalSlice';
 import { selectRootCategories } from '@slices/categoriesSlice';
 import { countrySelector } from '@slices/countriesSlice';
@@ -20,6 +22,7 @@ const CreateNewLot = () => {
   const users = useSelector(usersListSelector);
   const categories = useSelector(selectRootCategories);
   const country = useSelector(countrySelector);
+  const tags = useSelector(tagsSelector);
 
   const [files, setFiles] = useState([]);
   const [disabled, setDisabled] = useState(false);
@@ -31,6 +34,7 @@ const CreateNewLot = () => {
     dispatch(fetchUsers());
     dispatch(fetchCategories());
     dispatch(fetchCountries());
+    dispatch(fetchTags());
   }, [dispatch]);
 
   const handleSubmitClick = async (values, resetForm) => {
@@ -46,8 +50,10 @@ const CreateNewLot = () => {
       variety: 1,
       size: values.size,
       packaging: values.packaging,
+      duration: values.duration,
       quantity: values.quantity,
       price: values.price,
+      minPrice: values.minPrice,
       currency: values.priceUnits,
       expirationDate: values.expirationDate,
       productCategory: {
@@ -75,7 +81,10 @@ const CreateNewLot = () => {
     resetForm();
   };
 
-  const isDataLoaded = !_.every([users, categories, country], _.isEmpty);
+  const isDataLoaded = _.every(
+    [users, categories, country, tags],
+    (arr) => !_.isEmpty(arr)
+  );
 
   return (
     <>
@@ -93,6 +102,7 @@ const CreateNewLot = () => {
           disabled={disabled}
           setDisabled={setDisabled}
           isImageAdded={files.length > 0}
+          tags={tags}
         />
       )}
     </>
