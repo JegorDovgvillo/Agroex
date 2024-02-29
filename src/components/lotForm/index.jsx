@@ -186,6 +186,15 @@ const LotForm = ({
       }) => (
         <Form className={styles.newLotForm}>
           <div className={styles.inputBlock}>
+            <CustomTextField
+              label="Title"
+              id="title"
+              placeholder="Enter the title"
+              name="title"
+              value={values.title}
+              errors={errors.title}
+              touched={!isCreateNotSubmittedForm || touched.title}
+            />
             <CustomSelect
               label="Location"
               units={country}

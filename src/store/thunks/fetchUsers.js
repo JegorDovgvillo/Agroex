@@ -42,7 +42,8 @@ export const getUserFromCognito = createAsyncThunk(
   async () => {
     const { idToken } = (await fetchAuthSession()).tokens ?? {};
     const userInfo = { ...idToken.payload, id: idToken.payload.sub };
-        return userInfo;
+
+    return userInfo;
   }
 );
 

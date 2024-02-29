@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import _ from 'lodash';
+import { withAuthenticator } from '@aws-amplify/ui-react';
 
 import { getUserFromCognito } from '@thunks/fetchUsers';
 import { fetchAllCategories } from '@thunks/fetchCategories';
@@ -14,7 +15,6 @@ import { selectRootCategories } from '@slices/categoriesSlice';
 import { countrySelector } from '@slices/countriesSlice';
 
 import LotForm from '@components/lotForm';
-import { withAuthenticator } from '@aws-amplify/ui-react';
 
 const MAXIMUM_NUMBER_OF_IMG = import.meta.env.VITE_MAXIMUM_NUMBER_OF_IMG;
 
@@ -22,16 +22,14 @@ const CreateNewLot = () => {
   const categories = useSelector(selectRootCategories);
   const country = useSelector(countrySelector);
   const tags = useSelector(tagsSelector);
-
   const userId = useSelector((state) => state.usersList.userId);
-  
+
   const [files, setFiles] = useState([]);
   const [disabled, setDisabled] = useState(false);
   const [maxFilesPerDrop, setMaxFilesPerDrop] = useState(MAXIMUM_NUMBER_OF_IMG);
 
   const dispatch = useDispatch();
-  
-  console.log(userId);
+
   useEffect(() => {
     dispatch(getUserFromCognito());
     dispatch(fetchAllCategories());
@@ -41,6 +39,7 @@ const CreateNewLot = () => {
 
   const handleSubmitClick = async (values, resetForm) => {
     const formData = new FormData();
+
     const subcategory =
       typeof values.subcategory === 'number'
         ? { id: values.subcategory }
@@ -84,7 +83,7 @@ const CreateNewLot = () => {
   };
 
   const isDataLoaded = _.every(
-    [ categories, country, tags],
+    [categories, country, tags],
     (arr) => !_.isEmpty(arr)
   );
 

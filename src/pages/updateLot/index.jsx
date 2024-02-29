@@ -62,6 +62,7 @@ const UpdateLot = () => {
 
   const handleUpdateClick = async (values) => {
     const formData = new FormData();
+
     const subcategory =
       typeof values.subcategory === 'number'
         ? { id: values.subcategory }
