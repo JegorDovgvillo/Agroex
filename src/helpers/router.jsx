@@ -7,6 +7,7 @@ import CreateNewLot from '@pages/createNewLot';
 import UpdateLot from '@pages/updateLot';
 import UserProfile from '@pages/UserProfile';
 import HomePage from '@pages/HomePage';
+import Login from '@pages/login';
 
 import UsersList from '@components/admin/usersList';
 import Layout from '@components/layout';
@@ -14,6 +15,7 @@ import CategoriesList from '@components/admin/adminCategories';
 import AdminLotsList from '@components/admin/adminLotsList';
 import UserProfilePage from '@components/userProfile/userProfilePage';
 import UserProfileTabPanel from '@components/customTabPanels/userProfileTabPanel';
+import AuthenticatedPage from '@components/authenticatedPage';
 
 import ROUTES from './routeNames';
 
@@ -32,12 +34,16 @@ const Router = () => {
           element: <LotList />,
         },
         {
+          path: ROUTES.LOG_IN,
+          element: <Login />,
+        },
+        {
           path: ROUTES.LOTS_DETAILS,
           element: <LotDetails />,
         },
         {
           path: ROUTES.CREATE_NEW_LOT,
-          element: <CreateNewLot />,
+          element: <AuthenticatedPage Component={CreateNewLot} />,
         },
         {
           path: ROUTES.UPDATE_LOT,
@@ -63,7 +69,7 @@ const Router = () => {
         },
         {
           path: ROUTES.USER_PROFILE,
-          element: <UserProfile />,
+          element: <AuthenticatedPage Component={UserProfile} />,
           children: [
             {
               path: ROUTES.USER_PROFILE_PAGE,

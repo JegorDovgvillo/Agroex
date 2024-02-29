@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
-
+import { useSelector } from 'react-redux';
 import { CssBaseline, Toolbar } from '@mui/material';
+
+import { selectUserById } from '@slices/usersListSlice';
 
 import UserProfileListItems from '@components/userProfile/userProfileListItems';
 import CustomAppBar from '@components/customAppBar';
@@ -12,6 +14,8 @@ import styles from './userProfile.module.scss';
 const { pageContainer, appBarContainer, contentContainer, content } = styles;
 
 const UserProfile = () => {
+  const userId = useSelector((state) => state.usersList.userId);
+  const user = useSelector((state) => selectUserById(state, userId));
   const [isOpen, setIsOpen] = useState(window.innerWidth > 1200);
   const [isBarVisible, setIsBarVisible] = useState(window.innerWidth > 1000);
 
@@ -36,7 +40,7 @@ const UserProfile = () => {
     <div className={pageContainer}>
       <div className={appBarContainer}>
         <CssBaseline />
-        <CustomAppBar {...{ isOpen, toggleDrawer, isBarVisible }} />
+        <CustomAppBar {...{ isOpen, toggleDrawer, isBarVisible, user }} />
         <CustomDrawer {...{ isOpen, toggleDrawer, isBarVisible }}>
           <UserProfileListItems />
         </CustomDrawer>

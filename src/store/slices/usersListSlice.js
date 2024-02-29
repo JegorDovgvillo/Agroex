@@ -6,9 +6,9 @@ import {
 import {
   fetchUsers,
   deleteUser,
-  createUser,
-  updateUser,
   fetchUser,
+  getUserFromCognito,
+  updateToken,
 } from '@thunks/fetchUsers';
 
 const usersListAdapter = createEntityAdapter();
@@ -16,6 +16,7 @@ const usersListAdapter = createEntityAdapter();
 const initialState = usersListAdapter.getInitialState({
   loadingStatus: 'idle',
   userId: null,
+  userInfo: null,
 });
 
 const usersListSlice = createSlice({
@@ -24,6 +25,9 @@ const usersListSlice = createSlice({
   reducers: {
     setUserId: (state, action) => {
       state.userId = action.payload;
+    },
+    setUserInfo: (state, action) => {
+      state.userInfo = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -48,26 +52,6 @@ const usersListSlice = createSlice({
       .addCase(deleteUser.rejected, (state) => {
         state.loadingStatus = 'rejected';
       })
-      .addCase(createUser.pending, (state) => {
-        state.loadingStatus = 'pending';
-      })
-      .addCase(createUser.fulfilled, (state, action) => {
-        state.loadingStatus = 'fulfilled';
-        usersListAdapter.setOne(state, action.payload);
-      })
-      .addCase(createUser.rejected, (state) => {
-        state.loadingStatus = 'rejected';
-      })
-      .addCase(updateUser.pending, (state) => {
-        state.loadingStatus = 'pending';
-      })
-      .addCase(updateUser.fulfilled, (state, action) => {
-        state.loadingStatus = 'fulfilled';
-        usersListAdapter.upsertOne(state, action.payload);
-      })
-      .addCase(updateUser.rejected, (state) => {
-        state.loadingStatus = 'rejected';
-      })
       .addCase(fetchUser.pending, (state) => {
         state.loadingStatus = 'pending';
       })
@@ -76,6 +60,28 @@ const usersListSlice = createSlice({
         usersListAdapter.upsertOne(state, action.payload);
       })
       .addCase(fetchUser.rejected, (state) => {
+        state.loadingStatus = 'rejected';
+      })
+      .addCase(getUserFromCognito.pending, (state) => {
+        state.loadingStatus = 'pending';
+      })
+      .addCase(getUserFromCognito.fulfilled, (state, action) => {
+        state.loadingStatus = 'fulfilled';
+        usersListAdapter.upsertOne(state, action.payload);
+        state.userId = action.payload.id;
+      })
+      .addCase(getUserFromCognito.rejected, (state) => {
+        state.loadingStatus = 'rejected';
+      })
+      .addCase(updateToken.pending, (state) => {
+        state.loadingStatus = 'pending';
+      })
+      .addCase(updateToken.fulfilled, (state, action) => {
+        state.loadingStatus = 'fulfilled';
+        usersListAdapter.upsertOne(state, action.payload);
+        state.userId = action.payload.id;
+      })
+      .addCase(updateToken.rejected, (state) => {
         state.loadingStatus = 'rejected';
       });
   },
@@ -93,6 +99,6 @@ export const { selectById: selectUserById } = usersListAdapter.getSelectors(
 
 const { actions, reducer } = usersListSlice;
 
-export const { setUserId } = actions;
+export const { setUserId, setUserInfo } = actions;
 
 export default reducer;

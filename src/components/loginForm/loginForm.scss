@@ -1,0 +1,34 @@
+@import "@scss/colorVariables.module.scss";
+
+.wrapp {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+
+  .amplify-tabs__item--active {
+    border-color: $mainDark;
+  }
+
+  form {
+    display: flex;
+    align-items: center;
+
+    .amplify-button--primary {
+      background-color: $mainDark;
+    }
+
+    .amplify-input {
+      min-height: 56px;
+    }
+  }
+
+  .amplify-flex {
+    img {
+      margin: 0 auto;
+    }
+
+    h3 {
+      text-align: center;
+    }
+  }
+}

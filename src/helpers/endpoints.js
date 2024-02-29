@@ -10,6 +10,7 @@ const ENDPOINTS = {
   CATEGORIES_ALL: '/categories/all',
   COUNTRIES: '/countries',
   TAGS: '/tags',
+  AUTH: '/auth/register/',
 };
 
 export default ENDPOINTS;

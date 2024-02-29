@@ -106,7 +106,7 @@ export default function UsersList() {
                 </TableCell>
                 <TableCell>{user.email}</TableCell>
                 <TableCell>{user.phoneNumber}</TableCell>
-                <TableCell>{getFormattedDate(user.creationDate)}</TableCell>
+                {/* <TableCell>{getFormattedDate(user.creationDate)}</TableCell> */}
                 <TableCell className={verifiedIconContainer}>
                   <>
                     {user.emailVerified && (

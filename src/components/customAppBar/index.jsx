@@ -13,7 +13,7 @@ const {
   appBarClosed,
 } = styles;
 
-const CustomAppBar = ({ isOpen, toggleDrawer, isBarVisible }) => {
+const CustomAppBar = ({ isOpen, toggleDrawer, isBarVisible, user }) => {
   return (
     <AppBar
       open={isOpen}
@@ -28,7 +28,7 @@ const CustomAppBar = ({ isOpen, toggleDrawer, isBarVisible }) => {
         >
           {isBarVisible && <MenuIcon />}
         </IconButton>
-        <h5 className={toolBarTitle}>User Name</h5>
+        <h5 className={toolBarTitle}>{user && user.name}</h5>
       </Toolbar>
     </AppBar>
   );

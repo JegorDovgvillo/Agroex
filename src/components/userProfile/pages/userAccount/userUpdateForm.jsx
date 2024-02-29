@@ -1,14 +1,17 @@
+import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useFormik } from 'formik';
 import _ from 'lodash';
-
+import { updateUserAttributes } from 'aws-amplify/auth';
 import { TextField, Box } from '@mui/material';
-
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
 
-import { updateUser } from '@thunks/fetchUsers';
+import { updateToken, updateUser } from '@thunks/fetchUsers';
+import { toggleModal } from '@slices/modalSlice';
+
 import { CustomButton } from '@components/buttons/CustomButton';
+import ConfirmCodeModal from '@customModals/confirmCodeModal';
 
 import { updateUserValidationSchema } from '@helpers/validationSchemes/userDataValidationSchemes';
 
@@ -16,7 +19,6 @@ import styles from './userAccount.module.scss';
 
 const {
   formContainer,
-  input,
   buttonsContainer,
   formBtn,
   formBtnCancelHidden,
@@ -38,11 +40,12 @@ const saveBtnProps = {
 };
 
 const UserUpdateForm = ({
-  user: { id, username, email, phoneNumber },
+  user: { sub, name, email, zoneinfo },
   setFormDisabled,
   isFormDisabled,
 }) => {
   const dispatch = useDispatch();
+  const [code, setCode] = useState();
 
   const handleEditClick = () => {
     setFormDisabled(false);
@@ -53,16 +56,59 @@ const UserUpdateForm = ({
     setFormDisabled(true);
   };
 
+  const handleUpdateEmailAndNameAttributes = async (
+    updatedEmail,
+    updatedName
+  ) => {
+    try {
+      const output = await updateUserAttributes({
+        userAttributes: {
+          email: updatedEmail,
+          name: updatedName,
+        },
+      });
+
+      handleUpdateUserAttributeNextSteps(output, updatedName);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleUpdateUserAttributeNextSteps = async (output, updatedName) => {
+    const nextStepEmail = output.email.nextStep.updateAttributeStep;
+    const nextStepName = output.name.nextStep.updateAttributeStep;
+
+    switch (nextStepEmail || nextStepName) {
+      case 'CONFIRM_ATTRIBUTE_WITH_CODE':
+        dispatch(toggleModal('updatingModal'));
+        break;
+
+      case 'DONE':
+        const updateDataUser = {
+          email,
+          zoneinfo,
+          updatedName,
+        };
+
+        dispatch(updateUser({ id: sub, userData: updateDataUser }));
+        dispatch(updateToken());
+        break;
+    }
+  };
+
+  const handleSubmit = (values) => {
+    handleUpdateEmailAndNameAttributes(values.email, values.name);
+    setFormDisabled(true);
+  };
+
   const formik = useFormik({
     initialValues: {
-      username: username || '',
+      name: name || '',
       email: email || '',
-      phoneNumber: phoneNumber || '',
     },
     validationSchema: updateUserValidationSchema,
     onSubmit: (values) => {
-      dispatch(updateUser({ id: id, userData: values }));
-      setFormDisabled(true);
+      handleSubmit(values);
     },
   });
 
@@ -73,42 +119,28 @@ const UserUpdateForm = ({
       onSubmit={formik.handleSubmit}
     >
       <TextField
-        id="username"
-        name="username"
-        className={input}
+        id="name"
+        name="name"
         label="Name"
-        placeholder={username}
+        placeholder={name}
         disabled={isFormDisabled}
-        value={formik.values.username}
+        value={formik.values.name}
         onChange={formik.handleChange}
         onBlur={formik.handleBlur}
-        error={Boolean(formik.errors.username)}
-        helperText={formik.touched.username && formik.errors.username}
+        error={Boolean(formik.errors.name)}
+        helperText={formik.touched.name && formik.errors.name}
       />
       <TextField
         id="email"
         name="email"
         label="Email"
-        disabled={true}
+        disabled={isFormDisabled}
         value={formik.values.email}
         onChange={formik.handleChange}
         onBlur={formik.handleBlur}
         error={Boolean(formik.errors.email)}
         helperText={formik.touched.email && formik.errors.email}
       />
-
-      <TextField
-        id="phoneNumber"
-        name="phoneNumber"
-        label="Phone"
-        value={formik.values.phoneNumber}
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-        disabled={isFormDisabled}
-        error={Boolean(formik.errors.phoneNumber)}
-        helperText={formik.touched.phoneNumber && formik.errors.phoneNumber}
-      />
-
       <div className={buttonsContainer}>
         <div
           className={`${
@@ -133,6 +165,12 @@ const UserUpdateForm = ({
           </div>
         )}
       </div>
+      <ConfirmCodeModal
+        setCode={setCode}
+        values={formik.values}
+        sub={sub}
+        zoneinfo={zoneinfo}
+      />
     </Box>
   );
 };

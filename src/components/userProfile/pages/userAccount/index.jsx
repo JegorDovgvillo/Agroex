@@ -1,18 +1,23 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-
-import { fetchUsers } from '@thunks/fetchUsers';
-
+import { useNavigate } from 'react-router-dom';
+import { signOut } from 'aws-amplify/auth';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { Avatar, FormControlLabel, CircularProgress } from '@mui/material';
-
 import EditIcon from '@mui/icons-material/Edit';
 import HttpsOutlinedIcon from '@mui/icons-material/HttpsOutlined';
 
+import { getUserFromCognito } from '@thunks/fetchUsers';
+
 import { selectUserById } from '@slices/usersListSlice';
+
 import { CustomButton } from '@components/buttons/CustomButton';
 import { CheckBoxInput } from '@components/checkBox';
 
+import ROUTES from '@helpers/routeNames';
+
 import UserUpdateForm from './userUpdateForm';
+import UpdatePasswordForm from './updatePasswordForm';
 
 import styles from './userAccount.module.scss';
 
@@ -32,13 +37,16 @@ const {
 
 const UserAccount = () => {
   const dispatch = useDispatch();
-  const user = useSelector((state) => selectUserById(state, 1));
-
-  useEffect(() => {
-    dispatch(fetchUsers());
-  }, [dispatch]);
+  const navigate = useNavigate();
+  const userId = useSelector((state) => state.usersList.userId);
+  const user = useSelector((state) => selectUserById(state, userId));
 
   const [isFormDisabled, setFormDisabled] = useState(true);
+  const [isChanged, setIsChanged] = useState(false);
+
+  useEffect(() => {
+    dispatch(getUserFromCognito());
+  }, []);
 
   if (!user) {
     return (
@@ -48,21 +56,20 @@ const UserAccount = () => {
     );
   }
 
-  const { username } = user;
-
   const handlePhotoEdit = () => {
     //todo write upload user photo logic
   };
 
-  const handleChangePassword = () => {
-    //todo write change password logic
-  };
-
-  const initials = username
+  const initials = user.name
     .split(' ')
     .map((el) => el.slice(0, 1))
     .join('')
     .toUpperCase();
+
+  const handleSignOut = () => {
+    signOut();
+    navigate(ROUTES.LOG_IN);
+  };
 
   return (
     <>
@@ -91,7 +98,6 @@ const UserAccount = () => {
             </div>
           </div>
         </div>
-
         <div className={security}>
           <p className={title}>Security</p>
           <CustomButton
@@ -100,10 +106,18 @@ const UserAccount = () => {
             type="secondary"
             size="M"
             width="198px"
-            onClick={handleChangePassword}
+            handleClick={() => setIsChanged(true)}
+          />
+          {isChanged && <UpdatePasswordForm setIsChanged={setIsChanged} />}
+          <CustomButton
+            text="Sign out"
+            icon={<ExitToAppIcon />}
+            type="secondary"
+            size="M"
+            width="125px"
+            handleClick={handleSignOut}
           />
         </div>
-
         <div className={security}>
           <p className={title}>Additional settings</p>
           <div>

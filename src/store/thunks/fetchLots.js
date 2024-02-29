@@ -33,9 +33,7 @@ export const fetchLotDetails = createAsyncThunk(
 export const createLot = createAsyncThunk(
   'lotList/createLot',
   async (formData) => {
-    const response = await axiosInstance.post(ENDPOINTS.LOTS, formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
+    const response = await axiosInstance.post(ENDPOINTS.LOTS, formData);
 
     return response.data;
   }
