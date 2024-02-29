@@ -35,9 +35,7 @@ const LoginForm = ({ filteredTimeZone, timeZones }) => {
                   <Authenticator.SignUp.FormFields />
                   <Autocomplete
                     disablePortal
-                    defaultValue={
-                      filteredTimeZone.length && filteredTimeZone[0]
-                    }
+                    defaultValue={filteredTimeZone[0]}
                     options={timeZones}
                     sx={{ width: 300 }}
                     renderInput={(params) => (

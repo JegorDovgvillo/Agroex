@@ -15,7 +15,7 @@ import CategoriesList from '@components/admin/adminCategories';
 import AdminLotsList from '@components/admin/adminLotsList';
 import UserProfilePage from '@components/userProfile/userProfilePage';
 import UserProfileTabPanel from '@components/customTabPanels/userProfileTabPanel';
-import AuthenticatedPage from '@components/AuthenticatedPage';
+import AuthenticatedPage from '@components/authenticatedPage';
 
 import ROUTES from './routeNames';
 

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import getCookie from '@helpers/getCookie';
+import getToken from '@helpers/getToken';
 
 import { BASE_URL } from './endpoints';
 
@@ -10,13 +10,14 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   async (config) => {
-    // Определяем, нужно ли отправлять токен
-    if (config.needAuthorization) {
-      const cookie = await getCookie();
+    if (config.method.toUpperCase() !== 'GET') {
+      const cookie = await getToken();
+
       if (cookie) {
         config.headers.Authorization = `Bearer ${cookie}`;
       }
     }
+
     return config;
   },
   (error) => {
