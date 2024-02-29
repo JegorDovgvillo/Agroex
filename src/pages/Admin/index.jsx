@@ -42,7 +42,7 @@ const AdminPage = () => {
 
   return (
     <>
-      {user && user['custom:admin'] ? (
+      {/* {user && user['custom:admin'] ? ( */}
         <div className={styles.pageContainer}>
           <div className={styles.appBarContainer}>
             <CssBaseline />
@@ -60,14 +60,14 @@ const AdminPage = () => {
             </div>
           </div>
         </div>
-      ) : (
+      {/* ) : (
         <>
           <ErrorModal
             title="Access error"
             text="You can not access this page"
           />
         </>
-      )}
+      )} */}
     </>
   );
 };

@@ -9,8 +9,7 @@ import Typography from '@mui/material/Typography';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import GppBadIcon from '@mui/icons-material/GppBad';
-import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
-import AddIcon from '@mui/icons-material/Add';
+import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
 
 import { setUserId, usersListSelector } from '@slices/usersListSlice';
 import { fetchUsers, deleteUser } from '@thunks/fetchUsers';
@@ -41,18 +40,13 @@ export default function UsersList() {
   const users = useSelector(usersListSelector);
   const userId = useSelector((state) => state.usersList.userId);
   const [confirmStatus, setConfirmStatus] = useState(false);
-
+  console.log(users);
   useEffect(() => {
     dispatch(fetchUsers());
   }, [dispatch]);
 
   const handleEditClick = (id) => {
     dispatch(toggleModal('updatingModal'));
-    dispatch(setUserId(id));
-  };
-
-  const showConfirm = (id) => {
-    dispatch(toggleModal('confirmModal'));
     dispatch(setUserId(id));
   };
 
@@ -69,26 +63,16 @@ export default function UsersList() {
         <Typography component="h2" variant="h6" color="primary">
           Users
         </Typography>
-        <div
-          className={title}
-          onClick={() => dispatch(toggleModal('creatingModal'))}
-        >
-          <Typography component="h2" variant="h6" color="primary">
-            Create new user
-          </Typography>
-          <AddIcon />
-        </div>
       </div>
       <Table size="small">
         <TableHead>
           <TableRow className={tableRow}>
             <TableCell>ID</TableCell>
-            <TableCell>User Name</TableCell>
+            <TableCell>Name</TableCell>
             <TableCell>Email</TableCell>
-            <TableCell>Phone Number</TableCell>
             <TableCell>Registration Date</TableCell>
             <TableCell>Email Verified</TableCell>
-            <TableCell>Actions</TableCell>
+            <TableCell>Action</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -105,8 +89,8 @@ export default function UsersList() {
                   </span>
                 </TableCell>
                 <TableCell>{user.email}</TableCell>
-                <TableCell>{user.phoneNumber}</TableCell>
-                {/* <TableCell>{getFormattedDate(user.creationDate)}</TableCell> */}
+
+                <TableCell>{getFormattedDate(user.creationDate)}</TableCell>
                 <TableCell className={verifiedIconContainer}>
                   <>
                     {user.emailVerified && (
@@ -119,11 +103,11 @@ export default function UsersList() {
                 </TableCell>
                 <TableCell>
                   <div className={editBlock}>
-                    <DeleteForeverOutlinedIcon
+                    {/* <DeleteForeverOutlinedIcon
                       className={deleteIcon}
                       onClick={() => showConfirm(user.id)}
-                    />
-                    <BorderColorIcon
+                    /> */}
+                    <PowerSettingsNewIcon
                       className={editIcon}
                       onClick={() => handleEditClick(user.id)}
                     />

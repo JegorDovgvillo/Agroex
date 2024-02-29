@@ -37,7 +37,7 @@ const usersListSlice = createSlice({
       })
       .addCase(fetchUsers.fulfilled, (state, action) => {
         state.loadingStatus = 'fulfilled';
-        usersListAdapter.addMany(state, action.payload);
+        usersListAdapter.setMany(state, action.payload);
       })
       .addCase(fetchUsers.rejected, (state) => {
         state.loadingStatus = 'rejected';
