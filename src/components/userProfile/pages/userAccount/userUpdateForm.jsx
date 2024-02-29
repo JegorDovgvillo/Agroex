@@ -8,6 +8,7 @@ import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
 
 import { updateToken, updateUser } from '@thunks/fetchUsers';
+
 import { toggleModal } from '@slices/modalSlice';
 
 import { CustomButton } from '@components/buttons/CustomButton';
@@ -107,9 +108,7 @@ const UserUpdateForm = ({
       email: email || '',
     },
     validationSchema: updateUserValidationSchema,
-    onSubmit: (values) => {
-      handleSubmit(values);
-    },
+    onSubmit: handleSubmit,
   });
 
   return (

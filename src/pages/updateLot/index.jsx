@@ -5,14 +5,13 @@ import { useNavigate } from 'react-router-dom';
 import _ from 'lodash';
 
 import { selectLotDetailById } from '@slices/lotListSlice';
-import { usersListSelector } from '@slices/usersListSlice';
 import { selectRootCategories } from '@slices/categoriesSlice';
 import { countrySelector } from '@slices/countriesSlice';
 import { tagsSelector } from '@slices/tagsSlice';
 import { toggleModal } from '@slices/modalSlice';
 
+import { getUserFromCognito } from '@thunks/fetchUsers';
 import { fetchCountries } from '@thunks/fetchCountries';
-import { fetchUsers } from '@thunks/fetchUsers';
 import { deleteLot, updateLot, fetchLotDetails } from '@thunks/fetchLots';
 import { fetchAllCategories } from '@thunks/fetchCategories';
 import { fetchTags } from '@thunks/fetchTags';
@@ -26,11 +25,11 @@ const MAXIMUM_NUMBER_OF_IMG = import.meta.env.VITE_MAXIMUM_NUMBER_OF_IMG;
 const UpdateLot = () => {
   const { id: lotId } = useParams();
 
-  const users = useSelector(usersListSelector);
   const categories = useSelector(selectRootCategories);
   const country = useSelector(countrySelector);
   const selectedLot = useSelector((state) => selectLotDetailById(state, lotId));
   const tags = useSelector(tagsSelector);
+  const userId = useSelector((state) => state.usersList.userId);
 
   const [confirmStatus, setConfirmStatus] = useState(false);
   const [files, setFiles] = useState([]);
@@ -55,14 +54,15 @@ const UpdateLot = () => {
   useEffect(() => {
     convertImagesToFiles(selectedLot?.images || [], setFiles);
     dispatch(fetchLotDetails(lotId));
-    dispatch(fetchUsers());
     dispatch(fetchAllCategories());
+    dispatch(getUserFromCognito());
     dispatch(fetchCountries());
     dispatch(fetchTags());
   }, [dispatch]);
 
   const handleUpdateClick = async (values) => {
     const formData = new FormData();
+
     const subcategory =
       typeof values.subcategory === 'number'
         ? { id: values.subcategory }
@@ -89,7 +89,7 @@ const UpdateLot = () => {
         parentId: values.category,
       },
       lotType: values.lotType,
-      userId: values.userId,
+      userId: userId,
       location: {
         countryId: values.country,
         region: values.region,
@@ -115,7 +115,7 @@ const UpdateLot = () => {
   const isDataLoaded =
     selectedLot &&
     _.every(
-      [users, categories, country, tags],
+      [categories, country, tags],
       (arr) => _.isArray(arr) && !_.isEmpty(arr)
     );
 
@@ -127,7 +127,6 @@ const UpdateLot = () => {
           handleSubmitClick={handleUpdateClick}
           country={country}
           categories={categories}
-          users={users}
           formType="update"
           setConfirmStatus={setConfirmStatus}
           showConfirm={showConfirm}

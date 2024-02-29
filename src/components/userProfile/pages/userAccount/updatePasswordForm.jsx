@@ -19,7 +19,7 @@ const { formContainer, passwordsBlock, buttonsWrapp } = styles;
 const UpdatePasswordForm = ({ setIsChanged }) => {
   const dispatch = useDispatch();
   const [confirmStatus, setConfirmStatus] = useState(false);
-
+  
   useEffect(() => {
     if (confirmStatus) {
       setConfirmStatus(false);
@@ -41,10 +41,10 @@ const UpdatePasswordForm = ({ setIsChanged }) => {
         oldPassword,
         newPassword,
       });
-
+      
       setIsChanged(false);
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      console.log(error);
     }
   };
 

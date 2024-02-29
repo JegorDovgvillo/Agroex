@@ -1,29 +1,28 @@
 import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import _ from 'lodash';
+import { withAuthenticator } from '@aws-amplify/ui-react';
 
-import { fetchUsers } from '@thunks/fetchUsers';
+import { getUserFromCognito } from '@thunks/fetchUsers';
 import { fetchAllCategories } from '@thunks/fetchCategories';
 import { fetchCountries } from '@thunks/fetchCountries';
 import { fetchTags } from '@thunks/fetchTags';
 import { createLot } from '@thunks/fetchLots';
 
-import { usersListSelector } from '@slices/usersListSlice';
 import { tagsSelector } from '@slices/tagsSlice';
 import { toggleModal } from '@slices/modalSlice';
 import { selectRootCategories } from '@slices/categoriesSlice';
 import { countrySelector } from '@slices/countriesSlice';
 
 import LotForm from '@components/lotForm';
-import { withAuthenticator } from '@aws-amplify/ui-react';
 
 const MAXIMUM_NUMBER_OF_IMG = import.meta.env.VITE_MAXIMUM_NUMBER_OF_IMG;
 
 const CreateNewLot = () => {
-  const users = useSelector(usersListSelector);
   const categories = useSelector(selectRootCategories);
   const country = useSelector(countrySelector);
   const tags = useSelector(tagsSelector);
+  const userId = useSelector((state) => state.usersList.userId);
 
   const [files, setFiles] = useState([]);
   const [disabled, setDisabled] = useState(false);
@@ -32,7 +31,7 @@ const CreateNewLot = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(fetchUsers());
+    dispatch(getUserFromCognito());
     dispatch(fetchAllCategories());
     dispatch(fetchCountries());
     dispatch(fetchTags());
@@ -40,6 +39,7 @@ const CreateNewLot = () => {
 
   const handleSubmitClick = async (values, resetForm) => {
     const formData = new FormData();
+
     const subcategory =
       typeof values.subcategory === 'number'
         ? { id: values.subcategory }
@@ -62,7 +62,7 @@ const CreateNewLot = () => {
         parentId: values.category,
       },
       lotType: values.lotType,
-      userId: values.userId,
+      userId: userId,
       location: {
         countryId: values.country,
         region: values.region,
@@ -83,7 +83,7 @@ const CreateNewLot = () => {
   };
 
   const isDataLoaded = _.every(
-    [users, categories, country, tags],
+    [categories, country, tags],
     (arr) => !_.isEmpty(arr)
   );
 
@@ -94,7 +94,6 @@ const CreateNewLot = () => {
           handleSubmitClick={handleSubmitClick}
           country={country}
           categories={categories}
-          users={users}
           formType="create"
           files={files}
           setFiles={setFiles}
