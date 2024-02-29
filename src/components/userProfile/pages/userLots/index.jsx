@@ -38,7 +38,10 @@ const UserLots = () => {
   });
 
   useEffect(() => {
-    dispatch(filteredLots(`users=${currUserId}`));
+    const userParams = { users: currUserId };
+    const params = new URLSearchParams(userParams).toString();
+
+    dispatch(filteredLots(params));
   }, []);
 
   return <div>{filteredLotsArr} </div>;
