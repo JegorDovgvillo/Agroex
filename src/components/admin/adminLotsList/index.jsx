@@ -154,10 +154,6 @@ export default function AdminLotsList() {
       setEditedValue
     );
 
-  const handleRowModesModelChange = (newRowModesModel) => {
-    setRowModesModel(newRowModesModel);
-  };
-
   const fetchChangeLotStatus = () => {
     dispatch(
       changeLotStatusByAdmin({
@@ -218,7 +214,7 @@ export default function AdminLotsList() {
             columns={tableHead}
             editMode="row"
             rowModesModel={rowModesModel}
-            onRowModesModelChange={handleRowModesModelChange}
+            onRowModesModelChange={setRowModesModel}
             onRowEditStop={handleRowEditStop}
             slotProps={{
               toolbar: { setRows, setRowModesModel },

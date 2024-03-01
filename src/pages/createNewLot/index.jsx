@@ -71,7 +71,7 @@ const CreateNewLot = () => {
     };
 
     files.forEach((file) => {
-      formData.append(`file`, file);
+      formData.append('file', file);
     });
 
     formData.append('data', JSON.stringify(lotData));
