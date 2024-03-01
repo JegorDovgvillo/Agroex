@@ -11,7 +11,12 @@ import {
 import { fetchLots, changeLotStatusByAdmin } from '@thunks/fetchLots';
 
 import { toggleModal, selectModalState } from '@slices/modalSlice';
-import { lotListSelector, setLotId } from '@slices/lotListSlice';
+import {
+  lotListSelector,
+  setLotId,
+  clearErrors,
+  clearChangeLotLoadingStatus,
+} from '@slices/lotListSlice';
 import { setUserId } from '@slices/usersListSlice';
 
 import { getDHMSFromMilliseconds } from '@helpers/getDHMSFromMilliseconds';
@@ -19,7 +24,6 @@ import getFormattedDate from '@helpers/getFormattedDate';
 import getNumberWithCurrency from '@helpers/getNumberWithCurrency';
 import ConfirmActionModal from '@customModals/confirmActionModal';
 import AdminMessageModal from '@customModals/adminMessageModal';
-import { CustomSnackbar } from '@components/customSnackbar';
 
 import DetailedLotViewModal from '../detailedLotViewModal';
 import { getTableHead } from './getTableHead';
@@ -72,7 +76,6 @@ export default function AdminLotsList() {
     return row;
   });
 
-  const [snackbarProps, setSnackbarProps] = useState(false);
   const [confirmStatus, setConfirmStatus] = useState(false);
   const [currLotId, setCurrLotId] = useState(null);
   const [rows, setRows] = useState(initialRows);
@@ -87,6 +90,10 @@ export default function AdminLotsList() {
   });
   const isModalOpened = useSelector((state) =>
     selectModalState(state, 'infoModal')
+  );
+  const lotListErrors = useSelector((state) => state.lotList.errors);
+  const changeLotLoadingStatus = useSelector(
+    (state) => state.lotList.changeLotLoadingStatus
   );
 
   const handleRowEditStop = (params, event) => {
@@ -156,34 +163,14 @@ export default function AdminLotsList() {
     setRowModesModel(newRowModesModel);
   };
 
-  const fetchChangeLotStatus = async () => {
-    const response = await dispatch(
+  const fetchChangeLotStatus = () => {
+    dispatch(
       changeLotStatusByAdmin({
         lotId: currLotId,
         status: editedValue,
         adminComment: adminComment,
       })
     );
-
-    response.error
-      ? setSnackbarProps({
-          message: response.payload.message,
-          severity: 'error',
-        })
-      : setSnackbarProps({
-          message: 'Status was successfully changed!',
-          severity: 'success',
-        });
-
-    setRowModesModel({
-      ...rowModesModel,
-      [currLotId]: {
-        mode: GridRowModes.View,
-      },
-    });
-
-    dispatch(toggleModal('snackbar'));
-    setConfirmStatus(false);
   };
 
   useEffect(() => {
@@ -204,9 +191,29 @@ export default function AdminLotsList() {
     }
   }, [adminComment]);
 
+  useEffect(() => {
+    if (changeLotLoadingStatus === 'rejected' && lotListErrors) {
+      dispatch(clearErrors());
+      dispatch(clearChangeLotLoadingStatus());
+      setConfirmStatus(false);
+    }
+
+    if (changeLotLoadingStatus === 'fulfilled') {
+      setRowModesModel({
+        ...rowModesModel,
+        [currLotId]: {
+          mode: GridRowModes.View,
+        },
+      });
+
+      dispatch(clearChangeLotLoadingStatus());
+      setConfirmStatus(false);
+    }
+  }, [lotListErrors, changeLotLoadingStatus]);
+
   return (
     <>
-      {rows && (
+      {lots && rows && (
         <div className={container}>
           <DataGrid
             isCellEditable={(params) => !params.bets}
@@ -237,7 +244,6 @@ export default function AdminLotsList() {
             setAdminMessage={setAdminComment}
             setConfirmStatus={setConfirmStatus}
           />
-          <CustomSnackbar snackbarProps={snackbarProps} />
         </div>
       )}
     </>

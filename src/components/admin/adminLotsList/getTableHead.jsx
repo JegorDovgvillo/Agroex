@@ -160,7 +160,7 @@ export const getTableHead = (
     {
       field: 'title',
       headerName: 'Title',
-      cellClassName: `${cell}`,
+
       headerAlign: 'center',
       width: 150,
       renderCell: (params) => getTitle(params),

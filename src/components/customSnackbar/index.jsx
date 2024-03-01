@@ -8,7 +8,6 @@ import { selectModalState } from '@slices/modalSlice';
 // severity could be "success", "info", "warning", "error"
 
 export const CustomSnackbar = ({ snackbarProps }) => {
-  //const { message, severity } = snackbarProps;
   const dispatch = useDispatch();
   const isOpen = useSelector((state) => selectModalState(state, 'snackbar'));
 
@@ -20,7 +19,6 @@ export const CustomSnackbar = ({ snackbarProps }) => {
     dispatch(toggleModal('snackbar'));
   };
 
-  //console.log(isOpen, message, severity);
   return (
     <div>
       {snackbarProps && (
