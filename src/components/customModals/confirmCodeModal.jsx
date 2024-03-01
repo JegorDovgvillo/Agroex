@@ -28,6 +28,7 @@ const ConfirmCodeModal = ({ values, sub, zoneinfo }) => {
 
     const updateDataUser = {
       ...values,
+      username: values.name,
       zoneinfo,
     };
 

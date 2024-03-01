@@ -6,19 +6,23 @@ import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
-import BorderColorIcon from '@mui/icons-material/BorderColor';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import GppBadIcon from '@mui/icons-material/GppBad';
 import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
+import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
+
+import {
+  fetchUsers,
+  changeUserStatus,
+  updateDataBase,
+} from '@thunks/fetchUsers';
 
 import { setUserId, usersListSelector } from '@slices/usersListSlice';
-import { fetchUsers, deleteUser } from '@thunks/fetchUsers';
 import { toggleModal } from '@slices/modalSlice';
+
 import getFormattedDate from '@helpers/getFormattedDate';
 
 import ConfirmActionModal from '@customModals/confirmActionModal';
-import ModalForCreatingUser from '@customModals/modalForCreatingUser';
-import ModalForUpdatingUser from '@customModals/modalForUpdatingUser';
 
 import styles from './usersList.module.scss';
 
@@ -27,41 +31,57 @@ const {
   noVerifiedIcon,
   verifiedIconContainer,
   tableRow,
-  userName,
   editIcon,
-  deleteIcon,
   editBlock,
   titleWrapp,
-  title,
+  enabled,
+  disabled,
+  updateDB,
 } = styles;
 
 export default function UsersList() {
   const dispatch = useDispatch();
+  
   const users = useSelector(usersListSelector);
   const userId = useSelector((state) => state.usersList.userId);
+
   const [confirmStatus, setConfirmStatus] = useState(false);
-  console.log(users);
+
   useEffect(() => {
     dispatch(fetchUsers());
   }, [dispatch]);
 
-  const handleEditClick = (id) => {
-    dispatch(toggleModal('updatingModal'));
-    dispatch(setUserId(id));
-  };
-
   useEffect(() => {
     if (confirmStatus) {
-      dispatch(deleteUser({ id: userId }));
+      dispatch(changeUserStatus({ id: userId }));
       setConfirmStatus(false);
     }
   }, [confirmStatus]);
+
+  const toggleUserStatus = (id) => {
+    dispatch(setUserId(id));
+    dispatch(toggleModal('confirmModal'));
+  };
+
+  const updateUsersInDB = () => {
+    dispatch(updateDataBase());
+  };
 
   return (
     <>
       <div className={titleWrapp}>
         <Typography component="h2" variant="h6" color="primary">
           Users
+        </Typography>
+        <Typography
+          component="h2"
+          variant="h6"
+          color="primary"
+          className={updateDB}
+          onClick={updateUsersInDB}
+        >
+          Update DB
+          <CloudDownloadIcon />
         </Typography>
       </div>
       <Table size="small">
@@ -80,17 +100,11 @@ export default function UsersList() {
             users.map((user) => (
               <TableRow key={user.id} className={tableRow}>
                 <TableCell>{user.id}</TableCell>
-                <TableCell>
-                  <span
-                    className={userName}
-                    onClick={() => handleEditClick(user.id)}
-                  >
-                    {user.username}
-                  </span>
-                </TableCell>
+                <TableCell>{user.username}</TableCell>
                 <TableCell>{user.email}</TableCell>
-
-                <TableCell>{getFormattedDate(user.creationDate)}</TableCell>
+                <TableCell>
+                  {user.creationDate && getFormattedDate(user.creationDate)}
+                </TableCell>
                 <TableCell className={verifiedIconContainer}>
                   <>
                     {user.emailVerified && (
@@ -103,13 +117,13 @@ export default function UsersList() {
                 </TableCell>
                 <TableCell>
                   <div className={editBlock}>
-                    {/* <DeleteForeverOutlinedIcon
-                      className={deleteIcon}
-                      onClick={() => showConfirm(user.id)}
-                    /> */}
                     <PowerSettingsNewIcon
-                      className={editIcon}
-                      onClick={() => handleEditClick(user.id)}
+                      className={
+                        user.enabled
+                          ? `${enabled} ${editIcon}`
+                          : `${disabled} ${editIcon}`
+                      }
+                      onClick={() => toggleUserStatus(user.id)}
                     />
                   </div>
                 </TableCell>
@@ -117,10 +131,8 @@ export default function UsersList() {
             ))}
         </TableBody>
       </Table>
-      <ModalForUpdatingUser title="Update user info" />
-      <ModalForCreatingUser title="Create new user" />
       <ConfirmActionModal
-        text="This action delete the user. Do you confirm the action?"
+        text="This action change the user status. Do you confirm the action?"
         setConfirmStatus={setConfirmStatus}
       />
     </>

@@ -88,7 +88,7 @@ const UserUpdateForm = ({
         const updateDataUser = {
           email,
           zoneinfo,
-          updatedName,
+          username: updatedName,
         };
 
         dispatch(updateUser({ id: sub, userData: updateDataUser }));

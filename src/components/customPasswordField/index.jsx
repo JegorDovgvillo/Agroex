@@ -30,6 +30,7 @@ const CustomPasswordField = ({
       value={value}
       onChange={handleChange}
       onBlur={onBlur}
+      autoComplete="true"
       error={error}
       helperText={helperText}
       type={showPassword ? 'text' : 'password'}

@@ -2,15 +2,15 @@ import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useFormik } from 'formik';
 import { updatePassword } from 'aws-amplify/auth';
-import { Box, TextField } from '@mui/material';
+import { Box } from '@mui/material';
 
 import { toggleModal } from '@slices/modalSlice';
 
 import { CustomButton } from '@components/buttons/CustomButton';
-
-import ConfirmActionModal from '@customModals/confirmActionModal';
 import CustomPasswordField from '@components/customPasswordField';
-import { createUserValidationSchema } from '@helpers/validationSchemes/userDataValidationSchemes';
+import ConfirmActionModal from '@customModals/confirmActionModal';
+
+import { userPasswordsValidationSchema } from '@helpers/validationSchemes/userDataValidationSchemes';
 
 import styles from './userAccount.module.scss';
 
@@ -19,10 +19,11 @@ const { formContainer, passwordsBlock, buttonsWrapp } = styles;
 const UpdatePasswordForm = ({ setIsChanged }) => {
   const dispatch = useDispatch();
   const [confirmStatus, setConfirmStatus] = useState(false);
-  
+
   useEffect(() => {
     if (confirmStatus) {
       setConfirmStatus(false);
+
       handleUpdatePassword(
         formik.values.oldPassword,
         formik.values.newPassword
@@ -41,7 +42,7 @@ const UpdatePasswordForm = ({ setIsChanged }) => {
         oldPassword,
         newPassword,
       });
-      
+
       setIsChanged(false);
     } catch (error) {
       console.log(error);
@@ -57,7 +58,7 @@ const UpdatePasswordForm = ({ setIsChanged }) => {
       oldPassword: '',
       newPassword: '',
     },
-    validationSchema: createUserValidationSchema,
+    validationSchema: userPasswordsValidationSchema,
     onSubmit: showConfirm,
   });
 
@@ -76,7 +77,9 @@ const UpdatePasswordForm = ({ setIsChanged }) => {
           label="Old password"
           name="oldPassword"
           onBlur={formik.handleBlur}
-          error={Boolean(formik.errors.oldPassword)}
+          error={
+            formik.touched.oldPassword && Boolean(formik.errors.oldPassword)
+          }
           helperText={formik.touched.oldPassword && formik.errors.oldPassword}
         />
         <CustomPasswordField
@@ -87,7 +90,9 @@ const UpdatePasswordForm = ({ setIsChanged }) => {
           name="newPassword"
           id="newPassword"
           onBlur={formik.handleBlur}
-          error={Boolean(formik.errors.newPassword)}
+          error={
+            formik.touched.newPassword && Boolean(formik.errors.newPassword)
+          }
           helperText={formik.touched.newPassword && formik.errors.newPassword}
         />
         <div className={buttonsWrapp}>
