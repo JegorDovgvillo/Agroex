@@ -152,7 +152,6 @@ export const getTableHead = (
 
   const tableHead = [
     { field: 'id', headerName: 'ID', width: 40 },
-
     {
       field: 'title',
       headerName: 'Title',
