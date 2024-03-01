@@ -62,9 +62,37 @@ export const changeLotStatusByUser = createAsyncThunk(
   async ({ lotId, isActive }) => {
     const response = await axiosInstance.post(
       `${ENDPOINTS.LOTS}/${lotId}/userStatus`,
-      { status: isActive }
+      null,
+      {
+        params: {
+          status: isActive,
+        },
+      }
     );
 
     return response.data;
+  }
+);
+
+export const changeLotStatusByAdmin = createAsyncThunk(
+  'lotList/changeLotStatusByAdmin',
+  async ({ lotId, status, adminComment }, { rejectWithValue }) => {
+    const endpoints = {
+      onModeration: 'moderate',
+      approved: 'approve',
+      rejected: 'reject',
+    };
+    const targetEndpoint = endpoints[status];
+
+    try {
+      const response = await axiosInstance.post(
+        `${ENDPOINTS.LOTS}/${lotId}/${targetEndpoint}`,
+        { lotId, adminComment }
+      );
+
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
   }
 );

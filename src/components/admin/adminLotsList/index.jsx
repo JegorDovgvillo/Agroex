@@ -1,233 +1,239 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import _ from 'lodash';
 
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Avatar,
-  Typography,
-} from '@mui/material';
+  GridRowModes,
+  DataGrid,
+  GridRowEditStopReasons,
+} from '@mui/x-data-grid';
 
-import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import CancelIcon from '@mui/icons-material/Cancel';
-import MoreIcon from '@mui/icons-material/More';
-
-import { fetchLots, updateLot } from '@thunks/fetchLots';
+import { fetchLots, changeLotStatusByAdmin } from '@thunks/fetchLots';
 
 import { toggleModal, selectModalState } from '@slices/modalSlice';
-import { lotListSelector, setLotId } from '@slices/lotListSlice';
+import {
+  lotListSelector,
+  setLotId,
+  clearErrors,
+  clearChangeLotLoadingStatus,
+} from '@slices/lotListSlice';
 import { setUserId } from '@slices/usersListSlice';
 
-import ENDPOINTS, { IMAGE_URL } from '@helpers/endpoints';
-import convertImagesToFiles from '@helpers/convertImagesToFiles';
-
+import { getDHMSFromMilliseconds } from '@helpers/getDHMSFromMilliseconds';
 import getFormattedDate from '@helpers/getFormattedDate';
 import getNumberWithCurrency from '@helpers/getNumberWithCurrency';
 import ConfirmActionModal from '@customModals/confirmActionModal';
+import AdminMessageModal from '@customModals/adminMessageModal';
 
 import DetailedLotViewModal from '../detailedLotViewModal';
+import { getTableHead } from './getTableHead';
 
 import styles from './adminLotsList.module.scss';
-import tableStyles from '../usersList/usersList.module.scss';
 
-const baseURL = `${IMAGE_URL}${ENDPOINTS.IMAGES}`;
+const { container } = styles;
 
-const {
-  lotImage,
-  lotTitleBlock,
-  title,
-  disableIcon,
-  enableIcon,
-  statusCell,
-  moreInfoIcon,
-  priceBet,
-  lotTitleBlockCell,
-} = styles;
-const { tableRow, userName } = tableStyles;
+const getFormattedDuration = (duration) => {
+  const { days, hours, minutes } = getDHMSFromMilliseconds(duration);
+
+  const formattedDuration = _.compact([
+    days > 0 && `${days}d`,
+    hours > 0 && `${hours}h`,
+    minutes > 0 && `${minutes}m`,
+  ]).join(' ');
+
+  return formattedDuration;
+};
+
+const getFormattedString = (str) => {
+  return _.words(_.startCase(str)).join(' ').toLowerCase();
+};
 
 export default function AdminLotsList() {
-  const [files, setFiles] = useState([]);
   const dispatch = useDispatch();
   const lots = useSelector(lotListSelector);
 
-  const [confirmStatus, setConfirmStatus] = useState(false);
-  const [openedLot, setOpenedLot] = useState(null);
+  const initialRows = lots.map((lot) => {
+    const row = {
+      id: lot.id,
+      description: lot.description,
+      variety: lot.variety,
+      size: lot.size,
+      packaging: lot.packaging,
+      duration: getFormattedDuration(lot.duration),
+      quantity: lot.quantity,
+      creationDate: getFormattedDate(lot.creationDate),
+      expirationDate: lot.expirationDate
+        ? getFormattedDate(lot.expirationDate)
+        : '',
+      lotType: getFormattedString(lot.lotType),
+      price: getNumberWithCurrency(lot.price, lot.currency),
+      minPrice: getNumberWithCurrency(lot.minPrice, lot.currency),
+      userStatus: lot.userStatus,
+      bets: lot.bets.length ? 'yes' : 'no',
+      innerStatus: getFormattedString(lot.innerStatus),
+    };
 
+    return row;
+  });
+
+  const [confirmStatus, setConfirmStatus] = useState(false);
+  const [currLotId, setCurrLotId] = useState(null);
+  const [rows, setRows] = useState(initialRows);
+  const [editedValue, setEditedValue] = useState('');
+  const [adminComment, setAdminComment] = useState(null);
+  const [rowModesModel, setRowModesModel] = useState({});
+  const [columnVisibilityModel, setColumnVisibilityModel] = useState({
+    description: false,
+    variety: false,
+    size: false,
+    packaging: false,
+  });
   const isModalOpened = useSelector((state) =>
     selectModalState(state, 'infoModal')
   );
-
-  const handleChangeLot = useCallback(
-    (lot) => {
-      const formData = new FormData();
-      const lotData = _.omit(
-        { ...lot, enabledByAdmin: !lot.enabledByAdmin },
-        'images'
-      );
-      const { id } = lot;
-
-      _.forEach(files, (file) => {
-        formData.append('file', file);
-      });
-
-      formData.append('data', JSON.stringify(lotData));
-
-      dispatch(updateLot({ id: id, lotData: formData }));
-    },
-    [files, dispatch]
+  const lotListErrors = useSelector((state) => state.lotList.errors);
+  const changeLotLoadingStatus = useSelector(
+    (state) => state.lotList.changeLotLoadingStatus
   );
+
+  const handleRowEditStop = (params, event) => {
+    if (params.reason === GridRowEditStopReasons.rowFocusOut) {
+      event.defaultMuiPrevented = true;
+    }
+  };
+
+  const handleEditClick = (id) => () => {
+    setCurrLotId(id);
+    setEditedValue('');
+    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
+  };
+
+  const handleSaveClick = () => {
+    if (!editedValue) {
+      setRowModesModel({
+        ...rowModesModel,
+        [currLotId]: {
+          mode: GridRowModes.View,
+        },
+      });
+    } else {
+      dispatch(toggleModal('confirmModal'));
+    }
+  };
+
+  const handleShowMoreClick = (id) => () => {
+    const userId = _.find(lots, { id: id })?.userId;
+
+    dispatch(setLotId(id));
+    dispatch(setUserId(userId));
+    dispatch(toggleModal('infoModal'));
+  };
+
+  const handleCancelClick = (id) => () => {
+    setRowModesModel({
+      ...rowModesModel,
+      [id]: { mode: GridRowModes.View, ignoreModifications: true },
+    });
+
+    const editedRow = rows.find((row) => row.id === id);
+
+    if (editedRow.isNew) {
+      setRows(rows.filter((row) => row.id !== id));
+    }
+  };
+
+  const tableHead =
+    lots &&
+    getTableHead(
+      lots,
+      rowModesModel,
+      handleEditClick,
+      handleSaveClick,
+      handleShowMoreClick,
+      handleCancelClick,
+      setEditedValue
+    );
+
+  const fetchChangeLotStatus = () => {
+    dispatch(
+      changeLotStatusByAdmin({
+        lotId: currLotId,
+        status: editedValue,
+        adminComment: adminComment,
+      })
+    );
+  };
 
   useEffect(() => {
     dispatch(fetchLots());
   }, [dispatch]);
 
   useEffect(() => {
-    if (confirmStatus && openedLot) {
-      handleChangeLot({ ...openedLot });
+    if (confirmStatus) {
+      editedValue === 'rejected'
+        ? dispatch(toggleModal('adminMessageModal'))
+        : fetchChangeLotStatus();
+    }
+  }, [confirmStatus]);
+
+  useEffect(() => {
+    if (editedValue === 'rejected' && adminComment) {
+      fetchChangeLotStatus();
+    }
+  }, [adminComment]);
+
+  useEffect(() => {
+    if (changeLotLoadingStatus === 'rejected' && lotListErrors) {
+      dispatch(clearErrors());
+      dispatch(clearChangeLotLoadingStatus());
       setConfirmStatus(false);
     }
-  }, [handleChangeLot, confirmStatus, openedLot]);
 
-  const handleEditClick = async (lot) => {
-    await convertImagesToFiles(lot.images || [], setFiles);
+    if (changeLotLoadingStatus === 'fulfilled') {
+      setRowModesModel({
+        ...rowModesModel,
+        [currLotId]: {
+          mode: GridRowModes.View,
+        },
+      });
 
-    dispatch(toggleModal('infoModal'));
-    dispatch(setLotId(lot.id));
-    dispatch(setUserId(lot.userId));
-  };
-
-  const handleChangeLotStatusClick = async (lot) => {
-    await convertImagesToFiles(lot.images || [], setFiles);
-
-    setOpenedLot(lot);
-    dispatch(toggleModal('confirmModal'));
-  };
-
-  const tableHead = [
-    'ID',
-    'Title',
-    'Quantity',
-    'Price per/ton',
-    'Creation Date',
-    'Expiration Date',
-    'Lot Type',
-    'Price/Bet',
-    'Status',
-    'Actions',
-  ];
+      dispatch(clearChangeLotLoadingStatus());
+      setConfirmStatus(false);
+    }
+  }, [lotListErrors, changeLotLoadingStatus]);
 
   return (
     <>
-      <Typography component="h2" variant="h6" color="primary">
-        Lots
-      </Typography>
-      <Table size="small">
-        <TableHead>
-          <TableRow className={tableRow}>
-            {tableHead.map((el) => (
-              <TableCell key={el}>{el}</TableCell>
-            ))}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {lots &&
-            lots.map((lot) => (
-              <TableRow key={lot.id} className={tableRow}>
-                <TableCell>{lot.id}</TableCell>
+      {lots && rows && (
+        <div className={container}>
+          <DataGrid
+            isCellEditable={(params) => !params.bets}
+            scrollbarSize={20}
+            autoHeight
+            rows={rows}
+            columns={tableHead}
+            editMode="row"
+            rowModesModel={rowModesModel}
+            onRowModesModelChange={setRowModesModel}
+            onRowEditStop={handleRowEditStop}
+            slotProps={{
+              toolbar: { setRows, setRowModesModel },
+            }}
+            columnVisibilityModel={columnVisibilityModel}
+            onColumnVisibilityModelChange={setColumnVisibilityModel}
+          />
 
-                <TableCell className={lotTitleBlockCell}>
-                  <div className={lotTitleBlock}>
-                    <Avatar
-                      className={lotImage}
-                      alt="Lot image"
-                      src={
-                        lot.images.length > 0
-                          ? `${baseURL}/${lot.images[0].name}`
-                          : null
-                      }
-                      variant="rounded"
-                    >
-                      <ImageNotSupportedIcon />
-                    </Avatar>
-                    <p
-                      className={`${userName} ${title}`}
-                      onClick={() => handleEditClick(lot)}
-                    >
-                      {lot.title}
-                    </p>
-                  </div>
-                </TableCell>
-                <TableCell>{`${getNumberWithCurrency(
-                  lot.quantity
-                )} ton`}</TableCell>
-                <TableCell>
-                  {getNumberWithCurrency(
-                    lot.price / lot.quantity,
-                    lot.currency
-                  )}
-                </TableCell>
-
-                <TableCell>{getFormattedDate(lot.creationDate)}</TableCell>
-                <TableCell>{getFormattedDate(lot.expirationDate)}</TableCell>
-                <TableCell>{lot.lotType}</TableCell>
-                <TableCell>
-                  {
-                    <div className={priceBet}>
-                      <div>{`${getNumberWithCurrency(
-                        lot.price,
-                        lot.currency
-                      )} / `}</div>
-                      <div>no bets</div>
-                    </div>
-                  }
-                </TableCell>
-                <TableCell>
-                  <div className={statusCell}>
-                    {`${
-                      lot.enabledByAdmin
-                        ? 'Enabled by Admin'
-                        : 'Disabled by Admin'
-                    }`}
-
-                    {!lot.enabledByAdmin && (
-                      <CancelIcon
-                        className={disableIcon}
-                        onClick={() => handleChangeLotStatusClick(lot)}
-                      />
-                    )}
-                    {lot.enabledByAdmin && (
-                      <CheckCircleOutlineIcon
-                        className={enableIcon}
-                        onClick={() => handleChangeLotStatusClick(lot)}
-                      />
-                    )}
-                  </div>
-                </TableCell>
-
-                <TableCell>
-                  <div>
-                    <MoreIcon
-                      className={moreInfoIcon}
-                      onClick={() => handleEditClick(lot)}
-                    />
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
-        </TableBody>
-      </Table>
-      {isModalOpened && (
-        <DetailedLotViewModal handleChangeLot={handleChangeLot} />
+          {isModalOpened && <DetailedLotViewModal />}
+          <ConfirmActionModal
+            text="This action changes the lot status. Do you confirm the action?"
+            setConfirmStatus={setConfirmStatus}
+          />
+          <AdminMessageModal
+            setAdminMessage={setAdminComment}
+            setConfirmStatus={setConfirmStatus}
+          />
+        </div>
       )}
-      <ConfirmActionModal
-        text="This action changes the lot status. Do you confirm the action?"
-        setConfirmStatus={setConfirmStatus}
-      />
     </>
   );
 }

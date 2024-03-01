@@ -30,9 +30,8 @@ const CustomMultiSelect = ({
 }) => {
   return (
     <div className={`${styles.wrapp} ${styles[wrappType]}`}>
-      <label htmlFor={name}>{label}</label>
       <FormControl>
-        <InputLabel>{placeholder}</InputLabel>
+        <label htmlFor={name}>{label}</label>
         <Field
           as={Select}
           name={name}
@@ -40,7 +39,6 @@ const CustomMultiSelect = ({
           required={required}
           displayEmpty
           className={`${styles.select} ${styles[fieldType]}`}
-          label={placeholder}
           MenuProps={MenuProps}
           multiple={true}
           onChange={onChange}

@@ -16,7 +16,14 @@ import LotStatusBlock from '../lotStatusBlock';
 
 import styles from '../../itemCard.module.scss';
 
-const { priceBlock, priceContainer, pending, inactive, adminComment } = styles;
+const {
+  priceBlock,
+  priceContainer,
+  pending,
+  inactive,
+  adminComment,
+  pricesContainer,
+} = styles;
 
 const UserLotCard = (item) => {
   const { tab } = useParams();
@@ -51,37 +58,49 @@ const UserLotCard = (item) => {
   const isAuctionLotType = item.lotType === 'auctionSell';
 
   const isLotEditable =
-    (isAuctionLotType && item.innerStatus === 'new') ||
+    (isAuctionLotType &&
+      item.innerStatus === 'new' &&
+      item.userStatus !== 'inactive') ||
     (!isAuctionLotType && item.status !== 'inactive');
+
+  const isLotDeletable = item.userStatus === 'inactive';
 
   return (
     <div className={styles.cardWrapp}>
       <ItemCardInfoBlock item={item}>
         <>
           {lotStatus && <LotStatusBlock lotStatus={lotStatus} />}
-          {isLotEditable && <ManageCardBlock id={item.id} />}
+          {isLotEditable && (
+            <ManageCardBlock id={item.id} actions={'editDeactivate'} />
+          )}
+          {isLotDeletable && (
+            <ManageCardBlock id={item.id} actions={'activateDelete'} />
+          )}
         </>
       </ItemCardInfoBlock>
       <div className={containerClassNames}>
-        <div className={priceBlock}>
-          {isAuctionLotType && (
+        <div className={pricesContainer}>
+          <div className={priceBlock}>
+            {isAuctionLotType && (
+              <PriceBlock
+                className={['list', 'auctionSum']}
+                totalCost={item.price}
+                unitCost={item.price / item.quantity}
+                currency={item.currency}
+              />
+            )}
+          </div>
+
+          <div className={priceBlock}>
             <PriceBlock
-              className={['list', 'auctionSum']}
+              className={['list']}
               totalCost={item.price}
               unitCost={item.price / item.quantity}
               currency={item.currency}
             />
-          )}
+          </div>
         </div>
 
-        <div className={priceBlock}>
-          <PriceBlock
-            className={['list']}
-            totalCost={item.price}
-            unitCost={item.price / item.quantity}
-            currency={item.currency}
-          />
-        </div>
         {isAuctionLotType && (
           <CustomButton
             size="L"

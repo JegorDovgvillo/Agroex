@@ -219,11 +219,12 @@ const LotForm = ({
               label="Lot type"
               id="lotType"
               name="lotType"
-              units={['sell', 'buy']}
+              units={['sell', 'buy', 'auctionSell']}
               placeholder="Lot type"
               value={values.lotType}
               errors={errors.lotType}
               touched={!isCreateNotSubmittedForm || touched.lotType}
+              handleChange={setSelectedLotType}
               setFieldValue={setFieldValue}
             />
           </div>

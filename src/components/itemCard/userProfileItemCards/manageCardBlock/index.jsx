@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import { Menu, MenuItem, ListItemIcon } from '@mui/material';
 
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
 import PowerSettingsNewOutlinedIcon from '@mui/icons-material/PowerSettingsNewOutlined';
+import PlayArrowOutlinedIcon from '@mui/icons-material/PlayArrowOutlined';
+import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 
 import { toggleModal } from '@slices/modalSlice';
 
@@ -14,19 +16,18 @@ import { CustomButton } from '@buttons/CustomButton';
 import ConfirmActionModal from '@customModals/confirmActionModal';
 
 import ROUTES from '@helpers/routeNames';
-import { changeLotStatusByUser } from '@thunks/fetchLots';
-import { CustomSnackbar } from '@components/customSnackbar';
+import { changeLotStatusByUser, deleteLot } from '@thunks/fetchLots';
 
 import styles from './manageCard.module.scss';
 
 const { deactivate } = styles;
 
-const ManageCardBlock = ({ id }) => {
+const ManageCardBlock = ({ id, actions }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { loadingStatus } = useSelector((state) => state.lotList);
-  const [confirmDeactivateStatus, setConfirmStatus] = useState(false);
-  const [snackbarProps, setSnackbarProps] = useState(null);
+  const [confirmStatus, setConfirmStatus] = useState(false);
+  const [confirmModalText, setConfirmModalText] = useState(null);
+  const [action, setAction] = useState(null);
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -39,7 +40,11 @@ const ManageCardBlock = ({ id }) => {
     setAnchorEl(null);
   };
 
-  const handleDeactivate = () => {
+  const handleToggleUserLotStatus = () => {
+    setConfirmModalText(
+      'This action changes the lot status. Do you confirm the action?'
+    );
+    setAction('toggleUserLotStatus');
     dispatch(toggleModal('confirmModal'));
     handleClose();
   };
@@ -48,20 +53,33 @@ const ManageCardBlock = ({ id }) => {
     navigate(ROUTES.UPDATE_LOT.replace(':id', id));
   };
 
-  useEffect(() => {
-    if (confirmDeactivateStatus) {
-      dispatch(changeLotStatusByUser({ lotId: id, isActive: false }));
-      setConfirmStatus(false);
+  const handleDelete = () => {
+    setConfirmModalText('The lot will be permanently deleted. Are you sure?');
+    setAction('deleteLot');
+    dispatch(toggleModal('confirmModal'));
+    handleClose();
+  };
 
-      if (loadingStatus === 'fulfilled') {
-        setSnackbarProps({
-          message: 'Lot has been successfully deactivated',
-          severity: 'success',
-        });
-        dispatch(toggleModal('snackbar'));
-      }
+  useEffect(() => {
+    if (!confirmStatus) {
+      return;
     }
-  }, [confirmDeactivateStatus]);
+
+    switch (action) {
+      case 'toggleUserLotStatus':
+        dispatch(
+          changeLotStatusByUser({
+            lotId: id,
+            isActive: actions === 'activateDelete',
+          })
+        );
+
+        break;
+
+      case 'deleteLot':
+        dispatch(deleteLot({ id }));
+    }
+  }, [confirmStatus]);
 
   return (
     <>
@@ -89,25 +107,50 @@ const ManageCardBlock = ({ id }) => {
             'aria-labelledby': 'manage-button',
           }}
         >
-          <MenuItem onClick={handleEdit}>
-            <ListItemIcon>
-              <ModeEditOutlineOutlinedIcon />
-            </ListItemIcon>
-            Edit
-          </MenuItem>
-          <MenuItem onClick={handleDeactivate} className={deactivate}>
-            <ListItemIcon>
-              <PowerSettingsNewOutlinedIcon />
-            </ListItemIcon>
-            Deactivate
-          </MenuItem>
+          {actions === 'editDeactivate' && (
+            <MenuItem onClick={handleEdit}>
+              <ListItemIcon>
+                <ModeEditOutlineOutlinedIcon />
+              </ListItemIcon>
+              Edit
+            </MenuItem>
+          )}
+          {actions === 'editDeactivate' && (
+            <MenuItem
+              onClick={handleToggleUserLotStatus}
+              className={deactivate}
+            >
+              <ListItemIcon>
+                <PowerSettingsNewOutlinedIcon />
+              </ListItemIcon>
+              Deactivate
+            </MenuItem>
+          )}
+          {actions === 'activateDelete' && (
+            <MenuItem
+              onClick={handleToggleUserLotStatus}
+              className={deactivate}
+            >
+              <ListItemIcon>
+                <PlayArrowOutlinedIcon />
+              </ListItemIcon>
+              Activate
+            </MenuItem>
+          )}
+          {actions === 'activateDelete' && (
+            <MenuItem onClick={handleDelete} className={deactivate}>
+              <ListItemIcon>
+                <DeleteForeverOutlinedIcon />
+              </ListItemIcon>
+              Delete
+            </MenuItem>
+          )}
         </Menu>
       </div>
       <ConfirmActionModal
-        text="This action changes the lot status. Do you confirm the action?"
+        text={confirmModalText}
         setConfirmStatus={setConfirmStatus}
       />
-      <CustomSnackbar {...snackbarProps} />
     </>
   );
 };

@@ -12,13 +12,16 @@ import {
   createLot,
   filteredLots,
   changeLotStatusByUser,
+  changeLotStatusByAdmin,
 } from '@thunks/fetchLots';
 
 const lotListAdapter = createEntityAdapter();
 
 const initialState = lotListAdapter.getInitialState({
   loadingStatus: 'idle',
+  changeLotLoadingStatus: 'idle',
   lotId: null,
+  errors: null,
 });
 
 const lotListSlice = createSlice({
@@ -30,6 +33,12 @@ const lotListSlice = createSlice({
     },
     clearLots: (state) => {
       lotListAdapter.removeAll(state);
+    },
+    clearErrors: (state) => {
+      state.errors = null;
+    },
+    clearChangeLotLoadingStatus: (state) => {
+      state.changeLotLoadingStatus = 'idle';
     },
   },
   extraReducers: (builder) => {
@@ -103,6 +112,17 @@ const lotListSlice = createSlice({
       })
       .addCase(changeLotStatusByUser.rejected, (state) => {
         state.loadingStatus = 'rejected';
+      })
+      .addCase(changeLotStatusByAdmin.pending, (state) => {
+        state.changeLotLoadingStatus = 'pending';
+      })
+      .addCase(changeLotStatusByAdmin.fulfilled, (state, action) => {
+        lotListAdapter.setOne(state, action.payload);
+        state.changeLotLoadingStatus = 'fulfilled';
+      })
+      .addCase(changeLotStatusByAdmin.rejected, (state, action) => {
+        state.changeLotLoadingStatus = 'rejected';
+        state.errors = action.payload;
       });
   },
 });
@@ -118,6 +138,7 @@ export const { selectById: selectLotDetailById } = lotListAdapter.getSelectors(
 );
 
 const { actions, reducer } = lotListSlice;
-export const { setLotId, clearLots } = actions;
+export const { setLotId, clearLots, clearErrors, clearChangeLotLoadingStatus } =
+  actions;
 
 export default reducer;
