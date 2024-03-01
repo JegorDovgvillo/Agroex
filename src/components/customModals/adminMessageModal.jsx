@@ -40,9 +40,7 @@ const AdminMessageModal = ({ setAdminMessage, setConfirmStatus }) => {
         <div className={modalContent}>
           <Formik
             initialValues={{ message: '' }}
-            onSubmit={(values) => {
-              handleSubmit(values);
-            }}
+            onSubmit={handleSubmit}
             validationSchema={adminMessageValidationSchema}
           >
             {({ values, errors, touched, isValid }) => (

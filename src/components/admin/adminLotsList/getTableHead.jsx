@@ -38,12 +38,8 @@ export const getTableHead = (
   handleCancelClick,
   setEditedValue
 ) => {
-  const getCamelCaseString = (str) => {
-    return _.camelCase(str);
-  };
-
   const handleSelectChange = (params, newValue) => {
-    setEditedValue(getCamelCaseString(newValue));
+    setEditedValue(_.camelCase(newValue));
     params.api.setEditCellValue({
       id: params.id,
       field: params.field,
@@ -160,7 +156,6 @@ export const getTableHead = (
     {
       field: 'title',
       headerName: 'Title',
-
       headerAlign: 'center',
       width: 150,
       renderCell: (params) => getTitle(params),
@@ -184,7 +179,6 @@ export const getTableHead = (
       headerAlign: 'center',
       width: 150,
     },
-
     {
       field: 'quantity',
       headerName: 'Quantity',
@@ -241,7 +235,6 @@ export const getTableHead = (
       headerAlign: 'center',
       width: 100,
     },
-
     {
       field: 'bets',
       headerName: 'Is Transaction',
@@ -249,7 +242,6 @@ export const getTableHead = (
       headerAlign: 'center',
       width: 120,
     },
-
     {
       field: 'innerStatus',
       headerName: 'Status',

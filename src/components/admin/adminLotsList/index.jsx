@@ -109,14 +109,16 @@ export default function AdminLotsList() {
   };
 
   const handleSaveClick = () => {
-    !editedValue
-      ? setRowModesModel({
-          ...rowModesModel,
-          [currLotId]: {
-            mode: GridRowModes.View,
-          },
-        })
-      : dispatch(toggleModal('confirmModal'));
+    if (!editedValue) {
+      setRowModesModel({
+        ...rowModesModel,
+        [currLotId]: {
+          mode: GridRowModes.View,
+        },
+      });
+    } else {
+      dispatch(toggleModal('confirmModal'));
+    }
   };
 
   const handleShowMoreClick = (id) => () => {
@@ -151,13 +153,6 @@ export default function AdminLotsList() {
       handleCancelClick,
       setEditedValue
     );
-
-  const processRowUpdate = (newRow) => {
-    const updatedRow = { ...newRow, isNew: false };
-    setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
-
-    return updatedRow;
-  };
 
   const handleRowModesModelChange = (newRowModesModel) => {
     setRowModesModel(newRowModesModel);
@@ -225,14 +220,11 @@ export default function AdminLotsList() {
             rowModesModel={rowModesModel}
             onRowModesModelChange={handleRowModesModelChange}
             onRowEditStop={handleRowEditStop}
-            processRowUpdate={processRowUpdate}
             slotProps={{
               toolbar: { setRows, setRowModesModel },
             }}
             columnVisibilityModel={columnVisibilityModel}
-            onColumnVisibilityModelChange={(newModel) =>
-              setColumnVisibilityModel(newModel)
-            }
+            onColumnVisibilityModelChange={setColumnVisibilityModel}
           />
 
           {isModalOpened && <DetailedLotViewModal />}

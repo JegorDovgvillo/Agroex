@@ -61,17 +61,23 @@ const ManageCardBlock = ({ id, actions }) => {
   };
 
   useEffect(() => {
-    if (confirmStatus && action === 'toggleUserLotStatus') {
-      dispatch(
-        changeLotStatusByUser({
-          lotId: id,
-          isActive: actions === 'activateDelete',
-        })
-      );
+    if (!confirmStatus) {
+      return;
     }
 
-    if (confirmStatus && action === 'deleteLot') {
-      dispatch(deleteLot({ id }));
+    switch (action) {
+      case 'toggleUserLotStatus':
+        dispatch(
+          changeLotStatusByUser({
+            lotId: id,
+            isActive: actions === 'activateDelete',
+          })
+        );
+
+        break;
+
+      case 'deleteLot':
+        dispatch(deleteLot({ id }));
     }
   }, [confirmStatus]);
 

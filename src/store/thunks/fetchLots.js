@@ -62,7 +62,12 @@ export const changeLotStatusByUser = createAsyncThunk(
   async ({ lotId, isActive }) => {
     const response = await axiosInstance.post(
       `${ENDPOINTS.LOTS}/${lotId}/userStatus`,
-      { status: isActive }
+      null,
+      {
+        params: {
+          status: isActive,
+        },
+      }
     );
 
     return response.data;
@@ -87,10 +92,6 @@ export const changeLotStatusByAdmin = createAsyncThunk(
 
       return response.data;
     } catch (error) {
-      if (!error.response) {
-        throw error;
-      }
-
       return rejectWithValue(error.response.data);
     }
   }
