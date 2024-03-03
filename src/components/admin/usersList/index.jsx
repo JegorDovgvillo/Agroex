@@ -14,7 +14,7 @@ import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 import {
   fetchUsers,
   changeUserStatus,
-  updateDataBase,
+  updateUsersInTheDataBase,
 } from '@thunks/fetchUsers';
 
 import { setUserId, usersListSelector } from '@slices/usersListSlice';
@@ -41,12 +41,12 @@ const {
 
 export default function UsersList() {
   const dispatch = useDispatch();
-  
+
   const users = useSelector(usersListSelector);
   const userId = useSelector((state) => state.usersList.userId);
 
   const [confirmStatus, setConfirmStatus] = useState(false);
-
+  const [confirmUpdateDB, setConfirmUpdateDB] = useState(false);
   useEffect(() => {
     dispatch(fetchUsers());
   }, [dispatch]);
@@ -55,8 +55,11 @@ export default function UsersList() {
     if (confirmStatus) {
       dispatch(changeUserStatus({ id: userId }));
       setConfirmStatus(false);
+    } else if (confirmUpdateDB) {
+      dispatch(updateUsersInTheDataBase());
+      setConfirmUpdateDB(false);
     }
-  }, [confirmStatus]);
+  }, [confirmStatus, confirmUpdateDB]);
 
   const toggleUserStatus = (id) => {
     dispatch(setUserId(id));
@@ -64,7 +67,7 @@ export default function UsersList() {
   };
 
   const updateUsersInDB = () => {
-    dispatch(updateDataBase());
+    dispatch(toggleModal('infoModal'));
   };
 
   return (
@@ -80,7 +83,7 @@ export default function UsersList() {
           className={updateDB}
           onClick={updateUsersInDB}
         >
-          Update DB
+          Update users in the DB
           <CloudDownloadIcon />
         </Typography>
       </div>
@@ -118,11 +121,8 @@ export default function UsersList() {
                 <TableCell>
                   <div className={editBlock}>
                     <PowerSettingsNewIcon
-                      className={
-                        user.enabled
-                          ? `${enabled} ${editIcon}`
-                          : `${disabled} ${editIcon}`
-                      }
+                      className={`${editIcon}
+                        ${user.enabled ? enabled : disabled}`}
                       onClick={() => toggleUserStatus(user.id)}
                     />
                   </div>
@@ -134,6 +134,11 @@ export default function UsersList() {
       <ConfirmActionModal
         text="This action change the user status. Do you confirm the action?"
         setConfirmStatus={setConfirmStatus}
+      />
+      <ConfirmActionModal
+        text="This action updates the user database. Do you confirm the action?"
+        setConfirmStatus={setConfirmUpdateDB}
+        modalType="infoModal"
       />
     </>
   );

@@ -81,7 +81,7 @@ const UserUpdateForm = ({
 
     switch (nextStepEmail || nextStepName) {
       case 'CONFIRM_ATTRIBUTE_WITH_CODE':
-        dispatch(toggleModal('updatingModal'));
+        dispatch(toggleModal('codeModal'));
         break;
 
       case 'DONE':
@@ -169,6 +169,7 @@ const UserUpdateForm = ({
         values={formik.values}
         sub={sub}
         zoneinfo={zoneinfo}
+        resetForm={formik.resetForm}
       />
     </Box>
   );

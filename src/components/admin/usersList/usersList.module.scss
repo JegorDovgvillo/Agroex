@@ -80,23 +80,23 @@
 .editBlock {
   display: flex;
   justify-content: center;
-
-  .editIcon {
-    &:hover {
-      transition: 0.3s ease-out;
-      color: $mainBase;
-      cursor: pointer;
-    }
-  }
+  cursor: pointer;
 
   .enabled {
     color: $successBase;
     transition: 0.3s ease-out;
+    &:hover {
+      color: $errorDark;
+    }
   }
 
   .disabled {
     color: $errorBase;
     transition: 0.3s ease-out;
+
+    &:hover {
+      color: $successBase;
+    }
   }
 
   .deleteIcon {

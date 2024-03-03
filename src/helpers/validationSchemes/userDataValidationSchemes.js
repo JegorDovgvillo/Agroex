@@ -16,6 +16,25 @@ export const updateUserValidationSchema = object().shape({
 });
 
 export const userPasswordsValidationSchema = object().shape({
-  oldPassword: getPasswordFieldValidationSchema(),
-  newPassword: getPasswordFieldValidationSchema(),
+  oldPassword: getPasswordFieldValidationSchema().test(
+    'old-password-match',
+    'Old password should not match with the new password or confirmed password',
+    function (value, { parent }) {
+      return value !== parent.newPassword && value !== parent.retryPassword;
+    }
+  ),
+  newPassword: getPasswordFieldValidationSchema().test(
+    'new-password-match',
+    'New password should match the confirmed password',
+    function (value, { parent }) {
+      return value !== parent.oldPassword && value === parent.retryPassword;
+    }
+  ),
+  retryPassword: getPasswordFieldValidationSchema().test(
+    'retry-password-match',
+    'Confirmed password should match the new password',
+    function (value, { parent }) {
+      return value !== parent.oldPassword && value === parent.newPassword;
+    }
+  ),
 });

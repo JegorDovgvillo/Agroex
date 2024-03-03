@@ -68,6 +68,11 @@ const DetailedLotViewModal = () => {
           </DialogActions>
         </Dialog>
       )}
+      <ConfirmActionModal
+        text="This action changes the lot status. Do you confirm the action?"
+        setConfirmStatus={setConfirm}
+        modalType="confirmNestedModal"
+      />
     </>
   );
 };

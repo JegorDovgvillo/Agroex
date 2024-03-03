@@ -38,7 +38,7 @@ const usersListSlice = createSlice({
       })
       .addCase(fetchUsers.fulfilled, (state, action) => {
         state.loadingStatus = 'fulfilled';
-        usersListAdapter.setAll(state, action.payload);
+        usersListAdapter.setMany(state, action.payload);
       })
       .addCase(fetchUsers.rejected, (state) => {
         state.loadingStatus = 'rejected';
@@ -70,6 +70,7 @@ const usersListSlice = createSlice({
         state.loadingStatus = 'fulfilled';
         usersListAdapter.upsertOne(state, action.payload);
         state.userId = action.payload.id;
+        state.userInfo = action.payload;
       })
       .addCase(getUserFromCognito.rejected, (state) => {
         state.loadingStatus = 'rejected';

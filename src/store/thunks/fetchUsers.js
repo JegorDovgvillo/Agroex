@@ -72,15 +72,14 @@ export const changeUserStatus = createAsyncThunk(
   'usersList/changeUserStatus',
   async ({ id }) => {
     const response = await axiosInstance.post(
-      `${ENDPOINTS.USERS}/${id}/enable`,
-      {}
+      `${ENDPOINTS.USERS}/${id}/enable`
     );
 
     return response.data;
   }
 );
 
-export const updateDataBase = createAsyncThunk(
+export const updateUsersInTheDataBase = createAsyncThunk(
   'usersList/updateDataBase',
   async () => {
     const token = await getToken();

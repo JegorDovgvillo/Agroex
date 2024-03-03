@@ -73,7 +73,7 @@ export const tagsFieldValidationSchema = (min, max) => {
 };
 
 export const getPasswordFieldValidationSchema = () => {
-  return string()
+  const commonSchema = string()
     .required(requiredMessage)
     .test(
       'contains-digit',
@@ -91,8 +91,15 @@ export const getPasswordFieldValidationSchema = () => {
       (value) => /[A-Z]/.test(value)
     )
     .test(
+      'contains-special-characters',
+      'Password should contain at least one special character',
+      (value) => /[!@#$%^&*(),.?":{}|<>]/.test(value)
+    )
+    .test(
       'is-long-enough',
       'Password should be at least 8 characters long',
       (value) => value.length >= 8
     );
+
+  return commonSchema;
 };
