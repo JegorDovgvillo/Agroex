@@ -22,7 +22,7 @@ const CreateNewLot = () => {
   const categories = useSelector(selectRootCategories);
   const country = useSelector(countrySelector);
   const tags = useSelector(tagsSelector);
-  const userId = useSelector((state) => state.usersList.userId);
+  const userId = useSelector((state) => state.usersList.userInfo);
 
   const [files, setFiles] = useState([]);
   const [disabled, setDisabled] = useState(false);
@@ -62,7 +62,7 @@ const CreateNewLot = () => {
         parentId: values.category,
       },
       lotType: values.lotType,
-      userId: userId,
+      userId: userId.sub,
       location: {
         countryId: values.country,
         region: values.region,

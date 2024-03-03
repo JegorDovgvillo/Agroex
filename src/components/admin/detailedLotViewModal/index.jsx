@@ -12,6 +12,7 @@ import { selectLotDetailById } from '@slices/lotListSlice';
 import { selectRootCategories } from '@slices/categoriesSlice';
 
 import AdminDetailedLotView from '../adminDetailedLotView';
+import ConfirmActionModal from '@customModals/confirmActionModal';
 
 import styles from './detailedLotViewModal.module.scss';
 
