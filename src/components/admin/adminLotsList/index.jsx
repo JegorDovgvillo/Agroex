@@ -8,7 +8,10 @@ import {
   GridRowEditStopReasons,
 } from '@mui/x-data-grid';
 
+import { CircularProgress } from '@mui/material';
+
 import { fetchLots, changeLotStatusByAdmin } from '@thunks/fetchLots';
+import { fetchUsers } from '@thunks/fetchUsers';
 
 import { toggleModal, selectModalState } from '@slices/modalSlice';
 import {
@@ -17,11 +20,11 @@ import {
   clearErrors,
   clearChangeLotLoadingStatus,
 } from '@slices/lotListSlice';
-import { setUserId } from '@slices/usersListSlice';
+import { setUserId, usersListSelector } from '@slices/usersListSlice';
 
-import { getDHMSFromMilliseconds } from '@helpers/getDHMSFromMilliseconds';
 import getFormattedDate from '@helpers/getFormattedDate';
 import getNumberWithCurrency from '@helpers/getNumberWithCurrency';
+import { getFormattedDuration } from '@helpers/getFormattedDuration';
 import ConfirmActionModal from '@customModals/confirmActionModal';
 import AdminMessageModal from '@customModals/adminMessageModal';
 
@@ -30,32 +33,20 @@ import { getTableHead } from './getTableHead';
 
 import styles from './adminLotsList.module.scss';
 
-const { container } = styles;
-
-const getFormattedDuration = (duration) => {
-  const { days, hours, minutes } = getDHMSFromMilliseconds(duration);
-
-  const formattedDuration = _.compact([
-    days > 0 && `${days}d`,
-    hours > 0 && `${hours}h`,
-    minutes > 0 && `${minutes}m`,
-  ]).join(' ');
-
-  return formattedDuration;
-};
+const { container, editingRow } = styles;
 
 const getFormattedString = (str) => {
   return _.words(_.startCase(str)).join(' ').toLowerCase();
 };
 
-export default function AdminLotsList() {
-  const dispatch = useDispatch();
-  const lots = useSelector(lotListSelector);
+const getInitialRows = (lots, users) => {
+  return lots.map((lot) => {
+    const user = _.find(users, { id: lot.userId });
 
-  const initialRows = lots.map((lot) => {
     const row = {
       id: lot.id,
       description: lot.description,
+      user: user?.username || user?.name,
       variety: lot.variety,
       size: lot.size,
       packaging: lot.packaging,
@@ -68,6 +59,7 @@ export default function AdminLotsList() {
       lotType: getFormattedString(lot.lotType),
       price: getNumberWithCurrency(lot.price, lot.currency),
       minPrice: getNumberWithCurrency(lot.minPrice, lot.currency),
+      status: lot.status,
       userStatus: lot.userStatus,
       bets: lot.bets.length ? 'yes' : 'no',
       innerStatus: getFormattedString(lot.innerStatus),
@@ -75,10 +67,15 @@ export default function AdminLotsList() {
 
     return row;
   });
+};
 
+export default function AdminLotsList() {
+  const dispatch = useDispatch();
+  const lots = useSelector(lotListSelector);
+  const users = useSelector(usersListSelector);
   const [confirmStatus, setConfirmStatus] = useState(false);
   const [currLotId, setCurrLotId] = useState(null);
-  const [rows, setRows] = useState(initialRows);
+  const [rows, setRows] = useState([]);
   const [editedValue, setEditedValue] = useState('');
   const [adminComment, setAdminComment] = useState(null);
   const [rowModesModel, setRowModesModel] = useState({});
@@ -87,6 +84,9 @@ export default function AdminLotsList() {
     variety: false,
     size: false,
     packaging: false,
+    quantity: false,
+    price: false,
+    minPrice: false,
   });
   const isModalOpened = useSelector((state) =>
     selectModalState(state, 'infoModal')
@@ -166,7 +166,15 @@ export default function AdminLotsList() {
 
   useEffect(() => {
     dispatch(fetchLots());
+    dispatch(fetchUsers());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (!!lots.length && !!users) {
+      const rows = getInitialRows(lots, users);
+      setRows(rows);
+    }
+  }, [lots, users]);
 
   useEffect(() => {
     if (confirmStatus) {
@@ -204,7 +212,7 @@ export default function AdminLotsList() {
 
   return (
     <>
-      {lots && rows && (
+      {rows && (
         <div className={container}>
           <DataGrid
             isCellEditable={(params) => !params.bets}
@@ -216,11 +224,18 @@ export default function AdminLotsList() {
             rowModesModel={rowModesModel}
             onRowModesModelChange={setRowModesModel}
             onRowEditStop={handleRowEditStop}
+            slots={{ noRowsOverlay: CircularProgress }}
             slotProps={{
               toolbar: { setRows, setRowModesModel },
             }}
             columnVisibilityModel={columnVisibilityModel}
             onColumnVisibilityModelChange={setColumnVisibilityModel}
+            getRowClassName={(params) =>
+              params.id in rowModesModel &&
+              rowModesModel[params.id].mode === GridRowModes.Edit
+                ? `${editingRow}`
+                : ''
+            }
           />
 
           {isModalOpened && <DetailedLotViewModal />}

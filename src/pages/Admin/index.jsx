@@ -3,6 +3,8 @@ import { Outlet } from 'react-router-dom';
 import { CssBaseline, Toolbar } from '@mui/material';
 import { useDispatch } from 'react-redux';
 
+import { CssBaseline, Toolbar } from '@mui/material';
+
 import { getUserFromCognito } from '@thunks/fetchUsers';
 
 import { MainListItems } from '@components/admin/adminListItems';
@@ -13,6 +15,7 @@ import styles from './admin.module.scss';
 
 const AdminPage = () => {
   const dispatch = useDispatch();
+
   const [isOpen, setIsOpen] = useState(window.innerWidth > 1200);
   const [isBarVisible, setIsBarVisible] = useState(window.innerWidth > 1000);
 

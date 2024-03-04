@@ -72,6 +72,7 @@ const LotForm = ({
     days: days,
     hours: hours,
     minutes: minutes,
+    bets: selectedLot?.bets,
   };
 
   const [isFirstSubmit, setIsFirstSubmit] = useState(true);

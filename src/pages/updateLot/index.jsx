@@ -96,6 +96,7 @@ const UpdateLot = () => {
       },
       tags: values.tags,
       images: filteredImages,
+      bets: values.bets,
     };
 
     files.forEach((file) => {

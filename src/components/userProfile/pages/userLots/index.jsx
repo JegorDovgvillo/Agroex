@@ -30,18 +30,21 @@ const UserLots = () => {
   );
 
   const filteredLotsByActiveTab = filteredLotsByUserId.filter((item) => {
-    const isAuctionPendingLot =
-      item.innerStatus === 'new' || item.innerStatus === 'moderated';
+    const isActiveLotStatus = item.status === 'active';
+    const isPendingLotStatus =
+      item.userStatus !== 'inactive' &&
+      (item.innerStatus === 'new' || item.innerStatus === 'onModeration');
+    const isInactiveLotStatus = !isActiveLotStatus && !isPendingLotStatus;
 
     switch (tab) {
       case 'active':
-        return item.status === tab;
+        return isActiveLotStatus;
 
       case 'pending':
-        return isAuctionPendingLot;
+        return isPendingLotStatus;
 
       case 'inactive':
-        return item.status === 'inactive' && !isAuctionPendingLot;
+        return isInactiveLotStatus;
     }
   });
 

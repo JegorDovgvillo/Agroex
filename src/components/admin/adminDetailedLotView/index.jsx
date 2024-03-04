@@ -2,6 +2,7 @@ import { find } from 'lodash';
 
 import getNumberWithCurrency from '@helpers/getNumberWithCurrency';
 import getFormattedDate from '@helpers/getFormattedDate';
+import { getFormattedDuration } from '@helpers/getFormattedDuration';
 
 import CustomSlider from '@components/customSlider';
 
@@ -21,6 +22,7 @@ const AdminDetailedLotView = ({ lot, userData, categories }) => {
     creationDate,
     currency,
     description,
+    duration,
     enabledByAdmin,
     expirationDate,
     location,
@@ -71,8 +73,12 @@ const AdminDetailedLotView = ({ lot, userData, categories }) => {
     },
     { key: 'Variety', value: variety },
     { key: 'Description', value: description },
+    { key: 'Duration', value: duration ? getFormattedDuration(duration) : '' },
     { key: 'Creation Date', value: getFormattedDate(creationDate) },
-    { key: 'Expiration Date', value: getFormattedDate(expirationDate) },
+    {
+      key: 'Expiration Date',
+      value: expirationDate ? getFormattedDate(expirationDate) : '',
+    },
     { key: 'Location', value: `${location.countryName}, ${location.region}` },
     { key: 'Size / Packaging', value: `${size} / ${packaging}` },
     {
@@ -85,10 +91,10 @@ const AdminDetailedLotView = ({ lot, userData, categories }) => {
         <div className={userDataContainer}>
           <span>{`Name: ${username}`}</span>
           <span>{`Email: ${email}`}</span>
-          <span>{`Phone Number: ${phoneNumber}`}</span>
-          <span>{`Registration Date: ${getFormattedDate(
-            userCreationDate
-          )}`}</span>
+          <span>{`Phone Number: ${phoneNumber || 'n/a'}`}</span>
+          <span>{`Registration Date: ${
+            userCreationDate ? getFormattedDate(userCreationDate) : 'n/a'
+          }`}</span>
         </div>
       ),
     },

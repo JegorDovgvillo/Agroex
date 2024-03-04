@@ -1,16 +1,29 @@
 @import "@scss/colorVariables.module.scss";
 
+.editingRow div {
+  background-color: $mainExtraLight !important;
+}
 .container {
   max-width: 100%;
   overflow-x: auto;
+
+  .headerCell * {
+    white-space: normal !important;
+    line-height: 1.4 !important;
+    text-align: center;
+  }
 
   .cell {
     text-align: center !important;
     justify-content: center !important;
   }
+
   .lotTitleBlock {
     display: flex;
+    align-items: center;
     column-gap: 8px;
+    width: 100%;
+    padding: 0 10px;
 
     & .title {
       text-overflow: ellipsis;

@@ -22,9 +22,9 @@ const {
   statusSelectField,
   lotTitleBlock,
   lotImage,
-  userName,
   title,
   cell,
+  headerCell,
 } = styles;
 
 const baseURL = `${IMAGE_URL}${ENDPOINTS.IMAGES}`;
@@ -79,10 +79,7 @@ export const getTableHead = (
         >
           <ImageNotSupportedIcon />
         </Avatar>
-        <p
-          className={`${userName} ${title}`}
-          onClick={handleShowMoreClick(lot.id)}
-        >
+        <p className={title} onClick={handleShowMoreClick(lot.id)}>
           {lot.title}
         </p>
       </div>
@@ -151,95 +148,118 @@ export const getTableHead = (
   };
 
   const tableHead = [
-    { field: 'id', headerName: 'ID', width: 40 },
+    {
+      field: 'id',
+      headerName: 'ID',
+      headerClassName: `${headerCell}`,
+      width: 40,
+    },
     {
       field: 'title',
       headerName: 'Title',
-      headerAlign: 'center',
-      width: 150,
+      headerClassName: `${headerCell}`,
+      width: 200,
       renderCell: (params) => getTitle(params),
+    },
+    {
+      field: 'user',
+      headerName: 'User Name',
+      headerClassName: `${headerCell}`,
+      width: 150,
     },
     {
       field: 'description',
       headerName: 'Description',
-      headerAlign: 'center',
+      headerClassName: `${headerCell}`,
       width: 150,
     },
     {
       field: 'variety',
       headerName: 'Variety',
-      headerAlign: 'center',
+      headerClassName: `${headerCell}`,
       width: 150,
     },
-    { field: 'size', headerName: 'Size', headerAlign: 'center', width: 150 },
+    {
+      field: 'size',
+      headerName: 'Size',
+      headerClassName: `${headerCell}`,
+      width: 150,
+    },
     {
       field: 'packaging',
       headerName: 'Packaging',
-      headerAlign: 'center',
+      headerClassName: `${headerCell}`,
       width: 150,
     },
     {
       field: 'quantity',
       headerName: 'Quantity',
       cellClassName: `${cell}`,
-      headerAlign: 'center',
+      headerClassName: `${headerCell}`,
       width: 90,
     },
     {
       field: 'creationDate',
       headerName: 'Creation Date',
       cellClassName: `${cell}`,
-      headerAlign: 'center',
+      headerClassName: `${headerCell}`,
       width: 150,
     },
     {
       field: 'expirationDate',
       headerName: 'Expiration Date',
       cellClassName: `${cell}`,
-      headerAlign: 'center',
+      headerClassName: `${headerCell}`,
       width: 150,
     },
     {
       field: 'duration',
       headerName: 'Duration',
       cellClassName: `${cell}`,
-      headerAlign: 'center',
+      headerClassName: `${headerCell}`,
       width: 100,
     },
     {
       field: 'lotType',
       headerName: 'Lot Type',
       cellClassName: `${cell}`,
-      headerAlign: 'center',
+      headerClassName: `${headerCell}`,
       width: 100,
     },
     {
       field: 'price',
       headerName: 'Price',
       cellClassName: `${cell}`,
-      headerAlign: 'center',
+      headerClassName: `${headerCell}`,
       width: 100,
     },
     {
       field: 'minPrice',
       headerName: 'Min Price',
       cellClassName: `${cell}`,
-      headerAlign: 'center',
+      headerClassName: `${headerCell}`,
+      width: 100,
+    },
+    {
+      field: 'status',
+      headerName: 'Lot Status',
+      cellClassName: `${cell}`,
+      headerClassName: `${headerCell}`,
       width: 100,
     },
     {
       field: 'userStatus',
       headerName: 'Lot Status from User',
       cellClassName: `${cell}`,
-      headerAlign: 'center',
+      headerClassName: `${headerCell}`,
       width: 100,
     },
     {
       field: 'bets',
       headerName: 'Is Transaction',
       cellClassName: `${cell}`,
-      headerAlign: 'center',
-      width: 120,
+      headerClassName: `${headerCell}`,
+      width: 95,
     },
     {
       field: 'innerStatus',

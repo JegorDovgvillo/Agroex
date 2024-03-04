@@ -1,9 +1,17 @@
 @import "@scss/colorVariables.module.scss";
 
-.deactivate {
+.errorStyleStatus {
   color: $errorDark;
 
   svg {
     fill: $errorDark;
+  }
+}
+
+.baseStyleStatus {
+  color: $mainBase;
+
+  svg {
+    fill: $mainBase;
   }
 }

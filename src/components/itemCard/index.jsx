@@ -40,12 +40,17 @@ const ItemCard = ({ ...item }) => {
       </div>
       <div className={styles.priceWrapp}>
         <div className={styles.priceBlock}>
-          <PriceBlock
-            className={['list', 'auctionSum']}
-            totalCost={item.price}
-            unitCost={item.price / item.quantity}
-            currency={item.currency}
-          />
+          {item.bets.length > 0 ? (
+            <PriceBlock
+              className={['list', 'auctionSum']}
+              totalCost={item.bets.number}
+              unitCost={item.bets.number / item.quantity}
+              currency={item.currency}
+            />
+          ) : (
+            <h6 className={styles.auctionSum}>No bets</h6>
+          )}
+
           <CustomButton
             size="M"
             text="My bet"

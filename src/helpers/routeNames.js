@@ -4,9 +4,8 @@ const ROUTES = {
   LOTS_DETAILS: '/lots/:id/details',
 
   ADMIN: '/admin',
-  ADMIN_CATEGORIES: '/admin/categories',
-  ADMIN_USERS: '/admin/users',
-  ADMIN_LOTS: '/admin/lots',
+  ADMIN_PAGE: '/admin/:page',
+
   CREATE_NEW_LOT: '/new-lot',
   UPDATE_LOT: '/update-lot/:id',
 
@@ -15,6 +14,12 @@ const ROUTES = {
   USER_PROFILE_PAGE_TAB: '/user-profile/:page/:tab',
 
   LOG_IN: '/log-in',
+};
+
+export const ADMIN_PAGES = {
+  ADMIN_CATEGORIES: 'categories',
+  ADMIN_USERS: 'users',
+  ADMIN_LOTS: 'lots',
 };
 
 export const USER_PROFILE_PAGE_ROTES = {

@@ -9,10 +9,7 @@ import UserProfile from '@pages/UserProfile';
 import HomePage from '@pages/HomePage';
 import Login from '@pages/login';
 
-import UsersList from '@components/admin/usersList';
 import Layout from '@components/layout';
-import CategoriesList from '@components/admin/adminCategories';
-import AdminLotsList from '@components/admin/adminLotsList';
 import UserProfilePage from '@components/userProfile/userProfilePage';
 import UserProfileTabPanel from '@components/customTabPanels/userProfileTabPanel';
 import PrivateUserRoute from '@components/privatePages/privateUserRoute';
@@ -55,16 +52,8 @@ const Router = () => {
           element: <PrivateAdminRoute Component={AdminPage} />,
           children: [
             {
-              path: ROUTES.ADMIN_CATEGORIES,
-              element: <CategoriesList />,
-            },
-            {
-              path: ROUTES.ADMIN_USERS,
-              element: <UsersList />,
-            },
-            {
-              path: ROUTES.ADMIN_LOTS,
-              element: <AdminLotsList />,
+              path: ROUTES.ADMIN_PAGE,
+              element: <AdminTabContent />,
             },
           ],
         },

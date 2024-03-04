@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { DateTime } from 'luxon';
 import _ from 'lodash';
 
 import CheckIcon from '@mui/icons-material/Check';
@@ -23,12 +23,69 @@ const {
   inactive,
   adminComment,
   pricesContainer,
+  auctionSum,
 } = styles;
+
+const getLotStatuses = (tab, item, isLotTransaction) => {
+  const lotStatuses = [];
+
+  switch (tab) {
+    case 'active':
+      lotStatuses.push(item.lotType);
+      break;
+
+    case 'pending':
+      lotStatuses.push(item.lotType, item.innerStatus);
+      break;
+
+    case 'inactive':
+      lotStatuses.push(item.lotType, item.innerStatus, item.userStatus);
+      isLotTransaction && lotStatuses.push('closed');
+      break;
+  }
+
+  return lotStatuses;
+};
 
 const UserLotCard = (item) => {
   const { tab } = useParams();
+  const current = DateTime.local().toISO();
+  const expiration = item.expirationDate;
 
-  const [lotStatus, setLotStatus] = useState(null);
+  const isLotExpired =
+    DateTime.fromISO(current).diff(DateTime.fromISO(expiration)).milliseconds >
+    0;
+  const isAuctionLot = item.lotType === 'auctionSell';
+  const isNewLot = item.innerStatus === 'new';
+  const isLotTransaction = item.bets?.length > 0;
+  const isRejectedByAdminLot = item.innerStatus === 'rejected';
+  const isDeactivatedByUserLot = item.userStatus === 'inactive';
+  const lotStatuses = getLotStatuses(tab, item, isLotTransaction, isLotExpired);
+
+  const getLotActions = () => {
+    let actionsArr = [];
+
+    if (
+      (tab === 'active' && !isAuctionLot) ||
+      (tab === 'pending' && isNewLot)
+    ) {
+      actionsArr = _.union(actionsArr, ['edit', 'deactivate']);
+    }
+
+    if (tab === 'inactive') {
+      actionsArr =
+        !isLotExpired &&
+        isDeactivatedByUserLot &&
+        _.union(actionsArr, ['activate']);
+      actionsArr =
+        !isLotExpired && isRejectedByAdminLot && _.union(actionsArr, ['edit']);
+      actionsArr = !isLotTransaction && _.union(actionsArr, ['delete']);
+    }
+
+    return actionsArr;
+  };
+
+  const actions = getLotActions();
 
   //todo write confirm lot by user logic
   const handleClick = (event) => {
@@ -51,43 +108,28 @@ const UserLotCard = (item) => {
 
   const confirmButtonWidth = '306px';
 
-  useEffect(() => {
-    tab === 'pending' && setLotStatus(item.innerStatus);
-  }, [tab]);
-
-  const isAuctionLotType = item.lotType === 'auctionSell';
-
-  const isLotEditable =
-    (isAuctionLotType &&
-      item.innerStatus === 'new' &&
-      item.userStatus !== 'inactive') ||
-    (!isAuctionLotType && item.status !== 'inactive');
-
-  const isLotDeletable = item.userStatus === 'inactive';
-
   return (
     <div className={styles.cardWrapp}>
       <ItemCardInfoBlock item={item}>
         <>
-          {lotStatus && <LotStatusBlock lotStatus={lotStatus} />}
-          {isLotEditable && (
-            <ManageCardBlock id={item.id} actions={'editDeactivate'} />
-          )}
-          {isLotDeletable && (
-            <ManageCardBlock id={item.id} actions={'activateDelete'} />
+          {!!lotStatuses.length && <LotStatusBlock lotStatuses={lotStatuses} />}
+          {!!actions.length && (
+            <ManageCardBlock id={item.id} actions={actions} />
           )}
         </>
       </ItemCardInfoBlock>
       <div className={containerClassNames}>
         <div className={pricesContainer}>
           <div className={priceBlock}>
-            {isAuctionLotType && (
+            {item.bets?.length > 0 ? (
               <PriceBlock
                 className={['list', 'auctionSum']}
-                totalCost={item.price}
-                unitCost={item.price / item.quantity}
+                totalCost={item.bets.number}
+                unitCost={item.bets.number / item.quantity}
                 currency={item.currency}
               />
+            ) : (
+              <h6 className={auctionSum}>No bets</h6>
             )}
           </div>
 
@@ -101,7 +143,7 @@ const UserLotCard = (item) => {
           </div>
         </div>
 
-        {isAuctionLotType && (
+        {isAuctionLot && (
           <CustomButton
             size="L"
             text={`Confirm for ${totalBet}`}
