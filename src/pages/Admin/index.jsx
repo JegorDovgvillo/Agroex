@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 
 import { CssBaseline, Toolbar } from '@mui/material';
 
-import { getUserFromCognito } from '@thunks/fetchUsers';
+import { CssBaseline, Toolbar } from '@mui/material';
 
 import { MainListItems } from '@components/admin/adminListItems';
 import CustomAppBar from '@components/customAppBar';
