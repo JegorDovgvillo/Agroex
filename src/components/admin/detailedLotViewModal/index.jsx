@@ -9,7 +9,7 @@ import { fetchAllCategories } from '@thunks/fetchCategories';
 import { selectUserById } from '@slices/usersListSlice';
 import { toggleModal, selectModalState } from '@slices/modalSlice';
 import { selectLotDetailById } from '@slices/lotListSlice';
-import { selectRootCategories } from '@slices/categoriesSlice';
+import { categoriesSelector } from '@slices/categoriesSlice';
 
 import AdminDetailedLotView from '../adminDetailedLotView';
 import ConfirmActionModal from '@customModals/confirmActionModal';
@@ -26,7 +26,7 @@ const DetailedLotViewModal = () => {
   const { userId } = useSelector((state) => state.usersList);
   const userData = useSelector((state) => selectUserById(state, userId));
   const [confirm, setConfirm] = useState(false);
-  const categories = useSelector(selectRootCategories);
+  const categories = useSelector(categoriesSelector);
 
   useEffect(() => {
     dispatch(fetchLotDetails(lotId));
@@ -46,7 +46,7 @@ const DetailedLotViewModal = () => {
 
   return (
     <>
-      {lot && userData && categories && (
+      {lot && userData && !!categories.length && (
         <Dialog
           maxWidth="none"
           className={dialog}
