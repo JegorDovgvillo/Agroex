@@ -15,7 +15,8 @@ import CategoriesList from '@components/admin/adminCategories';
 import AdminLotsList from '@components/admin/adminLotsList';
 import UserProfilePage from '@components/userProfile/userProfilePage';
 import UserProfileTabPanel from '@components/customTabPanels/userProfileTabPanel';
-import AuthenticatedPage from '@components/authenticatedPage';
+import PrivateUserRoute from '@components/privatePages/privateUserRoute';
+import PrivateAdminRoute from '@components/privatePages/privateAdminRoute';
 
 import ROUTES from './routeNames';
 
@@ -39,19 +40,19 @@ const Router = () => {
         },
         {
           path: ROUTES.LOTS_DETAILS,
-          element: <LotDetails />,
+          element: <PrivateUserRoute Component={LotDetails} />,
         },
         {
           path: ROUTES.CREATE_NEW_LOT,
-          element: <AuthenticatedPage Component={CreateNewLot} />,
+          element: <PrivateUserRoute Component={CreateNewLot} />,
         },
         {
           path: ROUTES.UPDATE_LOT,
-          element: <UpdateLot />,
+          element: <PrivateUserRoute Component={UpdateLot} />,
         },
         {
           path: ROUTES.ADMIN,
-          element: <AdminPage />,
+          element: <PrivateAdminRoute Component={AdminPage} />,
           children: [
             {
               path: ROUTES.ADMIN_CATEGORIES,
@@ -69,7 +70,7 @@ const Router = () => {
         },
         {
           path: ROUTES.USER_PROFILE,
-          element: <AuthenticatedPage Component={UserProfile} />,
+          element: <PrivateUserRoute Component={UserProfile} />,
           children: [
             {
               path: ROUTES.USER_PROFILE_PAGE,

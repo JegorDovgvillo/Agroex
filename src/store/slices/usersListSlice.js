@@ -9,6 +9,7 @@ import {
   fetchUser,
   getUserFromCognito,
   updateToken,
+  changeUserStatus,
 } from '@thunks/fetchUsers';
 
 const usersListAdapter = createEntityAdapter();
@@ -37,7 +38,7 @@ const usersListSlice = createSlice({
       })
       .addCase(fetchUsers.fulfilled, (state, action) => {
         state.loadingStatus = 'fulfilled';
-        usersListAdapter.addMany(state, action.payload);
+        usersListAdapter.setMany(state, action.payload);
       })
       .addCase(fetchUsers.rejected, (state) => {
         state.loadingStatus = 'rejected';
@@ -69,6 +70,7 @@ const usersListSlice = createSlice({
         state.loadingStatus = 'fulfilled';
         usersListAdapter.upsertOne(state, action.payload);
         state.userId = action.payload.id;
+        state.userInfo = action.payload;
       })
       .addCase(getUserFromCognito.rejected, (state) => {
         state.loadingStatus = 'rejected';
@@ -82,6 +84,16 @@ const usersListSlice = createSlice({
         state.userId = action.payload.id;
       })
       .addCase(updateToken.rejected, (state) => {
+        state.loadingStatus = 'rejected';
+      })
+      .addCase(changeUserStatus.pending, (state) => {
+        state.loadingStatus = 'pending';
+      })
+      .addCase(changeUserStatus.fulfilled, (state, action) => {
+        state.loadingStatus = 'fulfilled';
+        usersListAdapter.upsertOne(state, action.payload);
+      })
+      .addCase(changeUserStatus.rejected, (state) => {
         state.loadingStatus = 'rejected';
       });
   },

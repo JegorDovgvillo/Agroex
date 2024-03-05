@@ -12,6 +12,7 @@ import { selectLotDetailById } from '@slices/lotListSlice';
 import { selectRootCategories } from '@slices/categoriesSlice';
 
 import AdminDetailedLotView from '../adminDetailedLotView';
+import ConfirmActionModal from '@customModals/confirmActionModal';
 
 import styles from './detailedLotViewModal.module.scss';
 
@@ -68,6 +69,11 @@ const DetailedLotViewModal = () => {
           </DialogActions>
         </Dialog>
       )}
+      <ConfirmActionModal
+        text="This action changes the lot status. Do you confirm the action?"
+        setConfirmStatus={setConfirm}
+        modalType="confirmNestedModal"
+      />
     </>
   );
 };

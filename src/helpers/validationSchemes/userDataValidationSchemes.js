@@ -3,6 +3,7 @@ import { object, string } from 'yup';
 import {
   getTextFieldValidationSchema,
   requiredMessage,
+  getPasswordFieldValidationSchema,
 } from './schemasForFields';
 
 const commonUserFields = {
@@ -10,54 +11,30 @@ const commonUserFields = {
   email: string().required(requiredMessage).email('Not a valid email'),
 };
 
-export const createUserValidationSchema = object().shape({
-  ...commonUserFields,
-  oldPassword: string()
-    .required(requiredMessage)
-    .test(
-      'contains-digit',
-      'Password should contain at least one digit',
-      (value) => /\d/.test(value)
-    )
-    .test(
-      'contains-lowercase',
-      'Password should contain at least one lowercase letter',
-      (value) => /[a-z]/.test(value)
-    )
-    .test(
-      'contains-uppercase',
-      'Password should contain at least one uppercase letter',
-      (value) => /[A-Z]/.test(value)
-    )
-    .test(
-      'is-long-enough',
-      'Password should be at least 8 characters long',
-      (value) => value.length >= 8
-    ),
-  newPassword: string()
-    .required(requiredMessage)
-    .test(
-      'contains-digit',
-      'Password should contain at least one digit',
-      (value) => /\d/.test(value)
-    )
-    .test(
-      'contains-lowercase',
-      'Password should contain at least one lowercase letter',
-      (value) => /[a-z]/.test(value)
-    )
-    .test(
-      'contains-uppercase',
-      'Password should contain at least one uppercase letter',
-      (value) => /[A-Z]/.test(value)
-    )
-    .test(
-      'is-long-enough',
-      'Password should be at least 8 characters long',
-      (value) => value.length >= 8
-    ),
-});
-
 export const updateUserValidationSchema = object().shape({
   ...commonUserFields,
+});
+
+export const userPasswordsValidationSchema = object().shape({
+  oldPassword: getPasswordFieldValidationSchema().test(
+    'old-password-match',
+    'Old password should not match with the new password or confirmed password',
+    function (value, { parent }) {
+      return value !== parent.newPassword && value !== parent.retryPassword;
+    }
+  ),
+  newPassword: getPasswordFieldValidationSchema().test(
+    'new-password-match',
+    'New password should match the confirmed password',
+    function (value, { parent }) {
+      return value !== parent.oldPassword && value === parent.retryPassword;
+    }
+  ),
+  retryPassword: getPasswordFieldValidationSchema().test(
+    'retry-password-match',
+    'Confirmed password should match the new password',
+    function (value, { parent }) {
+      return value !== parent.oldPassword && value === parent.newPassword;
+    }
+  ),
 });

@@ -11,6 +11,7 @@ const ENDPOINTS = {
   COUNTRIES: '/countries',
   TAGS: '/tags',
   AUTH: '/auth/register/',
+  UPDATE_DB: '/users/updatedb',
 };
 
 export default ENDPOINTS;

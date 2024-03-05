@@ -9,16 +9,16 @@ import HttpsOutlinedIcon from '@mui/icons-material/HttpsOutlined';
 
 import { getUserFromCognito } from '@thunks/fetchUsers';
 
+import { toggleModal } from '@slices/modalSlice';
 import { selectUserById } from '@slices/usersListSlice';
 
 import { CustomButton } from '@components/buttons/CustomButton';
 import { CheckBoxInput } from '@components/checkBox';
+import UpdatePasswordModal from '@customModals/updatePasswordModal';
 
 import ROUTES from '@helpers/routeNames';
 
 import UserUpdateForm from './userUpdateForm';
-import UpdatePasswordForm from './updatePasswordForm';
-
 import styles from './userAccount.module.scss';
 
 const {
@@ -42,7 +42,6 @@ const UserAccount = () => {
   const user = useSelector((state) => selectUserById(state, userId));
 
   const [isFormDisabled, setFormDisabled] = useState(true);
-  const [isChanged, setIsChanged] = useState(false);
 
   useEffect(() => {
     dispatch(getUserFromCognito());
@@ -69,6 +68,10 @@ const UserAccount = () => {
   const handleSignOut = () => {
     signOut();
     navigate(ROUTES.LOG_IN);
+  };
+
+  const showModalForUpdatePassword = () => {
+    dispatch(toggleModal('updatingModal'));
   };
 
   return (
@@ -106,9 +109,8 @@ const UserAccount = () => {
             type="secondary"
             size="M"
             width="198px"
-            handleClick={() => setIsChanged(true)}
+            handleClick={showModalForUpdatePassword}
           />
-          {isChanged && <UpdatePasswordForm setIsChanged={setIsChanged} />}
           <CustomButton
             text="Sign out"
             icon={<ExitToAppIcon />}
@@ -129,6 +131,7 @@ const UserAccount = () => {
           </div>
         </div>
       </div>
+      <UpdatePasswordModal text="Update your password" />
     </>
   );
 };

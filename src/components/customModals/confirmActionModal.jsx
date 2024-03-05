@@ -1,5 +1,4 @@
 import { useDispatch, useSelector } from 'react-redux';
-
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -8,9 +7,12 @@ import DialogContentText from '@mui/material/DialogContentText';
 
 import { toggleModal, selectModalState } from '@slices/modalSlice';
 
-const ConfirmActionModal = ({ text, setConfirmStatus, isNested = false }) => {
+const ConfirmActionModal = ({
+  text,
+  setConfirmStatus,
+  modalType = 'confirmModal',
+}) => {
   const dispatch = useDispatch();
-  const modalType = isNested ? 'confirmNestedModal' : 'confirmModal';
   const open = useSelector((state) => selectModalState(state, modalType));
 
   const handleCloseDisagree = () => {

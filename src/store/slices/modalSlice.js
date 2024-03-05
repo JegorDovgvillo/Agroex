@@ -11,6 +11,7 @@ const initialState = modalAdapter.getInitialState({
     { id: 'confirmNestedModal', isOpen: false },
     { id: 'snackbar', isOpen: false },
     { id: 'adminMessageModal', isOpen: false },
+    { id: 'codeModal', isOpen: false },
   ],
 });
 

@@ -3,6 +3,7 @@ import { fetchAuthSession } from 'aws-amplify/auth';
 
 import axiosInstance from '@helpers/axiosInstance';
 import ENDPOINTS from '@helpers/endpoints';
+import getToken from '../../helpers/getToken';
 
 export const fetchUsers = createAsyncThunk('usersList/fetchUsers', async () => {
   const response = await axiosInstance.get(ENDPOINTS.USERS);
@@ -62,6 +63,29 @@ export const createUser = createAsyncThunk(
   'usersList/createUser',
   async (id) => {
     const response = await axiosInstance.post(`${ENDPOINTS.AUTH}${id}`, {});
+
+    return response.data;
+  }
+);
+
+export const changeUserStatus = createAsyncThunk(
+  'usersList/changeUserStatus',
+  async ({ id }) => {
+    const response = await axiosInstance.post(
+      `${ENDPOINTS.USERS}/${id}/enable`
+    );
+
+    return response.data;
+  }
+);
+
+export const updateUsersInTheDataBase = createAsyncThunk(
+  'usersList/updateDataBase',
+  async () => {
+    const token = await getToken();
+    const response = await axiosInstance.get(ENDPOINTS.UPDATE_DB, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
 
     return response.data;
   }
