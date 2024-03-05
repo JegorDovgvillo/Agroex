@@ -20,7 +20,7 @@ const PrivateAdminRoute = ({ Component }) => {
   if (token === null) {
     return <CircularProgress />;
   }
-  console.log(token);
+
   if (!token || !token.payload['custom:role']) {
     return (
       <ErrorModal title="Access error" text="You can not access this page" />
