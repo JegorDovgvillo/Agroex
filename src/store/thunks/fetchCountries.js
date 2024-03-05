@@ -11,3 +11,12 @@ export const fetchCountries = createAsyncThunk(
     return response.data;
   }
 );
+
+export const fetchCountry = createAsyncThunk(
+  'countries/fetchCountry',
+  async (id) => {
+    const response = await axiosInstance.get(`${ENDPOINTS.COUNTRIES}/${id}`);
+
+    return response.data;
+  }
+);

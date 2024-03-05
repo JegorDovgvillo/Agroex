@@ -29,7 +29,7 @@ const CreateNewLot = () => {
   const [maxFilesPerDrop, setMaxFilesPerDrop] = useState(MAXIMUM_NUMBER_OF_IMG);
 
   const dispatch = useDispatch();
-
+  
   useEffect(() => {
     dispatch(getUserFromCognito());
     dispatch(fetchAllCategories());

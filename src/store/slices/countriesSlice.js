@@ -4,12 +4,13 @@ import {
   createSelector,
 } from '@reduxjs/toolkit';
 
-import { fetchCountries } from '@thunks/fetchCountries';
+import { fetchCountries, fetchCountry } from '@thunks/fetchCountries';
 
 const countryAdapter = createEntityAdapter();
 
 const initialState = countryAdapter.getInitialState({
   loadingStatus: 'idle',
+  countryName: '',
 });
 
 const countriesSlice = createSlice({
@@ -26,6 +27,16 @@ const countriesSlice = createSlice({
         countryAdapter.addMany(state, action.payload);
       })
       .addCase(fetchCountries.rejected, (state) => {
+        state.loadingStatus = 'rejected';
+      })
+      .addCase(fetchCountry.pending, (state) => {
+        state.loadingStatus = 'pending';
+      })
+      .addCase(fetchCountry.fulfilled, (state, action) => {
+        state.loadingStatus = 'fulfilled';
+        state.countryName = action.payload;
+      })
+      .addCase(fetchCountry.rejected, (state) => {
         state.loadingStatus = 'rejected';
       });
   },
