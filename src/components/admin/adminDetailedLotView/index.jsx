@@ -73,11 +73,11 @@ const AdminDetailedLotView = ({ lot, userData, categories }) => {
     },
     { key: 'Variety', value: variety },
     { key: 'Description', value: description },
-    { key: 'Duration', value: duration ? getFormattedDuration(duration) : '' },
+    { key: 'Duration', value: getFormattedDuration(duration) },
     { key: 'Creation Date', value: getFormattedDate(creationDate) },
     {
       key: 'Expiration Date',
-      value: expirationDate ? getFormattedDate(expirationDate) : '',
+      value: getFormattedDate(expirationDate),
     },
     { key: 'Location', value: `${location.countryName}, ${location.region}` },
     { key: 'Size / Packaging', value: `${size} / ${packaging}` },

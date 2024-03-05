@@ -35,7 +35,7 @@ const LotStatusBlock = ({ lotStatuses }) => {
 
   return (
     <>
-      {statuses.length &&
+      {!_.isEmpty(statuses) &&
         statuses.map((status) => (
           <CustomBadge
             key={status.text}

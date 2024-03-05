@@ -3,6 +3,10 @@ import { compact } from 'lodash';
 import { getDHMSFromMilliseconds } from '@helpers/getDHMSFromMilliseconds';
 
 export const getFormattedDuration = (duration) => {
+  if (!duration) {
+    return '';
+  }
+
   const { days, hours, minutes } = getDHMSFromMilliseconds(duration);
 
   const formattedDuration = compact([

@@ -1,4 +1,5 @@
 import { useNavigate, generatePath } from 'react-router-dom';
+import _ from 'lodash';
 
 import ROUTES from '@helpers/routeNames';
 import { CustomButton } from '@buttons/CustomButton';
@@ -40,7 +41,7 @@ const ItemCard = ({ ...item }) => {
       </div>
       <div className={styles.priceWrapp}>
         <div className={styles.priceBlock}>
-          {item.bets.length > 0 ? (
+          {!_.isEmpty(item.bets) ? (
             <PriceBlock
               className={['list', 'auctionSum']}
               totalCost={item.bets.number}

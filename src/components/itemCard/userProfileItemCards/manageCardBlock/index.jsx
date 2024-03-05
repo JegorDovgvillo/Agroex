@@ -70,25 +70,24 @@ const ManageCardBlock = ({ id, actions }) => {
           result.func = handleEdit;
           result.icon = <ModeEditOutlineOutlinedIcon />;
           result.style = baseStyleStatus;
-
           break;
+
         case 'activate':
           result.func = handleToggleUserLotStatus;
           result.icon = <PlayArrowOutlinedIcon />;
           result.style = baseStyleStatus;
-
           break;
+
         case 'deactivate':
           result.func = handleToggleUserLotStatus;
           result.icon = <PowerSettingsNewOutlinedIcon />;
           result.style = errorStyleStatus;
-
           break;
+
         case 'delete':
           result.func = handleDelete;
           result.icon = <DeleteForeverOutlinedIcon />;
           result.style = errorStyleStatus;
-
           break;
       }
 
@@ -111,7 +110,6 @@ const ManageCardBlock = ({ id, actions }) => {
             isActive: actions === 'activateDelete',
           })
         );
-
         break;
 
       case 'deleteLot':

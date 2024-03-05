@@ -57,7 +57,7 @@ const UserLotCard = (item) => {
     0;
   const isAuctionLot = item.lotType === 'auctionSell';
   const isNewLot = item.innerStatus === 'new';
-  const isLotTransaction = item.bets?.length > 0;
+  const isLotTransaction = !_.isEmpty(item.bets);
   const isRejectedByAdminLot = item.innerStatus === 'rejected';
   const isDeactivatedByUserLot = item.userStatus === 'inactive';
   const lotStatuses = getLotStatuses(tab, item, isLotTransaction, isLotExpired);
@@ -121,15 +121,15 @@ const UserLotCard = (item) => {
       <div className={containerClassNames}>
         <div className={pricesContainer}>
           <div className={priceBlock}>
-            {item.bets?.length > 0 ? (
+            {_.isEmpty(item.bets) ? (
+              <h6 className={auctionSum}>No bets</h6>
+            ) : (
               <PriceBlock
                 className={['list', 'auctionSum']}
                 totalCost={item.bets.number}
                 unitCost={item.bets.number / item.quantity}
                 currency={item.currency}
               />
-            ) : (
-              <h6 className={auctionSum}>No bets</h6>
             )}
           </div>
 

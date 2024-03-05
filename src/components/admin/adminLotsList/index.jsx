@@ -170,7 +170,7 @@ export default function AdminLotsList() {
   }, [dispatch]);
 
   useEffect(() => {
-    if (!!lots.length && !!users) {
+    if (lots.length && users.length) {
       const rows = getInitialRows(lots, users);
       setRows(rows);
     }

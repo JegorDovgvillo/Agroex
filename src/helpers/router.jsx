@@ -14,6 +14,7 @@ import UserProfilePage from '@components/userProfile/userProfilePage';
 import UserProfileTabPanel from '@components/customTabPanels/userProfileTabPanel';
 import PrivateUserRoute from '@components/privatePages/privateUserRoute';
 import PrivateAdminRoute from '@components/privatePages/privateAdminRoute';
+import AdminTabContent from '@components/admin/adminTabContent';
 
 import ROUTES from './routeNames';
 

@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
-import { CssBaseline, Toolbar } from '@mui/material';
 import { useDispatch } from 'react-redux';
 
 import { CssBaseline, Toolbar } from '@mui/material';

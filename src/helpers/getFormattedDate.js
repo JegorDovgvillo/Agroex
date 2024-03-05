@@ -1,4 +1,8 @@
 const getFormattedDate = (date, locale = 'ru') => {
+  if (!date) {
+    return '';
+  }
+
   const dateObject = new Date(date);
 
   const options = {

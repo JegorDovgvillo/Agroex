@@ -2,6 +2,8 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
+import { includes } from 'lodash';
+
 import { getUserFromCognito } from '@thunks/fetchUsers';
 import { filteredLots } from '@thunks/fetchLots';
 
@@ -33,7 +35,7 @@ const UserLots = () => {
     const isActiveLotStatus = item.status === 'active';
     const isPendingLotStatus =
       item.userStatus !== 'inactive' &&
-      (item.innerStatus === 'new' || item.innerStatus === 'onModeration');
+      includes(['new', 'onModeration'], item.innerStatus);
     const isInactiveLotStatus = !isActiveLotStatus && !isPendingLotStatus;
 
     switch (tab) {
