@@ -48,6 +48,7 @@ const {
   lotDetailsKey,
   lotDetailsRow_bordered,
   noImage,
+  noBetsBlock,
 } = styles;
 
 export const LotDetails = () => {
@@ -95,6 +96,7 @@ export const LotDetails = () => {
     size,
     packaging,
     images,
+    bets,
   } = selectedLot;
 
   const totalPriceWithCurrency = getNumberWithCurrency(price, currency);
@@ -148,7 +150,7 @@ export const LotDetails = () => {
               <div className={heading}>
                 <h4 className={title}>{title}</h4>
                 <div className={dateCounter}>
-                  <Timer endDate={expirationDate} />
+                  {expirationDate && <Timer endDate={expirationDate} />}
                   <div className={id}>{`ID ${id}`}</div>
                 </div>
               </div>
@@ -157,7 +159,24 @@ export const LotDetails = () => {
                 <p className={description}>{description}</p>
               </div>
               <div className={betPriceContainer}>
-                <div className={betContainer} />
+                <div className={betContainer}>
+                  <div className={priceTotalContainer}>
+                    <p className={body2}>Bet</p>
+
+                    <div>
+                      {!!bets.length ? (
+                        <PriceBlock
+                          totalCost={bets.amount}
+                          unitCost={bets.amount / quantity}
+                          currency={currency}
+                          className={['detailed', 'auctionSum']}
+                        />
+                      ) : (
+                        <h4 className={noBetsBlock}>No bets</h4>
+                      )}
+                    </div>
+                  </div>
+                </div>
                 <div className={priceContainer}>
                   <div className={priceTotalContainer}>
                     <p className={body2}>Total price</p>

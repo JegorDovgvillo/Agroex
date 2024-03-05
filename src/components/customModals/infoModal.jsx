@@ -13,13 +13,16 @@ const InfoModal = ({ title, text }) => {
   const dispatch = useDispatch();
   const isOpen = useSelector((state) => selectModalState(state, 'infoModal'));
 
+  const handleClose = (event) => {
+    event.stopPropagation();
+    dispatch(toggleModal('infoModal'));
+  };
+
   return (
     <div>
       <Modal
         open={isOpen}
-        onClose={() => {
-          dispatch(toggleModal('infoModal'));
-        }}
+        onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >

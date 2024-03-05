@@ -8,11 +8,12 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { CustomButton } from '@buttons/CustomButton';
 import PriceBlock from '@components/priceBlock';
 
+import ROUTES from '@helpers/routeNames';
 import getNumberWithCurrency from '@helpers/getNumberWithCurrency';
 
 import ItemCardInfoBlock from '../../itemCardInfo';
-import ManageCardBlock from '../manageCardBlock';
-import LotStatusBlock from '../lotStatusBlock';
+import ManageCardBlock from '../../manageCardBlock';
+import LotStatusBlock from '../../lotStatusBlock';
 
 import styles from '../../itemCard.module.scss';
 
@@ -87,6 +88,13 @@ const UserLotCard = (item) => {
 
   const actions = getLotActions();
 
+  const viewDetailsCard = () => {
+    const path = generatePath(ROUTES.LOTS_DETAILS, {
+      id: item.id,
+    });
+    navigate(path);
+  };
+
   //todo write confirm lot by user logic
   const handleClick = (event) => {
     event.stopPropagation();
@@ -109,7 +117,7 @@ const UserLotCard = (item) => {
   const confirmButtonWidth = '306px';
 
   return (
-    <div className={styles.cardWrapp}>
+    <div className={styles.cardWrapp} onClick={viewDetailsCard}>
       <ItemCardInfoBlock item={item}>
         <>
           {!!lotStatuses.length && <LotStatusBlock lotStatuses={lotStatuses} />}

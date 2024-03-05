@@ -12,6 +12,7 @@ const initialState = modalAdapter.getInitialState({
     { id: 'snackbar', isOpen: false },
     { id: 'adminMessageModal', isOpen: false },
     { id: 'codeModal', isOpen: false },
+    { id: 'placeBetModal', isOpen: false },
   ],
 });
 

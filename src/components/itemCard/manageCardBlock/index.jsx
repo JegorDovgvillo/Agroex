@@ -34,31 +34,36 @@ const ManageCardBlock = ({ id, actions }) => {
   const open = Boolean(anchorEl);
 
   const handleClick = (event) => {
+    event.stopPropagation();
     setAnchorEl(event.currentTarget);
   };
 
-  const handleClose = () => {
+  const handleClose = (event) => {
+    event.stopPropagation();
     setAnchorEl(null);
   };
 
-  const handleToggleUserLotStatus = () => {
+  const handleToggleUserLotStatus = (event) => {
+    event.stopPropagation();
     setConfirmModalText(
       'This action changes the lot status. Do you confirm the action?'
     );
     setAction('toggleUserLotStatus');
     dispatch(toggleModal('confirmModal'));
-    handleClose();
+    handleClose(event);
   };
 
-  const handleEdit = () => {
+  const handleEdit = (event) => {
+    event.stopPropagation();
     navigate(ROUTES.UPDATE_LOT.replace(':id', id));
   };
 
-  const handleDelete = () => {
+  const handleDelete = (event) => {
+    event.stopPropagation();
     setConfirmModalText('The lot will be permanently deleted. Are you sure?');
     setAction('deleteLot');
     dispatch(toggleModal('confirmModal'));
-    handleClose();
+    handleClose(event);
   };
 
   const getTargetActions = () => {

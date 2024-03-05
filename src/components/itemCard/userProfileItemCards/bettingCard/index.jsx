@@ -6,9 +6,11 @@ import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import { CustomButton } from '@buttons/CustomButton';
 import PriceBlock from '@components/priceBlock';
 
+import ROUTES from '@helpers/routeNames';
+
 import ItemCardInfoBlock from '../../itemCardInfo';
-import ManageCardBlock from '../manageCardBlock';
-import LotStatusBlock from '../lotStatusBlock';
+import ManageCardBlock from '../../manageCardBlock';
+import LotStatusBlock from '../../lotStatusBlock';
 
 import styles from '../../itemCard.module.scss';
 
@@ -25,6 +27,13 @@ const BettingCard = (item) => {
     event.stopPropagation();
   };
 
+  const viewDetailsCard = () => {
+    const path = generatePath(ROUTES.LOTS_DETAILS, {
+      id: item.id,
+    });
+    navigate(path);
+  };
+
   const tabClasses = {
     list: true,
     betting: tab === 'active',
@@ -36,7 +45,7 @@ const BettingCard = (item) => {
     .map(([className]) => className);
 
   return (
-    <div className={cardWrapp}>
+    <div className={cardWrapp} onClick={viewDetailsCard}>
       <ItemCardInfoBlock item={item}>
         <>
           <LotStatusBlock lotStatus={lotStatus} />

@@ -10,6 +10,7 @@ import { filteredLots } from '@thunks/fetchLots';
 import { lotListSelector } from '@slices/lotListSlice';
 
 import UserLotCard from '@components/itemCard/userProfileItemCards/userLotCard';
+import ItemCard from '@components/itemCard';
 
 const UserLots = () => {
   const { tab } = useParams();
@@ -51,7 +52,7 @@ const UserLots = () => {
   });
 
   const filteredLotsArr = filteredLotsByActiveTab.map((item) => {
-    return <UserLotCard {...item} key={item.id} />;
+    return <ItemCard {...item} key={item.id} />;
   });
 
   return <div>{filteredLotsArr} </div>;
