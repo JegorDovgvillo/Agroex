@@ -14,9 +14,34 @@ export const fetchCountries = createAsyncThunk(
 
 export const fetchCountry = createAsyncThunk(
   'countries/fetchCountry',
-  async (id) => {
+  async ({ id }) => {
     const response = await axiosInstance.get(`${ENDPOINTS.COUNTRIES}/${id}`);
 
     return response.data;
+  }
+);
+
+export const getCordinate = createAsyncThunk(
+  'countries/getCordinate',
+  async ({ countryName }) => {
+    const response = await axiosInstance.get(
+      `https://nominatim.openstreetmap.org/search?format=json&country=${countryName}`
+    );
+
+    return response.data[0];
+  }
+);
+
+export const getAddress = createAsyncThunk(
+  'countries/getAddress',
+  async ({ latitude, longitude }) => {
+    const response = await axiosInstance.get(
+      `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`,
+      {
+        headers: { 'Accept-Language': 'en-US' },
+      }
+    );
+
+    return response.data.address;
   }
 );

@@ -1,113 +1,90 @@
-import {
-  MapContainer,
-  Popup,
-  TileLayer,
-  Marker,
-  useMapEvents,
-} from 'react-leaflet';
-import React, {
-  useState,
-  useEffect,
-  useCallback,
-  useMemo,
-  useRef,
-} from 'react';
+import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchCountry } from '@thunks/fetchCountries';
+
+import { fetchCountry, getCordinate, getAddress } from '@thunks/fetchCountries';
+
+import { updateCordinate } from '@slices/countriesSlice';
+
 import 'leaflet/dist/leaflet.css';
 
-const LocationMarker = React.forwardRef(
-  ({ latitude, longitude, handleClick, eventHandlers, draggable }, ref) => {
-    const [position, setPosition] = useState([latitude, longitude]);
-    const map = useMapEvents({
-      click() {
-        map.flyTo([latitude, longitude], map.getZoom());
-      },
-    });
-    return (
-      latitude &&
-      longitude && (
-        <Marker
-          position={[latitude, longitude]}
-          draggable={draggable}
-          eventHandlers={eventHandlers}
-          ref={ref}
-        >
-          <Popup minWidth={90}>
-            <span onClick={handleClick}>
-              {draggable
-                ? 'Marker is draggable'
-                : 'Click here to make marker draggable'}
-            </span>
-          </Popup>
-        </Marker>
-      )
-    );
-  }
-);
+const LocationMarker = ({ latitude, longitude, eventHandlers, draggable }) => {
+  const map = useMapEvents({
+    click() {
+      map.flyTo([latitude, longitude], map.getZoom());
+    },
+  });
 
-const Map = ({ location }) => {
+  return (
+    latitude &&
+    longitude && (
+      <Marker
+        position={[latitude, longitude]}
+        draggable={draggable}
+        eventHandlers={eventHandlers}
+      ></Marker>
+    )
+  );
+};
+
+const Map = ({ location, setFieldValue, countries }) => {
   const dispatch = useDispatch();
-  const [draggable, setDraggable] = useState(false);
-  const [latitude, setLatitude] = useState(null);
-  const [longitude, setLongitude] = useState(null);
-  const markerRef = useRef(null);
+  const [draggable, setDraggable] = useState(true);
 
   const countryName = useSelector((state) => state.countries.countryName);
+  const address = useSelector((state) => state.countries.address);
+  const countryCordinate = useSelector(
+    (state) => state.countries.countryCordinate
+  );
 
   useEffect(() => {
     if (location) {
-      dispatch(fetchCountry(location));
+      dispatch(fetchCountry({ id: location }));
     }
   }, [location]);
 
   useEffect(() => {
+    if (address && countryName !== address.county) {
+      countryName === address.country
+        ? null
+        : countries.find((country) =>
+            country.name === address.country
+              ? setFieldValue('country', country.id)
+              : null
+          );
+    }
+  }, [address]);
+
+  useEffect(() => {
     if (countryName) {
-      getCordinate(countryName.name).then(({ latitude, longitude }) => {
-        setLatitude(latitude);
-        setLongitude(longitude);
-      });
+      dispatch(getCordinate({ countryName: countryName.name }));
     }
   }, [countryName]);
+
   useEffect(() => {
-    if (latitude && longitude) {
-      const url = `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`;
-
-      fetch(url)
-        .then((response) => response.json())
-        .then((data) => {
-          const address = data.display_name; // В этом примере берется поле display_name, которое содержит полный адрес
-          console.log('Адрес:', address);
+    if (countryCordinate) {
+      dispatch(
+        getAddress({
+          latitude: countryCordinate.lat,
+          longitude: countryCordinate.lon,
         })
-        .catch((error) => {
-          console.error('Ошибка при получении адреса:', error);
-        });
+      );
     }
-  }, [latitude, longitude]);
+  }, [countryCordinate]);
 
-  const getCordinate = async (countryName) => {
-    const url = `http://nominatim.openstreetmap.org/search?format=json&country=${encodeURIComponent(
-      countryName
-    )}`;
-
-    try {
-      const response = await fetch(url);
-      const data = await response.json();
-
-      if (data && data.length > 0) {
-        const latitude = data[0].lat;
-        const longitude = data[0].lon;
-
-        return { latitude, longitude };
+  useEffect(() => {
+    if (address) {
+      if (address.state) {
+        setFieldValue('region', address.state);
+      } else if (address.county) {
+        setFieldValue('region', address.county);
+      } else if (address.citytown || address.borough) {
+        setFieldValue('region', address.citytown || address.borough);
+      } else if (address.village || address.suburb) {
+        setFieldValue('region', address.village || address.suburb);
       }
-    } catch (e) {
-      console.log(e);
     }
-  };
-
-  const toggleDraggable = useCallback(() => {
-    setDraggable((draggable) => !draggable);
-  }, []);
+  }, [address]);
 
   const eventHandlers = useMemo(
     () => ({
@@ -116,32 +93,43 @@ const Map = ({ location }) => {
         if (marker != null) {
           const newPosition = marker.getLatLng();
 
-          setLatitude(newPosition.lat);
-          setLongitude(newPosition.lng);
+          dispatch(
+            updateCordinate({ lat: newPosition.lat, lon: newPosition.lng })
+          );
         }
       },
     }),
     []
   );
 
+  // useEffect(() => {
+  //   navigator.geolocation.getCurrentPosition(
+  //     (position) => {
+  //       const { latitude, longitude } = position.coords;
+  //       console.log(position.coords);
+  //       dispatch(updateCordinate({ lat: latitude, lon: longitude }));
+  //     },
+  //     (error) => {
+  //       console.error('Ошибка при получении текущего местоположения:', error);
+  //     }
+  //   );
+  // }, []);
+
   return (
     <>
-      {latitude && longitude && (
+      {countryCordinate && (
         <MapContainer
-        boxZoom
-          center={[latitude, longitude]}
+          center={[countryCordinate.lat, countryCordinate.lon]}
           zoom={7}
           scrollWheelZoom={true}
-          style={{ width: '100%', height: '400px' }}
+          style={{ width: '100%', height: '400px', fontFamily: 'sans-serif' }}
         >
-          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+          <TileLayer url="https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png" />
           <LocationMarker
-            latitude={latitude}
-            longitude={longitude}
-            handleClick={toggleDraggable}
+            latitude={countryCordinate.lat}
+            longitude={countryCordinate.lon}
             eventHandlers={eventHandlers}
             draggable={draggable}
-            ref={markerRef}
           />
         </MapContainer>
       )}

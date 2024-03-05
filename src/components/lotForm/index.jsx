@@ -456,7 +456,11 @@ const LotForm = ({
               </div>
             )}
           </Form>
-          <Map location={values.country} />
+          <Map
+            location={values.country}
+            setFieldValue={setFieldValue}
+            countries={country}
+          />
         </>
       )}
     </Formik>
