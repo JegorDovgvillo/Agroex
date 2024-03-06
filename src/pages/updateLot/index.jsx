@@ -59,7 +59,7 @@ const UpdateLot = () => {
     dispatch(fetchLotDetails(lotId));
     dispatch(fetchAllCategories());
     dispatch(getUserFromCognito());
-    dispatch(fetchCountries());
+    dispatch(fetchCountries({ existet: false }));
     dispatch(fetchTags());
   }, [dispatch]);
 

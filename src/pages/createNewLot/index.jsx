@@ -36,7 +36,7 @@ const CreateNewLot = () => {
   useEffect(() => {
     dispatch(getUserFromCognito());
     dispatch(fetchAllCategories());
-    dispatch(fetchCountries());
+    dispatch(fetchCountries({ existet: false }));
     dispatch(fetchTags());
   }, [dispatch]);
 

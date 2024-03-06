@@ -6,8 +6,10 @@ import { MAP_URL } from '@helpers/endpoints';
 
 export const fetchCountries = createAsyncThunk(
   'countries/fetchCountries',
-  async () => {
-    const response = await axiosInstance.get(ENDPOINTS.COUNTRIES);
+  async ({ existet }) => {
+    const response = await axiosInstance.get(
+      `${ENDPOINTS.COUNTRIES}?lot_existed=${existet}`
+    );
 
     return response.data;
   }
