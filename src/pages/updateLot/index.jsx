@@ -29,7 +29,10 @@ const UpdateLot = () => {
   const country = useSelector(countrySelector);
   const selectedLot = useSelector((state) => selectLotDetailById(state, lotId));
   const tags = useSelector(tagsSelector);
-  const userId = useSelector((state) => state.usersList.userInfo);
+  const userId = useSelector((state) => state.usersList.userId);
+  const countryCordinate = useSelector(
+    (state) => state.countries.countryCordinate
+  );
 
   const [confirmStatus, setConfirmStatus] = useState(false);
   const [files, setFiles] = useState([]);
@@ -93,6 +96,8 @@ const UpdateLot = () => {
       location: {
         countryId: values.country,
         region: values.region,
+        latitude: countryCordinate.lat,
+        longitude: countryCordinate.lon,
       },
       tags: values.tags,
       images: filteredImages,

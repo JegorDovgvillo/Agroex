@@ -22,14 +22,17 @@ const CreateNewLot = () => {
   const categories = useSelector(selectRootCategories);
   const country = useSelector(countrySelector);
   const tags = useSelector(tagsSelector);
-  const userId = useSelector((state) => state.usersList.userInfo);
+  const userId = useSelector((state) => state.usersList.userId);
+  const countryCordinate = useSelector(
+    (state) => state.countries.countryCordinate
+  );
 
   const [files, setFiles] = useState([]);
   const [disabled, setDisabled] = useState(false);
   const [maxFilesPerDrop, setMaxFilesPerDrop] = useState(MAXIMUM_NUMBER_OF_IMG);
 
   const dispatch = useDispatch();
-  
+
   useEffect(() => {
     dispatch(getUserFromCognito());
     dispatch(fetchAllCategories());
@@ -66,6 +69,8 @@ const CreateNewLot = () => {
       location: {
         countryId: values.country,
         region: values.region,
+        latitude: countryCordinate.lat,
+        longitude: countryCordinate.lon,
       },
       tags: values.tags,
     };

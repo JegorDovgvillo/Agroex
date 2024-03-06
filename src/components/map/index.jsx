@@ -1,12 +1,15 @@
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
 import React, { useState, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router';
 
 import { fetchCountry, getCordinate, getAddress } from '@thunks/fetchCountries';
 
 import { updateCordinate } from '@slices/countriesSlice';
+import { selectLotDetailById } from '@slices/lotListSlice';
 
 import 'leaflet/dist/leaflet.css';
+import _ from 'lodash';
 
 const LocationMarker = ({ latitude, longitude, eventHandlers, draggable }) => {
   const map = useMapEvents({
@@ -29,8 +32,12 @@ const LocationMarker = ({ latitude, longitude, eventHandlers, draggable }) => {
 
 const Map = ({ location, setFieldValue, countries }) => {
   const dispatch = useDispatch();
-  const [draggable, setDraggable] = useState(true);
+  const { id } = useParams();
 
+  const [draggable, setDraggable] = useState(true);
+  const [isTouched, setIsTouched] = useState(false);
+
+  const selectedLot = useSelector((state) => selectLotDetailById(state, id));
   const countryName = useSelector((state) => state.countries.countryName);
   const address = useSelector((state) => state.countries.address);
   const countryCordinate = useSelector(
@@ -38,25 +45,23 @@ const Map = ({ location, setFieldValue, countries }) => {
   );
 
   useEffect(() => {
-    if (location) {
+    if (location && isTouched) {
       dispatch(fetchCountry({ id: location }));
     }
   }, [location]);
 
   useEffect(() => {
-    if (address && countryName !== address.county) {
-      countryName === address.country
-        ? null
-        : countries.find((country) =>
-            country.name === address.country
-              ? setFieldValue('country', country.id)
-              : null
-          );
+    if (address && countryName !== address.country) {
+      const foundCountry = _.find(
+        countries,
+        (country) => country.name === address.country
+      );
+      foundCountry && setFieldValue('country', foundCountry.id);
     }
   }, [address]);
 
   useEffect(() => {
-    if (countryName) {
+    if (countryName && !selectedLot) {
       dispatch(getCordinate({ countryName: countryName.name }));
     }
   }, [countryName]);
@@ -86,13 +91,31 @@ const Map = ({ location, setFieldValue, countries }) => {
     }
   }, [address]);
 
+  useEffect(() => {
+    if (!selectedLot) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        const { latitude, longitude } = position.coords;
+        dispatch(updateCordinate({ lat: latitude, lon: longitude }));
+      });
+    } else {
+      dispatch(
+        updateCordinate({
+          lat: selectedLot.location.latitude,
+          lon: selectedLot.location.longitude,
+        })
+      );
+    }
+  }, []);
+
   const eventHandlers = useMemo(
     () => ({
       dragend(e) {
         const marker = e.target;
+
         if (marker != null) {
           const newPosition = marker.getLatLng();
 
+          setIsTouched(true);
           dispatch(
             updateCordinate({ lat: newPosition.lat, lon: newPosition.lng })
           );
@@ -101,19 +124,6 @@ const Map = ({ location, setFieldValue, countries }) => {
     }),
     []
   );
-
-  // useEffect(() => {
-  //   navigator.geolocation.getCurrentPosition(
-  //     (position) => {
-  //       const { latitude, longitude } = position.coords;
-  //       console.log(position.coords);
-  //       dispatch(updateCordinate({ lat: latitude, lon: longitude }));
-  //     },
-  //     (error) => {
-  //       console.error('Ошибка при получении текущего местоположения:', error);
-  //     }
-  //   );
-  // }, []);
 
   return (
     <>
