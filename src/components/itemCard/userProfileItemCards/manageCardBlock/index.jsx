@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import _ from 'lodash';
 
 import { Menu, MenuItem, ListItemIcon } from '@mui/material';
 
@@ -20,7 +21,7 @@ import { changeLotStatusByUser, deleteLot } from '@thunks/fetchLots';
 
 import styles from './manageCard.module.scss';
 
-const { deactivate } = styles;
+const { errorStyleStatus, baseStyleStatus } = styles;
 
 const ManageCardBlock = ({ id, actions }) => {
   const navigate = useNavigate();
@@ -60,6 +61,42 @@ const ManageCardBlock = ({ id, actions }) => {
     handleClose();
   };
 
+  const getTargetActions = () => {
+    return _.map(actions, (action) => {
+      const result = { action: _.capitalize(action) };
+
+      switch (action) {
+        case 'edit':
+          result.func = handleEdit;
+          result.icon = <ModeEditOutlineOutlinedIcon />;
+          result.style = baseStyleStatus;
+          break;
+
+        case 'activate':
+          result.func = handleToggleUserLotStatus;
+          result.icon = <PlayArrowOutlinedIcon />;
+          result.style = baseStyleStatus;
+          break;
+
+        case 'deactivate':
+          result.func = handleToggleUserLotStatus;
+          result.icon = <PowerSettingsNewOutlinedIcon />;
+          result.style = errorStyleStatus;
+          break;
+
+        case 'delete':
+          result.func = handleDelete;
+          result.icon = <DeleteForeverOutlinedIcon />;
+          result.style = errorStyleStatus;
+          break;
+      }
+
+      return result;
+    });
+  };
+
+  const targetActions = getTargetActions();
+
   useEffect(() => {
     if (!confirmStatus) {
       return;
@@ -73,7 +110,6 @@ const ManageCardBlock = ({ id, actions }) => {
             isActive: actions === 'activateDelete',
           })
         );
-
         break;
 
       case 'deleteLot':
@@ -107,44 +143,16 @@ const ManageCardBlock = ({ id, actions }) => {
             'aria-labelledby': 'manage-button',
           }}
         >
-          {actions === 'editDeactivate' && (
-            <MenuItem onClick={handleEdit}>
-              <ListItemIcon>
-                <ModeEditOutlineOutlinedIcon />
-              </ListItemIcon>
-              Edit
-            </MenuItem>
-          )}
-          {actions === 'editDeactivate' && (
+          {targetActions.map((item) => (
             <MenuItem
-              onClick={handleToggleUserLotStatus}
-              className={deactivate}
+              key={item.action}
+              onClick={item.func}
+              className={item.style}
             >
-              <ListItemIcon>
-                <PowerSettingsNewOutlinedIcon />
-              </ListItemIcon>
-              Deactivate
+              <ListItemIcon>{item.icon}</ListItemIcon>
+              {item.action}
             </MenuItem>
-          )}
-          {actions === 'activateDelete' && (
-            <MenuItem
-              onClick={handleToggleUserLotStatus}
-              className={deactivate}
-            >
-              <ListItemIcon>
-                <PlayArrowOutlinedIcon />
-              </ListItemIcon>
-              Activate
-            </MenuItem>
-          )}
-          {actions === 'activateDelete' && (
-            <MenuItem onClick={handleDelete} className={deactivate}>
-              <ListItemIcon>
-                <DeleteForeverOutlinedIcon />
-              </ListItemIcon>
-              Delete
-            </MenuItem>
-          )}
+          ))}
         </Menu>
       </div>
       <ConfirmActionModal

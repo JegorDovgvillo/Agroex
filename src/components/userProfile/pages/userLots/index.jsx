@@ -2,6 +2,8 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
+import { includes } from 'lodash';
+
 import { getUserFromCognito } from '@thunks/fetchUsers';
 import { filteredLots } from '@thunks/fetchLots';
 
@@ -30,18 +32,21 @@ const UserLots = () => {
   );
 
   const filteredLotsByActiveTab = filteredLotsByUserId.filter((item) => {
-    const isAuctionPendingLot =
-      item.innerStatus === 'new' || item.innerStatus === 'moderated';
+    const isActiveLotStatus = item.status === 'active';
+    const isPendingLotStatus =
+      item.userStatus !== 'inactive' &&
+      includes(['new', 'onModeration'], item.innerStatus);
+    const isInactiveLotStatus = !isActiveLotStatus && !isPendingLotStatus;
 
     switch (tab) {
       case 'active':
-        return item.status === tab;
+        return isActiveLotStatus;
 
       case 'pending':
-        return isAuctionPendingLot;
+        return isPendingLotStatus;
 
       case 'inactive':
-        return item.status === 'inactive' && !isAuctionPendingLot;
+        return isInactiveLotStatus;
     }
   });
 

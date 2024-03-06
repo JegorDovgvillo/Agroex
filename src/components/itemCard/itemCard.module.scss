@@ -35,9 +35,8 @@
   .infoWrap {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     align-items: flex-start;
-    flex: 1 0 250px;
+    flex: 1 0;
     align-self: stretch;
 
     .titleBlock {
@@ -127,13 +126,15 @@
     .userProfilePriceBlock {
       display: flex;
       flex-direction: column;
+    }
+  }
 
-      .auctionSum {
-        p,
-        span {
-          color: $systemBase;
-        }
-      }
+  .auctionSum {
+    color: $warningBase;
+
+    p,
+    span {
+      color: $systemBase;
     }
   }
 }
@@ -178,7 +179,7 @@
     width: 100%;
 
     svg {
-      color: #eb3d26;
+      fill: #eb3d26;
     }
   }
 }
@@ -201,7 +202,6 @@
 .inactive {
   flex-wrap: nowrap;
   column-gap: 20px;
-  width: 40%;
 
   * {
     color: $monoGray !important;
