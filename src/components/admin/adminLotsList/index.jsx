@@ -10,10 +10,16 @@ import {
 
 import { CircularProgress } from '@mui/material';
 
-import { fetchLots, changeLotStatusByAdmin } from '@thunks/fetchLots';
+import { getFilteredLots, changeLotStatusByAdmin } from '@thunks/fetchLots';
 import { fetchUsers } from '@thunks/fetchUsers';
 
-import { toggleModal, selectModalState } from '@slices/modalSlice';
+import {
+  toggleModal,
+  selectModalState,
+  setModalField,
+  clearModalFields,
+  selectModal,
+} from '@slices/modalSlice';
 import {
   lotListSelector,
   setLotId,
@@ -73,11 +79,9 @@ export default function AdminLotsList() {
   const dispatch = useDispatch();
   const lots = useSelector(lotListSelector);
   const users = useSelector(usersListSelector);
-  const [confirmStatus, setConfirmStatus] = useState(false);
   const [currLotId, setCurrLotId] = useState(null);
   const [rows, setRows] = useState([]);
   const [editedValue, setEditedValue] = useState('');
-  const [adminComment, setAdminComment] = useState(null);
   const [rowModesModel, setRowModesModel] = useState({});
   const [columnVisibilityModel, setColumnVisibilityModel] = useState({
     description: false,
@@ -90,6 +94,12 @@ export default function AdminLotsList() {
   });
   const isModalOpened = useSelector((state) =>
     selectModalState(state, 'infoModal')
+  );
+  const adminMessageModalData = useSelector((state) =>
+    selectModal(state, 'adminMessageModal')
+  );
+  const confirmModalData = useSelector((state) =>
+    selectModal(state, 'confirmModal')
   );
   const lotListErrors = useSelector((state) => state.lotList.errors);
   const changeLotLoadingStatus = useSelector(
@@ -117,6 +127,14 @@ export default function AdminLotsList() {
         },
       });
     } else {
+      dispatch(
+        setModalField({
+          modalId: 'confirmModal',
+          field: 'text',
+          value:
+            'This action changes the lot status. Do you confirm the action?',
+        })
+      );
       dispatch(toggleModal('confirmModal'));
     }
   };
@@ -155,17 +173,18 @@ export default function AdminLotsList() {
     );
 
   const fetchChangeLotStatus = () => {
+    const { adminMessage } = adminMessageModalData;
     dispatch(
       changeLotStatusByAdmin({
         lotId: currLotId,
         status: editedValue,
-        adminComment: adminComment,
+        adminComment: adminMessage,
       })
     );
   };
 
   useEffect(() => {
-    dispatch(fetchLots());
+    dispatch(getFilteredLots({ status: 'all' }));
     dispatch(fetchUsers());
   }, [dispatch]);
 
@@ -177,24 +196,25 @@ export default function AdminLotsList() {
   }, [lots, users]);
 
   useEffect(() => {
-    if (confirmStatus) {
+    if (confirmModalData.confirmStatus) {
       editedValue === 'rejected'
         ? dispatch(toggleModal('adminMessageModal'))
         : fetchChangeLotStatus();
     }
-  }, [confirmStatus]);
+  }, [confirmModalData]);
 
   useEffect(() => {
-    if (editedValue === 'rejected' && adminComment) {
+    if (editedValue === 'rejected' && adminMessageModalData.adminMessage) {
       fetchChangeLotStatus();
     }
-  }, [adminComment]);
+  }, [adminMessageModalData.adminMessage]);
 
   useEffect(() => {
     if (changeLotLoadingStatus === 'rejected' && lotListErrors) {
       dispatch(clearErrors());
       dispatch(clearChangeLotLoadingStatus());
-      setConfirmStatus(false);
+      dispatch(clearModalFields('confirmModal'));
+      dispatch(clearModalFields('adminMessageModal'));
     }
 
     if (changeLotLoadingStatus === 'fulfilled') {
@@ -204,9 +224,9 @@ export default function AdminLotsList() {
           mode: GridRowModes.View,
         },
       });
-
       dispatch(clearChangeLotLoadingStatus());
-      setConfirmStatus(false);
+      dispatch(clearModalFields('confirmModal'));
+      dispatch(clearModalFields('adminMessageModal'));
     }
   }, [lotListErrors, changeLotLoadingStatus]);
 
@@ -239,14 +259,14 @@ export default function AdminLotsList() {
           />
 
           {isModalOpened && <DetailedLotViewModal />}
-          <ConfirmActionModal
+          {/* <ConfirmActionModal
             text="This action changes the lot status. Do you confirm the action?"
             setConfirmStatus={setConfirmStatus}
           />
           <AdminMessageModal
             setAdminMessage={setAdminComment}
             setConfirmStatus={setConfirmStatus}
-          />
+          /> */}
         </div>
       )}
     </>

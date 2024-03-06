@@ -7,7 +7,9 @@
   padding: 24px;
   gap: 26px;
   cursor: pointer;
+  border-bottom: 1px solid $monoGraySelect;
   z-index: 1;
+
   @media only all and (max-width: 1500px) {
     flex-direction: column;
   }
@@ -126,18 +128,16 @@
         flex-direction: column;
         justify-content: space-between;
         width: 49%;
-
-        button {
-          // transition: all 0.7s ease-in-out;
-          //opacity: 0.3;
-          width: 100%;
-        }
       }
 
       .userProfilePriceBlock {
         display: flex;
         flex-direction: column;
       }
+    }
+    button {
+      align-self: flex-end;
+      width: 100%;
     }
   }
 

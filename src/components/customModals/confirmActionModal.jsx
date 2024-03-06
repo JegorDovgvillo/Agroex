@@ -5,25 +5,31 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 
-import { toggleModal, selectModalState } from '@slices/modalSlice';
+import {
+  toggleModal,
+  selectModalState,
+  setModalField,
+  clearModalFields,
+} from '@slices/modalSlice';
 
-const ConfirmActionModal = ({
-  text,
-  setConfirmStatus,
-  modalType = 'confirmModal',
-}) => {
+const ConfirmActionModal = ({ text, isNested = false }) => {
   const dispatch = useDispatch();
   const open = useSelector((state) => selectModalState(state, modalType));
 
   const handleCloseDisagree = (event) => {
     event.stopPropagation();
-    setConfirmStatus(false);
-    dispatch(toggleModal(modalType));
+    dispatch(clearModalFields('confirmModal'));
   };
 
   const handleCloseAgree = (event) => {
     event.stopPropagation();
-    setConfirmStatus(true);
+    dispatch(
+      setModalField({
+        modalId: 'confirmModal',
+        field: 'confirmStatus',
+        value: true,
+      })
+    );
     dispatch(toggleModal(modalType));
   };
 

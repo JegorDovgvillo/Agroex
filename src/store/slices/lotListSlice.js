@@ -13,6 +13,7 @@ import {
   filteredLots,
   changeLotStatusByUser,
   changeLotStatusByAdmin,
+  getFilteredLots,
 } from '@thunks/fetchLots';
 
 const lotListAdapter = createEntityAdapter();
@@ -117,12 +118,22 @@ const lotListSlice = createSlice({
         state.changeLotLoadingStatus = 'pending';
       })
       .addCase(changeLotStatusByAdmin.fulfilled, (state, action) => {
-        lotListAdapter.setOne(state, action.payload);
+        lotListAdapter.upsertOne(state, action.payload);
         state.changeLotLoadingStatus = 'fulfilled';
       })
       .addCase(changeLotStatusByAdmin.rejected, (state, action) => {
         state.changeLotLoadingStatus = 'rejected';
         state.errors = action.payload;
+      })
+      .addCase(getFilteredLots.pending, (state) => {
+        state.loadingStatus = 'pending';
+      })
+      .addCase(getFilteredLots.fulfilled, (state, action) => {
+        lotListAdapter.setAll(state, action.payload);
+        state.loadingStatus = 'fulfilled';
+      })
+      .addCase(getFilteredLots.rejected, (state) => {
+        state.loadingStatus = 'rejected';
       });
   },
 });

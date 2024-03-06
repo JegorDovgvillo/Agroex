@@ -14,7 +14,6 @@ import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined
 import { toggleModal } from '@slices/modalSlice';
 
 import { CustomButton } from '@buttons/CustomButton';
-import ConfirmActionModal from '@customModals/confirmActionModal';
 
 import ROUTES from '@helpers/routeNames';
 import { changeLotStatusByUser, deleteLot } from '@thunks/fetchLots';
@@ -26,8 +25,6 @@ const { errorStyleStatus, baseStyleStatus } = styles;
 const ManageCardBlock = ({ id, actions }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [confirmStatus, setConfirmStatus] = useState(false);
-  const [confirmModalText, setConfirmModalText] = useState(null);
   const [action, setAction] = useState(null);
 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -45,10 +42,12 @@ const ManageCardBlock = ({ id, actions }) => {
 
   const handleToggleUserLotStatus = (event) => {
     event.stopPropagation();
-    setConfirmModalText(
-      'This action changes the lot status. Do you confirm the action?'
+    dispatch(
+      setConfirmModalText(
+        'This action changes the lot status. Do you confirm the action?'
+      )
     );
-    setAction('toggleUserLotStatus');
+    dispatch(setConfirmModalAction('toggleUserLotStatus'));
     dispatch(toggleModal('confirmModal'));
     handleClose(event);
   };
@@ -60,8 +59,10 @@ const ManageCardBlock = ({ id, actions }) => {
 
   const handleDelete = (event) => {
     event.stopPropagation();
-    setConfirmModalText('The lot will be permanently deleted. Are you sure?');
-    setAction('deleteLot');
+    dispatch(
+      setConfirmModalText('The lot will be permanently deleted. Are you sure?')
+    );
+    dispatch(setConfirmModalAction('deleteLot'));
     dispatch(toggleModal('confirmModal'));
     handleClose(event);
   };
@@ -160,10 +161,10 @@ const ManageCardBlock = ({ id, actions }) => {
           ))}
         </Menu>
       </div>
-      <ConfirmActionModal
+      {/* <ConfirmActionModal
         text={confirmModalText}
         setConfirmStatus={setConfirmStatus}
-      />
+      /> */}
     </>
   );
 };
