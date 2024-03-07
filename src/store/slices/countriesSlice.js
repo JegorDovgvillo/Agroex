@@ -4,18 +4,30 @@ import {
   createSelector,
 } from '@reduxjs/toolkit';
 
-import { fetchCountries } from '@thunks/fetchCountries';
+import {
+  fetchCountries,
+  fetchCountry,
+  getCoordinate,
+  getAddress,
+} from '@thunks/fetchCountries';
 
 const countryAdapter = createEntityAdapter();
 
 const initialState = countryAdapter.getInitialState({
   loadingStatus: 'idle',
+  countryName: '',
+  countryCoordinate: null,
+  address: null,
 });
 
 const countriesSlice = createSlice({
   name: 'countries',
   initialState,
-  reducers: {},
+  reducers: {
+    updateCoordinate: (state, action) => {
+      state.countryCoordinate = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchCountries.pending, (state) => {
@@ -27,12 +39,42 @@ const countriesSlice = createSlice({
       })
       .addCase(fetchCountries.rejected, (state) => {
         state.loadingStatus = 'rejected';
+      })
+      .addCase(fetchCountry.pending, (state) => {
+        state.loadingStatus = 'pending';
+      })
+      .addCase(fetchCountry.fulfilled, (state, action) => {
+        state.loadingStatus = 'fulfilled';
+        state.countryName = action.payload;
+      })
+      .addCase(fetchCountry.rejected, (state) => {
+        state.loadingStatus = 'rejected';
+      })
+      .addCase(getCoordinate.pending, (state) => {
+        state.loadingStatus = 'pending';
+      })
+      .addCase(getCoordinate.fulfilled, (state, action) => {
+        state.loadingStatus = 'fulfilled';
+        state.countryCoordinate = action.payload;
+      })
+      .addCase(getCoordinate.rejected, (state) => {
+        state.loadingStatus = 'rejected';
+      })
+      .addCase(getAddress.pending, (state) => {
+        state.loadingStatus = 'pending';
+      })
+      .addCase(getAddress.fulfilled, (state, action) => {
+        state.loadingStatus = 'fulfilled';
+        state.address = action.payload;
+      })
+      .addCase(getAddress.rejected, (state) => {
+        state.loadingStatus = 'rejected';
       });
   },
 });
 
-const { reducer } = countriesSlice;
-
+const { reducer, actions } = countriesSlice;
+export const { updateCoordinate } = actions;
 const { selectAll } = countryAdapter.getSelectors((state) => state.countries);
 
 export const countrySelector = createSelector([selectAll], (countries) =>

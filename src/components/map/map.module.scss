@@ -1,0 +1,25 @@
+.mapContainer {
+  display: flex;
+  flex: 1;
+  padding: 16px 40px 16px 0;
+  font-family: sans-serif;
+
+  @media only all and (max-width: 1600px) {
+    flex: 1 0 400px;
+    max-width: 970px;
+    padding: 40px;
+  }
+
+  @media only all and (max-width: 1000px) {
+    width: 888px;
+  }
+
+  @media only all and (max-width: 880px) {
+    width: 788px;
+  }
+
+  .map {
+    display: flex;
+    flex: 1;
+  }
+}

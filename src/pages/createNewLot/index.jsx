@@ -22,7 +22,10 @@ const CreateNewLot = () => {
   const categories = useSelector(selectRootCategories);
   const country = useSelector(countrySelector);
   const tags = useSelector(tagsSelector);
-  const userId = useSelector((state) => state.usersList.userInfo);
+  const userId = useSelector((state) => state.usersList.userId);
+  const countryCoordinate = useSelector(
+    (state) => state.countries.countryCoordinate
+  );
 
   const [files, setFiles] = useState([]);
   const [disabled, setDisabled] = useState(false);
@@ -66,6 +69,8 @@ const CreateNewLot = () => {
       location: {
         countryId: values.country,
         region: values.region,
+        latitude: countryCoordinate.lat,
+        longitude: countryCoordinate.lon,
       },
       tags: values.tags,
     };
