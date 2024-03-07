@@ -20,7 +20,7 @@ const CustomMultiSelect = ({
   units,
   name,
   disabled = false,
-  placeholder,
+
   required = true,
   itemFieldName,
   label = '',
@@ -49,7 +49,7 @@ const CustomMultiSelect = ({
               value={item.id || item}
               sx={{ height: '60px' }}
             >
-              {item[itemFieldName] || item}
+              {item[itemFieldName]}
             </MenuItem>
           ))}
         </Field>
