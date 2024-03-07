@@ -30,8 +30,8 @@ const UpdateLot = () => {
   const selectedLot = useSelector((state) => selectLotDetailById(state, lotId));
   const tags = useSelector(tagsSelector);
   const userId = useSelector((state) => state.usersList.userId);
-  const countryCordinate = useSelector(
-    (state) => state.countries.countryCordinate
+  const countryCoordinate = useSelector(
+    (state) => state.countries.countryCoordinate
   );
 
   const [confirmStatus, setConfirmStatus] = useState(false);
@@ -96,8 +96,8 @@ const UpdateLot = () => {
       location: {
         countryId: values.country,
         region: values.region,
-        latitude: countryCordinate.lat,
-        longitude: countryCordinate.lon,
+        latitude: countryCoordinate.lat,
+        longitude: countryCoordinate.lon,
       },
       tags: values.tags,
       images: filteredImages,

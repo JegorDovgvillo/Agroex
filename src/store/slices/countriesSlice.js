@@ -7,7 +7,7 @@ import {
 import {
   fetchCountries,
   fetchCountry,
-  getCordinate,
+  getCoordinate,
   getAddress,
 } from '@thunks/fetchCountries';
 
@@ -16,7 +16,7 @@ const countryAdapter = createEntityAdapter();
 const initialState = countryAdapter.getInitialState({
   loadingStatus: 'idle',
   countryName: '',
-  countryCordinate: null,
+  countryCoordinate: null,
   address: null,
 });
 
@@ -24,8 +24,8 @@ const countriesSlice = createSlice({
   name: 'countries',
   initialState,
   reducers: {
-    updateCordinate: (state, action) => {
-      state.countryCordinate = action.payload;
+    updateCoordinate: (state, action) => {
+      state.countryCoordinate = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -50,14 +50,14 @@ const countriesSlice = createSlice({
       .addCase(fetchCountry.rejected, (state) => {
         state.loadingStatus = 'rejected';
       })
-      .addCase(getCordinate.pending, (state) => {
+      .addCase(getCoordinate.pending, (state) => {
         state.loadingStatus = 'pending';
       })
-      .addCase(getCordinate.fulfilled, (state, action) => {
+      .addCase(getCoordinate.fulfilled, (state, action) => {
         state.loadingStatus = 'fulfilled';
-        state.countryCordinate = action.payload;
+        state.countryCoordinate = action.payload;
       })
-      .addCase(getCordinate.rejected, (state) => {
+      .addCase(getCoordinate.rejected, (state) => {
         state.loadingStatus = 'rejected';
       })
       .addCase(getAddress.pending, (state) => {
@@ -74,7 +74,7 @@ const countriesSlice = createSlice({
 });
 
 const { reducer, actions } = countriesSlice;
-export const { updateCordinate } = actions;
+export const { updateCoordinate } = actions;
 const { selectAll } = countryAdapter.getSelectors((state) => state.countries);
 
 export const countrySelector = createSelector([selectAll], (countries) =>

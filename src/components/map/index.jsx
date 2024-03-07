@@ -4,9 +4,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router';
 import _ from 'lodash';
 
-import { fetchCountry, getCordinate, getAddress } from '@thunks/fetchCountries';
+import {
+  fetchCountry,
+  getCoordinate,
+  getAddress,
+} from '@thunks/fetchCountries';
 
-import { updateCordinate } from '@slices/countriesSlice';
+import { updateCoordinate } from '@slices/countriesSlice';
 import { selectLotDetailById } from '@slices/lotListSlice';
 
 import 'leaflet/dist/leaflet.css';
@@ -42,8 +46,8 @@ const Map = ({ location, setFieldValue, countries }) => {
   const selectedLot = useSelector((state) => selectLotDetailById(state, id));
   const countryName = useSelector((state) => state.countries.countryName);
   const address = useSelector((state) => state.countries.address);
-  const countryCordinate = useSelector(
-    (state) => state.countries.countryCordinate
+  const countryCoordinate = useSelector(
+    (state) => state.countries.countryCoordinate
   );
 
   useEffect(() => {
@@ -62,32 +66,32 @@ const Map = ({ location, setFieldValue, countries }) => {
 
   useEffect(() => {
     if (countryName && !selectedLot) {
-      dispatch(getCordinate({ countryName: countryName.name }));
+      dispatch(getCoordinate({ countryName: countryName.name }));
     }
   }, [countryName]);
 
   useEffect(() => {
-    if (countryCordinate) {
+    if (countryCoordinate) {
       dispatch(
         getAddress({
-          latitude: countryCordinate.lat,
-          longitude: countryCordinate.lon,
+          latitude: countryCoordinate.lat,
+          longitude: countryCoordinate.lon,
         })
       );
     }
-  }, [countryCordinate]);
+  }, [countryCoordinate]);
 
   useEffect(() => {
     if (address) {
-      if (address.state) {
-        setFieldValue('region', address.state);
-      } else if (address.county) {
-        setFieldValue('region', address.county);
-      } else if (address.citytown || address.borough) {
-        setFieldValue('region', address.citytown || address.borough);
-      } else if (address.village || address.suburb) {
-        setFieldValue('region', address.village || address.suburb);
-      }
+      const region =
+        address.state ||
+        address.county ||
+        address.citytown ||
+        address.borough ||
+        address.village ||
+        address.suburb;
+
+      setFieldValue('region', region);
     }
   }, [address]);
 
@@ -96,11 +100,11 @@ const Map = ({ location, setFieldValue, countries }) => {
       navigator.geolocation.getCurrentPosition((position) => {
         const { latitude, longitude } = position.coords;
 
-        dispatch(updateCordinate({ lat: latitude, lon: longitude }));
+        dispatch(updateCoordinate({ lat: latitude, lon: longitude }));
       });
     } else {
       dispatch(
-        updateCordinate({
+        updateCoordinate({
           lat: selectedLot.location.latitude,
           lon: selectedLot.location.longitude,
         })
@@ -118,7 +122,7 @@ const Map = ({ location, setFieldValue, countries }) => {
 
           setIsTouched(true);
           dispatch(
-            updateCordinate({ lat: newPosition.lat, lon: newPosition.lng })
+            updateCoordinate({ lat: newPosition.lat, lon: newPosition.lng })
           );
         }
       },
@@ -128,18 +132,18 @@ const Map = ({ location, setFieldValue, countries }) => {
 
   return (
     <>
-      {countryCordinate && (
+      {countryCoordinate && (
         <div className={styles.mapContainer}>
           <MapContainer
-            center={[countryCordinate.lat, countryCordinate.lon]}
+            center={[countryCoordinate.lat, countryCoordinate.lon]}
             zoom={7}
             scrollWheelZoom={true}
             className={styles.map}
           >
             <TileLayer url="https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png" />
             <LocationMarker
-              latitude={countryCordinate.lat}
-              longitude={countryCordinate.lon}
+              latitude={countryCoordinate.lat}
+              longitude={countryCoordinate.lon}
               eventHandlers={eventHandlers}
               draggable={draggable}
             />

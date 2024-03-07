@@ -22,8 +22,8 @@ export const fetchCountry = createAsyncThunk(
   }
 );
 
-export const getCordinate = createAsyncThunk(
-  'countries/getCordinate',
+export const getCoordinate = createAsyncThunk(
+  'countries/getCoordinate',
   async ({ countryName }) => {
     const response = await axiosInstance.get(
       `${MAP_URL}/search?format=json&country=${countryName}`
