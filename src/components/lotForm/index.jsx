@@ -187,280 +187,287 @@ const LotForm = ({
         setFieldTouched,
       }) => (
         <>
-          <Form className={styles.newLotForm}>
-            <div className={styles.inputBlock}>
-              <CustomTextField
-                label="Title"
-                id="title"
-                placeholder="Enter the title"
-                name="title"
-                value={values.title}
-                errors={errors.title}
-                touched={!isCreateNotSubmittedForm || touched.title}
-              />
-              <CustomSelect
-                label="Location"
-                units={country}
-                itemFieldName="name"
-                name="country"
-                placeholder="Choose country"
-                value={values.country}
-                errors={errors.country}
-                touched={!isCreateNotSubmittedForm || touched.country}
-                setFieldValue={setFieldValue}
-              />
-              <CustomTextField
-                label="Region"
-                id="region"
-                placeholder="Enter the region"
-                name="region"
-                value={values.region}
-                errors={errors.region}
-                touched={!isCreateNotSubmittedForm || touched.region}
-              />
-              <CustomSelect
-                label="Lot type"
-                id="lotType"
-                name="lotType"
-                units={['sell', 'buy', 'auctionSell']}
-                placeholder="Lot type"
-                value={values.lotType}
-                errors={errors.lotType}
-                touched={!isCreateNotSubmittedForm || touched.lotType}
-                handleChange={setSelectedLotType}
-                setFieldValue={setFieldValue}
-              />
-            </div>
-            <CustomTextField
-              label="Description"
-              placeholder="Enter the description"
-              name="description"
-              multiline
-              rows={4}
-              type="textarea"
-              value={values.description}
-              errors={errors.description}
-              touched={!isCreateNotSubmittedForm || touched.description}
-              fieldType="textarea"
-            />
-            <div className={styles.inputBlock}>
-              <CustomSelect
-                label="Category"
-                units={categories}
-                itemFieldName="title"
-                name="category"
-                placeholder="Choose category"
-                value={values.category}
-                errors={errors.category}
-                touched={!isCreateNotSubmittedForm || touched.category}
-                handleChange={setSelectedCategoryId}
-                setFieldValue={setFieldValue}
-              />
-
-              <CustomAutocompleteField
-                label="Subcategory"
-                id="subcategory"
-                placeholder="Enter the subcategory"
-                name="subcategory"
-                value={values.subcategory}
-                errors={errors.subcategory}
-                touched={!isCreateNotSubmittedForm || touched.subcategory}
-                options={subcategories}
-                setFieldValue={setFieldValue}
-              />
-
-              <CustomTextField
-                label="Variety"
-                id="variety"
-                placeholder="Enter the variety"
-                name="variety"
-                value={values.variety}
-                errors={errors.variety}
-                touched={!isCreateNotSubmittedForm || touched.variety}
-              />
-              <CustomTextField
-                label="Size"
-                id="size"
-                placeholder="Enter the size"
-                required={false}
-                name="size"
-                value={values.size}
-                errors={errors.size}
-                touched={!isCreateNotSubmittedForm || touched.size}
-              />
-            </div>
-            <div className={styles.inputBlock}>
-              <CustomTextField
-                label="Packaging"
-                id="packaging"
-                placeholder="Enter the packaging"
-                name="packaging"
-                required={false}
-                value={values.packaging}
-                errors={errors.packaging}
-                touched={!isCreateNotSubmittedForm || touched.packaging}
-              />
-              <CustomTextField
-                label="Quantity"
-                id="quantity"
-                type="number"
-                placeholder="Enter the quantity"
-                name="quantity"
-                value={values.quantity}
-                errors={errors.quantity}
-                touched={!isCreateNotSubmittedForm || touched.quantity}
-              />
-
-              {!isAuctionLot ? (
-                <CustomDatePicker
-                  value={values.expirationDate}
-                  onChange={(date) => {
-                    setFieldTouched('expirationDate', true);
-                    setFieldValue('expirationDate', date);
-                  }}
-                  errors={errors.expirationDate}
-                  touched={!isCreateNotSubmittedForm || touched.expirationDate}
-                />
-              ) : (
-                <div className={styles.auctionLotDurationBlock}>
-                  <h6 className={styles.auctionLotDurationTitle}>
-                    Auction duration
-                  </h6>
-                  <div className={styles.auctionLotDurationInputs}>
-                    <CustomTextField
-                      id="days"
-                      name="days"
-                      type="number"
-                      fieldType={'lotDuration'}
-                      placeholder="Days"
-                      value={values.days}
-                      errors={errors.days}
-                      touched={!isCreateNotSubmittedForm || touched.days}
-                    />
-                    <CustomTextField
-                      id="hours"
-                      name="hours"
-                      type="number"
-                      fieldType={'lotDuration'}
-                      placeholder="Hours"
-                      value={values.hours}
-                      errors={errors.hours}
-                      touched={!isCreateNotSubmittedForm || touched.hours}
-                    />
-                    <CustomTextField
-                      id="minutes"
-                      name="minutes"
-                      type="number"
-                      fieldType={'lotDuration'}
-                      placeholder="Minutes"
-                      value={values.minutes}
-                      errors={errors.minutes}
-                      touched={!isCreateNotSubmittedForm || touched.minutes}
-                    />
-                  </div>
-                </div>
-              )}
-            </div>
-            <div className={styles.inputBlock}>
-              <CustomSelect
-                label="Currency"
-                units={['USD']}
-                name="priceUnits"
-                disabled={true}
-                placeholder="Currency"
-                value={values.priceUnits}
-                errors={errors.priceUnits}
-                touched={!isCreateNotSubmittedForm || touched.priceUnits}
-                setFieldValue={setFieldValue}
-              />
-              <CustomTextField
-                label="Price"
-                id="price"
-                name="price"
-                type="number"
-                placeholder="Enter the price"
-                value={values.price}
-                errors={errors.price}
-                touched={!isCreateNotSubmittedForm || touched.price}
-              />
-              {isAuctionLot && (
+          <div className={styles.formContainer}>
+            <Form className={styles.newLotForm}>
+              <div className={styles.inputBlock}>
                 <CustomTextField
-                  label="Min price"
-                  id="minPrice"
-                  name="minPrice"
-                  type="number"
-                  placeholder="Enter the min price"
-                  value={values.minPrice}
-                  errors={errors.minPrice}
-                  touched={!isCreateNotSubmittedForm || touched.minPrice}
+                  label="Title"
+                  id="title"
+                  placeholder="Enter the title"
+                  name="title"
+                  value={values.title}
+                  errors={errors.title}
+                  touched={!isCreateNotSubmittedForm || touched.title}
                 />
-              )}
-            </div>
-            <div className={styles.inputBlock}>
-              <CustomMultipleAutocompleteField
-                label="Tags"
-                id="tags"
-                fieldType="tags"
-                limitTags={4}
-                placeholder="Select or type a tag"
-                name="tags"
-                value={values.tags}
-                errors={errors.tags}
-                options={tags}
-                setFieldValue={setFieldValue}
-              />
-            </div>
-
-            <DragAndDrop
-              files={files}
-              setFiles={setFiles}
-              maxFilesPerDrop={maxFilesPerDrop}
-              setMaxFilesPerDrop={setMaxFilesPerDrop}
-              disabled={disabled}
-              setDisabled={setDisabled}
-            />
-            {!isImageAdded && (
-              <FormHelperText error className={styles.dropDownHelperText}>
-                At least one picture must be uploaded
-              </FormHelperText>
-            )}
-            {formType === 'create' ? (
-              <>
-                <CustomButton
-                  text="Place an item"
-                  width="auto"
-                  typeOfButton="submit"
-                  handleClick={handlePlaceItemBtnClick}
-                  disabled={!isFirstSubmit && (!isValid || !isImageAdded)}
+                <CustomSelect
+                  label="Location"
+                  units={country}
+                  itemFieldName="name"
+                  name="country"
+                  placeholder="Choose country"
+                  value={values.country}
+                  errors={errors.country}
+                  touched={!isCreateNotSubmittedForm || touched.country}
+                  setFieldValue={setFieldValue}
                 />
-                <InfoModal title="Success!" text="Your ad has been published" />
-              </>
-            ) : (
-              <div className={styles.buttonsWrap}>
-                <CustomButton
-                  text="Update an item"
-                  width="auto"
-                  typeOfButton="submit"
-                  disabled={!isValid || !isImageAdded}
+                <CustomTextField
+                  label="Region"
+                  id="region"
+                  placeholder="Enter the region"
+                  name="region"
+                  value={values.region}
+                  errors={errors.region}
+                  touched={!isCreateNotSubmittedForm || touched.region}
                 />
-                <CustomButton
-                  text="Delete an item"
-                  width="auto"
-                  typeOfButton="button"
-                  handleClick={showConfirm}
-                />
-                <ConfirmActionModal
-                  text="This action delete the lot. Do you confirm the action?"
-                  setConfirmStatus={setConfirmStatus}
+                <CustomSelect
+                  label="Lot type"
+                  id="lotType"
+                  name="lotType"
+                  units={['sell', 'buy', 'auctionSell']}
+                  placeholder="Lot type"
+                  value={values.lotType}
+                  errors={errors.lotType}
+                  touched={!isCreateNotSubmittedForm || touched.lotType}
+                  handleChange={setSelectedLotType}
+                  setFieldValue={setFieldValue}
                 />
               </div>
-            )}
-          </Form>
-          <Map
-            location={values.country}
-            setFieldValue={setFieldValue}
-            countries={country}
-          />
+              <CustomTextField
+                label="Description"
+                placeholder="Enter the description"
+                name="description"
+                multiline
+                rows={4}
+                type="textarea"
+                value={values.description}
+                errors={errors.description}
+                touched={!isCreateNotSubmittedForm || touched.description}
+                fieldType="textarea"
+              />
+              <div className={styles.inputBlock}>
+                <CustomSelect
+                  label="Category"
+                  units={categories}
+                  itemFieldName="title"
+                  name="category"
+                  placeholder="Choose category"
+                  value={values.category}
+                  errors={errors.category}
+                  touched={!isCreateNotSubmittedForm || touched.category}
+                  handleChange={setSelectedCategoryId}
+                  setFieldValue={setFieldValue}
+                />
+
+                <CustomAutocompleteField
+                  label="Subcategory"
+                  id="subcategory"
+                  placeholder="Enter the subcategory"
+                  name="subcategory"
+                  value={values.subcategory}
+                  errors={errors.subcategory}
+                  touched={!isCreateNotSubmittedForm || touched.subcategory}
+                  options={subcategories}
+                  setFieldValue={setFieldValue}
+                />
+
+                <CustomTextField
+                  label="Variety"
+                  id="variety"
+                  placeholder="Enter the variety"
+                  name="variety"
+                  value={values.variety}
+                  errors={errors.variety}
+                  touched={!isCreateNotSubmittedForm || touched.variety}
+                />
+                <CustomTextField
+                  label="Size"
+                  id="size"
+                  placeholder="Enter the size"
+                  required={false}
+                  name="size"
+                  value={values.size}
+                  errors={errors.size}
+                  touched={!isCreateNotSubmittedForm || touched.size}
+                />
+              </div>
+              <div className={styles.inputBlock}>
+                <CustomTextField
+                  label="Packaging"
+                  id="packaging"
+                  placeholder="Enter the packaging"
+                  name="packaging"
+                  required={false}
+                  value={values.packaging}
+                  errors={errors.packaging}
+                  touched={!isCreateNotSubmittedForm || touched.packaging}
+                />
+                <CustomTextField
+                  label="Quantity"
+                  id="quantity"
+                  type="number"
+                  placeholder="Enter the quantity"
+                  name="quantity"
+                  value={values.quantity}
+                  errors={errors.quantity}
+                  touched={!isCreateNotSubmittedForm || touched.quantity}
+                />
+
+                {!isAuctionLot ? (
+                  <CustomDatePicker
+                    value={values.expirationDate}
+                    onChange={(date) => {
+                      setFieldTouched('expirationDate', true);
+                      setFieldValue('expirationDate', date);
+                    }}
+                    errors={errors.expirationDate}
+                    touched={
+                      !isCreateNotSubmittedForm || touched.expirationDate
+                    }
+                  />
+                ) : (
+                  <div className={styles.auctionLotDurationBlock}>
+                    <h6 className={styles.auctionLotDurationTitle}>
+                      Auction duration
+                    </h6>
+                    <div className={styles.auctionLotDurationInputs}>
+                      <CustomTextField
+                        id="days"
+                        name="days"
+                        type="number"
+                        fieldType={'lotDuration'}
+                        placeholder="Days"
+                        value={values.days}
+                        errors={errors.days}
+                        touched={!isCreateNotSubmittedForm || touched.days}
+                      />
+                      <CustomTextField
+                        id="hours"
+                        name="hours"
+                        type="number"
+                        fieldType={'lotDuration'}
+                        placeholder="Hours"
+                        value={values.hours}
+                        errors={errors.hours}
+                        touched={!isCreateNotSubmittedForm || touched.hours}
+                      />
+                      <CustomTextField
+                        id="minutes"
+                        name="minutes"
+                        type="number"
+                        fieldType={'lotDuration'}
+                        placeholder="Minutes"
+                        value={values.minutes}
+                        errors={errors.minutes}
+                        touched={!isCreateNotSubmittedForm || touched.minutes}
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+              <div className={styles.inputBlock}>
+                <CustomSelect
+                  label="Currency"
+                  units={['USD']}
+                  name="priceUnits"
+                  disabled={true}
+                  placeholder="Currency"
+                  value={values.priceUnits}
+                  errors={errors.priceUnits}
+                  touched={!isCreateNotSubmittedForm || touched.priceUnits}
+                  setFieldValue={setFieldValue}
+                />
+                <CustomTextField
+                  label="Price"
+                  id="price"
+                  name="price"
+                  type="number"
+                  placeholder="Enter the price"
+                  value={values.price}
+                  errors={errors.price}
+                  touched={!isCreateNotSubmittedForm || touched.price}
+                />
+                {isAuctionLot && (
+                  <CustomTextField
+                    label="Min price"
+                    id="minPrice"
+                    name="minPrice"
+                    type="number"
+                    placeholder="Enter the min price"
+                    value={values.minPrice}
+                    errors={errors.minPrice}
+                    touched={!isCreateNotSubmittedForm || touched.minPrice}
+                  />
+                )}
+              </div>
+              <div className={styles.inputBlock}>
+                <CustomMultipleAutocompleteField
+                  label="Tags"
+                  id="tags"
+                  fieldType="tags"
+                  limitTags={4}
+                  placeholder="Select or type a tag"
+                  name="tags"
+                  value={values.tags}
+                  errors={errors.tags}
+                  options={tags}
+                  setFieldValue={setFieldValue}
+                />
+              </div>
+
+              <DragAndDrop
+                files={files}
+                setFiles={setFiles}
+                maxFilesPerDrop={maxFilesPerDrop}
+                setMaxFilesPerDrop={setMaxFilesPerDrop}
+                disabled={disabled}
+                setDisabled={setDisabled}
+              />
+              {!isImageAdded && (
+                <FormHelperText error className={styles.dropDownHelperText}>
+                  At least one picture must be uploaded
+                </FormHelperText>
+              )}
+              {formType === 'create' ? (
+                <>
+                  <CustomButton
+                    text="Place an item"
+                    width="auto"
+                    typeOfButton="submit"
+                    handleClick={handlePlaceItemBtnClick}
+                    disabled={!isFirstSubmit && (!isValid || !isImageAdded)}
+                  />
+                  <InfoModal
+                    title="Success!"
+                    text="Your ad has been published"
+                  />
+                </>
+              ) : (
+                <div className={styles.buttonsWrap}>
+                  <CustomButton
+                    text="Update an item"
+                    width="auto"
+                    typeOfButton="submit"
+                    disabled={!isValid || !isImageAdded}
+                  />
+                  <CustomButton
+                    text="Delete an item"
+                    width="auto"
+                    typeOfButton="button"
+                    handleClick={showConfirm}
+                  />
+                  <ConfirmActionModal
+                    text="This action delete the lot. Do you confirm the action?"
+                    setConfirmStatus={setConfirmStatus}
+                  />
+                </div>
+              )}
+            </Form>
+            <Map
+              location={values.country}
+              setFieldValue={setFieldValue}
+              countries={country}
+            />
+          </div>
         </>
       )}
     </Formik>

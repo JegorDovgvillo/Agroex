@@ -2,6 +2,7 @@ import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
 import React, { useState, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router';
+import _ from 'lodash';
 
 import { fetchCountry, getCordinate, getAddress } from '@thunks/fetchCountries';
 
@@ -9,7 +10,8 @@ import { updateCordinate } from '@slices/countriesSlice';
 import { selectLotDetailById } from '@slices/lotListSlice';
 
 import 'leaflet/dist/leaflet.css';
-import _ from 'lodash';
+
+import styles from './map.module.scss';
 
 const LocationMarker = ({ latitude, longitude, eventHandlers, draggable }) => {
   const map = useMapEvents({
@@ -19,8 +21,8 @@ const LocationMarker = ({ latitude, longitude, eventHandlers, draggable }) => {
   });
 
   return (
-    latitude &&
-    longitude && (
+    !_.isNil(latitude) &&
+    !_.isNil(longitude) && (
       <Marker
         position={[latitude, longitude]}
         draggable={draggable}
@@ -52,10 +54,8 @@ const Map = ({ location, setFieldValue, countries }) => {
 
   useEffect(() => {
     if (address && countryName !== address.country) {
-      const foundCountry = _.find(
-        countries,
-        (country) => country.name === address.country
-      );
+      const foundCountry = _.find(countries, { name: address.country });
+
       foundCountry && setFieldValue('country', foundCountry.id);
     }
   }, [address]);
@@ -95,6 +95,7 @@ const Map = ({ location, setFieldValue, countries }) => {
     if (!selectedLot) {
       navigator.geolocation.getCurrentPosition((position) => {
         const { latitude, longitude } = position.coords;
+
         dispatch(updateCordinate({ lat: latitude, lon: longitude }));
       });
     } else {
@@ -128,20 +129,22 @@ const Map = ({ location, setFieldValue, countries }) => {
   return (
     <>
       {countryCordinate && (
-        <MapContainer
-          center={[countryCordinate.lat, countryCordinate.lon]}
-          zoom={7}
-          scrollWheelZoom={true}
-          style={{ width: '100%', height: '400px', fontFamily: 'sans-serif' }}
-        >
-          <TileLayer url="https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png" />
-          <LocationMarker
-            latitude={countryCordinate.lat}
-            longitude={countryCordinate.lon}
-            eventHandlers={eventHandlers}
-            draggable={draggable}
-          />
-        </MapContainer>
+        <div className={styles.mapContainer}>
+          <MapContainer
+            center={[countryCordinate.lat, countryCordinate.lon]}
+            zoom={7}
+            scrollWheelZoom={true}
+            className={styles.map}
+          >
+            <TileLayer url="https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png" />
+            <LocationMarker
+              latitude={countryCordinate.lat}
+              longitude={countryCordinate.lon}
+              eventHandlers={eventHandlers}
+              draggable={draggable}
+            />
+          </MapContainer>
+        </div>
       )}
     </>
   );

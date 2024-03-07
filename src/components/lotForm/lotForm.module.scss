@@ -1,42 +1,53 @@
-.newLotForm {
+.formContainer {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  font-size: 18px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 28px;
-  letter-spacing: 0.4px;
-  padding: 16px 40px;
+  flex-direction: row;
+  flex: 1;
+  position: relative;
 
-  label {
-    margin-bottom: 8px;
+  @media only all and (max-width: 1600px) {
+    flex-direction: column-reverse;
   }
 
-  .inputBlock {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-  }
-
-  .auctionLotDurationBlock {
+  .newLotForm {
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 28px;
+    letter-spacing: 0.4px;
+    padding: 16px 40px;
 
-    .auctionLotDurationInputs {
-      display: flex;
+    label {
+      margin-bottom: 8px;
     }
-  }
 
-  .buttonsWrap {
-    display: flex;
-    gap: 16px;
-    flex-direction: row;
-  }
+    .inputBlock {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+    }
 
-  .dropDownHelperText {
-    position: relative;
-    bottom: 70px;
-    left: 100px;
+    .auctionLotDurationBlock {
+      display: flex;
+      flex-direction: column;
+
+      .auctionLotDurationInputs {
+        display: flex;
+      }
+    }
+
+    .buttonsWrap {
+      display: flex;
+      gap: 16px;
+      flex-direction: row;
+    }
+
+    .dropDownHelperText {
+      position: relative;
+      bottom: 70px;
+      left: 100px;
+    }
   }
 }
