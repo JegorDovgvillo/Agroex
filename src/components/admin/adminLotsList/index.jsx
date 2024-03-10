@@ -16,8 +16,8 @@ import { fetchUsers } from '@thunks/fetchUsers';
 import {
   toggleModal,
   selectModalState,
-  setModalField,
-  clearModalFields,
+  setModalFields,
+  clearModalsFields,
   selectModal,
 } from '@slices/modalSlice';
 import {
@@ -31,8 +31,6 @@ import { setUserId, usersListSelector } from '@slices/usersListSlice';
 import getFormattedDate from '@helpers/getFormattedDate';
 import getNumberWithCurrency from '@helpers/getNumberWithCurrency';
 import { getFormattedDuration } from '@helpers/getFormattedDuration';
-import ConfirmActionModal from '@customModals/confirmActionModal';
-import AdminMessageModal from '@customModals/adminMessageModal';
 
 import DetailedLotViewModal from '../detailedLotViewModal';
 import { getTableHead } from './getTableHead';
@@ -128,11 +126,9 @@ export default function AdminLotsList() {
       });
     } else {
       dispatch(
-        setModalField({
+        setModalFields({
           modalId: 'confirmModal',
-          field: 'text',
-          value:
-            'This action changes the lot status. Do you confirm the action?',
+          text: 'This action changes the lot status. Do you confirm the action?',
         })
       );
       dispatch(toggleModal('confirmModal'));
@@ -213,8 +209,7 @@ export default function AdminLotsList() {
     if (changeLotLoadingStatus === 'rejected' && lotListErrors) {
       dispatch(clearErrors());
       dispatch(clearChangeLotLoadingStatus());
-      dispatch(clearModalFields('confirmModal'));
-      dispatch(clearModalFields('adminMessageModal'));
+      dispatch(clearModalsFields(['confirmModal', 'adminMessageModal']));
     }
 
     if (changeLotLoadingStatus === 'fulfilled') {
@@ -225,8 +220,7 @@ export default function AdminLotsList() {
         },
       });
       dispatch(clearChangeLotLoadingStatus());
-      dispatch(clearModalFields('confirmModal'));
-      dispatch(clearModalFields('adminMessageModal'));
+      dispatch(clearModalsFields(['confirmModal', 'adminMessageModal']));
     }
   }, [lotListErrors, changeLotLoadingStatus]);
 
@@ -259,14 +253,6 @@ export default function AdminLotsList() {
           />
 
           {isModalOpened && <DetailedLotViewModal />}
-          {/* <ConfirmActionModal
-            text="This action changes the lot status. Do you confirm the action?"
-            setConfirmStatus={setConfirmStatus}
-          />
-          <AdminMessageModal
-            setAdminMessage={setAdminComment}
-            setConfirmStatus={setConfirmStatus}
-          /> */}
         </div>
       )}
     </>

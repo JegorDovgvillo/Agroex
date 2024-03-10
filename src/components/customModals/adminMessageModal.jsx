@@ -7,8 +7,8 @@ import { CustomButton } from '@buttons/CustomButton';
 import {
   toggleModal,
   selectModalState,
-  setModalField,
-  clearModalFields,
+  setModalFields,
+  clearModalsFields,
 } from '@slices/modalSlice';
 import { adminMessageValidationSchema } from '@helpers/validationSchemes/adminMessageValidationSchema.js';
 import CustomTextField from '@customTextField';
@@ -24,16 +24,14 @@ const AdminMessageModal = () => {
   );
 
   const handleClose = () => {
-    dispatch(clearModalFields('adminMessageModal'));
-    dispatch(clearModalFields('confirmModal'));
+    dispatch(clearModalsFields(['adminMessageModal', 'confirmModal']));
   };
 
   const handleSubmit = (values) => {
     dispatch(
-      setModalField({
+      setModalFields({
         modalId: 'adminMessageModal',
-        field: 'adminMessage',
-        value: values.message,
+        adminMessage: values.message,
       })
     );
 

@@ -23,6 +23,7 @@ const Filters = ({
   setSelectedSubcategoriesIds,
 }) => {
   const getNumbersArray = (searchParams) => searchParams.split(',').map(Number);
+  const getArray = (searchParams) => searchParams.split(',');
 
   const parentCategories = _.filter(categories, ['parentId', 0]);
   const currSubcategories = _.filter(categories, 'parentId');
@@ -111,7 +112,7 @@ const Filters = ({
       minPrice: searchParams.get('minPrice') || '',
       maxPrice: searchParams.get('maxPrice') || '',
       users: searchParams.get('users')
-        ? getNumbersArray(searchParams.get('users'))
+        ? getArray(searchParams.get('users'))
         : [],
       categories: selectedCategoriesIds,
       subcategories: selectedSubcategoriesIds,

@@ -1,4 +1,5 @@
 import { createSlice, createEntityAdapter } from '@reduxjs/toolkit';
+import { isArray } from 'lodash';
 
 const modalAdapter = createEntityAdapter();
 
@@ -34,37 +35,45 @@ const modalSlice = createSlice({
       state.modals[modalIndex].isOpen = !state.modals[modalIndex].isOpen;
     },
 
-    setModalField: (state, action) => {
-      const { modalId, field, value } = action.payload;
+    setModalFields: (state, action) => {
+      const { modalId, ...changes } = action.payload;
       const modalIndex = state.modals.findIndex(
         (modal) => modal.id === modalId
       );
 
       if (modalIndex !== -1) {
-        state.modals[modalIndex][field] = value;
+        state.modals[modalIndex] = {
+          ...state.modals[modalIndex],
+          ...changes,
+        };
       }
     },
 
-    clearModalFields: (state, action) => {
-      const modalId = action.payload;
-      const modalIndex = state.modals.findIndex((modal) => {
-        return modal.id === modalId;
-      });
+    clearModalsFields: (state, action) => {
+      const modalIds = isArray(action.payload)
+        ? action.payload
+        : [action.payload];
 
-      if (modalIndex !== -1) {
-        const initialModalState = initialState.modals.find(
+      modalIds.forEach((modalId) => {
+        const modalIndex = state.modals.findIndex(
           (modal) => modal.id === modalId
         );
 
-        state.modals[modalIndex] = { ...initialModalState };
-      }
+        if (modalIndex !== -1) {
+          const initialModalState = initialState.modals.find(
+            (modal) => modal.id === modalId
+          );
+
+          state.modals[modalIndex] = { ...initialModalState };
+        }
+      });
     },
   },
 });
 
 const { reducer, actions } = modalSlice;
 
-export const { toggleModal, setModalField, clearModalFields } = actions;
+export const { toggleModal, setModalFields, clearModalsFields } = actions;
 
 export const selectModalState = (state, modalId) => {
   const modal = state.modal.modals.find((modal) => modal.id === modalId);

@@ -1,7 +1,6 @@
 import { Select, MenuItem } from '@mui/material';
 import { Field } from 'formik';
 import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
 
 import styles from '@customTextField/customTextField.module.scss';
 
@@ -42,6 +41,7 @@ const CustomMultiSelect = ({
           MenuProps={MenuProps}
           multiple={true}
           onChange={onChange}
+          placeholder={placeholder}
         >
           {units.map((item, index) => (
             <MenuItem

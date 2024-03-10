@@ -18,6 +18,7 @@ const CustomTextField = ({
   rows = null,
   type = '',
   inputProps = {},
+  helperText = null,
 }) => {
   const isError = !!errors && !!touched;
 
@@ -39,7 +40,7 @@ const CustomTextField = ({
           isError && styles.error
         } ${styles[fieldType]}`}
         error={isError}
-        helperText={isError ? errors : null}
+        helperText={isError ? errors : helperText}
         InputProps={inputProps}
       />
     </div>

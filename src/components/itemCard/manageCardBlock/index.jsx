@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import _ from 'lodash';
@@ -11,12 +11,11 @@ import PowerSettingsNewOutlinedIcon from '@mui/icons-material/PowerSettingsNewOu
 import PlayArrowOutlinedIcon from '@mui/icons-material/PlayArrowOutlined';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 
-import { toggleModal } from '@slices/modalSlice';
+import { toggleModal, setModalFields } from '@slices/modalSlice';
 
 import { CustomButton } from '@buttons/CustomButton';
 
 import ROUTES from '@helpers/routeNames';
-import { changeLotStatusByUser, deleteLot } from '@thunks/fetchLots';
 
 import styles from './manageCard.module.scss';
 
@@ -25,7 +24,6 @@ const { errorStyleStatus, baseStyleStatus } = styles;
 const ManageCardBlock = ({ id, actions }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [action, setAction] = useState(null);
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -43,11 +41,12 @@ const ManageCardBlock = ({ id, actions }) => {
   const handleToggleUserLotStatus = (event) => {
     event.stopPropagation();
     dispatch(
-      setConfirmModalText(
-        'This action changes the lot status. Do you confirm the action?'
-      )
+      setModalFields({
+        modalId: 'confirmModal',
+        text: 'This action changes the lot status. Do you confirm the action?',
+        action: { name: 'toggleUserLotStatus', lotId: id },
+      })
     );
-    dispatch(setConfirmModalAction('toggleUserLotStatus'));
     dispatch(toggleModal('confirmModal'));
     handleClose(event);
   };
@@ -60,9 +59,12 @@ const ManageCardBlock = ({ id, actions }) => {
   const handleDelete = (event) => {
     event.stopPropagation();
     dispatch(
-      setConfirmModalText('The lot will be permanently deleted. Are you sure?')
+      setModalFields({
+        modalId: 'confirmModal',
+        text: 'The lot will be permanently deleted. Are you sure?',
+        action: { name: 'deleteLot', lotId: id },
+      })
     );
-    dispatch(setConfirmModalAction('deleteLot'));
     dispatch(toggleModal('confirmModal'));
     handleClose(event);
   };
@@ -103,26 +105,6 @@ const ManageCardBlock = ({ id, actions }) => {
 
   const targetActions = getTargetActions();
 
-  useEffect(() => {
-    if (!confirmStatus) {
-      return;
-    }
-
-    switch (action) {
-      case 'toggleUserLotStatus':
-        dispatch(
-          changeLotStatusByUser({
-            lotId: id,
-            isActive: actions === 'activateDelete',
-          })
-        );
-        break;
-
-      case 'deleteLot':
-        dispatch(deleteLot({ id }));
-    }
-  }, [confirmStatus]);
-
   return (
     <>
       <div>
@@ -161,10 +143,6 @@ const ManageCardBlock = ({ id, actions }) => {
           ))}
         </Menu>
       </div>
-      {/* <ConfirmActionModal
-        text={confirmModalText}
-        setConfirmStatus={setConfirmStatus}
-      /> */}
     </>
   );
 };

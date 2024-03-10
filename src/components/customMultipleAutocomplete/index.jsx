@@ -36,7 +36,6 @@ const CustomMultipleAutocompleteField = ({
 
   const handleDeleteTagButtonClick = (index) => {
     const newValue = [...value];
-
     newValue.splice(index, 1);
     setCurrValue(newValue);
   };
@@ -51,7 +50,7 @@ const CustomMultipleAutocompleteField = ({
         {option}
         <button
           className={styles.tagRemoveButton}
-          onClick={handleDeleteTagButtonClick}
+          onClick={() => handleDeleteTagButtonClick(index)}
         >
           &#10006;
         </button>

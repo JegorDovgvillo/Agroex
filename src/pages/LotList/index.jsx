@@ -8,7 +8,6 @@ import Filters from '@components/filters';
 import ItemCard from '@components/itemCard';
 import CustomBreadcrumbs from '@components/customBreadcrumbs';
 import PlaceBetModal from '@customModals/placeBetModal';
-import ConfirmActionModal from '@customModals/confirmActionModal';
 
 import { fetchAllCategories } from '@thunks/fetchCategories';
 import { fetchCountries } from '@thunks/fetchCountries';
@@ -18,9 +17,11 @@ import {
   changeLotStatusByUser,
   changeLotStatusByAdmin,
   deleteLot,
+  fetchDeal,
 } from '@thunks/fetchLots';
 import { fetchUsers } from '@thunks/fetchUsers';
 import { fetchPlaceBet } from '@thunks/fetchBets';
+import { getUserFromCognito } from '@thunks/fetchUsers';
 
 import { usersListSelector } from '@slices/usersListSlice';
 import { categoriesSelector } from '@slices/categoriesSlice';
@@ -28,13 +29,13 @@ import { countrySelector } from '@slices/countriesSlice';
 import { lotListSelector, clearLots } from '@slices/lotListSlice';
 import { betsSelector } from '@slices/betsSlice';
 import {
-  setModalField,
-  clearModalFields,
+  clearModalsFields,
   selectModal,
   toggleModal,
 } from '@slices/modalSlice';
 
 import styles from './lotList.module.scss';
+import { setNewBet } from '../../store/slices/betsSlice';
 
 const LotList = () => {
   const dispatch = useDispatch();
@@ -49,7 +50,6 @@ const LotList = () => {
   const [selectedCategoriesIds, setSelectedCategoriesIds] = useState([]);
   const [selectedSubcategoriesIds, setSelectedSubcategoriesIds] = useState([]);
   const [selectedLot, setSelectedLot] = useState(null);
-  const [newBet, setNewBet] = useState();
 
   const confirmModalData = useSelector((state) =>
     selectModal(state, 'confirmModal')
@@ -57,16 +57,28 @@ const LotList = () => {
   const adminMessageData = useSelector((state) =>
     selectModal(state, 'adminMessageModal')
   );
+  const betModalData = useSelector((state) =>
+    selectModal(state, 'placeBetModal')
+  );
+  const newBet = useSelector((state) => state.bets.newBet);
 
   const handlePlaceNewBet = () => {
     dispatch(fetchPlaceBet({ id: newBet.lotId, betData: newBet }));
-    dispatch(clearConfirmModalAction());
+    dispatch(setNewBet(null));
+    dispatch(clearModalsFields(['confirmModal', 'placeBetModal']));
+  };
+
+  const handleDeal = () => {
+    const { id, userId } = selectedLot;
+    dispatch(fetchDeal({ id, userId }));
+    dispatch(clearModalsFields('confirmModal'));
   };
 
   useEffect(() => {
     dispatch(fetchAllCategories());
     dispatch(fetchCountries());
     dispatch(fetchUsers());
+    dispatch(getUserFromCognito());
 
     return () => {
       dispatch(clearLots());
@@ -98,7 +110,11 @@ const LotList = () => {
     if (!isOpen) {
       switch (action) {
         case 'placeBet':
-          confirmStatus && !_.isEmpty(newBet) && handlePlaceNewBet();
+          confirmStatus && newBet && handlePlaceNewBet();
+          break;
+
+        case 'deal':
+          confirmStatus && handleDeal();
           break;
 
         case 'deactivateLot':
@@ -109,20 +125,20 @@ const LotList = () => {
                 isActive: false,
               })
             );
-          dispatch(clearModalFields('confirmModal'));
+          dispatch(clearModalsFields('confirmModal'));
           break;
 
         case 'deactivateLotByAdmin':
           confirmStatus && dispatch(toggleModal('adminMessageModal'));
-
           break;
 
         case 'deleteLot':
-          dispatch(deleteLot({ id }));
-          dispatch(clearModalFields('confirmModal'));
+          dispatch(deleteLot({ id: selectedLot.id }));
+          dispatch(clearModalsFields('confirmModal'));
+          break;
       }
     }
-  }, [confirmModalData, newBet]);
+  }, [confirmModalData, betModalData]);
 
   useEffect(() => {
     const { adminMessage } = adminMessageData;
@@ -135,8 +151,7 @@ const LotList = () => {
           adminComment: adminMessage,
         })
       );
-      dispatch(clearModalFields('adminMessageModal'));
-      dispatch(clearModalFields('confirmModal'));
+      dispatch(clearModalsFields(['adminMessageModal', 'confirmModal']));
     }
   }, [adminMessageData]);
 
@@ -146,10 +161,6 @@ const LotList = () => {
       dispatch(fetchLotDetails(lastBet.lotId));
     }
   }, [bets]);
-
-  useEffect(() => {
-    console.log(lots);
-  }, [lots]);
 
   return (
     <div className={styles.lotListContainer}>
@@ -177,7 +188,7 @@ const LotList = () => {
         <div className={styles.lotListWrapp}>
           {lots.map(
             (item) =>
-              item.status !== 'inactive' && (
+              (item.status !== 'inactive' || item.status !== 'finished') && (
                 <ItemCard
                   item={item}
                   key={item.id}
@@ -188,11 +199,7 @@ const LotList = () => {
         </div>
       </div>
       {selectedLot && (
-        <PlaceBetModal
-          lot={selectedLot}
-          setSelectedLot={setSelectedLot}
-          setNewBet={setNewBet}
-        />
+        <PlaceBetModal lot={selectedLot} setSelectedLot={setSelectedLot} />
       )}
     </div>
   );

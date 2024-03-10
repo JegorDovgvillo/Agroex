@@ -4,12 +4,15 @@ import getFormattedDate from '@helpers/getFormattedDate';
 import getNumberWithCurrency from '@helpers/getNumberWithCurrency';
 import ENDPOINTS, { IMAGE_URL } from '@helpers/endpoints';
 
+import { TagsBlock } from '@components/tagsBlock';
+
 import Timer from '../timer';
 
 import styles from './itemCard.module.scss';
 
 const ItemCardInfoBlock = ({ item, children }) => {
   const image = item.images[0] || null;
+  const isLotFinished = item.status === 'finished';
 
   return (
     <>
@@ -34,7 +37,9 @@ const ItemCardInfoBlock = ({ item, children }) => {
         </div>
 
         <div className={styles.technicalInfo}>
-          {item.expirationDate && <Timer endDate={item.expirationDate} />}
+          {!isLotFinished && item.expirationDate && (
+            <Timer endDate={item.expirationDate} />
+          )}
           <span className={styles.itemId}>ID{item.id}</span>
         </div>
         <div className={styles.info}>
@@ -49,6 +54,7 @@ const ItemCardInfoBlock = ({ item, children }) => {
           <span className={styles.creationDate}>
             {getFormattedDate(item.creationDate)}
           </span>
+          <TagsBlock tags={item.tags} />
         </div>
       </div>
     </>

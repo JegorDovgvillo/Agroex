@@ -63,6 +63,7 @@ export const getFilteredLots = createAsyncThunk(
     const response = await axiosInstance.get(`${ENDPOINTS.LOTS}`, {
       params: values,
     });
+
     return response.data;
   }
 );
@@ -109,5 +110,20 @@ export const changeLotStatusByAdmin = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
+  }
+);
+
+export const fetchDeal = createAsyncThunk(
+  'lotList/fetchDeal',
+  async ({ ...values }) => {
+    const response = await axiosInstance.post(
+      `${ENDPOINTS.LOTS}/${values.id}/buy`,
+      null,
+      {
+        params: values,
+      }
+    );
+
+    return response.data;
   }
 );

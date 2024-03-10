@@ -68,7 +68,7 @@ const usersListSlice = createSlice({
       })
       .addCase(getUserFromCognito.fulfilled, (state, action) => {
         state.loadingStatus = 'fulfilled';
-        usersListAdapter.upsertOne(state, action.payload);
+        //usersListAdapter.upsertOne(state, action.payload);
         state.userId = action.payload.id;
         state.userInfo = action.payload;
       })
