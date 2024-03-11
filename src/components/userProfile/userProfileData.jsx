@@ -34,6 +34,7 @@ const userProfileData = [
     tabs: [
       { id: 0, tabRoute: 'active' },
       { id: 1, tabRoute: 'outbid' },
+      { id: 2, tabRoute: 'finished' },
     ],
     element: <Betting />,
   },

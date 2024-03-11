@@ -1,35 +1,60 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
 
-import { fetchLots } from '@thunks/fetchLots';
+import _ from 'lodash';
+
+import { fetchUserActivityLots } from '@thunks/fetchLots';
 import { lotListSelector } from '@slices/lotListSlice';
+
+import { getUserFromCognito } from '@thunks/fetchUsers';
 
 import ItemCard from '@components/itemCard';
 
 const Betting = () => {
-  //todo add filter by lot status (active, pending, inactive)
-
-  const currUserId = 1; // todo should be replaced by real current user id
+  const { tab } = useParams();
   const dispatch = useDispatch();
-  const lots = useSelector(lotListSelector); // todo could be get already filtered from back-end endpoint
+  const userInfo = useSelector((state) => state.usersList.userInfo);
+  const [currUserId, setCurrUserId] = useState(null);
+  const lots = useSelector(lotListSelector);
+
+  const filteredLotsByActiveTab = lots?.filter((item) => {
+    const isActiveLotStatus = item.status === 'active';
+    const lastBet = _.maxBy(item.bets, 'id');
+    const isLotOutbid = lastBet.userId !== currUserId;
+    const isFinishedLotStatus = item.status === 'finished';
+
+    switch (tab) {
+      case 'active':
+        return isActiveLotStatus && !isLotOutbid;
+
+      case 'outbid':
+        return isLotOutbid;
+
+      case 'finished':
+        return isFinishedLotStatus;
+    }
+  });
+
+  const filteredLotsArr = filteredLotsByActiveTab.map((item) => {
+    return <ItemCard item={item} key={item.id} />;
+  });
 
   useEffect(() => {
-    dispatch(fetchLots());
+    dispatch(getUserFromCognito());
   }, [dispatch]);
 
-  const filteringLotsByUserId = () => {
-    const filteredLots = lots
-      .filter((item) => item.userId === currUserId)
-      .map((item) => {
-        return <ItemCard {...item} key={item.id} />;
-      });
+  useEffect(() => {
+    if (!userInfo) {
+      return;
+    }
 
-    return <>{filteredLots}</>;
-  };
+    const { id } = userInfo;
+    setCurrUserId(id);
+    dispatch(fetchUserActivityLots({ userId: id }));
+  }, [dispatch, userInfo]);
 
-  const filteredLots = filteringLotsByUserId();
-
-  return <div>{filteredLots}</div>;
+  return <div>{filteredLotsArr} </div>;
 };
 
 export default Betting;

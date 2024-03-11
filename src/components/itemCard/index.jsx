@@ -39,7 +39,7 @@ const {
   editBtnContainer,
 } = styles;
 
-const getLotStatuses = (tab, item, isLotTransaction) => {
+const getLotStatuses = (tab, item, isLotExpired, isLotFinished) => {
   const lotStatuses = [];
 
   switch (tab) {
@@ -53,7 +53,12 @@ const getLotStatuses = (tab, item, isLotTransaction) => {
 
     case 'inactive':
       lotStatuses.push(item.lotType, item.innerStatus, item.userStatus);
-      isLotTransaction && lotStatuses.push('closed');
+      break;
+
+    case 'finished':
+      lotStatuses.push(item.lotType);
+      isLotExpired && lotStatuses.push('expired');
+      isLotFinished && !isLotExpired && lotStatuses.push(item.status);
       break;
 
     default:
@@ -74,18 +79,26 @@ const ItemCard = ({ item, setSelectedLot }) => {
   const current = DateTime.local().toISO();
   const expiration = item?.expirationDate;
 
-  const isLotExpired =
+  /*   const isLotExpired =
     DateTime.fromISO(current).diff(DateTime.fromISO(expiration)).milliseconds >
-    0;
+    0; */
 
   const isAuctionLot = item.lotType === 'auctionSell';
   const isNewLot = item.innerStatus === 'new';
   const isLotTransaction = !_.isEmpty(item.bets);
+  const isLotFinished = item.status === 'finished';
+  const isLotExpired = isLotFinished && !isLotTransaction;
   const isRejectedByAdminLot = item.innerStatus === 'rejected';
   const isDeactivatedByUserLot = item.userStatus === 'inactive';
-  const lotStatuses = getLotStatuses(tab, item, isLotTransaction, isLotExpired);
+  const lotStatuses = getLotStatuses(
+    tab,
+    item,
+    isLotTransaction,
+    isLotExpired,
+    isLotFinished
+  );
   const priceBtnText = getButtonText(item.lotType);
-  const lastBet = !_.isEmpty(item.bets) && _.maxBy(item.bets, 'id');
+  const lastBet = isLotTransaction && _.maxBy(item.bets, 'id');
 
   const getLotActions = () => {
     let actionsArr = [];
@@ -180,15 +193,17 @@ const ItemCard = ({ item, setSelectedLot }) => {
                   ) : (
                     <h6 className={auctionSum}>No bets</h6>
                   )}
-                  {userType === 'registeredUser' && !isUserLotOwner && (
-                    <CustomButton
-                      size="S"
-                      text="My bet"
-                      icon={<GavelOutlinedIcon />}
-                      handleClick={handleBet}
-                      type="secondary"
-                    />
-                  )}
+                  {userType === 'registeredUser' &&
+                    !isUserLotOwner &&
+                    !isLotFinished && (
+                      <CustomButton
+                        size="S"
+                        text={'My bet'}
+                        icon={<GavelOutlinedIcon />}
+                        handleClick={handleBet}
+                        type="secondary"
+                      />
+                    )}
                 </>
               ) : (
                 <div className={editBtnContainer}>
@@ -213,14 +228,16 @@ const ItemCard = ({ item, setSelectedLot }) => {
                 currency={item.currency}
               />
 
-              {userType === 'registeredUser' && !isUserLotOwner && (
-                <CustomButton
-                  size="S"
-                  text={priceBtnText}
-                  icon={<ShoppingCartOutlinedIcon />}
-                  handleClick={handleDeal}
-                />
-              )}
+              {userType === 'registeredUser' &&
+                !isUserLotOwner &&
+                !isLotFinished && (
+                  <CustomButton
+                    size="S"
+                    text={priceBtnText}
+                    icon={<ShoppingCartOutlinedIcon />}
+                    handleClick={handleDeal}
+                  />
+                )}
 
               {!tab && isUserLotOwner && !isAuctionLot && (
                 <CustomButton
