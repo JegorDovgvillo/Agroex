@@ -67,6 +67,7 @@ const UserAccount = () => {
   const handleSignOut = () => {
     signOut();
     navigate(ROUTES.LOG_IN);
+    window.location.reload();
   };
 
   const showModalForUpdatePassword = () => {

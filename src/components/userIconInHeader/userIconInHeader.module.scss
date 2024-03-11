@@ -23,6 +23,13 @@
       padding: 6px 16px;
       flex-direction: row;
       gap: 15px;
+
+      &:hover a,
+      &:hover svg {
+        transition: 0.7s all ease-in-out;
+        color: $activated;
+      }
+
       .icon {
         color: $monoGray;
       }
@@ -35,6 +42,12 @@
       &:last-child {
         border-top: solid 1px $monoGraySelect;
         padding: 16px;
+        cursor: pointer;
+
+        &:hover {
+          transition: 0.7s all ease-in-out;
+          color: $activated;
+        }
       }
 
       .link {

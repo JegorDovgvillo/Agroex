@@ -32,6 +32,7 @@ const Login = () => {
 
         dispatch(createUser(response.sub));
         navigate(ROUTES.LOTS);
+        window.location.reload();
       }
     });
   }, []);
