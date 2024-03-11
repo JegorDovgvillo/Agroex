@@ -28,14 +28,15 @@ const UserIconInHeader = () => {
   const lots = useSelector(lotListSelector);
   const userInfo = useSelector((state) => state.usersList.userInfo);
 
-  const filteredLotsByUserId = lots.filter(
-    (item) => item.userId === userInfo.sub
-  );
+  const filteredLotsByUserId =
+    userInfo && lots.filter((item) => item.userId === userInfo.sub);
 
-  const filteredLotsByActiveTab = filteredLotsByUserId.filter((item) => {
-    const isActiveLotStatus = item.status === 'active';
-    return isActiveLotStatus;
-  });
+  const filteredLotsByActiveTab =
+    filteredLotsByUserId &&
+    filteredLotsByUserId.filter((item) => {
+      const isActiveLotStatus = item.status === 'active';
+      return isActiveLotStatus;
+    });
 
   useEffect(() => {
     if (userInfo) {
