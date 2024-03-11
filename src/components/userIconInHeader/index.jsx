@@ -4,6 +4,7 @@ import { Avatar } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import _ from 'lodash';
 
 import { getUserFromCognito } from '@thunks/fetchUsers';
 
@@ -28,15 +29,13 @@ const UserIconInHeader = () => {
   const lots = useSelector(lotListSelector);
   const userInfo = useSelector((state) => state.usersList.userInfo);
 
-  const filteredLotsByUserId =
-    userInfo && lots.filter((item) => item.userId === userInfo.sub);
+  const filteredLotsByUserId = _.filter(lots, {
+    userId: _.get(userInfo, 'sub'),
+  });
 
-  const filteredLotsByActiveTab =
-    filteredLotsByUserId &&
-    filteredLotsByUserId.filter((item) => {
-      const isActiveLotStatus = item.status === 'active';
-      return isActiveLotStatus;
-    });
+  const filteredLotsByActiveTab = _.filter(filteredLotsByUserId, (item) => {
+    return _.get(item, 'status') === 'active';
+  });
 
   useEffect(() => {
     if (userInfo) {
@@ -96,7 +95,6 @@ const UserIconInHeader = () => {
                 <item.icon.type className={styles.icon} />
                 {item.name}
               </NavLink>
-
               {item.name === 'My lots' ? (
                 <span className={styles.amount}>
                   {filteredLotsByActiveTab.length}

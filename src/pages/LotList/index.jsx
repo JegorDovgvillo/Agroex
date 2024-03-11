@@ -34,7 +34,7 @@ const LotList = () => {
 
   useEffect(() => {
     dispatch(fetchAllCategories());
-    dispatch(fetchCountries({ existet: true }));
+    dispatch(fetchCountries({ existed: true }));
     dispatch(fetchUsers());
 
     return () => {

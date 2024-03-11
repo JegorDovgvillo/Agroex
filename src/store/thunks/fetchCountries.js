@@ -6,9 +6,9 @@ import { MAP_URL } from '@helpers/endpoints';
 
 export const fetchCountries = createAsyncThunk(
   'countries/fetchCountries',
-  async ({ existet }) => {
+  async ({ existed }) => {
     const response = await axiosInstance.get(
-      `${ENDPOINTS.COUNTRIES}?lot_existed=${existet}`
+      `${ENDPOINTS.COUNTRIES}?lot_existed=${existed}`
     );
 
     return response.data;
