@@ -22,7 +22,11 @@
       display: flex;
       padding: 6px 16px;
       flex-direction: row;
-      gap: 15px;
+      gap: 145px;
+
+      .amount {
+        color: $activated;
+      }
 
       &:hover a,
       &:hover svg {
@@ -40,6 +44,11 @@
       }
 
       &:last-child {
+        span {
+          display: flex;
+          gap: 15px;
+        }
+
         border-top: solid 1px $monoGraySelect;
         padding: 16px;
         cursor: pointer;
@@ -51,6 +60,9 @@
       }
 
       .link {
+        display: flex;
+        align-items: center;
+        gap: 15px;
         font-weight: 400;
         font-size: 18px;
         line-height: 28px;

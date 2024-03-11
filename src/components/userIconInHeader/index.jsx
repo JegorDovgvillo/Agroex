@@ -7,6 +7,8 @@ import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 
 import { getUserFromCognito } from '@thunks/fetchUsers';
 
+import { lotListSelector } from '@slices/lotListSlice';
+
 import ROUTES from '@helpers/routeNames';
 
 import userProfileData from '../userProfile/userProfileData';
@@ -23,7 +25,17 @@ const UserIconInHeader = () => {
   const [links, setLinks] = useState(null);
   const [rootLink, setRootLink] = useState(null);
 
+  const lots = useSelector(lotListSelector);
   const userInfo = useSelector((state) => state.usersList.userInfo);
+
+  const filteredLotsByUserId = lots.filter(
+    (item) => item.userId === userInfo.sub
+  );
+
+  const filteredLotsByActiveTab = filteredLotsByUserId.filter((item) => {
+    const isActiveLotStatus = item.status === 'active';
+    return isActiveLotStatus;
+  });
 
   useEffect(() => {
     if (userInfo) {
@@ -62,8 +74,8 @@ const UserIconInHeader = () => {
 
   const handleSignOut = () => {
     signOut();
-    window.location.reload();
     navigate(ROUTES.LOG_IN);
+    window.location.reload();
   };
 
   const linkStyle = isActive ? styles.active : styles.enabled;
@@ -79,15 +91,23 @@ const UserIconInHeader = () => {
           <li className={styles.linkWrapp}>{userInfo && userInfo.name}</li>
           {links.map((item) => (
             <li key={item.id} className={styles.linkWrapp}>
-              <item.icon.type className={styles.icon} />
               <NavLink to={`${rootLink}/${item.route}`} className={styles.link}>
+                <item.icon.type className={styles.icon} />
                 {item.name}
               </NavLink>
+
+              {item.name === 'My lots' ? (
+                <span className={styles.amount}>
+                  {filteredLotsByActiveTab.length}
+                </span>
+              ) : null}
             </li>
           ))}
-          <li onClick={handleSignOut} className={styles.linkWrapp}>
-            <ExitToAppIcon sx={{ color: '#798787' }} />
-            Sign Out
+          <li className={styles.linkWrapp} onClick={handleSignOut}>
+            <span>
+              <ExitToAppIcon sx={{ color: '#798787' }} />
+              Sign Out
+            </span>
           </li>
         </ul>
       </div>
