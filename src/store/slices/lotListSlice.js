@@ -79,7 +79,8 @@ const lotListSlice = createSlice({
         state.loadingStatus = 'pending';
       })
       .addCase(deleteLot.fulfilled, (state, action) => {
-        lotListAdapter.removeOne(state, action.payload);
+        const { id } = action.meta.arg;
+        lotListAdapter.removeOne(state, id);
         state.loadingStatus = 'fulfilled';
       })
       .addCase(deleteLot.rejected, (state) => {

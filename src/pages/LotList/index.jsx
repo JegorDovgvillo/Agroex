@@ -11,16 +11,8 @@ import PlaceBetModal from '@customModals/placeBetModal';
 
 import { fetchAllCategories } from '@thunks/fetchCategories';
 import { fetchCountries } from '@thunks/fetchCountries';
-import {
-  filteredLots,
-  fetchLotDetails,
-  changeLotStatusByUser,
-  changeLotStatusByAdmin,
-  deleteLot,
-  fetchDeal,
-} from '@thunks/fetchLots';
+import { filteredLots, fetchLotDetails } from '@thunks/fetchLots';
 import { fetchUsers } from '@thunks/fetchUsers';
-import { fetchPlaceBet } from '@thunks/fetchBets';
 import { getUserFromCognito } from '@thunks/fetchUsers';
 
 import { usersListSelector } from '@slices/usersListSlice';
@@ -28,14 +20,17 @@ import { categoriesSelector } from '@slices/categoriesSlice';
 import { countrySelector } from '@slices/countriesSlice';
 import { lotListSelector, clearLots } from '@slices/lotListSlice';
 import { betsSelector } from '@slices/betsSlice';
+import { selectModal, toggleModal } from '@slices/modalSlice';
+
 import {
-  clearModalsFields,
-  selectModal,
-  toggleModal,
-} from '@slices/modalSlice';
+  handlePlaceNewBet,
+  handleDeactivateLot,
+  handleDeal,
+  handleDeleteLot,
+  handleChangeLotStatusByAdmin,
+} from '@helpers/lotHandlers';
 
 import styles from './lotList.module.scss';
-import { setNewBet } from '../../store/slices/betsSlice';
 
 const LotList = () => {
   const dispatch = useDispatch();
@@ -46,6 +41,7 @@ const LotList = () => {
 
   const countries = useSelector(countrySelector);
   const users = useSelector(usersListSelector);
+  const userInfo = useSelector((state) => state.usersList.userInfo);
 
   const [selectedCategoriesIds, setSelectedCategoriesIds] = useState([]);
   const [selectedSubcategoriesIds, setSelectedSubcategoriesIds] = useState([]);
@@ -61,18 +57,6 @@ const LotList = () => {
     selectModal(state, 'placeBetModal')
   );
   const newBet = useSelector((state) => state.bets.newBet);
-
-  const handlePlaceNewBet = () => {
-    dispatch(fetchPlaceBet({ id: newBet.lotId, betData: newBet }));
-    dispatch(setNewBet(null));
-    dispatch(clearModalsFields(['confirmModal', 'placeBetModal']));
-  };
-
-  const handleDeal = () => {
-    const { id, userId } = selectedLot;
-    dispatch(fetchDeal({ id, userId }));
-    dispatch(clearModalsFields('confirmModal'));
-  };
 
   useEffect(() => {
     dispatch(fetchAllCategories());
@@ -110,22 +94,20 @@ const LotList = () => {
     if (!isOpen) {
       switch (action) {
         case 'placeBet':
-          confirmStatus && newBet && handlePlaceNewBet();
+          confirmStatus && newBet && handlePlaceNewBet(dispatch, newBet);
           break;
 
         case 'deal':
-          confirmStatus && handleDeal();
+          confirmStatus &&
+            handleDeal({
+              dispatch: dispatch,
+              lotId: selectedLot.id,
+              userId: userInfo?.id,
+            });
           break;
 
         case 'deactivateLot':
-          confirmStatus &&
-            dispatch(
-              changeLotStatusByUser({
-                lotId: selectedLot.id,
-                isActive: false,
-              })
-            );
-          dispatch(clearModalsFields('confirmModal'));
+          confirmStatus && handleDeactivateLot(dispatch, selectedLot.id);
           break;
 
         case 'deactivateLotByAdmin':
@@ -133,8 +115,7 @@ const LotList = () => {
           break;
 
         case 'deleteLot':
-          dispatch(deleteLot({ id: selectedLot.id }));
-          dispatch(clearModalsFields('confirmModal'));
+          handleDeleteLot(dispatch, selectedLot.id);
           break;
       }
     }
@@ -144,14 +125,7 @@ const LotList = () => {
     const { adminMessage } = adminMessageData;
 
     if (adminMessage) {
-      dispatch(
-        changeLotStatusByAdmin({
-          lotId: selectedLot.id,
-          status: 'rejected',
-          adminComment: adminMessage,
-        })
-      );
-      dispatch(clearModalsFields(['adminMessageModal', 'confirmModal']));
+      handleChangeLotStatusByAdmin(dispatch, selectedLot.id, adminMessage);
     }
   }, [adminMessageData]);
 
@@ -188,7 +162,7 @@ const LotList = () => {
         <div className={styles.lotListWrapp}>
           {lots.map(
             (item) =>
-              (item.status !== 'inactive' || item.status !== 'finished') && (
+              item.status === 'active' && (
                 <ItemCard
                   item={item}
                   key={item.id}

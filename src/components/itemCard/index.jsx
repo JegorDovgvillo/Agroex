@@ -14,12 +14,15 @@ import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutl
 import { CustomButton } from '@buttons/CustomButton';
 import PriceBlock from '@components/priceBlock';
 
-import { toggleModal, setModalFields } from '@slices/modalSlice';
-import { setNewBet } from '@slices/betsSlice';
+import { toggleModal } from '@slices/modalSlice';
 
 import ROUTES from '@helpers/routeNames';
 import { getButtonText } from '@helpers/getButtonText';
-//import getNumberWithCurrency from '@helpers/getNumberWithCurrency';
+import {
+  handleDealBtnClick,
+  handleDeactivateBtnClick,
+  handleEditLotButtonClick,
+} from '@helpers/lotHandlers';
 
 import ItemCardInfoBlock from './itemCardInfo';
 import ManageCardBlock from './manageCardBlock';
@@ -57,14 +60,10 @@ const getLotStatuses = (tab, item, isLotTransaction) => {
 const ItemCard = ({ item, setSelectedLot }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const userId = useSelector((state) => state.usersList.userId);
   const user = useSelector((state) => state.usersList.userInfo);
-
-  const isAdmin = false;
-
   const [userType, setUserType] = useState('unregisteredUser');
   const [isUserLotOwner, setIsUserLotOwner] = useState(false);
-
+  const isAdmin = userType === 'admin';
   const { tab } = useParams();
   const current = DateTime.local().toISO();
   const expiration = item?.expirationDate;
@@ -125,51 +124,18 @@ const ItemCard = ({ item, setSelectedLot }) => {
   const handleDeal = (event) => {
     event.stopPropagation();
     setSelectedLot(item);
-    dispatch(toggleModal('confirmModal'));
-
-    if (isAuctionLot) {
-      const valueToSubmit = {
-        amount: item.price,
-        userId: userId,
-        lotId: item.id,
-      };
-      dispatch(
-        setModalFields({
-          modalId: 'confirmModal',
-          text: 'Do you confirm the max bid request?',
-          action: 'placeBet',
-        })
-      );
-      dispatch(setNewBet(valueToSubmit));
-    } else {
-      dispatch(
-        setModalFields({
-          modalId: 'confirmModal',
-          text: 'Do you confirm the deal request?',
-          action: 'deal',
-        })
-      );
-    }
+    handleDealBtnClick(dispatch, isAuctionLot, item, user.id);
   };
 
   const handleDeactivateLot = (event) => {
     event.stopPropagation();
     setSelectedLot(item);
-
-    dispatch(
-      setModalFields({
-        modalId: 'confirmModal',
-        text: 'This action changes the lot status. Do you confirm the action?',
-        action: isAdmin ? 'deactivateLotByAdmin' : 'deactivateLot',
-      })
-    );
-
-    dispatch(toggleModal('confirmModal'));
+    handleDeactivateBtnClick(dispatch, isAdmin);
   };
 
-  const handleEditLotButtonClick = (event) => {
+  const handleEditLot = (event) => {
     event.stopPropagation();
-    navigate(ROUTES.UPDATE_LOT.replace(':id', item.id));
+    handleEditLotButtonClick(navigate, item.id);
   };
 
   useEffect(() => {
@@ -183,107 +149,105 @@ const ItemCard = ({ item, setSelectedLot }) => {
 
   return (
     <>
-      {!isFinishedLot && (
-        <div className={styles.cardWrapp} onClick={viewDetailsCard}>
-          <ItemCardInfoBlock item={item}>
-            <>
-              {!_.isEmpty(lotStatuses) && (
-                <LotStatusBlock lotStatuses={lotStatuses} />
+      <div className={styles.cardWrapp} onClick={viewDetailsCard}>
+        <ItemCardInfoBlock item={item}>
+          <>
+            {!_.isEmpty(lotStatuses) && (
+              <LotStatusBlock lotStatuses={lotStatuses} />
+            )}
+            {tab && !_.isEmpty(actions) && (
+              <ManageCardBlock id={item.id} actions={actions} />
+            )}
+          </>
+        </ItemCardInfoBlock>
+        <div className={pricesContainer}>
+          <div className={priceWrapp}>
+            <div className={priceBlock}>
+              {isAuctionLot ? (
+                <>
+                  {!_.isEmpty(item.bets) ? (
+                    <PriceBlock
+                      className={['list', 'auctionSum']}
+                      totalCost={lastBet.amount}
+                      unitCost={lastBet.amount / item.quantity}
+                      currency={item.currency}
+                    />
+                  ) : (
+                    <h6 className={auctionSum}>No bets</h6>
+                  )}
+                  {userType === 'registeredUser' && !isUserLotOwner && (
+                    <CustomButton
+                      size="S"
+                      text={'My bet'}
+                      icon={<GavelOutlinedIcon />}
+                      handleClick={handleBet}
+                      type="secondary"
+                    />
+                  )}
+                </>
+              ) : (
+                <>
+                  <div />
+                  {!tab && isUserLotOwner && (
+                    <CustomButton
+                      size="S"
+                      type="secondary"
+                      text="Edit"
+                      icon={<ModeEditOutlineOutlinedIcon />}
+                      handleClick={handleEditLot}
+                    />
+                  )}
+                </>
               )}
-              {tab && !_.isEmpty(actions) && (
-                <ManageCardBlock id={item.id} actions={actions} />
-              )}
-            </>
-          </ItemCardInfoBlock>
-          <div className={pricesContainer}>
-            <div className={priceWrapp}>
-              <div className={priceBlock}>
-                {isAuctionLot ? (
-                  <>
-                    {!_.isEmpty(item.bets) ? (
-                      <PriceBlock
-                        className={['list', 'auctionSum']}
-                        totalCost={lastBet.amount}
-                        unitCost={lastBet.amount / item.quantity}
-                        currency={item.currency}
-                      />
-                    ) : (
-                      <h6 className={auctionSum}>No bets</h6>
-                    )}
-                    {userType === 'registeredUser' && !isUserLotOwner && (
-                      <CustomButton
-                        size="S"
-                        text={'My bet'}
-                        icon={<GavelOutlinedIcon />}
-                        handleClick={handleBet}
-                        type="secondary"
-                      />
-                    )}
-                  </>
-                ) : (
-                  <>
-                    <div />
-                    {!tab && isUserLotOwner && (
-                      <CustomButton
-                        size="S"
-                        type="secondary"
-                        text="Edit"
-                        icon={<ModeEditOutlineOutlinedIcon />}
-                        handleClick={handleEditLotButtonClick}
-                      />
-                    )}
-                  </>
-                )}
-              </div>
-
-              <div className={priceBlock}>
-                <PriceBlock
-                  className={['list']}
-                  totalCost={item.price}
-                  unitCost={item.price / item.quantity}
-                  currency={item.currency}
-                />
-
-                {userType === 'registeredUser' && !isUserLotOwner && (
-                  <CustomButton
-                    size="S"
-                    text={priceBtnText}
-                    icon={<ShoppingCartOutlinedIcon />}
-                    handleClick={handleDeal}
-                  />
-                )}
-
-                {!tab && isUserLotOwner && !isAuctionLot && (
-                  <CustomButton
-                    size="S"
-                    type="secondary"
-                    text="Deactivate"
-                    icon={<PowerSettingsNewOutlinedIcon />}
-                    handleClick={handleDeactivateLot}
-                    color="error"
-                  />
-                )}
-              </div>
             </div>
-            {userType === 'admin' && (
-              <CustomButton
-                size="S"
-                type="secondary"
-                text="Deactivate"
-                icon={<PowerSettingsNewOutlinedIcon />}
-                handleClick={handleDeactivateLot}
-                color="error"
+
+            <div className={priceBlock}>
+              <PriceBlock
+                className={['list']}
+                totalCost={item.price}
+                unitCost={item.price / item.quantity}
+                currency={item.currency}
               />
-            )}
-            {tab && item.adminComment && (
-              <div className={adminComment}>
-                <ErrorOutlineIcon />
-                {item.adminComment}
-              </div>
-            )}
+
+              {userType === 'registeredUser' && !isUserLotOwner && (
+                <CustomButton
+                  size="S"
+                  text={priceBtnText}
+                  icon={<ShoppingCartOutlinedIcon />}
+                  handleClick={handleDeal}
+                />
+              )}
+
+              {!tab && isUserLotOwner && !isAuctionLot && (
+                <CustomButton
+                  size="S"
+                  type="secondary"
+                  text="Deactivate"
+                  icon={<PowerSettingsNewOutlinedIcon />}
+                  handleClick={handleDeactivateLot}
+                  color="error"
+                />
+              )}
+            </div>
           </div>
+          {userType === 'admin' && (
+            <CustomButton
+              size="S"
+              type="secondary"
+              text="Deactivate"
+              icon={<PowerSettingsNewOutlinedIcon />}
+              handleClick={handleDeactivateLot}
+              color="error"
+            />
+          )}
+          {tab && item.adminComment && (
+            <div className={adminComment}>
+              <ErrorOutlineIcon />
+              {item.adminComment}
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </>
   );
 };

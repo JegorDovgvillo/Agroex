@@ -11,11 +11,13 @@ import PowerSettingsNewOutlinedIcon from '@mui/icons-material/PowerSettingsNewOu
 import PlayArrowOutlinedIcon from '@mui/icons-material/PlayArrowOutlined';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 
-import { toggleModal, setModalFields } from '@slices/modalSlice';
-
 import { CustomButton } from '@buttons/CustomButton';
 
-import ROUTES from '@helpers/routeNames';
+import {
+  handleEditLotButtonClick,
+  handleDeleteBtnClick,
+  handleToggleUserLotStatusBtnClick,
+} from '@helpers/lotHandlers';
 
 import styles from './manageCard.module.scss';
 
@@ -40,32 +42,18 @@ const ManageCardBlock = ({ id, actions }) => {
 
   const handleToggleUserLotStatus = (event) => {
     event.stopPropagation();
-    dispatch(
-      setModalFields({
-        modalId: 'confirmModal',
-        text: 'This action changes the lot status. Do you confirm the action?',
-        action: { name: 'toggleUserLotStatus', lotId: id },
-      })
-    );
-    dispatch(toggleModal('confirmModal'));
+    handleToggleUserLotStatusBtnClick(dispatch, id);
     handleClose(event);
   };
 
   const handleEdit = (event) => {
     event.stopPropagation();
-    navigate(ROUTES.UPDATE_LOT.replace(':id', id));
+    handleEditLotButtonClick(navigate, id);
   };
 
   const handleDelete = (event) => {
     event.stopPropagation();
-    dispatch(
-      setModalFields({
-        modalId: 'confirmModal',
-        text: 'The lot will be permanently deleted. Are you sure?',
-        action: { name: 'deleteLot', lotId: id },
-      })
-    );
-    dispatch(toggleModal('confirmModal'));
+    handleDeleteBtnClick(dispatch, id);
     handleClose(event);
   };
 

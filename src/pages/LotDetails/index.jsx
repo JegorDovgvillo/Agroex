@@ -20,26 +20,24 @@ import { TagsBlock } from '@components/tagsBlock';
 import getNumberWithCurrency from '@helpers/getNumberWithCurrency';
 import getFormattedDate from '@helpers/getFormattedDate';
 import { getButtonText } from '@helpers/getButtonText';
-import ROUTES from '@helpers/routeNames';
+import {
+  handleDeactivateBtnClick,
+  handlePlaceNewBet,
+  handleDealBtnClick,
+  handleEditLotButtonClick,
+  handleDeal,
+  handleDeactivateLot,
+} from '@helpers/lotHandlers';
 
 import { categoriesSelector } from '@slices/categoriesSlice';
 import { selectLotDetailById } from '@slices/lotListSlice';
-import {
-  clearModalsFields,
-  selectModal,
-  setModalFields,
-  toggleModal,
-} from '@slices/modalSlice';
-import { betsSelector, setNewBet } from '@slices/betsSlice';
+import { selectModal } from '@slices/modalSlice';
+import { betsSelector } from '@slices/betsSlice';
 
-import {
-  fetchLotDetails,
-  fetchDeal,
-  changeLotStatusByUser,
-} from '@thunks/fetchLots';
+import { fetchLotDetails } from '@thunks/fetchLots';
 import { fetchAllCategories } from '@thunks/fetchCategories';
 import { getUserFromCognito } from '@thunks/fetchUsers';
-import { fetchPlaceBet, fetchBetsByLotId } from '@thunks/fetchBets';
+import { fetchBetsByLotId } from '@thunks/fetchBets';
 
 import attentionIcon from '@icons/attention.svg';
 import mapIcon from '@icons/mapIcon.svg';
@@ -95,54 +93,12 @@ export const LotDetails = () => {
   );
   const newBet = useSelector((state) => state.bets.newBet);
 
-  const handlePlaceNewBet = () => {
-    dispatch(fetchPlaceBet({ id: newBet.lotId, betData: newBet }));
-    dispatch(setNewBet(null));
-    dispatch(clearModalsFields(['confirmModal', 'placeBetModal']));
+  const handleDealClick = () => {
+    handleDealBtnClick(dispatch, isAuctionLot, selectedLot, userInfo.id);
   };
 
-  const handleDeal = () => {
-    dispatch(toggleModal('confirmModal'));
-
-    if (isAuctionLot) {
-      const valueToSubmit = {
-        amount: selectedLot?.price,
-        userId: userInfo.id,
-        lotId: lotId,
-      };
-      dispatch(
-        setModalFields({
-          modalId: 'confirmModal',
-          text: 'Do you confirm the max bid request?',
-          action: 'placeBet',
-        })
-      );
-      dispatch(setNewBet(valueToSubmit));
-    } else {
-      dispatch(
-        setModalFields({
-          modalId: 'confirmModal',
-          text: 'Do you confirm the deal request?',
-          action: 'deal',
-        })
-      );
-    }
-  };
-
-  const handleDeactivateLot = () => {
-    dispatch(
-      setModalFields({
-        modalId: 'confirmModal',
-        text: 'This action changes the lot status. Do you confirm the action?',
-        action: 'deactivateLot',
-      })
-    );
-
-    dispatch(toggleModal('confirmModal'));
-  };
-
-  const handleEditLotButtonClick = () => {
-    navigate(ROUTES.UPDATE_LOT.replace(':id', lotId));
+  const handleEditClick = () => {
+    handleEditLotButtonClick(navigate, lotId);
   };
 
   useEffect(() => {
@@ -170,24 +126,20 @@ export const LotDetails = () => {
     if (!isOpen) {
       switch (action) {
         case 'placeBet':
-          confirmStatus && !_.isEmpty(betModalData.bet) && handlePlaceNewBet();
+          confirmStatus && newBet && handlePlaceNewBet(newBet);
           break;
 
         case 'deal':
           confirmStatus &&
-            dispatch(fetchDeal({ id: lotId, userId: userInfo.id }));
-          dispatch(clearModalsFields('confirmModal'));
+            handleDeal({
+              dispatch: dispatch,
+              lotId: lotId,
+              userId: userInfo.id,
+            });
           break;
 
         case 'deactivateLot':
-          confirmStatus &&
-            dispatch(
-              changeLotStatusByUser({
-                lotId: lotId,
-                isActive: false,
-              })
-            );
-          dispatch(clearModalsFields('confirmModal'));
+          confirmStatus && handleDeactivateLot(lotId);
           break;
       }
     }
@@ -325,7 +277,7 @@ export const LotDetails = () => {
                       type="secondary"
                       text="Edit"
                       icon={<ModeEditOutlineOutlinedIcon />}
-                      handleClick={handleEditLotButtonClick}
+                      handleClick={handleEditClick}
                     />
                   )}
                 </div>
@@ -348,7 +300,7 @@ export const LotDetails = () => {
                       width="100%"
                       icon={<ShoppingCartOutlinedIcon />}
                       text={buySellBtnText}
-                      handleClick={handleDeal}
+                      handleClick={handleDealClick}
                     />
                   )}
                   {isUserLotOwner && !isAuctionLot && (
@@ -357,7 +309,7 @@ export const LotDetails = () => {
                       text="Deactivate"
                       width="100%"
                       icon={<PowerSettingsNewOutlinedIcon />}
-                      handleClick={handleDeactivateLot}
+                      handleClick={handleDeactivateBtnClick}
                       color="error"
                     />
                   )}

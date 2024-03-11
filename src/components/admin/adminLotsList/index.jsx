@@ -170,6 +170,7 @@ export default function AdminLotsList() {
 
   const fetchChangeLotStatus = () => {
     const { adminMessage } = adminMessageModalData;
+
     dispatch(
       changeLotStatusByAdmin({
         lotId: currLotId,
@@ -229,7 +230,7 @@ export default function AdminLotsList() {
       {rows && (
         <div className={container}>
           <DataGrid
-            isCellEditable={(params) => !params.bets}
+            isCellEditable={(params) => params.row.status !== 'finished'}
             scrollbarSize={20}
             autoHeight
             rows={rows}
