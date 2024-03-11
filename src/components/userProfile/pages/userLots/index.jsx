@@ -36,19 +36,15 @@ const UserLots = () => {
 
     switch (tab) {
       case 'active':
-        console.log(item.title, isActiveLotStatus);
         return isActiveLotStatus;
 
       case 'pending':
-        console.log(item.title, isPendingLotStatus);
         return isPendingLotStatus;
 
       case 'inactive':
-        console.log(item.title, isInactiveLotStatus);
         return isInactiveLotStatus;
 
       case 'finished':
-        console.log(item.title, isFinishedLotStatus);
         return isFinishedLotStatus;
     }
   });
