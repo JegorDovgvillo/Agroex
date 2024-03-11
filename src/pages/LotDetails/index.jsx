@@ -126,7 +126,7 @@ export const LotDetails = () => {
     if (!isOpen) {
       switch (action) {
         case 'placeBet':
-          confirmStatus && newBet && handlePlaceNewBet(newBet);
+          confirmStatus && newBet && handlePlaceNewBet(dispatch, newBet);
           break;
 
         case 'deal':
@@ -294,15 +294,17 @@ export const LotDetails = () => {
                       />
                     </div>
                   </div>
-                  {userType === 'registeredUser' && !isUserLotOwner && (
-                    <CustomButton
-                      type="primary"
-                      width="100%"
-                      icon={<ShoppingCartOutlinedIcon />}
-                      text={buySellBtnText}
-                      handleClick={handleDealClick}
-                    />
-                  )}
+                  {userType === 'registeredUser' &&
+                    !isUserLotOwner &&
+                    !isLastBetEqualPrice && (
+                      <CustomButton
+                        type="primary"
+                        width="100%"
+                        icon={<ShoppingCartOutlinedIcon />}
+                        text={buySellBtnText}
+                        handleClick={handleDealClick}
+                      />
+                    )}
                   {isUserLotOwner && !isAuctionLot && (
                     <CustomButton
                       type="secondary"

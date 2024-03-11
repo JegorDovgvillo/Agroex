@@ -1,7 +1,12 @@
 import { object, number } from 'yup';
 
-const placeBetValidationSchema = (minAmount, maxAmount) => {
-  const errorMessage = `Your bet should be between ${minAmount} and ${maxAmount}`;
+import getNumberWithCurrency from '@helpers/getNumberWithCurrency';
+
+const placeBetValidationSchema = (minAmount, maxAmount, currency) => {
+  console.log(currency);
+  const minAmountWithCurrency = getNumberWithCurrency(minAmount, currency);
+  const maxAmountWithCurrency = getNumberWithCurrency(maxAmount, currency);
+  const errorMessage = `Your bet should be between ${minAmountWithCurrency} and ${maxAmountWithCurrency}`;
 
   return object().shape({
     amount: number()

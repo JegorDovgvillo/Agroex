@@ -74,7 +74,6 @@ const ItemCard = ({ item, setSelectedLot }) => {
 
   const isAuctionLot = item.lotType === 'auctionSell';
   const isNewLot = item.innerStatus === 'new';
-  const isFinishedLot = item.status === 'finished';
   const isLotTransaction = item.bets?.length > 0;
   const isRejectedByAdminLot = item.innerStatus === 'rejected';
   const isDeactivatedByUserLot = item.userStatus === 'inactive';

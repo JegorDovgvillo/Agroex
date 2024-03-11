@@ -32,7 +32,9 @@ export const PlaceBetForm = ({ lot, type }) => {
     !_.isEmpty(lot.bets) && _.maxBy(lot.bets, 'id').amount
   );
 
-  const [minAmount, setMinAmount] = useState(lastBet + 1 || lot.minPrice + 1);
+  const [minAmount, setMinAmount] = useState(
+    !_.isEmpty(lot.bets) ? lastBet + 1 : lot.minPrice + 1
+  );
   const maxAmount = lot.price;
   const minAmountWithCurrency = getNumberWithCurrency(minAmount, userCurrency);
   const maxAmountWithCurrency = getNumberWithCurrency(maxAmount, userCurrency);
@@ -68,8 +70,10 @@ export const PlaceBetForm = ({ lot, type }) => {
   };
 
   useEffect(() => {
-    placeBetStatus === 'fulfilled' && resetFormFunc && resetFormFunc();
-    setMinAmount(lastBet + 1);
+    if (placeBetStatus === 'fulfilled') {
+      resetFormFunc && resetFormFunc();
+      setMinAmount(lastBet + 1);
+    }
   }, [placeBetStatus]);
 
   return (
@@ -78,7 +82,9 @@ export const PlaceBetForm = ({ lot, type }) => {
         amount: '',
       }}
       onSubmit={handleSubmit}
-      validationSchema={() => placeBetValidationSchema(minAmount, maxAmount)}
+      validationSchema={() =>
+        placeBetValidationSchema(minAmount, maxAmount, userCurrency)
+      }
       context={{ minAmount, maxAmount }}
     >
       {({ values, errors, touched, isValid }) => (
