@@ -8,6 +8,7 @@ import { USER_PROFILE_PAGE_ROTES } from '@helpers/routeNames';
 import UserLots from './pages/userLots';
 import Betting from './pages/betting';
 import UserAccount from './pages/userAccount';
+import UserOrders from './pages/orders';
 
 const { USER_LOTS, USER_BETTING, USER_ORDERS, USER_ACCOUNT } =
   USER_PROFILE_PAGE_ROTES;
@@ -47,7 +48,7 @@ const userProfileData = [
       { id: 0, tabRoute: 'active' },
       { id: 1, tabRoute: 'completed' },
     ],
-    element: '<UserOrders />',
+    element: <UserOrders />,
   },
   {
     id: 3,

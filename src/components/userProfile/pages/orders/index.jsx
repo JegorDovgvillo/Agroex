@@ -11,7 +11,7 @@ import { getUserFromCognito } from '@thunks/fetchUsers';
 
 import ItemCard from '@components/itemCard';
 
-const Betting = () => {
+const UserOrders = () => {
   const { tab } = useParams();
   const dispatch = useDispatch();
   const userInfo = useSelector((state) => state.usersList.userInfo);
@@ -29,11 +29,8 @@ const Betting = () => {
       case 'active':
         return isAuctionLot && isActiveLotStatus && !isLotOutbid;
 
-      case 'outbid':
+      case 'completed':
         return isAuctionLot && isLotOutbid;
-
-      case 'finished':
-        return isAuctionLot && isFinishedLotStatus;
     }
   });
 
@@ -58,4 +55,4 @@ const Betting = () => {
   return <div>{filteredLotsArr} </div>;
 };
 
-export default Betting;
+export default UserOrders;
