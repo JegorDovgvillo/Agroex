@@ -3,7 +3,6 @@ import { object, number } from 'yup';
 import getNumberWithCurrency from '@helpers/getNumberWithCurrency';
 
 const placeBetValidationSchema = (minAmount, maxAmount, currency) => {
-  console.log(currency);
   const minAmountWithCurrency = getNumberWithCurrency(minAmount, currency);
   const maxAmountWithCurrency = getNumberWithCurrency(maxAmount, currency);
   const errorMessage = `Your bet should be between ${minAmountWithCurrency} and ${maxAmountWithCurrency}`;

@@ -28,9 +28,7 @@ export const PlaceBetForm = ({ lot, type }) => {
   const userInfo = useSelector((state) => state.usersList.userInfo);
   const userCurrency = 'USD'; //todo select currency from store
   const currency = _.find(CURRENCY, { key: userCurrency });
-  const [lastBet, setLastBet] = useState(
-    !_.isEmpty(lot.bets) && _.maxBy(lot.bets, 'id').amount
-  );
+  const [lastBet, setLastBet] = useState(_.maxBy(lot.bets, 'id')?.amount);
 
   const [minAmount, setMinAmount] = useState(
     !_.isEmpty(lot.bets) ? lastBet + 1 : lot.minPrice + 1
@@ -69,6 +67,9 @@ export const PlaceBetForm = ({ lot, type }) => {
     setLastBet(values.amount);
   };
 
+  const getValidationSchema = () =>
+    placeBetValidationSchema(minAmount, maxAmount, userCurrency);
+
   useEffect(() => {
     if (placeBetStatus === 'fulfilled') {
       resetFormFunc && resetFormFunc();
@@ -82,10 +83,7 @@ export const PlaceBetForm = ({ lot, type }) => {
         amount: '',
       }}
       onSubmit={handleSubmit}
-      validationSchema={() =>
-        placeBetValidationSchema(minAmount, maxAmount, userCurrency)
-      }
-      context={{ minAmount, maxAmount }}
+      validationSchema={getValidationSchema}
     >
       {({ values, errors, touched, isValid }) => (
         <Form className={formContainer}>

@@ -1,5 +1,5 @@
 import { createSlice, createEntityAdapter } from '@reduxjs/toolkit';
-import { isArray } from 'lodash';
+import { isArray, find, findIndex } from 'lodash';
 
 const modalAdapter = createEntityAdapter();
 
@@ -29,9 +29,7 @@ const modalSlice = createSlice({
   reducers: {
     toggleModal: (state, action) => {
       const modalId = action.payload;
-      const modalIndex = state.modals.findIndex(
-        (modal) => modal.id === modalId
-      );
+      const modalIndex = findIndex(state.modals, { id: modalId });
       state.modals[modalIndex].isOpen = !state.modals[modalIndex].isOpen;
     },
 
@@ -55,14 +53,10 @@ const modalSlice = createSlice({
         : [action.payload];
 
       modalIds.forEach((modalId) => {
-        const modalIndex = state.modals.findIndex(
-          (modal) => modal.id === modalId
-        );
+        const modalIndex = findIndex(state.modals, { id: modalId });
 
         if (modalIndex !== -1) {
-          const initialModalState = initialState.modals.find(
-            (modal) => modal.id === modalId
-          );
+          const initialModalState = find(initialState.modals, { id: modalId });
 
           state.modals[modalIndex] = { ...initialModalState };
         }

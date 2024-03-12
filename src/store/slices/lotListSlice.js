@@ -80,6 +80,7 @@ const lotListSlice = createSlice({
       })
       .addCase(deleteLot.fulfilled, (state, action) => {
         const { id } = action.meta.arg;
+
         lotListAdapter.removeOne(state, id);
         state.loadingStatus = 'fulfilled';
       })

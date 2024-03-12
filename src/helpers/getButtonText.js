@@ -6,6 +6,7 @@ export const getButtonText = (lotType) => {
     case 'auctionSell':
       text = 'buy';
       break;
+
     case 'buy':
       text = 'sell';
       break;

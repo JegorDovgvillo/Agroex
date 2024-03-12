@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-import { includes, find } from 'lodash';
+import { includes, find, filter } from 'lodash';
 
 import { getUserFromCognito } from '@thunks/fetchUsers';
 import {
@@ -25,7 +25,7 @@ const UserLots = () => {
     selectModal(state, 'confirmModal')
   );
 
-  const filteredLotsByActiveTab = lots?.filter((item) => {
+  const filteredLotsByActiveTab = filter(lots, (item) => {
     const isActiveLotStatus = item.status === 'active';
     const isPendingLotStatus =
       item.userStatus !== 'inactive' &&

@@ -132,6 +132,7 @@ const LotList = () => {
   useEffect(() => {
     if (!_.isEmpty(bets)) {
       const lastBet = _.maxBy(bets, 'id');
+
       dispatch(fetchLotDetails(lastBet.lotId));
     }
   }, [bets]);
@@ -160,16 +161,17 @@ const LotList = () => {
         />
 
         <div className={styles.lotListWrapp}>
-          {lots.map(
-            (item) =>
-              item.status === 'active' && (
-                <ItemCard
-                  item={item}
-                  key={item.id}
-                  setSelectedLot={setSelectedLot}
-                />
-              )
-          )}
+          {lots.map((item) => {
+            if (item.status !== 'active') return;
+
+            return (
+              <ItemCard
+                item={item}
+                key={item.id}
+                setSelectedLot={setSelectedLot}
+              />
+            );
+          })}
         </div>
       </div>
       {selectedLot && (

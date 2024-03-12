@@ -110,7 +110,7 @@ export default function AdminLotsList() {
     }
   };
 
-  const handleEditClick = (id) => () => {
+  const handleEditClick = (id) => {
     setCurrLotId(id);
     setEditedValue('');
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
@@ -135,7 +135,7 @@ export default function AdminLotsList() {
     }
   };
 
-  const handleShowMoreClick = (id) => () => {
+  const handleShowMoreClick = (id) => {
     const userId = _.find(lots, { id: id })?.userId;
 
     dispatch(setLotId(id));
@@ -143,7 +143,7 @@ export default function AdminLotsList() {
     dispatch(toggleModal('infoModal'));
   };
 
-  const handleCancelClick = (id) => () => {
+  const handleCancelClick = (id) => {
     setRowModesModel({
       ...rowModesModel,
       [id]: { mode: GridRowModes.View, ignoreModifications: true },

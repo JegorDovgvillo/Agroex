@@ -74,7 +74,7 @@ const ItemCard = ({ item, setSelectedLot }) => {
 
   const isAuctionLot = item.lotType === 'auctionSell';
   const isNewLot = item.innerStatus === 'new';
-  const isLotTransaction = item.bets?.length > 0;
+  const isLotTransaction = !_.isEmpty(item.bets);
   const isRejectedByAdminLot = item.innerStatus === 'rejected';
   const isDeactivatedByUserLot = item.userStatus === 'inactive';
   const lotStatuses = getLotStatuses(tab, item, isLotTransaction, isLotExpired);
@@ -95,9 +95,9 @@ const ItemCard = ({ item, setSelectedLot }) => {
     if (tab === 'inactive') {
       actionsArr = _.concat(
         actionsArr,
-        !isLotExpired && isDeactivatedByUserLot ? ['activate'] : [],
-        !isLotExpired && isRejectedByAdminLot ? ['edit'] : [],
-        !isLotTransaction ? ['delete'] : []
+        !isLotExpired && isDeactivatedByUserLot && ['activate'],
+        !isLotExpired && isRejectedByAdminLot && ['edit'],
+        !isLotTransaction && ['delete']
       );
     }
 
@@ -177,7 +177,7 @@ const ItemCard = ({ item, setSelectedLot }) => {
                   {userType === 'registeredUser' && !isUserLotOwner && (
                     <CustomButton
                       size="S"
-                      text={'My bet'}
+                      text="My bet"
                       icon={<GavelOutlinedIcon />}
                       handleClick={handleBet}
                       type="secondary"

@@ -115,7 +115,7 @@ export const getTableHead = (
           key={`showMoreIcon${id}`}
           icon={<ReadMoreIcon />}
           label="Show More"
-          onClick={handleShowMoreClick(id)}
+          onClick={() => handleShowMoreClick(id)}
           className={showMoreIcon}
         />,
       ];
@@ -134,7 +134,7 @@ export const getTableHead = (
           key={`cancelIcon${id}`}
           icon={<CancelIcon />}
           label="Cancel"
-          onClick={handleCancelClick(id)}
+          onClick={() => handleCancelClick(id)}
           className={cancelIcon}
         />,
       ];
@@ -148,7 +148,7 @@ export const getTableHead = (
             icon={<EditIcon />}
             label="Edit"
             className={editIcon}
-            onClick={handleEditClick(id)}
+            onClick={() => handleEditClick(id)}
           />
         )}
       </>,
@@ -156,7 +156,7 @@ export const getTableHead = (
         key={`showMoreIcon${id}`}
         icon={<ReadMoreIcon />}
         label="Show More"
-        onClick={handleShowMoreClick(id)}
+        onClick={() => handleShowMoreClick(id)}
         className={showMoreIcon}
       />,
     ];
