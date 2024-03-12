@@ -30,6 +30,9 @@ const usersListSlice = createSlice({
     setUserInfo: (state, action) => {
       state.userInfo = action.payload;
     },
+    deleteUserInfo: (state) => {
+      state.userInfo = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -111,6 +114,6 @@ export const { selectById: selectUserById } = usersListAdapter.getSelectors(
 
 const { actions, reducer } = usersListSlice;
 
-export const { setUserId, setUserInfo } = actions;
+export const { setUserId, setUserInfo, deleteUserInfo } = actions;
 
 export default reducer;

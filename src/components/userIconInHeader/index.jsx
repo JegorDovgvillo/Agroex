@@ -9,6 +9,7 @@ import _ from 'lodash';
 import { getUserFromCognito } from '@thunks/fetchUsers';
 
 import { lotListSelector } from '@slices/lotListSlice';
+import { deleteUserInfo } from '@slices/usersListSlice';
 
 import ROUTES from '@helpers/routeNames';
 
@@ -74,8 +75,9 @@ const UserIconInHeader = () => {
 
   const handleSignOut = () => {
     signOut();
+    dispatch(deleteUserInfo());
+    setIsActive(false);
     navigate(ROUTES.LOG_IN);
-    window.location.reload();
   };
 
   const linkStyle = isActive ? styles.active : styles.enabled;
@@ -90,7 +92,11 @@ const UserIconInHeader = () => {
         <ul className={`${styles.linkContainer} ${linkStyle}`}>
           <li className={styles.linkWrapp}>{userInfo && userInfo.name}</li>
           {links.map((item) => (
-            <li key={item.id} className={styles.linkWrapp}>
+            <li
+              key={item.id}
+              className={styles.linkWrapp}
+              onClick={toggleUserTabs}
+            >
               <NavLink to={`${rootLink}/${item.route}`} className={styles.link}>
                 <item.icon.type className={styles.icon} />
                 {item.name}
