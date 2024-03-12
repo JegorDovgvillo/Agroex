@@ -10,6 +10,7 @@ import HttpsOutlinedIcon from '@mui/icons-material/HttpsOutlined';
 import { getUserFromCognito } from '@thunks/fetchUsers';
 
 import { toggleModal } from '@slices/modalSlice';
+import { deleteUserInfo } from '@slices/usersListSlice';
 
 import { CustomButton } from '@components/buttons/CustomButton';
 import { CheckBoxInput } from '@components/checkBox';
@@ -67,7 +68,7 @@ const UserAccount = () => {
   const handleSignOut = () => {
     signOut();
     navigate(ROUTES.LOG_IN);
-    window.location.reload();
+    dispatch(deleteUserInfo());
   };
 
   const showModalForUpdatePassword = () => {
