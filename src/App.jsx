@@ -12,7 +12,7 @@ import awsConfigUsers from './helpers/cognito/aws-config-users';
 
 function App() {
   cognitoUserPoolsTokenProvider.setKeyValueStorage(
-    new CookieStorage({ expires: 10, path: '/' })
+    new CookieStorage({ path: '/', secure: true, sameSite: 'strict' })
   );
 
   Amplify.configure(awsConfigUsers);
