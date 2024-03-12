@@ -13,10 +13,10 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
   async (config) => {
     if (config.method.toUpperCase() !== 'GET') {
-      const token = (await fetchAuthSession()).tokens ?? {};
+      const { idToken } = (await fetchAuthSession()).tokens ?? {};
 
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
+      if (idToken) {
+        config.headers.Authorization = `Bearer ${idToken}`;
       }
     }
 
