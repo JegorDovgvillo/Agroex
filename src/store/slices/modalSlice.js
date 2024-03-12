@@ -70,13 +70,13 @@ const { reducer, actions } = modalSlice;
 export const { toggleModal, setModalFields, clearModalsFields } = actions;
 
 export const selectModalState = (state, modalId) => {
-  const modal = state.modal.modals.find((modal) => modal.id === modalId);
+  const modal = find(state.modal.modals, { id: modalId });
 
   return modal ? modal.isOpen : false;
 };
 
 export const selectModal = (state, modalId) => {
-  const modal = state.modal.modals.find((modal) => modal.id === modalId);
+  const modal = find(state.modal.modals, { id: modalId });
 
   return modal;
 };
