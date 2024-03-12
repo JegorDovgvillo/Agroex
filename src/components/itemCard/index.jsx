@@ -39,12 +39,13 @@ const {
   editBtnContainer,
 } = styles;
 
-const getLotStatuses = (tab, item, isLotExpired, isLotFinished) => {
+const getLotStatuses = ({ tab, item, isLotExpired, isLotFinished }) => {
   const lotStatuses = [];
 
   switch (tab) {
     case 'active':
       lotStatuses.push(item.lotType);
+      isLotFinished && !isLotExpired && lotStatuses.push(item.status);
       break;
 
     case 'pending':
@@ -76,27 +77,21 @@ const ItemCard = ({ item, setSelectedLot }) => {
   const [isUserLotOwner, setIsUserLotOwner] = useState(false);
   const isAdmin = userType === 'admin';
   const { tab } = useParams();
-  const current = DateTime.local().toISO();
-  const expiration = item?.expirationDate;
-
-  /*   const isLotExpired =
-    DateTime.fromISO(current).diff(DateTime.fromISO(expiration)).milliseconds >
-    0; */
 
   const isAuctionLot = item.lotType === 'auctionSell';
   const isNewLot = item.innerStatus === 'new';
   const isLotTransaction = !_.isEmpty(item.bets);
   const isLotFinished = item.status === 'finished';
-  const isLotExpired = isLotFinished && !isLotTransaction;
+  const isLotExpired = !isLotTransaction && isLotFinished;
   const isRejectedByAdminLot = item.innerStatus === 'rejected';
   const isDeactivatedByUserLot = item.userStatus === 'inactive';
-  const lotStatuses = getLotStatuses(
+
+  const lotStatuses = getLotStatuses({
     tab,
     item,
-    isLotTransaction,
     isLotExpired,
-    isLotFinished
-  );
+    isLotFinished,
+  });
   const priceBtnText = getButtonText(item.lotType);
   const lastBet = isLotTransaction && _.maxBy(item.bets, 'id');
 
@@ -104,7 +99,7 @@ const ItemCard = ({ item, setSelectedLot }) => {
     let actionsArr = [];
 
     if (
-      (tab === 'active' && !isAuctionLot) ||
+      (tab === 'active' && !isLotTransaction) ||
       (tab === 'pending' && isNewLot) ||
       (!tab && isUserLotOwner && !isAuctionLot)
     ) {
@@ -123,7 +118,7 @@ const ItemCard = ({ item, setSelectedLot }) => {
     return _.uniq(actionsArr);
   };
 
-  const actions = getLotActions();
+  const actions = isUserLotOwner && getLotActions();
 
   const viewDetailsCard = () => {
     const path = generatePath(ROUTES.LOTS_DETAILS, {

@@ -15,22 +15,15 @@ const UserOrders = () => {
   const { tab } = useParams();
   const dispatch = useDispatch();
   const userInfo = useSelector((state) => state.usersList.userInfo);
-  const [currUserId, setCurrUserId] = useState(null);
   const lots = useSelector(lotListSelector);
 
   const filteredLotsByActiveTab = _.filter(lots, (item) => {
     const isAuctionLot = item.lotType === 'auctionSell';
-    const isActiveLotStatus = item.status === 'active';
-    const lastBet = _.maxBy(item.bets, 'id');
-    const isLotOutbid = lastBet?.userId !== currUserId;
-    const isFinishedLotStatus = item.status === 'finished';
+    const isLotFinished = item.status === 'finished';
 
     switch (tab) {
       case 'active':
-        return isAuctionLot && isActiveLotStatus && !isLotOutbid;
-
-      case 'completed':
-        return isAuctionLot && isLotOutbid;
+        return !isAuctionLot && isLotFinished;
     }
   });
 
@@ -48,7 +41,6 @@ const UserOrders = () => {
     }
 
     const { id } = userInfo;
-    setCurrUserId(id);
     dispatch(fetchUserActivityLots({ userId: id }));
   }, [dispatch, userInfo]);
 

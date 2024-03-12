@@ -4,12 +4,16 @@ import { useParams } from 'react-router-dom';
 
 import _ from 'lodash';
 
-import { fetchUserActivityLots } from '@thunks/fetchLots';
-import { lotListSelector } from '@slices/lotListSlice';
-
+import { fetchUserActivityLots, fetchLotDetails } from '@thunks/fetchLots';
 import { getUserFromCognito } from '@thunks/fetchUsers';
+import { lotListSelector } from '@slices/lotListSlice';
+import { betsSelector } from '@slices/betsSlice';
+import { selectModal } from '@slices/modalSlice';
 
+import PlaceBetModal from '@customModals/placeBetModal';
 import ItemCard from '@components/itemCard';
+
+import { handlePlaceNewBet } from '@helpers/lotHandlers';
 
 const Betting = () => {
   const { tab } = useParams();
@@ -17,6 +21,13 @@ const Betting = () => {
   const userInfo = useSelector((state) => state.usersList.userInfo);
   const [currUserId, setCurrUserId] = useState(null);
   const lots = useSelector(lotListSelector);
+  const bets = useSelector(betsSelector);
+  const [selectedLot, setSelectedLot] = useState(null);
+
+  const confirmModalData = useSelector((state) =>
+    selectModal(state, 'confirmModal')
+  );
+  const newBet = useSelector((state) => state.bets.newBet);
 
   const filteredLotsByActiveTab = _.filter(lots, (item) => {
     const isAuctionLot = item.lotType === 'auctionSell';
@@ -30,7 +41,7 @@ const Betting = () => {
         return isAuctionLot && isActiveLotStatus && !isLotOutbid;
 
       case 'outbid':
-        return isAuctionLot && isLotOutbid;
+        return isAuctionLot && isActiveLotStatus && isLotOutbid;
 
       case 'finished':
         return isAuctionLot && isFinishedLotStatus;
@@ -38,7 +49,9 @@ const Betting = () => {
   });
 
   const filteredLotsArr = filteredLotsByActiveTab.map((item) => {
-    return <ItemCard item={item} key={item.id} />;
+    return (
+      <ItemCard item={item} setSelectedLot={setSelectedLot} key={item.id} />
+    );
   });
 
   useEffect(() => {
@@ -55,7 +68,29 @@ const Betting = () => {
     dispatch(fetchUserActivityLots({ userId: id }));
   }, [dispatch, userInfo]);
 
-  return <div>{filteredLotsArr} </div>;
+  useEffect(() => {
+    const { confirmStatus, action, isOpen } = confirmModalData;
+
+    if (!isOpen && action === 'placeBet') {
+      confirmStatus && newBet && handlePlaceNewBet(dispatch, newBet);
+    }
+  }, [confirmModalData]);
+
+  useEffect(() => {
+    if (!_.isEmpty(bets)) {
+      const lastBet = _.maxBy(bets, 'id');
+      dispatch(fetchLotDetails(lastBet.lotId));
+    }
+  }, [bets]);
+
+  return (
+    <>
+      <div>{filteredLotsArr}</div>
+      {selectedLot && (
+        <PlaceBetModal lot={selectedLot} setSelectedLot={setSelectedLot} />
+      )}
+    </>
+  );
 };
 
 export default Betting;

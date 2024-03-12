@@ -186,6 +186,7 @@ export const LotDetails = () => {
   const buySellBtnText = getButtonText(lotType);
   const isLastBetEqualPrice = betFieldValue === price;
   const isAuctionLot = lotType === 'auctionSell';
+  const isTransaction = !_.isEmpty(bets);
 
   const getLocation = () => {
     return (
@@ -205,7 +206,7 @@ export const LotDetails = () => {
     { key: 'Created', value: getFormattedDate(creationDate) },
     {
       key: 'Tags',
-      value: !_.isEmpty(tags) ? <TagsBlock tags={tags} /> : ' No tags',
+      value: !_.isEmpty(tags) ? <TagsBlock tags={tags} /> : 'No tags',
     },
   ];
 
@@ -252,7 +253,7 @@ export const LotDetails = () => {
                         <p className={body2}>Bet</p>
 
                         <div>
-                          {!_.isEmpty(bets) ? (
+                          {isTransaction ? (
                             <PriceBlock
                               totalCost={betFieldValue}
                               unitCost={betFieldValue / quantity}
@@ -271,7 +272,7 @@ export const LotDetails = () => {
                     userType === 'registeredUser' &&
                     !isUserLotOwner &&
                     !isLastBetEqualPrice && <PlaceBetForm lot={selectedLot} />}
-                  {isUserLotOwner && (
+                  {isUserLotOwner && !isTransaction && (
                     <CustomButton
                       width="100%"
                       type="secondary"
@@ -305,7 +306,7 @@ export const LotDetails = () => {
                         handleClick={handleDealClick}
                       />
                     )}
-                  {isUserLotOwner && !isAuctionLot && (
+                  {isUserLotOwner && !isTransaction && (
                     <CustomButton
                       type="secondary"
                       text="Deactivate"

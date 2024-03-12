@@ -53,9 +53,6 @@ const LotList = () => {
   const adminMessageData = useSelector((state) =>
     selectModal(state, 'adminMessageModal')
   );
-  const betModalData = useSelector((state) =>
-    selectModal(state, 'placeBetModal')
-  );
   const newBet = useSelector((state) => state.bets.newBet);
 
   useEffect(() => {
@@ -119,7 +116,7 @@ const LotList = () => {
           break;
       }
     }
-  }, [confirmModalData, betModalData]);
+  }, [confirmModalData]);
 
   useEffect(() => {
     const { adminMessage } = adminMessageData;
