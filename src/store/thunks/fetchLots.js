@@ -57,6 +57,17 @@ export const filteredLots = createAsyncThunk(
   }
 );
 
+export const getFilteredLots = createAsyncThunk(
+  'lotList/getFilteredLots',
+  async ({ ...values }) => {
+    const response = await axiosInstance.get(`${ENDPOINTS.LOTS}`, {
+      params: values,
+    });
+
+    return response.data;
+  }
+);
+
 export const changeLotStatusByUser = createAsyncThunk(
   'lotList/changeLotStatusByUser',
   async ({ lotId, isActive }) => {
@@ -87,12 +98,32 @@ export const changeLotStatusByAdmin = createAsyncThunk(
     try {
       const response = await axiosInstance.post(
         `${ENDPOINTS.LOTS}/${lotId}/${targetEndpoint}`,
-        { lotId, adminComment }
+        null,
+        {
+          params: {
+            adminComment,
+          },
+        }
       );
 
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
+  }
+);
+
+export const fetchDeal = createAsyncThunk(
+  'lotList/fetchDeal',
+  async ({ ...values }) => {
+    const response = await axiosInstance.post(
+      `${ENDPOINTS.LOTS}/${values.id}/buy`,
+      null,
+      {
+        params: values,
+      }
+    );
+
+    return response.data;
   }
 );

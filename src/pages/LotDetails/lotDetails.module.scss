@@ -118,6 +118,7 @@
     line-height: 1.5rem;
     letter-spacing: 0.2px;
     margin: 0;
+    max-width: 100%;
   }
 }
 
@@ -133,12 +134,18 @@
     flex-direction: column;
     row-gap: 8px;
     align-items: flex-start;
+    justify-content: space-between;
     width: 50%;
   }
 
   .betContainer {
     width: 50%;
     min-height: 274px;
+
+    .noBetsBlock {
+      color: $monoGrayDark50;
+      font-size: 30pxx;
+    }
   }
 
   .priceContainer {

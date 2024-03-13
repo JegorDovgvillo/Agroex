@@ -11,11 +11,14 @@ const CustomTextField = ({
   name,
   multiline = null,
   required = false,
+  disabled = false,
   value = '',
   errors,
   touched,
   rows = null,
   type = '',
+  inputProps = {},
+  helperText = null,
 }) => {
   const isError = !!errors && !!touched;
 
@@ -27,6 +30,7 @@ const CustomTextField = ({
         type={type}
         name={name}
         id={id}
+        disabled={disabled}
         placeholder={placeholder}
         multiline={multiline}
         rows={rows}
@@ -36,7 +40,8 @@ const CustomTextField = ({
           isError && styles.error
         } ${styles[fieldType]}`}
         error={isError}
-        helperText={isError ? errors : null}
+        helperText={isError ? errors : helperText}
+        InputProps={inputProps}
       />
     </div>
   );

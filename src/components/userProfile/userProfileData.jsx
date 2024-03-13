@@ -22,6 +22,7 @@ const userProfileData = [
       { id: 0, tabRoute: 'active' },
       { id: 1, tabRoute: 'pending' },
       { id: 2, tabRoute: 'inactive' },
+      { id: 3, tabRoute: 'finished' },
     ],
     element: <UserLots />,
   },

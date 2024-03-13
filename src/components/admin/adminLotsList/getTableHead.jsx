@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import _ from 'lodash';
 
 import { Select, MenuItem, Avatar } from '@mui/material';
@@ -89,6 +90,7 @@ export const getTableHead = (
   const getSelectItem = (params) => {
     return (
       <Select
+        disabled={params.row.status === 'finished'}
         value={params.value}
         onChange={(e) => handleSelectChange(params, e.target.value)}
         className={statusSelectField}
@@ -105,8 +107,21 @@ export const getTableHead = (
   const getTableActions = ({ id }) => {
     const isLotTransaction = !_.isEmpty(_.find(lots, { id: id })?.bets.length);
     const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
+    const isRowEditable = _.find(lots, { id: id })?.status !== 'finished';
 
-    if (isInEditMode) {
+    if (!isRowEditable) {
+      return [
+        <GridActionsCellItem
+          key={`showMoreIcon${id}`}
+          icon={<ReadMoreIcon />}
+          label="Show More"
+          onClick={() => handleShowMoreClick(id)}
+          className={showMoreIcon}
+        />,
+      ];
+    }
+
+    if (isInEditMode && isRowEditable) {
       return [
         <GridActionsCellItem
           key={`saveIcon${id}`}
@@ -119,7 +134,7 @@ export const getTableHead = (
           key={`cancelIcon${id}`}
           icon={<CancelIcon />}
           label="Cancel"
-          onClick={handleCancelClick(id)}
+          onClick={() => handleCancelClick(id)}
           className={cancelIcon}
         />,
       ];
@@ -133,7 +148,7 @@ export const getTableHead = (
             icon={<EditIcon />}
             label="Edit"
             className={editIcon}
-            onClick={handleEditClick(id)}
+            onClick={() => handleEditClick(id)}
           />
         )}
       </>,
@@ -141,7 +156,7 @@ export const getTableHead = (
         key={`showMoreIcon${id}`}
         icon={<ReadMoreIcon />}
         label="Show More"
-        onClick={handleShowMoreClick(id)}
+        onClick={() => handleShowMoreClick(id)}
         className={showMoreIcon}
       />,
     ];

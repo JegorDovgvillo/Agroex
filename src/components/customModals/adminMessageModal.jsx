@@ -4,7 +4,12 @@ import { Formik, Form } from 'formik';
 import Modal from '@mui/material/Modal';
 
 import { CustomButton } from '@buttons/CustomButton';
-import { toggleModal, selectModalState } from '@slices/modalSlice';
+import {
+  toggleModal,
+  selectModalState,
+  setModalFields,
+  clearModalsFields,
+} from '@slices/modalSlice';
 import { adminMessageValidationSchema } from '@helpers/validationSchemes/adminMessageValidationSchema.js';
 import CustomTextField from '@customTextField';
 
@@ -12,19 +17,24 @@ import styles from './adminMessageModal.module.scss';
 
 const { modalContainer, modalContent, buttonsContainer } = styles;
 
-const AdminMessageModal = ({ setAdminMessage, setConfirmStatus }) => {
+const AdminMessageModal = () => {
   const dispatch = useDispatch();
   const isOpen = useSelector((state) =>
     selectModalState(state, 'adminMessageModal')
   );
 
   const handleClose = () => {
-    setConfirmStatus(false);
-    dispatch(toggleModal('adminMessageModal'));
+    dispatch(clearModalsFields(['adminMessageModal', 'confirmModal']));
   };
 
   const handleSubmit = (values) => {
-    setAdminMessage(values.message);
+    dispatch(
+      setModalFields({
+        modalId: 'adminMessageModal',
+        adminMessage: values.message,
+      })
+    );
+
     dispatch(toggleModal('adminMessageModal'));
   };
 

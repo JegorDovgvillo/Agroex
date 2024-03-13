@@ -2,41 +2,37 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-import { includes } from 'lodash';
+import { includes, find, filter } from 'lodash';
 
 import { getUserFromCognito } from '@thunks/fetchUsers';
-import { filteredLots } from '@thunks/fetchLots';
+import {
+  getFilteredLots,
+  changeLotStatusByUser,
+  deleteLot,
+} from '@thunks/fetchLots';
 
 import { lotListSelector } from '@slices/lotListSlice';
+import { selectModal, clearModalsFields } from '@slices/modalSlice';
 
-import UserLotCard from '@components/itemCard/userProfileItemCards/userLotCard';
+import ItemCard from '@components/itemCard';
 
 const UserLots = () => {
   const { tab } = useParams();
-
   const dispatch = useDispatch();
-
   const currUserId = useSelector((state) => state.usersList.userId);
   const lots = useSelector(lotListSelector);
-
-  const userParams = { users: currUserId };
-  const params = new URLSearchParams(userParams).toString();
-
-  useEffect(() => {
-    dispatch(getUserFromCognito());
-    currUserId && dispatch(filteredLots(params));
-  }, [currUserId]);
-
-  const filteredLotsByUserId = lots.filter(
-    (item) => item.userId === currUserId
+  const confirmModalData = useSelector((state) =>
+    selectModal(state, 'confirmModal')
   );
 
-  const filteredLotsByActiveTab = filteredLotsByUserId.filter((item) => {
+  const filteredLotsByActiveTab = filter(lots, (item) => {
     const isActiveLotStatus = item.status === 'active';
     const isPendingLotStatus =
       item.userStatus !== 'inactive' &&
       includes(['new', 'onModeration'], item.innerStatus);
-    const isInactiveLotStatus = !isActiveLotStatus && !isPendingLotStatus;
+    const isFinishedLotStatus = item.status === 'finished';
+    const isInactiveLotStatus =
+      !isActiveLotStatus && !isPendingLotStatus && !isFinishedLotStatus;
 
     switch (tab) {
       case 'active':
@@ -47,12 +43,46 @@ const UserLots = () => {
 
       case 'inactive':
         return isInactiveLotStatus;
+
+      case 'finished':
+        return isFinishedLotStatus;
     }
   });
 
   const filteredLotsArr = filteredLotsByActiveTab.map((item) => {
-    return <UserLotCard {...item} key={item.id} />;
+    return <ItemCard item={item} key={item.id} />;
   });
+
+  useEffect(() => {
+    dispatch(getUserFromCognito());
+    currUserId &&
+      dispatch(getFilteredLots({ status: 'all', users: currUserId }));
+  }, [currUserId]);
+
+  useEffect(() => {
+    const { confirmStatus, action, isOpen } = confirmModalData;
+    const lot = find(lots, { id: action.lotId });
+
+    if (!isOpen) {
+      switch (action.name) {
+        case 'toggleUserLotStatus':
+          confirmStatus &&
+            dispatch(
+              changeLotStatusByUser({
+                lotId: lot.id,
+                isActive: lot.userStatus === 'active' ? false : true,
+              })
+            );
+          dispatch(clearModalsFields('confirmModal'));
+          break;
+
+        case 'deleteLot':
+          dispatch(deleteLot({ id: action.lotId }));
+          dispatch(clearModalsFields('confirmModal'));
+          break;
+      }
+    }
+  }, [confirmModalData]);
 
   return <div>{filteredLotsArr} </div>;
 };

@@ -25,6 +25,7 @@ export const CustomButton = ({
   icon = null,
   width = null,
   handleClick,
+  color = 'primary',
 }) => {
   const buttonStyles = getStyles(size);
   const variant = getVariant(type);
@@ -38,6 +39,7 @@ export const CustomButton = ({
       className={`${styles.commonButtonStyles} ${buttonStyles}`}
       onClick={handleClick}
       type={typeOfButton}
+      color={color}
     >
       {text}
     </Button>

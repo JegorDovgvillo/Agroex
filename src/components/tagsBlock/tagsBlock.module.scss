@@ -1,0 +1,18 @@
+@import "@scss/colorVariables.module.scss";
+
+.tagsContainer {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+
+  .tagItem {
+    font-size: 0.9rem;
+    line-height: 150%;
+    display: flex;
+    align-items: center;
+    padding: 3px 8px;
+    border-radius: 16px;
+    background-color: $monoWhite;
+    border: 1px solid #333333;
+  }
+}

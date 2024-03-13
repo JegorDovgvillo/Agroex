@@ -1,0 +1,21 @@
+@import "@scss/colorVariables.module.scss";
+
+.formContainer {
+  display: flex;
+  flex-direction: column;
+  width: 400px;
+  align-items: center;
+}
+
+.helperText {
+  align-self: flex-start;
+  padding: 0 0 0 16px;
+}
+
+.inputAdornment svg {
+  color: $monoGray;
+}
+
+.inputAdornmentError svg {
+  color: $errorBase;
+}

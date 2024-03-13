@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchLots } from '@thunks/fetchLots';
 import { lotListSelector } from '@slices/lotListSlice';
 
-import BettingCard from '@components/itemCard/userProfileItemCards/bettingCard';
+import ItemCard from '@components/itemCard';
 
 const Betting = () => {
   //todo add filter by lot status (active, pending, inactive)
@@ -21,7 +21,7 @@ const Betting = () => {
     const filteredLots = lots
       .filter((item) => item.userId === currUserId)
       .map((item) => {
-        return <BettingCard {...item} key={item.id} />;
+        return <ItemCard {...item} key={item.id} />;
       });
 
     return <>{filteredLots}</>;

@@ -13,6 +13,7 @@ const ENDPOINTS = {
   TAGS: '/tags',
   AUTH: '/auth/register/',
   UPDATE_DB: '/users/updatedb',
+  BETS: '/bets',
 };
 
 export default ENDPOINTS;
