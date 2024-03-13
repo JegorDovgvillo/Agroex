@@ -54,6 +54,8 @@ const LotForm = ({
     minutes = 0,
   } = getDHMSFromMilliseconds(selectedLot?.duration);
 
+  const [disabledMap, setDisabledMap] = useState(true);
+
   const initialValues = {
     title: selectedLot?.title,
     country: selectedLot?.location.countryId,
@@ -226,16 +228,30 @@ const LotForm = ({
                   errors={errors.country}
                   touched={!isCreateNotSubmittedForm || touched.country}
                   setFieldValue={setFieldValue}
+                  disabled={disabledMap}
                 />
                 <CustomTextField
                   label="Region"
                   id="region"
                   placeholder="Enter the region"
                   name="region"
+                  disabled={true}
                   value={values.region}
                   errors={errors.region}
                   touched={!isCreateNotSubmittedForm || touched.region}
                 />
+                <div className={styles.disabledMapWrapp}>
+                  <CustomButton
+                    text="Choose country"
+                    typeOfButton="button"
+                    handleClick={() => setDisabledMap(false)}
+                    disabled={!disabledMap}
+                    buttonClass="disabledMap"
+                  />
+                </div>
+              </div>
+
+              <div className={styles.inputBlock}>
                 <CustomSelect
                   label="Lot type"
                   id="lotType"
@@ -248,20 +264,6 @@ const LotForm = ({
                   handleChange={setSelectedLotType}
                   setFieldValue={setFieldValue}
                 />
-              </div>
-              <CustomTextField
-                label="Description"
-                placeholder="Enter the description"
-                name="description"
-                multiline
-                rows={4}
-                type="textarea"
-                value={values.description}
-                errors={errors.description}
-                touched={!isCreateNotSubmittedForm || touched.description}
-                fieldType="textarea"
-              />
-              <div className={styles.inputBlock}>
                 <CustomSelect
                   label="Category"
                   units={categories}
@@ -296,17 +298,19 @@ const LotForm = ({
                   errors={errors.variety}
                   touched={!isCreateNotSubmittedForm || touched.variety}
                 />
-                <CustomTextField
-                  label="Size"
-                  id="size"
-                  placeholder="Enter the size"
-                  required={false}
-                  name="size"
-                  value={values.size}
-                  errors={errors.size}
-                  touched={!isCreateNotSubmittedForm || touched.size}
-                />
               </div>
+              <CustomTextField
+                label="Description"
+                placeholder="Enter the description"
+                name="description"
+                multiline
+                rows={4}
+                type="textarea"
+                value={values.description}
+                errors={errors.description}
+                touched={!isCreateNotSubmittedForm || touched.description}
+                fieldType="textarea"
+              />
               <div className={styles.inputBlock}>
                 <CustomTextField
                   label="Packaging"
@@ -328,7 +332,29 @@ const LotForm = ({
                   errors={errors.quantity}
                   touched={!isCreateNotSubmittedForm || touched.quantity}
                 />
-
+                <CustomTextField
+                  label="Size"
+                  id="size"
+                  placeholder="Enter the size"
+                  required={false}
+                  name="size"
+                  value={values.size}
+                  errors={errors.size}
+                  touched={!isCreateNotSubmittedForm || touched.size}
+                />
+                <CustomSelect
+                  label="Currency"
+                  units={['USD']}
+                  name="priceUnits"
+                  disabled={true}
+                  placeholder="Currency"
+                  value={values.priceUnits}
+                  errors={errors.priceUnits}
+                  touched={!isCreateNotSubmittedForm || touched.priceUnits}
+                  setFieldValue={setFieldValue}
+                />
+              </div>
+              <div className={styles.inputBlock}>
                 {!isAuctionLot ? (
                   <CustomDatePicker
                     value={values.expirationDate}
@@ -380,19 +406,6 @@ const LotForm = ({
                     </div>
                   </div>
                 )}
-              </div>
-              <div className={styles.inputBlock}>
-                <CustomSelect
-                  label="Currency"
-                  units={['USD']}
-                  name="priceUnits"
-                  disabled={true}
-                  placeholder="Currency"
-                  value={values.priceUnits}
-                  errors={errors.priceUnits}
-                  touched={!isCreateNotSubmittedForm || touched.priceUnits}
-                  setFieldValue={setFieldValue}
-                />
                 <CustomTextField
                   label="Price"
                   id="price"
@@ -416,6 +429,7 @@ const LotForm = ({
                   />
                 )}
               </div>
+              <div className={styles.inputBlock}></div>
               <div className={styles.inputBlock}>
                 <CustomMultipleAutocompleteField
                   label="Tags"
@@ -483,6 +497,8 @@ const LotForm = ({
               location={values.country}
               setFieldValue={setFieldValue}
               countries={country}
+              setDisabledMap={setDisabledMap}
+              disabledMap={disabledMap}
             />
           </div>
         </>

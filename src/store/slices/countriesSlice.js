@@ -17,6 +17,7 @@ const initialState = countryAdapter.getInitialState({
   loadingStatus: 'idle',
   countryName: '',
   countryCoordinate: null,
+  markerCoordinate: null,
   address: null,
 });
 
@@ -26,6 +27,12 @@ const countriesSlice = createSlice({
   reducers: {
     updateCoordinate: (state, action) => {
       state.countryCoordinate = action.payload;
+    },
+    updateMarkerCoordinate: (state, action) => {
+      state.markerCoordinate = action.payload;
+    },
+    setCountry: (state, action) => {
+      state.countryName = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -56,6 +63,7 @@ const countriesSlice = createSlice({
       .addCase(getCoordinate.fulfilled, (state, action) => {
         state.loadingStatus = 'fulfilled';
         state.countryCoordinate = action.payload;
+        state.markerCoordinate = action.payload;
       })
       .addCase(getCoordinate.rejected, (state) => {
         state.loadingStatus = 'rejected';
@@ -74,7 +82,7 @@ const countriesSlice = createSlice({
 });
 
 const { reducer, actions } = countriesSlice;
-export const { updateCoordinate } = actions;
+export const { updateCoordinate, setCountry, updateMarkerCoordinate } = actions;
 const { selectAll } = countryAdapter.getSelectors((state) => state.countries);
 
 export const countrySelector = createSelector([selectAll], (countries) =>

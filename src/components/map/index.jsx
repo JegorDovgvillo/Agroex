@@ -16,6 +16,10 @@ import { selectLotDetailById } from '@slices/lotListSlice';
 import 'leaflet/dist/leaflet.css';
 
 import styles from './map.module.scss';
+import {
+  setCountry,
+  updateMarkerCoordinate,
+} from '../../store/slices/countriesSlice';
 
 const LocationMarker = ({ latitude, longitude, eventHandlers, draggable }) => {
   const map = useMapEvents({
@@ -36,12 +40,17 @@ const LocationMarker = ({ latitude, longitude, eventHandlers, draggable }) => {
   );
 };
 
-const Map = ({ location, setFieldValue, countries }) => {
+const Map = ({
+  location,
+  setFieldValue,
+  countries,
+  setDisabledMap,
+  disabledMap,
+}) => {
   const dispatch = useDispatch();
   const { id } = useParams();
 
   const [draggable, setDraggable] = useState(true);
-  const [isTouched, setIsTouched] = useState(false);
 
   const selectedLot = useSelector((state) => selectLotDetailById(state, id));
   const countryName = useSelector((state) => state.countries.countryName);
@@ -49,9 +58,12 @@ const Map = ({ location, setFieldValue, countries }) => {
   const countryCoordinate = useSelector(
     (state) => state.countries.countryCoordinate
   );
+  const markerCoordinate = useSelector(
+    (state) => state.countries.markerCoordinate
+  );
 
   useEffect(() => {
-    if (location && isTouched) {
+    if (location && !disabledMap) {
       dispatch(fetchCountry({ id: location }));
     }
   }, [location]);
@@ -67,19 +79,26 @@ const Map = ({ location, setFieldValue, countries }) => {
   useEffect(() => {
     if (countryName && !selectedLot) {
       dispatch(getCoordinate({ countryName: countryName.name }));
+    } else if (
+      countryName &&
+      selectedLot &&
+      address &&
+      countryName !== address.country
+    ) {
+      dispatch(getCoordinate({ countryName: countryName.name }));
     }
   }, [countryName]);
 
   useEffect(() => {
-    if (countryCoordinate) {
+    if (markerCoordinate) {
       dispatch(
         getAddress({
-          latitude: countryCoordinate.lat,
-          longitude: countryCoordinate.lon,
+          latitude: markerCoordinate.lat,
+          longitude: markerCoordinate.lon,
         })
       );
     }
-  }, [countryCoordinate]);
+  }, [markerCoordinate]);
 
   useEffect(() => {
     if (address) {
@@ -99,12 +118,23 @@ const Map = ({ location, setFieldValue, countries }) => {
     if (!selectedLot) {
       navigator.geolocation.getCurrentPosition((position) => {
         const { latitude, longitude } = position.coords;
-
+        dispatch(
+          updateMarkerCoordinate({
+            lat: latitude,
+            lon: longitude,
+          })
+        );
         dispatch(updateCoordinate({ lat: latitude, lon: longitude }));
       });
-    } else {
+    } else if (selectedLot) {
       dispatch(
         updateCoordinate({
+          lat: selectedLot.location.latitude,
+          lon: selectedLot.location.longitude,
+        })
+      );
+      dispatch(
+        updateMarkerCoordinate({
           lat: selectedLot.location.latitude,
           lon: selectedLot.location.longitude,
         })
@@ -120,9 +150,12 @@ const Map = ({ location, setFieldValue, countries }) => {
         if (marker != null) {
           const newPosition = marker.getLatLng();
 
-          setIsTouched(true);
+          setDisabledMap(true);
           dispatch(
-            updateCoordinate({ lat: newPosition.lat, lon: newPosition.lng })
+            updateMarkerCoordinate({
+              lat: newPosition.lat,
+              lon: newPosition.lng,
+            })
           );
         }
       },
@@ -132,7 +165,7 @@ const Map = ({ location, setFieldValue, countries }) => {
 
   return (
     <>
-      {countryCoordinate && (
+      {countryCoordinate && markerCoordinate && (
         <div className={styles.mapContainer}>
           <MapContainer
             center={[countryCoordinate.lat, countryCoordinate.lon]}
@@ -142,8 +175,8 @@ const Map = ({ location, setFieldValue, countries }) => {
           >
             <TileLayer url="https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png" />
             <LocationMarker
-              latitude={countryCoordinate.lat}
-              longitude={countryCoordinate.lon}
+              latitude={markerCoordinate.lat}
+              longitude={markerCoordinate.lon}
               eventHandlers={eventHandlers}
               draggable={draggable}
             />

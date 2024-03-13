@@ -7,6 +7,10 @@
   font-weight: 500 !important;
 }
 
+.disabledMap {
+  display: flex;
+}
+
 .close {
   &Large {
     width: 48px;
@@ -72,4 +76,11 @@
     height: 32px;
     row-gap: 10px;
   }
+}
+
+.disabledMap {
+  height: 55px;
+  width: 210px;
+  padding: 16.5px 14px !important;
+  margin: 0 16px 28px 0 !important;
 }
