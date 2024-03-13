@@ -54,6 +54,8 @@ const LotList = () => {
     selectModal(state, 'adminMessageModal')
   );
   const newBet = useSelector((state) => state.bets.newBet);
+  const [selectedCountry, setSelectedCountry] = useState([]);
+  const [selectedRegions, setSelectedRegions] = useState([]);
 
   useEffect(() => {
     dispatch(fetchAllCategories());
@@ -160,6 +162,10 @@ const LotList = () => {
           setSelectedCategoriesIds={setSelectedCategoriesIds}
           selectedSubcategoriesIds={selectedSubcategoriesIds}
           setSelectedSubcategoriesIds={setSelectedSubcategoriesIds}
+          selectedCountry={selectedCountry}
+          setSelectedCountry={setSelectedCountry}
+          selectedRegions={selectedRegions}
+          setSelectedRegions={setSelectedRegions}
         />
         <div className={styles.lotListWrapp}>
           {lots.map((item) => {

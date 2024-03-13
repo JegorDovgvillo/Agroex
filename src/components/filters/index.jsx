@@ -21,6 +21,10 @@ const Filters = ({
   setSelectedCategoriesIds,
   selectedSubcategoriesIds,
   setSelectedSubcategoriesIds,
+  selectedCountry,
+  setSelectedCountry,
+  selectedRegions,
+  setSelectedRegions,
 }) => {
   const getNumbersArray = (searchParams) => searchParams.split(',').map(Number);
 
@@ -28,7 +32,7 @@ const Filters = ({
   const currSubcategories = _.filter(categories, 'parentId');
 
   const [subcategoryUnits, setSubcategoryUnits] = useState(currSubcategories);
-
+  const [regions, setRegions] = useState([]);
   const initValues = {
     keyword: '',
     minQuantity: '',
@@ -40,6 +44,7 @@ const Filters = ({
     subcategories: [],
     lotType: '',
     countries: [],
+    regions: [],
   };
 
   const [initialValues, setInitialValues] = useState(initValues);
@@ -119,8 +124,18 @@ const Filters = ({
       countries: searchParams.get('countries')
         ? getNumbersArray(searchParams.get('countries'))
         : [],
+      regions: selectedRegions,
     });
   }, [searchParams, selectedCategoriesIds, selectedSubcategoriesIds]);
+
+  useEffect(() => {
+    const filteredCountries = countries.filter((item, i) => {
+      return item.id === selectedCountry[i];
+    });
+    const regions = filteredCountries.flatMap((country) => country.regions);
+    console.log(regions);
+    setRegions(regions);
+  }, [searchParams, selectedCountry]);
 
   return (
     <div className={styles.filtersWrapp}>
@@ -254,6 +269,22 @@ const Filters = ({
               wrappType="filterWrapp"
               onChange={(e) => {
                 setFieldValue('countries', e.target.value);
+                setSelectedCountry(e.target.value);
+              }}
+            />
+            <CustomMultiSelect
+              label="Regions"
+              disabled={false}
+              name="regions"
+              units={regions}
+              itemFieldName="name"
+              placeholder="Select countries"
+              required={false}
+              fieldType="filterSelect"
+              wrappType="filterWrapp"
+              onChange={(e) => {
+                setFieldValue('regions', e.target.value);
+                setSelectedRegions(e.target.value);
               }}
             />
             <div className={styles.buttonsWrap}>
