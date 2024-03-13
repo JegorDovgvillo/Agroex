@@ -55,7 +55,12 @@ const UpdateLot = () => {
   }, [confirmStatus]);
 
   useEffect(() => {
-    convertImagesToFiles(selectedLot?.images || [], setFiles);
+    if (!selectedLot) return;
+
+    convertImagesToFiles(selectedLot.images || [], setFiles);
+  }, [selectedLot]);
+
+  useEffect(() => {
     dispatch(fetchLotDetails(lotId));
     dispatch(fetchAllCategories());
     dispatch(getUserFromCognito());
