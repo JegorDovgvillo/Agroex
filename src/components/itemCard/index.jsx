@@ -30,8 +30,14 @@ import LotStatusBlock from './lotStatusBlock';
 
 import styles from './itemCard.module.scss';
 
-const { priceBlock, adminComment, pricesContainer, priceWrapp, auctionSum } =
-  styles;
+const {
+  priceBlock,
+  adminComment,
+  pricesContainer,
+  priceWrapp,
+  auctionSum,
+  editBtnContainer,
+} = styles;
 
 const getLotStatuses = (tab, item, isLotTransaction) => {
   const lotStatuses = [];
@@ -185,8 +191,7 @@ const ItemCard = ({ item, setSelectedLot }) => {
                   )}
                 </>
               ) : (
-                <>
-                  <div />
+                <div className={editBtnContainer}>
                   {!tab && isUserLotOwner && (
                     <CustomButton
                       size="S"
@@ -196,7 +201,7 @@ const ItemCard = ({ item, setSelectedLot }) => {
                       handleClick={handleEditLot}
                     />
                   )}
-                </>
+                </div>
               )}
             </div>
 
