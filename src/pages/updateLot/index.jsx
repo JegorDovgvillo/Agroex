@@ -29,15 +29,16 @@ const UpdateLot = () => {
   const country = useSelector(countrySelector);
   const selectedLot = useSelector((state) => selectLotDetailById(state, lotId));
   const tags = useSelector(tagsSelector);
-  const userId = useSelector((state) => state.usersList.userId);
-  const countryCoordinate = useSelector(
-    (state) => state.countries.countryCoordinate
+  const userId = useSelector((state) => state.usersList.userInfo);
+  const selectedCountry = useSelector(
+    (state) => state.countries.markerCoordinate
   );
 
   const [confirmStatus, setConfirmStatus] = useState(false);
   const [files, setFiles] = useState([]);
   const [disabled, setDisabled] = useState(false);
   const [maxFilesPerDrop, setMaxFilesPerDrop] = useState(MAXIMUM_NUMBER_OF_IMG);
+  const [markerCoordinate, setMarkerCoordinate] = useState(null);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -101,8 +102,8 @@ const UpdateLot = () => {
       location: {
         countryId: values.country,
         region: values.region,
-        latitude: countryCoordinate.lat,
-        longitude: countryCoordinate.lon,
+        latitude: markerCoordinate.lat,
+        longitude: markerCoordinate.lon,
       },
       tags: values.tags,
       images: filteredImages,
@@ -149,6 +150,9 @@ const UpdateLot = () => {
           setDisabled={setDisabled}
           isImageAdded={files.length > 0}
           tags={tags}
+          markerCoordinate={markerCoordinate}
+          setMarkerCoordinate={setMarkerCoordinate}
+          selectedCountry={selectedCountry}
         />
       )}
     </>

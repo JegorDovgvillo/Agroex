@@ -16,8 +16,6 @@ const countryAdapter = createEntityAdapter();
 const initialState = countryAdapter.getInitialState({
   loadingStatus: 'idle',
   countryName: '',
-  countryCoordinate: null,
-  markerCoordinate: null,
   address: null,
 });
 
@@ -25,12 +23,6 @@ const countriesSlice = createSlice({
   name: 'countries',
   initialState,
   reducers: {
-    updateCoordinate: (state, action) => {
-      state.countryCoordinate = action.payload;
-    },
-    updateMarkerCoordinate: (state, action) => {
-      state.markerCoordinate = action.payload;
-    },
     setCountry: (state, action) => {
       state.countryName = action.payload;
     },
@@ -62,7 +54,6 @@ const countriesSlice = createSlice({
       })
       .addCase(getCoordinate.fulfilled, (state, action) => {
         state.loadingStatus = 'fulfilled';
-        state.countryCoordinate = action.payload;
         state.markerCoordinate = action.payload;
       })
       .addCase(getCoordinate.rejected, (state) => {
@@ -82,7 +73,7 @@ const countriesSlice = createSlice({
 });
 
 const { reducer, actions } = countriesSlice;
-export const { updateCoordinate, setCountry, updateMarkerCoordinate } = actions;
+export const { setCountry } = actions;
 const { selectAll } = countryAdapter.getSelectors((state) => state.countries);
 
 export const countrySelector = createSelector([selectAll], (countries) =>

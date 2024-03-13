@@ -10,18 +10,14 @@ import {
   getAddress,
 } from '@thunks/fetchCountries';
 
-import { updateCoordinate } from '@slices/countriesSlice';
+import { setCountry } from '@slices/countriesSlice';
 import { selectLotDetailById } from '@slices/lotListSlice';
 
 import 'leaflet/dist/leaflet.css';
 
 import styles from './map.module.scss';
-import {
-  setCountry,
-  updateMarkerCoordinate,
-} from '../../store/slices/countriesSlice';
 
-const LocationMarker = ({ latitude, longitude, eventHandlers, draggable }) => {
+const LocationMarker = ({ latitude, longitude, eventHandlers }) => {
   const map = useMapEvents({
     click() {
       map.flyTo([latitude, longitude], map.getZoom());
@@ -33,7 +29,7 @@ const LocationMarker = ({ latitude, longitude, eventHandlers, draggable }) => {
     !_.isNil(longitude) && (
       <Marker
         position={[latitude, longitude]}
-        draggable={draggable}
+        draggable={true}
         eventHandlers={eventHandlers}
       ></Marker>
     )
@@ -46,30 +42,29 @@ const Map = ({
   countries,
   setDisabledMap,
   disabledMap,
+  markerCoordinate,
+  setMarkerCoordinate,
+  selectedCountry,
 }) => {
   const dispatch = useDispatch();
   const { id } = useParams();
 
-  const [draggable, setDraggable] = useState(true);
-
   const selectedLot = useSelector((state) => selectLotDetailById(state, id));
   const countryName = useSelector((state) => state.countries.countryName);
   const address = useSelector((state) => state.countries.address);
-  const countryCoordinate = useSelector(
-    (state) => state.countries.countryCoordinate
-  );
-  const markerCoordinate = useSelector(
-    (state) => state.countries.markerCoordinate
-  );
 
   useEffect(() => {
     if (location && !disabledMap) {
       dispatch(fetchCountry({ id: location }));
+    } else if (location && disabledMap && address) {
+      const foundCountry = _.find(countries, { name: address.country });
+
+      dispatch(setCountry(foundCountry));
     }
   }, [location]);
 
   useEffect(() => {
-    if (address && countryName !== address.country) {
+    if (address) {
       const foundCountry = _.find(countries, { name: address.country });
 
       foundCountry && setFieldValue('country', foundCountry.id);
@@ -77,14 +72,16 @@ const Map = ({
   }, [address]);
 
   useEffect(() => {
-    if (countryName && !selectedLot) {
-      dispatch(getCoordinate({ countryName: countryName.name }));
-    } else if (
-      countryName &&
-      selectedLot &&
-      address &&
-      countryName !== address.country
-    ) {
+    if (selectedCountry) {
+      setMarkerCoordinate({
+        lat: selectedCountry.lat,
+        lon: selectedCountry.lon,
+      });
+    }
+  }, [selectedCountry]);
+
+  useEffect(() => {
+    if (countryName.name && !disabledMap) {
       dispatch(getCoordinate({ countryName: countryName.name }));
     }
   }, [countryName]);
@@ -118,27 +115,17 @@ const Map = ({
     if (!selectedLot) {
       navigator.geolocation.getCurrentPosition((position) => {
         const { latitude, longitude } = position.coords;
-        dispatch(
-          updateMarkerCoordinate({
-            lat: latitude,
-            lon: longitude,
-          })
-        );
-        dispatch(updateCoordinate({ lat: latitude, lon: longitude }));
+
+        setMarkerCoordinate({
+          lat: latitude,
+          lon: longitude,
+        });
       });
     } else if (selectedLot) {
-      dispatch(
-        updateCoordinate({
-          lat: selectedLot.location.latitude,
-          lon: selectedLot.location.longitude,
-        })
-      );
-      dispatch(
-        updateMarkerCoordinate({
-          lat: selectedLot.location.latitude,
-          lon: selectedLot.location.longitude,
-        })
-      );
+      setMarkerCoordinate({
+        lat: selectedLot.location.latitude,
+        lon: selectedLot.location.longitude,
+      });
     }
   }, []);
 
@@ -151,12 +138,10 @@ const Map = ({
           const newPosition = marker.getLatLng();
 
           setDisabledMap(true);
-          dispatch(
-            updateMarkerCoordinate({
-              lat: newPosition.lat,
-              lon: newPosition.lng,
-            })
-          );
+          setMarkerCoordinate({
+            lat: newPosition.lat,
+            lon: newPosition.lng,
+          });
         }
       },
     }),
@@ -165,10 +150,10 @@ const Map = ({
 
   return (
     <>
-      {countryCoordinate && markerCoordinate && (
+      {markerCoordinate && (
         <div className={styles.mapContainer}>
           <MapContainer
-            center={[countryCoordinate.lat, countryCoordinate.lon]}
+            center={[markerCoordinate.lat, markerCoordinate.lon]}
             zoom={7}
             scrollWheelZoom={true}
             className={styles.map}
@@ -178,7 +163,6 @@ const Map = ({
               latitude={markerCoordinate.lat}
               longitude={markerCoordinate.lon}
               eventHandlers={eventHandlers}
-              draggable={draggable}
             />
           </MapContainer>
         </div>

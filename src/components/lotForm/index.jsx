@@ -46,6 +46,9 @@ const LotForm = ({
   disabled,
   setDisabled,
   isImageAdded,
+  markerCoordinate,
+  setMarkerCoordinate,
+  selectedCountry,
 }) => {
   const dispatch = useDispatch();
   const {
@@ -499,6 +502,9 @@ const LotForm = ({
               countries={country}
               setDisabledMap={setDisabledMap}
               disabledMap={disabledMap}
+              markerCoordinate={markerCoordinate}
+              setMarkerCoordinate={setMarkerCoordinate}
+              selectedCountry={selectedCountry}
             />
           </div>
         </>
