@@ -39,7 +39,15 @@ const {
   editBtnContainer,
 } = styles;
 
-const getLotStatuses = ({ tab, item, isLotExpired, isLotFinished }) => {
+const getLotStatuses = ({
+  tab,
+  item,
+  isLotExpired,
+  isLotFinished,
+  isUserWinner,
+  isAuctionLot,
+  isUserLotOwner,
+}) => {
   const lotStatuses = [];
 
   switch (tab) {
@@ -60,6 +68,9 @@ const getLotStatuses = ({ tab, item, isLotExpired, isLotFinished }) => {
       lotStatuses.push(item.lotType);
       isLotExpired && lotStatuses.push('expired');
       isLotFinished && !isLotExpired && lotStatuses.push(item.status);
+      isAuctionLot &&
+        !isUserLotOwner &&
+        lotStatuses.push(isUserWinner ? 'won' : 'lose');
       break;
 
     default:
@@ -86,14 +97,19 @@ const ItemCard = ({ item, setSelectedLot }) => {
   const isRejectedByAdminLot = item.innerStatus === 'rejected';
   const isDeactivatedByUserLot = item.userStatus === 'inactive';
 
+  const priceBtnText = getButtonText(item.lotType);
+  const lastBet = isLotTransaction && _.maxBy(item.bets, 'id');
+  const isUserWinner = user.id === lastBet.userId;
+
   const lotStatuses = getLotStatuses({
     tab,
     item,
     isLotExpired,
     isLotFinished,
+    isUserWinner,
+    isAuctionLot,
+    isUserLotOwner,
   });
-  const priceBtnText = getButtonText(item.lotType);
-  const lastBet = isLotTransaction && _.maxBy(item.bets, 'id');
 
   const getLotActions = () => {
     let actionsArr = [];

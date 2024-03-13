@@ -24,6 +24,10 @@ const getBadgeProps = (lotStatuses) => {
         return [{ type: 'success', text: 'finished' }];
       case 'expired':
         return [{ type: 'warning', text: 'expired' }];
+      case 'won':
+        return [{ type: 'success', text: 'won' }];
+      case 'lose':
+        return [{ type: 'warning', text: 'lose' }];
       default:
         return [];
     }

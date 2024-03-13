@@ -33,10 +33,11 @@ import { categoriesSelector } from '@slices/categoriesSlice';
 import { selectLotDetailById } from '@slices/lotListSlice';
 import { selectModal } from '@slices/modalSlice';
 import { betsSelector } from '@slices/betsSlice';
+import { selectUserById } from '@slices/usersListSlice';
 
 import { fetchLotDetails } from '@thunks/fetchLots';
 import { fetchAllCategories } from '@thunks/fetchCategories';
-import { getUserFromCognito } from '@thunks/fetchUsers';
+import { getUserFromCognito, fetchUser } from '@thunks/fetchUsers';
 import { fetchBetsByLotId } from '@thunks/fetchBets';
 
 import attentionIcon from '@icons/attention.svg';
@@ -87,9 +88,12 @@ export const LotDetails = () => {
     selectModal(state, 'confirmModal')
   );
   const currentBets = useSelector(betsSelector);
-  const [betFieldValue, setBetFieldValue] = useState();
+  const [lastBet, setLastBet] = useState();
   const betModalData = useSelector((state) =>
     selectModal(state, 'placeBetModal')
+  );
+  const lotWinnerData = useSelector((state) =>
+    selectUserById(state, lastBet?.userId)
   );
   const newBet = useSelector((state) => state.bets.newBet);
 
@@ -150,7 +154,8 @@ export const LotDetails = () => {
       const currLotBets = _.filter(currentBets, { lotId: _.toNumber(lotId) });
       const lastBet = _.maxBy(currLotBets, 'id');
 
-      setBetFieldValue(lastBet?.amount);
+      dispatch(fetchUser(lastBet?.userId));
+      setLastBet(lastBet);
     }
   }, [currentBets]);
 
@@ -181,10 +186,12 @@ export const LotDetails = () => {
     images,
     bets,
     tags,
+    status,
   } = selectedLot;
 
   const buySellBtnText = getButtonText(lotType);
-  const isLastBetEqualPrice = betFieldValue === price;
+  const isLotFinished = status === 'finished';
+  const isLastBetEqualPrice = lastBet?.amount === price;
   const isAuctionLot = lotType === 'auctionSell';
   const isTransaction = !_.isEmpty(bets);
 
@@ -209,6 +216,18 @@ export const LotDetails = () => {
       value: !_.isEmpty(tags) ? <TagsBlock tags={tags} /> : 'No tags',
     },
   ];
+
+  if (isLotFinished && (isUserLotOwner || userType === 'admin')) {
+    const winnerData = (
+      <div>
+        name: {lotWinnerData?.username},
+        <br />
+        email: {lotWinnerData?.email}
+      </div>
+    );
+
+    lotDescription.unshift({ key: 'Orderer', value: winnerData });
+  }
 
   return (
     <div className={pageContainer}>
@@ -255,8 +274,8 @@ export const LotDetails = () => {
                         <div>
                           {isTransaction ? (
                             <PriceBlock
-                              totalCost={betFieldValue}
-                              unitCost={betFieldValue / quantity}
+                              totalCost={lastBet?.amount}
+                              unitCost={lastBet?.amount / quantity}
                               currency={currency}
                               className={['detailed', 'auctionSum']}
                             />

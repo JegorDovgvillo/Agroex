@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import _ from 'lodash';
 
 import { Select, MenuItem, Avatar } from '@mui/material';
@@ -37,7 +36,8 @@ export const getTableHead = (
   handleSaveClick,
   handleShowMoreClick,
   handleCancelClick,
-  setEditedValue
+  setEditedValue,
+  viewDetailsCard
 ) => {
   const handleSelectChange = (params, newValue) => {
     setEditedValue(_.camelCase(newValue));
@@ -80,7 +80,7 @@ export const getTableHead = (
         >
           <ImageNotSupportedIcon />
         </Avatar>
-        <p className={title} onClick={handleShowMoreClick(lot.id)}>
+        <p className={title} onClick={() => viewDetailsCard(lot.id)}>
           {lot.title}
         </p>
       </div>

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate, generatePath } from 'react-router-dom';
 import _ from 'lodash';
 
 import {
@@ -31,6 +32,7 @@ import { setUserId, usersListSelector } from '@slices/usersListSlice';
 import getFormattedDate from '@helpers/getFormattedDate';
 import getNumberWithCurrency from '@helpers/getNumberWithCurrency';
 import { getFormattedDuration } from '@helpers/getFormattedDuration';
+import ROUTES from '@helpers/routeNames';
 
 import DetailedLotViewModal from '../detailedLotViewModal';
 import { getTableHead } from './getTableHead';
@@ -74,6 +76,7 @@ const getInitialRows = (lots, users) => {
 };
 
 export default function AdminLotsList() {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const lots = useSelector(lotListSelector);
   const users = useSelector(usersListSelector);
@@ -156,6 +159,14 @@ export default function AdminLotsList() {
     }
   };
 
+  const viewDetailsCard = (lotId) => {
+    const path = generatePath(ROUTES.LOTS_DETAILS, {
+      id: lotId,
+    });
+
+    navigate(path);
+  };
+
   const tableHead =
     lots &&
     getTableHead(
@@ -165,7 +176,8 @@ export default function AdminLotsList() {
       handleSaveClick,
       handleShowMoreClick,
       handleCancelClick,
-      setEditedValue
+      setEditedValue,
+      viewDetailsCard
     );
 
   const fetchChangeLotStatus = () => {
