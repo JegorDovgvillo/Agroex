@@ -1,6 +1,5 @@
 import axios from 'axios';
-
-import getToken from '@helpers/getToken';
+import { fetchAuthSession } from 'aws-amplify/auth';
 
 import { BASE_URL } from './endpoints';
 
@@ -14,10 +13,10 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
   async (config) => {
     if (config.method.toUpperCase() !== 'GET') {
-      const token = await getToken();
+      const { idToken } = (await fetchAuthSession()).tokens ?? {};
 
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
+      if (idToken) {
+        config.headers.Authorization = `Bearer ${idToken}`;
       }
     }
 
