@@ -10,7 +10,7 @@ import HttpsOutlinedIcon from '@mui/icons-material/HttpsOutlined';
 import { getUserFromCognito } from '@thunks/fetchUsers';
 
 import { toggleModal } from '@slices/modalSlice';
-import { selectUserById } from '@slices/usersListSlice';
+import { deleteUserInfo } from '@slices/usersListSlice';
 
 import { CustomButton } from '@components/buttons/CustomButton';
 import { CheckBoxInput } from '@components/checkBox';
@@ -38,8 +38,8 @@ const {
 const UserAccount = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const userId = useSelector((state) => state.usersList.userId);
-  const user = useSelector((state) => selectUserById(state, userId));
+
+  const user = useSelector((state) => state.usersList.userInfo);
 
   const [isFormDisabled, setFormDisabled] = useState(true);
 
@@ -68,6 +68,7 @@ const UserAccount = () => {
   const handleSignOut = () => {
     signOut();
     navigate(ROUTES.LOG_IN);
+    dispatch(deleteUserInfo());
   };
 
   const showModalForUpdatePassword = () => {

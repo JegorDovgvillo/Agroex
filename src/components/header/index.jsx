@@ -2,6 +2,7 @@ import { NavLink } from 'react-router-dom';
 import AgroexLogo from '@icons/AgroexLogoHeader.svg';
 
 import Search from '../search';
+import UserIconInHeader from '../userIconInHeader';
 
 import styles from './header.module.scss';
 
@@ -14,6 +15,7 @@ const Header = () => {
         </div>
       </NavLink>
       <Search />
+      <UserIconInHeader />
     </header>
   );
 };

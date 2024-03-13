@@ -6,6 +6,7 @@ import { fetchAuthSession } from 'aws-amplify/auth';
 import { useDispatch } from 'react-redux';
 
 import { createUser } from '@thunks/fetchUsers.js';
+import { getUserFromCognito } from '@thunks/fetchUsers.js';
 
 import LoginForm from '@components/loginForm';
 
@@ -17,20 +18,13 @@ const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  async function currentSession() {
-    try {
-      const { idToken } = (await fetchAuthSession()).tokens ?? {};
-
-      return idToken.payload;
-    } catch (err) {}
-  }
-
   useEffect(() => {
     Hub.listen('auth', async (data) => {
       if (data?.payload?.event === 'signedIn') {
-        const response = await currentSession();
+        const { idToken } = (await fetchAuthSession()).tokens ?? {};
 
-        dispatch(createUser(response.sub));
+        dispatch(getUserFromCognito());
+        dispatch(createUser(idToken.payload.sub));
         navigate(ROUTES.LOTS);
       }
     });
