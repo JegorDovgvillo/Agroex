@@ -23,10 +23,12 @@ import {
   handleDeactivateBtnClick,
   handleEditLotButtonClick,
 } from '@helpers/lotHandlers';
+import { getLotState } from '@helpers/lotHandlers/getLotState';
 
 import ItemCardInfoBlock from './itemCardInfo';
-import ManageCardBlock from './manageCardBlock';
-import LotStatusBlock from './lotStatusBlock';
+import ManageCardBlock from '@components/manageCardBlock';
+import LotStatusBlock from '@components/lotStatusBlock';
+import { getLotStatuses } from '@components/lotStatusBlock/getLotStatuses';
 
 import styles from './itemCard.module.scss';
 
@@ -39,67 +41,27 @@ const {
   editBtnContainer,
 } = styles;
 
-const getLotStatuses = ({
-  tab,
-  item,
-  isLotExpired,
-  isLotFinished,
-  isUserWinner,
-  isAuctionLot,
-  isUserLotOwner,
-}) => {
-  const lotStatuses = [];
-
-  switch (tab) {
-    case 'active':
-      lotStatuses.push(item.lotType);
-      isLotFinished && !isLotExpired && lotStatuses.push(item.status);
-      break;
-
-    case 'pending':
-      lotStatuses.push(item.lotType, item.innerStatus);
-      break;
-
-    case 'inactive':
-      lotStatuses.push(item.lotType, item.innerStatus, item.userStatus);
-      break;
-
-    case 'finished':
-      lotStatuses.push(item.lotType);
-      isLotExpired && lotStatuses.push('expired');
-      isLotFinished && !isLotExpired && lotStatuses.push(item.status);
-      isAuctionLot &&
-        !isUserLotOwner &&
-        lotStatuses.push(isUserWinner ? 'won' : 'lose');
-      break;
-
-    default:
-      lotStatuses.push(item.lotType);
-  }
-
-  return lotStatuses;
-};
-
 const ItemCard = ({ item, setSelectedLot }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const {
+    isAuctionLot,
+    isNewLot,
+    isLotTransaction,
+    isLotFinished,
+    isLotExpired,
+    isRejectedByAdminLot,
+    isDeactivatedByUser,
+    lastBet,
+  } = getLotState(item);
   const user = useSelector((state) => state.usersList.userInfo);
   const [userType, setUserType] = useState('unregisteredUser');
   const [isUserLotOwner, setIsUserLotOwner] = useState(false);
   const isAdmin = userType === 'admin';
   const { tab } = useParams();
-
-  const isAuctionLot = item.lotType === 'auctionSell';
-  const isNewLot = item.innerStatus === 'new';
-  const isLotTransaction = !_.isEmpty(item.bets);
-  const isLotFinished = item.status === 'finished';
-  const isLotExpired = !isLotTransaction && isLotFinished;
-  const isRejectedByAdminLot = item.innerStatus === 'rejected';
-  const isDeactivatedByUserLot = item.userStatus === 'inactive';
+  const isUserWinner = user.id === lastBet.userId;
 
   const priceBtnText = getButtonText(item.lotType);
-  const lastBet = isLotTransaction && _.maxBy(item.bets, 'id');
-  const isUserWinner = user.id === lastBet.userId;
 
   const lotStatuses = getLotStatuses({
     tab,
@@ -123,12 +85,12 @@ const ItemCard = ({ item, setSelectedLot }) => {
     }
 
     if (tab === 'inactive') {
-      actionsArr = _.concat(
-        actionsArr,
-        !isLotExpired && isDeactivatedByUserLot && ['activate'],
-        !isLotExpired && isRejectedByAdminLot && ['edit'],
-        !isLotTransaction && ['delete']
-      );
+      actionsArr = _.compact([
+        ...actionsArr,
+        !isLotExpired && isDeactivatedByUser && 'activate',
+        !isLotExpired && isRejectedByAdminLot && 'edit',
+        !isLotTransaction && 'delete',
+      ]);
     }
 
     return _.uniq(actionsArr);

@@ -24,7 +24,6 @@ export const handleDeactivateBtnClick = (dispatch, isAdmin = false) => {
       action: isAdmin ? 'deactivateLotByAdmin' : 'deactivateLot',
     })
   );
-
   dispatch(toggleModal('confirmModal'));
 };
 
@@ -111,13 +110,32 @@ export const handleDeleteLot = (dispatch, lotId) => {
   dispatch(clearModalsFields('confirmModal'));
 };
 
-export const handleChangeLotStatusByAdmin = (dispatch, lotId, adminMessage) => {
+export const handleChangeLotStatusByAdmin = ({
+  dispatch,
+  lotId,
+  status,
+  adminMessage,
+}) => {
   dispatch(
     changeLotStatusByAdmin({
       lotId: lotId,
-      status: 'rejected',
+      status: status,
       adminComment: adminMessage,
     })
   );
   dispatch(clearModalsFields(['adminMessageModal', 'confirmModal']));
+};
+
+export const handleChangeLotStatusByUser = ({
+  dispatch,
+  lotId,
+  userStatus,
+}) => {
+  dispatch(
+    changeLotStatusByUser({
+      lotId: lotId,
+      isActive: userStatus === 'active' ? false : true,
+    })
+  );
+  dispatch(clearModalsFields('confirmModal'));
 };

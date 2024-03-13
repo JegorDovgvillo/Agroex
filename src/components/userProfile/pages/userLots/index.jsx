@@ -57,7 +57,7 @@ const UserLots = () => {
     dispatch(getUserFromCognito());
     currUserId &&
       dispatch(getFilteredLots({ status: 'all', users: currUserId }));
-  }, [currUserId]);
+  }, [dispatch, currUserId]);
 
   useEffect(() => {
     const { confirmStatus, action, isOpen } = confirmModalData;

@@ -2,6 +2,10 @@ import _ from 'lodash';
 
 import CustomBadge from '@components/customBadge';
 
+import styles from './lotStatusBlock.module.scss';
+
+const { badgesContainer } = styles;
+
 const getFormattedString = (str) => {
   return _.words(_.startCase(str)).join(' ').toLowerCase();
 };
@@ -21,13 +25,12 @@ const getBadgeProps = (lotStatuses) => {
       case 'inactive':
         return [{ type: 'warning', text: 'deactivated by user' }];
       case 'finished':
-        return [{ type: 'success', text: 'finished' }];
-      case 'expired':
-        return [{ type: 'warning', text: 'expired' }];
+      case 'approved':
       case 'won':
-        return [{ type: 'success', text: 'won' }];
+        return [{ type: 'success', text: getFormattedString(status) }];
+      case 'expired':
       case 'lose':
-        return [{ type: 'warning', text: 'lose' }];
+        return [{ type: 'warning', text: getFormattedString(status) }];
       default:
         return [];
     }
@@ -40,7 +43,7 @@ const LotStatusBlock = ({ lotStatuses }) => {
   const statuses = getBadgeProps(lotStatuses);
 
   return (
-    <>
+    <div className={badgesContainer}>
       {!_.isEmpty(statuses) &&
         statuses.map((status) => (
           <CustomBadge
@@ -50,7 +53,7 @@ const LotStatusBlock = ({ lotStatuses }) => {
             label={status.text}
           />
         ))}
-    </>
+    </div>
   );
 };
 

@@ -14,6 +14,7 @@ import PlaceBetModal from '@customModals/placeBetModal';
 import ItemCard from '@components/itemCard';
 
 import { handlePlaceNewBet } from '@helpers/lotHandlers';
+import { getLotState } from '@helpers/lotHandlers/getLotState';
 
 const Betting = () => {
   const { tab } = useParams();
@@ -30,21 +31,19 @@ const Betting = () => {
   const newBet = useSelector((state) => state.bets.newBet);
 
   const filteredLotsByActiveTab = _.filter(lots, (item) => {
-    const isAuctionLot = item.lotType === 'auctionSell';
-    const isActiveLotStatus = item.status === 'active';
-    const lastBet = _.maxBy(item.bets, 'id');
+    const { isAuctionLot, isActiveLot, lastBet, isLotFinished } =
+      getLotState(item);
     const isLotOutbid = lastBet?.userId !== currUserId;
-    const isFinishedLotStatus = item.status === 'finished';
 
     switch (tab) {
       case 'active':
-        return isAuctionLot && isActiveLotStatus && !isLotOutbid;
+        return isAuctionLot && isActiveLot && !isLotOutbid;
 
       case 'outbid':
-        return isAuctionLot && isActiveLotStatus && isLotOutbid;
+        return isAuctionLot && isActiveLot && isLotOutbid;
 
       case 'finished':
-        return isAuctionLot && isFinishedLotStatus;
+        return isAuctionLot && isLotFinished;
     }
   });
 

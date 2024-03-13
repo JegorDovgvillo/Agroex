@@ -146,7 +146,7 @@ export const PlaceBetForm = ({ lot, type }) => {
             />
           ) : (
             <CustomButton
-              text={'My bet'}
+              text="My bet"
               icon={<GavelOutlinedIcon />}
               handleClick={handleBetBtnClick}
               typeOfButton="submit"

@@ -122,7 +122,12 @@ const LotList = () => {
     const { adminMessage } = adminMessageData;
 
     if (adminMessage) {
-      handleChangeLotStatusByAdmin(dispatch, selectedLot.id, adminMessage);
+      handleChangeLotStatusByAdmin({
+        dispatch,
+        lotId: selectedLot.id,
+        status: 'rejected',
+        adminMessage,
+      });
     }
   }, [adminMessageData]);
 
@@ -156,7 +161,6 @@ const LotList = () => {
           selectedSubcategoriesIds={selectedSubcategoriesIds}
           setSelectedSubcategoriesIds={setSelectedSubcategoriesIds}
         />
-
         <div className={styles.lotListWrapp}>
           {lots.map((item) => {
             if (item.status !== 'active') return;

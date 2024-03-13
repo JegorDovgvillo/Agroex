@@ -11,7 +11,7 @@ import {
 
 import { CircularProgress } from '@mui/material';
 
-import { getFilteredLots, changeLotStatusByAdmin } from '@thunks/fetchLots';
+import { getFilteredLots } from '@thunks/fetchLots';
 import { fetchUsers } from '@thunks/fetchUsers';
 
 import {
@@ -32,6 +32,7 @@ import { setUserId, usersListSelector } from '@slices/usersListSlice';
 import getFormattedDate from '@helpers/getFormattedDate';
 import getNumberWithCurrency from '@helpers/getNumberWithCurrency';
 import { getFormattedDuration } from '@helpers/getFormattedDuration';
+import { handleChangeLotStatusByAdmin } from '@helpers/lotHandlers';
 import ROUTES from '@helpers/routeNames';
 
 import DetailedLotViewModal from '../detailedLotViewModal';
@@ -182,14 +183,12 @@ export default function AdminLotsList() {
 
   const fetchChangeLotStatus = () => {
     const { adminMessage } = adminMessageModalData;
-
-    dispatch(
-      changeLotStatusByAdmin({
-        lotId: currLotId,
-        status: editedValue,
-        adminComment: adminMessage,
-      })
-    );
+    handleChangeLotStatusByAdmin({
+      dispatch,
+      lotId: currLotId,
+      status: editedValue,
+      adminMessage,
+    });
   };
 
   useEffect(() => {

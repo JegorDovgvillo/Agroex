@@ -4,10 +4,11 @@ import { useParams } from 'react-router-dom';
 
 import _ from 'lodash';
 
+import { getUserFromCognito } from '@thunks/fetchUsers';
 import { fetchUserActivityLots } from '@thunks/fetchLots';
 import { lotListSelector } from '@slices/lotListSlice';
 
-import { getUserFromCognito } from '@thunks/fetchUsers';
+import { getLotState } from '@helpers/lotHandlers/getLotState';
 
 import ItemCard from '@components/itemCard';
 
@@ -18,8 +19,7 @@ const UserOrders = () => {
   const lots = useSelector(lotListSelector);
 
   const filteredLotsByActiveTab = _.filter(lots, (item) => {
-    const isAuctionLot = item.lotType === 'auctionSell';
-    const isLotFinished = item.status === 'finished';
+    const { isAuctionLot, isLotFinished } = getLotState(item);
 
     switch (tab) {
       case 'active':

@@ -8,6 +8,7 @@ import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import PowerSettingsNewOutlinedIcon from '@mui/icons-material/PowerSettingsNewOutlined';
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
+import PlayArrowOutlinedIcon from '@mui/icons-material/PlayArrowOutlined';
 
 import PriceBlock from '@components/priceBlock';
 import { CustomButton } from '@components/buttons/CustomButton';
@@ -16,18 +17,22 @@ import CustomSlider from '@components/customSlider';
 import CustomBreadcrumbs from '@components/customBreadcrumbs';
 import { PlaceBetForm } from '@components/placeBetForm';
 import { TagsBlock } from '@components/tagsBlock';
+import LotStatusBlock from '@components/lotStatusBlock';
+import { getLotStatuses } from '@components/lotStatusBlock/getLotStatuses';
 
 import getNumberWithCurrency from '@helpers/getNumberWithCurrency';
 import getFormattedDate from '@helpers/getFormattedDate';
 import { getButtonText } from '@helpers/getButtonText';
 import {
-  handleDeactivateBtnClick,
+  handleToggleUserLotStatusBtnClick,
   handlePlaceNewBet,
   handleDealBtnClick,
   handleEditLotButtonClick,
   handleDeal,
   handleDeactivateLot,
+  handleChangeLotStatusByUser,
 } from '@helpers/lotHandlers';
+import { getLotState } from '@helpers/lotHandlers/getLotState';
 
 import { categoriesSelector } from '@slices/categoriesSlice';
 import { selectLotDetailById } from '@slices/lotListSlice';
@@ -40,6 +45,7 @@ import { fetchAllCategories } from '@thunks/fetchCategories';
 import { getUserFromCognito, fetchUser } from '@thunks/fetchUsers';
 import { fetchBetsByLotId } from '@thunks/fetchBets';
 
+import { ManageLotStatusBlock } from './manageLotStatusBlock';
 import attentionIcon from '@icons/attention.svg';
 import mapIcon from '@icons/mapIcon.svg';
 
@@ -52,6 +58,7 @@ const {
   container,
   leftSide,
   rightSide,
+  manageLotStatusBlock,
   imageContainer,
   heading,
   dateCounter,
@@ -105,6 +112,10 @@ export const LotDetails = () => {
     handleEditLotButtonClick(navigate, lotId);
   };
 
+  const handleChangeStatusClick = () => {
+    handleToggleUserLotStatusBtnClick(dispatch);
+  };
+
   useEffect(() => {
     dispatch(getUserFromCognito());
     dispatch(fetchAllCategories());
@@ -128,6 +139,15 @@ export const LotDetails = () => {
     const { confirmStatus, action, isOpen } = confirmModalData;
 
     if (!isOpen) {
+      if (action.name === 'toggleUserLotStatus') {
+        confirmStatus &&
+          handleChangeLotStatusByUser({
+            dispatch,
+            lotId: selectedLot.id,
+            userStatus: selectedLot.userStatus,
+          });
+      }
+
       switch (action) {
         case 'placeBet':
           confirmStatus && newBet && handlePlaceNewBet(dispatch, newBet);
@@ -143,7 +163,7 @@ export const LotDetails = () => {
           break;
 
         case 'deactivateLot':
-          confirmStatus && handleDeactivateLot(lotId);
+          confirmStatus && handleDeactivateLot(dispatch, lotId);
           break;
       }
     }
@@ -165,7 +185,7 @@ export const LotDetails = () => {
         <CircularProgress />
       </div>
     );
-  } else if (loadingStatus === 'fulfilled' && !selectedLot) {
+  } else if (loadingStatus === 'rejected' && !selectedLot) {
     return;
   }
 
@@ -184,16 +204,35 @@ export const LotDetails = () => {
     size,
     packaging,
     images,
-    bets,
     tags,
-    status,
   } = selectedLot;
 
   const buySellBtnText = getButtonText(lotType);
-  const isLotFinished = status === 'finished';
   const isLastBetEqualPrice = lastBet?.amount === price;
-  const isAuctionLot = lotType === 'auctionSell';
-  const isTransaction = !_.isEmpty(bets);
+
+  const {
+    isAuctionLot,
+    isLotTransaction,
+    isLotFinished,
+    isLotExpired,
+    isRejectedByAdminLot,
+    isDeactivatedByUser,
+  } = getLotState(selectedLot);
+
+  const isUserWinner = isLotFinished && userInfo.id === lastBet?.userId;
+  const lotStatuses = selectedLot
+    ? getLotStatuses({
+        tab: 'detailsPage',
+        item: selectedLot,
+        isLotExpired,
+        isLotFinished,
+        isUserWinner,
+        isAuctionLot,
+        isUserLotOwner,
+        isDeactivatedByUser,
+        isAdmin: userType === 'admin',
+      })
+    : [];
 
   const getLocation = () => {
     return (
@@ -253,11 +292,19 @@ export const LotDetails = () => {
               </div>
             </div>
             <div className={rightSide}>
+              {userType === 'admin' && (
+                <div className={manageLotStatusBlock}>
+                  <ManageLotStatusBlock {...selectedLot} />
+                </div>
+              )}
               <div className={heading}>
                 <h4 className={title}>{title}</h4>
                 <div className={dateCounter}>
                   {expirationDate && <Timer endDate={expirationDate} />}
                   <div className={id}>{`ID ${id}`}</div>
+                  {!_.isEmpty(lotStatuses) && (
+                    <LotStatusBlock lotStatuses={lotStatuses} />
+                  )}
                 </div>
               </div>
               <div className={descriptionContainer}>
@@ -270,9 +317,8 @@ export const LotDetails = () => {
                     {isAuctionLot && (
                       <>
                         <p className={body2}>Bet</p>
-
                         <div>
-                          {isTransaction ? (
+                          {isLotTransaction ? (
                             <PriceBlock
                               totalCost={lastBet?.amount}
                               unitCost={lastBet?.amount / quantity}
@@ -291,17 +337,17 @@ export const LotDetails = () => {
                     userType === 'registeredUser' &&
                     !isUserLotOwner &&
                     !isLastBetEqualPrice && <PlaceBetForm lot={selectedLot} />}
-                  {isUserLotOwner && !isTransaction && (
-                    <CustomButton
-                      width="100%"
-                      type="secondary"
-                      text="Edit"
-                      icon={<ModeEditOutlineOutlinedIcon />}
-                      handleClick={handleEditClick}
-                    />
-                  )}
+                  {isUserLotOwner &&
+                    (isRejectedByAdminLot || !isLotTransaction) && (
+                      <CustomButton
+                        width="100%"
+                        type="secondary"
+                        text="Edit"
+                        icon={<ModeEditOutlineOutlinedIcon />}
+                        handleClick={handleEditClick}
+                      />
+                    )}
                 </div>
-
                 <div className={priceContainer}>
                   <div className={priceTotalContainer}>
                     <p className={body2}>Total price</p>
@@ -325,14 +371,20 @@ export const LotDetails = () => {
                         handleClick={handleDealClick}
                       />
                     )}
-                  {isUserLotOwner && !isTransaction && (
+                  {isUserLotOwner && !isLotTransaction && (
                     <CustomButton
                       type="secondary"
-                      text="Deactivate"
+                      text={isDeactivatedByUser ? 'Activate' : 'Deactivate'}
                       width="100%"
-                      icon={<PowerSettingsNewOutlinedIcon />}
-                      handleClick={handleDeactivateBtnClick}
-                      color="error"
+                      icon={
+                        isDeactivatedByUser ? (
+                          <PlayArrowOutlinedIcon />
+                        ) : (
+                          <PowerSettingsNewOutlinedIcon />
+                        )
+                      }
+                      handleClick={handleChangeStatusClick}
+                      color={isDeactivatedByUser ? 'success' : 'error'}
                     />
                   )}
                 </div>

@@ -44,10 +44,7 @@ const userProfileData = [
     name: 'My orders',
     icon: <LocalShippingOutlinedIcon />,
     route: USER_ORDERS,
-    tabs: [
-      { id: 0, tabRoute: 'active' },
-      { id: 1, tabRoute: 'completed' },
-    ],
+    tabs: [{ id: 0, tabRoute: 'finished' }],
     element: <UserOrders />,
   },
   {
