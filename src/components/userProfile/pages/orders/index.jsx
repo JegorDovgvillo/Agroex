@@ -22,7 +22,7 @@ const UserOrders = () => {
     const { isAuctionLot, isLotFinished } = getLotState(item);
 
     switch (tab) {
-      case 'active':
+      case 'finished':
         return !isAuctionLot && isLotFinished;
     }
   });

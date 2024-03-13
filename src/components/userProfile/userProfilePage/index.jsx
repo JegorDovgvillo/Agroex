@@ -16,7 +16,7 @@ const UserProfilePage = () => {
   useEffect(() => {
     if (!userProfileDataItem.tabs) return;
 
-    if (!_.isEmpty(userProfileDataItem.tabs)) {
+    if (!tab && !_.isEmpty(userProfileDataItem.tabs)) {
       const path = generatePath(USER_PROFILE_PAGE_TAB, {
         page: page,
         tab: userProfileDataItem.tabs[0].tabRoute,

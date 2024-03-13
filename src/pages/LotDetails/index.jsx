@@ -292,7 +292,7 @@ export const LotDetails = () => {
               </div>
             </div>
             <div className={rightSide}>
-              {userType === 'admin' && (
+              {userType === 'admin' && !isLotFinished && (
                 <div className={manageLotStatusBlock}>
                   <ManageLotStatusBlock {...selectedLot} />
                 </div>
@@ -300,7 +300,9 @@ export const LotDetails = () => {
               <div className={heading}>
                 <h4 className={title}>{title}</h4>
                 <div className={dateCounter}>
-                  {expirationDate && <Timer endDate={expirationDate} />}
+                  {expirationDate && !isLotFinished && (
+                    <Timer endDate={expirationDate} />
+                  )}
                   <div className={id}>{`ID ${id}`}</div>
                   {!_.isEmpty(lotStatuses) && (
                     <LotStatusBlock lotStatuses={lotStatuses} />

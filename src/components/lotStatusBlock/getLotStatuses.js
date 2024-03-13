@@ -51,6 +51,7 @@ export const getLotStatuses = ({
       isLotFinished &&
         isAuctionLot &&
         !isUserLotOwner &&
+        !isAdmin &&
         lotStatuses.push(isUserWinner ? 'won' : 'lose');
       isDeactivatedByUser && lotStatuses.push(item.userStatus);
       break;
