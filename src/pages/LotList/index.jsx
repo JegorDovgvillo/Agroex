@@ -34,19 +34,15 @@ import styles from './lotList.module.scss';
 
 const LotList = () => {
   const dispatch = useDispatch();
+
   const [searchParams, setSearchParams] = useSearchParams();
+
   const lots = useSelector(lotListSelector);
   const categories = useSelector(categoriesSelector);
   const bets = useSelector(betsSelector);
-
   const countries = useSelector(countrySelector);
   const users = useSelector(usersListSelector);
   const userInfo = useSelector((state) => state.usersList.userInfo);
-
-  const [selectedCategoriesIds, setSelectedCategoriesIds] = useState([]);
-  const [selectedSubcategoriesIds, setSelectedSubcategoriesIds] = useState([]);
-  const [selectedLot, setSelectedLot] = useState(null);
-
   const confirmModalData = useSelector((state) =>
     selectModal(state, 'confirmModal')
   );
@@ -54,6 +50,10 @@ const LotList = () => {
     selectModal(state, 'adminMessageModal')
   );
   const newBet = useSelector((state) => state.bets.newBet);
+
+  const [selectedCategoriesIds, setSelectedCategoriesIds] = useState([]);
+  const [selectedSubcategoriesIds, setSelectedSubcategoriesIds] = useState([]);
+  const [selectedLot, setSelectedLot] = useState(null);
   const [selectedCountry, setSelectedCountry] = useState([]);
   const [selectedRegions, setSelectedRegions] = useState([]);
 
@@ -149,15 +149,15 @@ const LotList = () => {
         _.find(countries, { id: _.toNumber(id) })
       );
       const selectedCountriesIds = _.map(selectedCountries, 'id');
-      const filteredCountries = countries.filter((item, i) => {
-        return item.id === selectedCountriesIds[i];
-      });
-      const regions = filteredCountries.flatMap((country) => country.regions);
+      const regions = _.flatMap(
+        selectedCountries,
+        (country) => country.regions
+      );
 
       setSelectedCountry(selectedCountriesIds);
       setSelectedRegions(regions);
     }
-  }, [selectedCountry, searchParams]);
+  }, [countries, searchParams]);
 
   return (
     <div className={styles.lotListContainer}>
@@ -183,6 +183,7 @@ const LotList = () => {
           selectedCountry={selectedCountry}
           setSelectedCountry={setSelectedCountry}
           setSelectedRegions={setSelectedRegions}
+          selectedRegions={selectedRegions}
         />
         <div className={styles.lotListWrapp}>
           {lots.map((item) => {

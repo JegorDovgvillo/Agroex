@@ -24,14 +24,15 @@ const Filters = ({
   selectedCountry,
   setSelectedCountry,
   setSelectedRegions,
+  selectedRegions,
 }) => {
-  const getNumbersArray = (searchParams) => searchParams.split(',').map(Number);
+  const getNumbersArray = (searchParams) => searchParams.split(',');
 
   const parentCategories = _.filter(categories, ['parentId', 0]);
   const currSubcategories = _.filter(categories, 'parentId');
 
   const [subcategoryUnits, setSubcategoryUnits] = useState(currSubcategories);
-  const [regions, setRegions] = useState([]);
+  const [regions, setRegions] = useState(selectedRegions);
 
   const initValues = {
     keyword: '',
@@ -52,6 +53,8 @@ const Filters = ({
   const resetFilter = (resetForm) => {
     setSelectedCategoriesIds([]);
     setSelectedSubcategoriesIds([]);
+    setSelectedCountry([]);
+    setSelectedRegions([]);
     setSearchParams('');
     resetForm();
   };
@@ -71,6 +74,9 @@ const Filters = ({
     const valuesToSubmit = _.omit(
       {
         ...values,
+        regions: selectedRegions.filter((item) => {
+          return regions.includes(item);
+        }),
         categories: categoriesIdsFromParentIds || values.subcategories,
       },
       'subcategories'
@@ -122,23 +128,30 @@ const Filters = ({
       subcategories: selectedSubcategoriesIds,
       lotType: searchParams.get('lotType') || '',
       countries: searchParams.get('countries')
-        ? getNumbersArray(searchParams.get('countries'))
+        ? searchParams.get('countries').split(',').map(Number)
         : [],
       regions: searchParams.get('regions')
         ? searchParams.get('regions').split(',')
         : [],
     });
-    console.log();
   }, [searchParams]);
 
   useEffect(() => {
-    const filteredCountries = countries.filter((item, i) => {
-      return item.id === selectedCountry[i];
+    const filteredCountries = _.filter(countries, (item) => {
+      return _.includes(selectedCountry, item.id);
     });
-    const regions = filteredCountries.flatMap((country) => country.regions);
-    console.log(regions)
+    const regions = _.flatMap(filteredCountries, (country) => country.regions);
+
     setRegions(regions);
-  }, [selectedCountry]);
+  }, [searchParams, selectedCountry]);
+
+  useEffect(() => {
+    if (!regions.length) {
+      const regions = _.flatMap(countries, (country) => country.regions);
+
+      setRegions(regions);
+    }
+  }, [countries]);
 
   return (
     <div className={styles.filtersWrapp}>
@@ -280,11 +293,11 @@ const Filters = ({
               disabled={false}
               name="regions"
               units={regions}
-              itemFieldName="name"
               placeholder="Select countries"
               required={false}
               fieldType="filterSelect"
               wrappType="filterWrapp"
+              values={values.regions}
               onChange={(e) => {
                 setFieldValue('regions', e.target.value);
                 setSelectedRegions(e.target.value);

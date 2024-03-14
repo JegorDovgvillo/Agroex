@@ -48,7 +48,7 @@ const CustomMultiSelect = ({
               value={item.id || item}
               sx={{ height: '60px' }}
             >
-              {item[itemFieldName]}
+              {item[itemFieldName] || item}
             </MenuItem>
           ))}
         </Field>
