@@ -141,7 +141,7 @@ const ItemCard = ({ item, setSelectedLot }) => {
   return (
     <>
       <div className={styles.cardWrapp} onClick={viewDetailsCard}>
-        <ItemCardInfoBlock item={item}>
+        <ItemCardInfoBlock item={item} userTimeZone={user.zoneinfo}>
           <>
             {!_.isEmpty(lotStatuses) && (
               <LotStatusBlock lotStatuses={lotStatuses} />

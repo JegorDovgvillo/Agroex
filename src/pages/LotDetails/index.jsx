@@ -299,7 +299,10 @@ export const LotDetails = () => {
                 <h4 className={title}>{title}</h4>
                 <div className={dateCounter}>
                   {expirationDate && !isLotFinished && (
-                    <Timer endDate={expirationDate} />
+                    <Timer
+                      endDate={expirationDate}
+                      userTimeZone={userInfo.zoneinfo}
+                    />
                   )}
                   <div className={id}>{`ID ${id}`}</div>
                   {!_.isEmpty(lotStatuses) && (
