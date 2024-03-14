@@ -60,7 +60,10 @@ const ItemCardInfoBlock = ({ item, userTimeZone, children }) => {
             {item.location.countryName}, {item.location.region}
           </span>
           <span className={styles.creationDate}>
-            {getFormattedDate(item.creationDate)}
+            {getFormattedDate({
+              date: item.creationDate,
+              timeZone: userTimeZone,
+            })}
           </span>
           <TagsBlock tags={item.tags} />
         </div>

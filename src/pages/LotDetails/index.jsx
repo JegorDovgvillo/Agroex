@@ -247,7 +247,13 @@ export const LotDetails = () => {
     { key: 'Size', value: size },
     { key: 'Packaging', value: packaging },
     { key: 'Location', value: getLocation() },
-    { key: 'Created', value: getFormattedDate(creationDate) },
+    {
+      key: 'Created',
+      value: getFormattedDate({
+        date: creationDate,
+        timeZone: userInfo.zoneinfo,
+      }),
+    },
     {
       key: 'Tags',
       value: !_.isEmpty(tags) ? <TagsBlock tags={tags} /> : 'No tags',
@@ -263,7 +269,10 @@ export const LotDetails = () => {
       </div>
     );
 
-    lotDescription.unshift({ key: 'Orderer', value: winnerData });
+    lotDescription.unshift({
+      key: 'Orderer',
+      value: lotWinnerData ? winnerData : 'no orderer',
+    });
   }
 
   return (
@@ -341,6 +350,7 @@ export const LotDetails = () => {
                     !isUserLotOwner &&
                     !isLastBetEqualPrice && <PlaceBetForm lot={selectedLot} />}
                   {isUserLotOwner &&
+                    !isLotExpired &&
                     (isRejectedByAdminLot || !isLotTransaction) && (
                       <CustomButton
                         width="100%"
@@ -374,7 +384,7 @@ export const LotDetails = () => {
                         handleClick={handleDealClick}
                       />
                     )}
-                  {isUserLotOwner && !isLotTransaction && (
+                  {isUserLotOwner && !isLotTransaction && !isLotExpired && (
                     <CustomButton
                       type="secondary"
                       text={isDeactivatedByUser ? 'Activate' : 'Deactivate'}

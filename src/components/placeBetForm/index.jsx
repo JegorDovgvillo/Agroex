@@ -31,7 +31,7 @@ export const PlaceBetForm = ({ lot, type }) => {
   const [lastBet, setLastBet] = useState(_.maxBy(lot.bets, 'id')?.amount);
 
   const [minAmount, setMinAmount] = useState(
-    !_.isEmpty(lot.bets) ? lastBet + 1 : lot.minPrice + 1
+    !_.isEmpty(lot.bets) ? lastBet + 1 : _.toNumber(lot.minPrice) + 1
   );
   const maxAmount = lot.price;
   const minAmountWithCurrency = getNumberWithCurrency(minAmount, userCurrency);

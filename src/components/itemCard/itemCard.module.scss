@@ -11,8 +11,10 @@
   border-bottom: 1px solid $monoGraySelect;
   z-index: 1;
 
-  @media only all and (max-width: 1500px) {
+  @media only all and (max-width: 1350px) {
     flex-direction: column;
+    /*     justify-content: center;
+    flex-wrap: wrap; */
   }
 
   .tagsBlock {
@@ -36,6 +38,15 @@
       width: 100px;
       height: 100px;
       fill: $mainBase;
+    }
+
+    @media only all and (max-width: 1350px) {
+      width: 100%;
+
+      .image {
+        height: 176px;
+        width: auto;
+      }
     }
   }
 
@@ -69,6 +80,11 @@
         line-height: 16px;
         letter-spacing: 0.2px;
       }
+    }
+
+    @media only all and (max-width: 1350px) {
+      // width: 45%;
+      flex: none;
     }
   }
 
@@ -118,8 +134,9 @@
     display: flex;
     flex-direction: column;
     max-width: 306px;
-    height: 100%;
+    //height: 100%;
     width: 100%;
+    align-self: stretch;
 
     .priceWrapp {
       display: flex;
@@ -147,9 +164,14 @@
         flex-direction: column;
       }
     }
+
     button {
       align-self: flex-end;
       width: 100%;
+    }
+
+    @media only all and (max-width: 1350px) {
+      align-self: center;
     }
   }
 

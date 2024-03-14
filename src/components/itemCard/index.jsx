@@ -53,6 +53,7 @@ const ItemCard = ({ item, setSelectedLot }) => {
     isRejectedByAdminLot,
     isDeactivatedByUser,
     lastBet,
+    isLotApproved,
   } = getLotState(item);
   const user = useSelector((state) => state.usersList.userInfo);
   const [userType, setUserType] = useState('unregisteredUser');
@@ -87,8 +88,8 @@ const ItemCard = ({ item, setSelectedLot }) => {
     if (tab === 'inactive') {
       actionsArr = _.compact([
         ...actionsArr,
-        !isLotExpired && isDeactivatedByUser && 'activate',
-        !isLotExpired && isRejectedByAdminLot && 'edit',
+        !isLotExpired && isLotApproved && isDeactivatedByUser && 'activate',
+        !isLotExpired && 'edit',
         !isLotTransaction && 'delete',
       ]);
     }

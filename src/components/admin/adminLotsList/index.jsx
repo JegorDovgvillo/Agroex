@@ -12,7 +12,7 @@ import {
 import { CircularProgress } from '@mui/material';
 
 import { getFilteredLots } from '@thunks/fetchLots';
-import { fetchUsers } from '@thunks/fetchUsers';
+import { getUserFromCognito, fetchUsers } from '@thunks/fetchUsers';
 
 import {
   toggleModal,
@@ -46,7 +46,7 @@ const getFormattedString = (str) => {
   return _.words(_.startCase(str)).join(' ').toLowerCase();
 };
 
-const getInitialRows = (lots, users) => {
+const getInitialRows = (lots, users, adminInfo) => {
   return lots.map((lot) => {
     const user = _.find(users, { id: lot.userId });
 
@@ -59,9 +59,15 @@ const getInitialRows = (lots, users) => {
       packaging: lot.packaging,
       duration: getFormattedDuration(lot.duration),
       quantity: lot.quantity,
-      creationDate: getFormattedDate(lot.creationDate),
+      creationDate: getFormattedDate({
+        date: lot.creationDate,
+        timeZone: adminInfo.zoneinfo,
+      }),
       expirationDate: lot.expirationDate
-        ? getFormattedDate(lot.expirationDate)
+        ? getFormattedDate({
+            date: lot.expirationDate,
+            timeZone: adminInfo.zoneinfo,
+          })
         : '',
       lotType: getFormattedString(lot.lotType),
       price: getNumberWithCurrency(lot.price, lot.currency),
@@ -81,6 +87,7 @@ export default function AdminLotsList() {
   const dispatch = useDispatch();
   const lots = useSelector(lotListSelector);
   const users = useSelector(usersListSelector);
+  const adminInfo = useSelector((state) => state.usersList.userInfo);
   const [currLotId, setCurrLotId] = useState(null);
   const [rows, setRows] = useState([]);
   const [editedValue, setEditedValue] = useState('');
@@ -192,13 +199,14 @@ export default function AdminLotsList() {
   };
 
   useEffect(() => {
+    dispatch(getUserFromCognito());
     dispatch(getFilteredLots({ status: 'all' }));
     dispatch(fetchUsers());
   }, [dispatch]);
 
   useEffect(() => {
     if (lots.length && users.length) {
-      const rows = getInitialRows(lots, users);
+      const rows = getInitialRows(lots, users, adminInfo);
       setRows(rows);
     }
   }, [lots, users]);

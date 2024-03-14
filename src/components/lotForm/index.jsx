@@ -141,7 +141,6 @@ const LotForm = ({
       userTimeZone
     );
     newValues.expirationDate = correctedExpirationDate;
-    console.log(correctedExpirationDate);
 
     const sanitizedValues = _.mapValues(newValues, (value) => {
       if (_.isString(value)) {
