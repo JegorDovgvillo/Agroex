@@ -63,6 +63,7 @@ const Betting = () => {
     }
 
     const { id } = userInfo;
+
     setCurrUserId(id);
     dispatch(fetchUserActivityLots({ userId: id }));
   }, [dispatch, userInfo]);

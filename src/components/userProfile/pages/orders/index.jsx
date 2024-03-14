@@ -21,10 +21,7 @@ const UserOrders = () => {
   const filteredLotsByActiveTab = _.filter(lots, (item) => {
     const { isAuctionLot, isLotFinished } = getLotState(item);
 
-    switch (tab) {
-      case 'finished':
-        return !isAuctionLot && isLotFinished;
-    }
+    return !isAuctionLot && isLotFinished;
   });
 
   const filteredLotsArr = filteredLotsByActiveTab.map((item) => {
@@ -41,6 +38,7 @@ const UserOrders = () => {
     }
 
     const { id } = userInfo;
+
     dispatch(fetchUserActivityLots({ userId: id }));
   }, [dispatch, userInfo]);
 

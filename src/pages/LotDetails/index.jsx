@@ -138,32 +138,30 @@ export const LotDetails = () => {
   useEffect(() => {
     const { confirmStatus, action, isOpen } = confirmModalData;
 
-    if (!isOpen) {
-      if (action.name === 'toggleUserLotStatus') {
-        confirmStatus &&
+    if (!isOpen && confirmStatus) {
+      switch (typeof action === 'string' ? action : action.name) {
+        case 'toggleUserLotStatus':
           handleChangeLotStatusByUser({
             dispatch,
             lotId: selectedLot.id,
             userStatus: selectedLot.userStatus,
           });
-      }
+          break;
 
-      switch (action) {
         case 'placeBet':
-          confirmStatus && newBet && handlePlaceNewBet(dispatch, newBet);
+          newBet && handlePlaceNewBet(dispatch, newBet);
           break;
 
         case 'deal':
-          confirmStatus &&
-            handleDeal({
-              dispatch: dispatch,
-              lotId: lotId,
-              userId: userInfo.id,
-            });
+          handleDeal({
+            dispatch: dispatch,
+            lotId: lotId,
+            userId: userInfo.id,
+          });
           break;
 
         case 'deactivateLot':
-          confirmStatus && handleDeactivateLot(dispatch, lotId);
+          handleDeactivateLot(dispatch, lotId);
           break;
       }
     }

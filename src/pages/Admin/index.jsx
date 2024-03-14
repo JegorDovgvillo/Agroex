@@ -49,7 +49,6 @@ const AdminPage = () => {
     if (page) return;
 
     const currPage = toLower(adminProfileData[0].name);
-
     const path = generatePath(ADMIN_PAGE, {
       page: currPage,
     });

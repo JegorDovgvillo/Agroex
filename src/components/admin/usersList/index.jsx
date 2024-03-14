@@ -58,6 +58,7 @@ export default function UsersList() {
 
   useEffect(() => {
     const { confirmStatus, action, isOpen } = confirmModalData;
+
     if (!confirmStatus || isOpen) return;
 
     switch (action) {
