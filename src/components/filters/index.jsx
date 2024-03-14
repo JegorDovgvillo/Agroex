@@ -221,6 +221,7 @@ const Filters = ({
               disabled={false}
               placeholder="Select owners"
               itemFieldName="username"
+              itemFieldNameSecond="name"
               label="Owners"
               required={false}
               fieldType="filterSelect"

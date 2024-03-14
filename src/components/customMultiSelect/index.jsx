@@ -26,6 +26,7 @@ const CustomMultiSelect = ({
   fieldType = '',
   wrappType = '',
   onChange,
+  itemFieldNameSecond = '',
 }) => {
   return (
     <div className={`${styles.wrapp} ${styles[wrappType]}`}>
@@ -48,7 +49,7 @@ const CustomMultiSelect = ({
               value={item.id || item}
               sx={{ height: '60px' }}
             >
-              {item[itemFieldName] || item}
+              {item[itemFieldName] || item[itemFieldNameSecond] || item}
             </MenuItem>
           ))}
         </Field>
