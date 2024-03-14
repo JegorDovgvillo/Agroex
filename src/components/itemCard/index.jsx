@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate, generatePath } from 'react-router-dom';
 
-import { DateTime } from 'luxon';
 import _ from 'lodash';
 
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
@@ -50,10 +49,8 @@ const ItemCard = ({ item, setSelectedLot }) => {
     isLotTransaction,
     isLotFinished,
     isLotExpired,
-    isRejectedByAdminLot,
     isDeactivatedByUser,
     lastBet,
-    isLotApproved,
   } = getLotState(item);
   const user = useSelector((state) => state.usersList.userInfo);
   const [userType, setUserType] = useState('unregisteredUser');
@@ -88,7 +85,7 @@ const ItemCard = ({ item, setSelectedLot }) => {
     if (tab === 'inactive') {
       actionsArr = _.compact([
         ...actionsArr,
-        !isLotExpired && isLotApproved && isDeactivatedByUser && 'activate',
+        !isLotExpired && isDeactivatedByUser && 'activate',
         !isLotExpired && 'edit',
         !isLotTransaction && 'delete',
       ]);
