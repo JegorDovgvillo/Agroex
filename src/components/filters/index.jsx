@@ -23,7 +23,6 @@ const Filters = ({
   setSelectedSubcategoriesIds,
   selectedCountry,
   setSelectedCountry,
-  selectedRegions,
   setSelectedRegions,
 }) => {
   const getNumbersArray = (searchParams) => searchParams.split(',').map(Number);
@@ -33,6 +32,7 @@ const Filters = ({
 
   const [subcategoryUnits, setSubcategoryUnits] = useState(currSubcategories);
   const [regions, setRegions] = useState([]);
+
   const initValues = {
     keyword: '',
     minQuantity: '',
@@ -124,18 +124,21 @@ const Filters = ({
       countries: searchParams.get('countries')
         ? getNumbersArray(searchParams.get('countries'))
         : [],
-      regions: selectedRegions,
+      regions: searchParams.get('regions')
+        ? searchParams.get('regions').split(',')
+        : [],
     });
-  }, [searchParams, selectedCategoriesIds, selectedSubcategoriesIds]);
+    console.log();
+  }, [searchParams]);
 
   useEffect(() => {
     const filteredCountries = countries.filter((item, i) => {
       return item.id === selectedCountry[i];
     });
     const regions = filteredCountries.flatMap((country) => country.regions);
-    console.log(regions);
+    console.log(regions)
     setRegions(regions);
-  }, [searchParams, selectedCountry]);
+  }, [selectedCountry]);
 
   return (
     <div className={styles.filtersWrapp}>

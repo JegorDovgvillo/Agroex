@@ -141,6 +141,24 @@ const LotList = () => {
     }
   }, [bets]);
 
+  useEffect(() => {
+    const searchParamsCountry = searchParams.get('countries');
+
+    if (countries.length > 0 && searchParamsCountry) {
+      const selectedCountries = _.split(searchParamsCountry, ',').map((id) =>
+        _.find(countries, { id: _.toNumber(id) })
+      );
+      const selectedCountriesIds = _.map(selectedCountries, 'id');
+      const filteredCountries = countries.filter((item, i) => {
+        return item.id === selectedCountriesIds[i];
+      });
+      const regions = filteredCountries.flatMap((country) => country.regions);
+
+      setSelectedCountry(selectedCountriesIds);
+      setSelectedRegions(regions);
+    }
+  }, [selectedCountry, searchParams]);
+
   return (
     <div className={styles.lotListContainer}>
       <div className={styles.breadCrumbsContainer}>
@@ -164,7 +182,6 @@ const LotList = () => {
           setSelectedSubcategoriesIds={setSelectedSubcategoriesIds}
           selectedCountry={selectedCountry}
           setSelectedCountry={setSelectedCountry}
-          selectedRegions={selectedRegions}
           setSelectedRegions={setSelectedRegions}
         />
         <div className={styles.lotListWrapp}>
