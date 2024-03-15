@@ -144,7 +144,7 @@ const LotList = () => {
   useEffect(() => {
     const searchParamsCountry = searchParams.get('countries');
 
-    if (countries.length > 0 && searchParamsCountry) {
+    if (!_.isEmpty(countries) > 0 && searchParamsCountry) {
       const selectedCountries = _.split(searchParamsCountry, ',').map((id) =>
         _.find(countries, { id: _.toNumber(id) })
       );

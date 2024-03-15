@@ -74,9 +74,7 @@ const Filters = ({
     const valuesToSubmit = _.omit(
       {
         ...values,
-        regions: selectedRegions.filter((item) => {
-          return regions.includes(item);
-        }),
+        regions: _.intersection(selectedRegions, regions),
         categories: categoriesIdsFromParentIds || values.subcategories,
       },
       'subcategories'
@@ -90,6 +88,11 @@ const Filters = ({
     );
 
     setSearchParams(filteredParams);
+  };
+
+  const handleChange = (e, fieldName, setFieldValue, action = null) => {
+    setFieldValue(fieldName, e.target.value);
+    action && action(e.target.value);
   };
 
   useEffect(() => {
@@ -146,12 +149,12 @@ const Filters = ({
   }, [searchParams, selectedCountry]);
 
   useEffect(() => {
-    if (!regions.length) {
+    if (_.isEmpty(regions)) {
       const regions = _.flatMap(countries, (country) => country.regions);
 
       setRegions(regions);
     }
-  }, [countries]);
+  }, [countries, regions]);
 
   return (
     <div className={styles.filtersWrapp}>
@@ -226,9 +229,7 @@ const Filters = ({
               required={false}
               fieldType="filterSelect"
               wrappType="filterWrapp"
-              onChange={(e) => {
-                setFieldValue('users', e.target.value);
-              }}
+              onChange={(e) => handleChange(e, 'users', setFieldValue)}
             />
 
             <CustomMultiSelect
@@ -241,10 +242,14 @@ const Filters = ({
               required={false}
               fieldType="filterSelect"
               wrappType="filterWrapp"
-              onChange={(e) => {
-                setFieldValue('categories', e.target.value);
-                setSelectedCategoriesIds(e.target.value);
-              }}
+              onChange={(e) =>
+                handleChange(
+                  e,
+                  'categories',
+                  setFieldValue,
+                  setSelectedCategoriesIds
+                )
+              }
             />
 
             <CustomMultiSelect
@@ -257,10 +262,14 @@ const Filters = ({
               required={false}
               fieldType="filterSelect"
               wrappType="filterWrapp"
-              onChange={(e) => {
-                setFieldValue('subcategories', e.target.value);
-                setSelectedSubcategoriesIds(e.target.value);
-              }}
+              onChange={(e) =>
+                handleChange(
+                  e,
+                  'subcategories',
+                  setFieldValue,
+                  setSelectedSubcategoriesIds
+                )
+              }
             />
             <CustomSelect
               label="Lot type"
@@ -284,10 +293,9 @@ const Filters = ({
               required={false}
               fieldType="filterSelect"
               wrappType="filterWrapp"
-              onChange={(e) => {
-                setFieldValue('countries', e.target.value);
-                setSelectedCountry(e.target.value);
-              }}
+              onChange={(e) =>
+                handleChange(e, 'countries', setFieldValue, setSelectedCountry)
+              }
             />
             <CustomMultiSelect
               label="Regions"
@@ -299,10 +307,9 @@ const Filters = ({
               fieldType="filterSelect"
               wrappType="filterWrapp"
               values={values.regions}
-              onChange={(e) => {
-                setFieldValue('regions', e.target.value);
-                setSelectedRegions(e.target.value);
-              }}
+              onChange={(e) =>
+                handleChange(e, 'regions', setFieldValue, setSelectedRegions)
+              }
             />
             <div className={styles.buttonsWrap}>
               <CustomButton
