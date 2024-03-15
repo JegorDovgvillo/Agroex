@@ -135,7 +135,6 @@ const LotForm = ({
 
     newValues.duration = getTotalMilliseconds(values);
     newValues.tags = getNewTags(values);
-
     newValues.expirationDate = setCorrectedTimeZone(
       values.expirationDate,
       userTimeZone
