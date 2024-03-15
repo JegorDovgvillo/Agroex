@@ -53,6 +53,25 @@ const Map = ({
   const countryName = useSelector((state) => state.countries.countryName);
   const address = useSelector((state) => state.countries.address);
 
+  const eventHandlers = useMemo(
+    () => ({
+      dragend(e) {
+        const marker = e.target;
+
+        if (marker != null) {
+          const newPosition = marker.getLatLng();
+
+          setDisabledMap(true);
+          setMarkerCoordinate({
+            lat: newPosition.lat,
+            lon: newPosition.lng,
+          });
+        }
+      },
+    }),
+    []
+  );
+
   useEffect(() => {
     if (location && !disabledMap) {
       dispatch(fetchCountry({ id: location }));
@@ -102,6 +121,7 @@ const Map = ({
       const region =
         address.state ||
         address.county ||
+        address.city ||
         address.citytown ||
         address.borough ||
         address.village ||
@@ -128,25 +148,6 @@ const Map = ({
       });
     }
   }, []);
-
-  const eventHandlers = useMemo(
-    () => ({
-      dragend(e) {
-        const marker = e.target;
-
-        if (marker != null) {
-          const newPosition = marker.getLatLng();
-
-          setDisabledMap(true);
-          setMarkerCoordinate({
-            lat: newPosition.lat,
-            lon: newPosition.lng,
-          });
-        }
-      },
-    }),
-    []
-  );
 
   return (
     <>
