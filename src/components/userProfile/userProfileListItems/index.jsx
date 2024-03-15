@@ -24,10 +24,11 @@ const UserProfileListItems = () => {
   );
 
   useEffect(() => {
-    page &&
-      setActivePage(
-        _.find(userProfileData, { route: page }) || userProfileData[0]
-      );
+    if (!page) return;
+
+    setActivePage(
+      _.find(userProfileData, { route: page }) || userProfileData[0]
+    );
   }, [page]);
 
   const handleClick = (page) => {
