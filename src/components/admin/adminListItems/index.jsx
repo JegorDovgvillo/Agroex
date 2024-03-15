@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { generatePath, useNavigate, useParams } from 'react-router-dom';
 import _ from 'lodash';
 
@@ -14,21 +14,24 @@ import { adminProfileData } from '../adminProfileData';
 export const MainListItems = () => {
   const navigate = useNavigate();
   const { page } = useParams();
-  const [activePage, setActivePage] = useState(
-    _.find(adminProfileData, { route: page }) || adminProfileData[0]
-  );
 
   const handleClick = (page) => {
-    setActivePage(page);
-  };
-
-  useEffect(() => {
     const path = generatePath(ADMIN_PAGE, {
-      page: activePage.route,
+      page: page.route,
     });
 
     navigate(path);
-  }, [activePage, navigate]);
+  };
+
+  useEffect(() => {
+    const currPage = _.find(adminProfileData, { route: page });
+
+    const path = generatePath(ADMIN_PAGE, {
+      page: currPage.route,
+    });
+
+    navigate(path);
+  }, [page]);
 
   return (
     <>
@@ -36,7 +39,7 @@ export const MainListItems = () => {
         <ListItemButton
           key={el.id}
           onClick={() => handleClick(el)}
-          selected={activePage.id === el.id}
+          selected={page === _.toLower(el.name)}
         >
           <ListItemIcon>{el.icon}</ListItemIcon>
           <ListItemText primary={el.name} />

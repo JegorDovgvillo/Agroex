@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -18,11 +18,14 @@ import {
 } from '@thunks/fetchUsers';
 
 import { setUserId, usersListSelector } from '@slices/usersListSlice';
-import { toggleModal } from '@slices/modalSlice';
+import {
+  selectModal,
+  toggleModal,
+  clearModalsFields,
+  setModalFields,
+} from '@slices/modalSlice';
 
 import getFormattedDate from '@helpers/getFormattedDate';
-
-import ConfirmActionModal from '@customModals/confirmActionModal';
 
 import styles from './usersList.module.scss';
 
@@ -45,29 +48,53 @@ export default function UsersList() {
   const users = useSelector(usersListSelector);
   const userId = useSelector((state) => state.usersList.userId);
 
-  const [confirmStatus, setConfirmStatus] = useState(false);
-  const [confirmUpdateDB, setConfirmUpdateDB] = useState(false);
+  const confirmModalData = useSelector((state) =>
+    selectModal(state, 'confirmModal')
+  );
+
   useEffect(() => {
     dispatch(fetchUsers());
   }, [dispatch]);
 
   useEffect(() => {
-    if (confirmStatus) {
-      dispatch(changeUserStatus({ id: userId }));
-      setConfirmStatus(false);
-    } else if (confirmUpdateDB) {
-      dispatch(updateUsersInTheDataBase());
-      setConfirmUpdateDB(false);
+    const { confirmStatus, action, isOpen } = confirmModalData;
+
+    if (!confirmStatus || isOpen) return;
+
+    switch (action) {
+      case 'changeUserStatus':
+        dispatch(changeUserStatus({ id: userId }));
+        break;
+
+      case 'updateDB':
+        dispatch(updateUsersInTheDataBase());
+        break;
     }
-  }, [confirmStatus, confirmUpdateDB]);
+
+    dispatch(clearModalsFields('confirmModal'));
+  }, [confirmModalData]);
 
   const toggleUserStatus = (id) => {
     dispatch(setUserId(id));
+    dispatch(
+      setModalFields({
+        modalId: 'confirmModal',
+        text: 'This action change the user status. Do you confirm the action?',
+        action: 'changeUserStatus',
+      })
+    );
     dispatch(toggleModal('confirmModal'));
   };
 
   const updateUsersInDB = () => {
-    dispatch(toggleModal('infoModal'));
+    dispatch(
+      setModalFields({
+        modalId: 'confirmModal',
+        text: 'This action updates the user database. Do you confirm the action?',
+        action: 'updateDB',
+      })
+    );
+    dispatch(toggleModal('confirmModal'));
   };
 
   return (
@@ -131,15 +158,6 @@ export default function UsersList() {
             ))}
         </TableBody>
       </Table>
-      <ConfirmActionModal
-        text="This action change the user status. Do you confirm the action?"
-        setConfirmStatus={setConfirmStatus}
-      />
-      <ConfirmActionModal
-        text="This action updates the user database. Do you confirm the action?"
-        setConfirmStatus={setConfirmUpdateDB}
-        modalType="infoModal"
-      />
     </>
   );
 }

@@ -53,9 +53,6 @@ const LotList = () => {
   const adminMessageData = useSelector((state) =>
     selectModal(state, 'adminMessageModal')
   );
-  const betModalData = useSelector((state) =>
-    selectModal(state, 'placeBetModal')
-  );
   const newBet = useSelector((state) => state.bets.newBet);
 
   useEffect(() => {
@@ -119,13 +116,18 @@ const LotList = () => {
           break;
       }
     }
-  }, [confirmModalData, betModalData]);
+  }, [confirmModalData]);
 
   useEffect(() => {
     const { adminMessage } = adminMessageData;
 
     if (adminMessage) {
-      handleChangeLotStatusByAdmin(dispatch, selectedLot.id, adminMessage);
+      handleChangeLotStatusByAdmin({
+        dispatch,
+        lotId: selectedLot.id,
+        status: 'rejected',
+        adminMessage,
+      });
     }
   }, [adminMessageData]);
 
@@ -159,7 +161,6 @@ const LotList = () => {
           selectedSubcategoriesIds={selectedSubcategoriesIds}
           setSelectedSubcategoriesIds={setSelectedSubcategoriesIds}
         />
-
         <div className={styles.lotListWrapp}>
           {lots.map((item) => {
             if (item.status !== 'active') return;

@@ -57,22 +57,21 @@ const UserLots = () => {
     dispatch(getUserFromCognito());
     currUserId &&
       dispatch(getFilteredLots({ status: 'all', users: currUserId }));
-  }, [currUserId]);
+  }, [dispatch, currUserId]);
 
   useEffect(() => {
     const { confirmStatus, action, isOpen } = confirmModalData;
     const lot = find(lots, { id: action.lotId });
 
-    if (!isOpen) {
+    if (!isOpen && confirmStatus) {
       switch (action.name) {
         case 'toggleUserLotStatus':
-          confirmStatus &&
-            dispatch(
-              changeLotStatusByUser({
-                lotId: lot.id,
-                isActive: lot.userStatus === 'active' ? false : true,
-              })
-            );
+          dispatch(
+            changeLotStatusByUser({
+              lotId: lot.id,
+              isActive: lot.userStatus === 'active' ? false : true,
+            })
+          );
           dispatch(clearModalsFields('confirmModal'));
           break;
 

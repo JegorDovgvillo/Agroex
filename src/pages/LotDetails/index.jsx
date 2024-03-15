@@ -8,6 +8,7 @@ import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import PowerSettingsNewOutlinedIcon from '@mui/icons-material/PowerSettingsNewOutlined';
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
+import PlayArrowOutlinedIcon from '@mui/icons-material/PlayArrowOutlined';
 
 import PriceBlock from '@components/priceBlock';
 import { CustomButton } from '@components/buttons/CustomButton';
@@ -16,29 +17,35 @@ import CustomSlider from '@components/customSlider';
 import CustomBreadcrumbs from '@components/customBreadcrumbs';
 import { PlaceBetForm } from '@components/placeBetForm';
 import { TagsBlock } from '@components/tagsBlock';
+import LotStatusBlock from '@components/lotStatusBlock';
+import { getLotStatuses } from '@components/lotStatusBlock/getLotStatuses';
 
 import getNumberWithCurrency from '@helpers/getNumberWithCurrency';
 import getFormattedDate from '@helpers/getFormattedDate';
 import { getButtonText } from '@helpers/getButtonText';
 import {
-  handleDeactivateBtnClick,
+  handleToggleUserLotStatusBtnClick,
   handlePlaceNewBet,
   handleDealBtnClick,
   handleEditLotButtonClick,
   handleDeal,
   handleDeactivateLot,
+  handleChangeLotStatusByUser,
 } from '@helpers/lotHandlers';
+import { getLotState } from '@helpers/lotHandlers/getLotState';
 
 import { categoriesSelector } from '@slices/categoriesSlice';
 import { selectLotDetailById } from '@slices/lotListSlice';
 import { selectModal } from '@slices/modalSlice';
 import { betsSelector } from '@slices/betsSlice';
+import { selectUserById } from '@slices/usersListSlice';
 
 import { fetchLotDetails } from '@thunks/fetchLots';
 import { fetchAllCategories } from '@thunks/fetchCategories';
-import { getUserFromCognito } from '@thunks/fetchUsers';
+import { getUserFromCognito, fetchUser } from '@thunks/fetchUsers';
 import { fetchBetsByLotId } from '@thunks/fetchBets';
 
+import { ManageLotStatusBlock } from './manageLotStatusBlock';
 import attentionIcon from '@icons/attention.svg';
 import mapIcon from '@icons/mapIcon.svg';
 
@@ -51,6 +58,7 @@ const {
   container,
   leftSide,
   rightSide,
+  manageLotStatusBlock,
   imageContainer,
   heading,
   dateCounter,
@@ -87,9 +95,12 @@ export const LotDetails = () => {
     selectModal(state, 'confirmModal')
   );
   const currentBets = useSelector(betsSelector);
-  const [betFieldValue, setBetFieldValue] = useState();
+  const [lastBet, setLastBet] = useState();
   const betModalData = useSelector((state) =>
     selectModal(state, 'placeBetModal')
+  );
+  const lotWinnerData = useSelector((state) =>
+    selectUserById(state, lastBet?.userId)
   );
   const newBet = useSelector((state) => state.bets.newBet);
 
@@ -99,6 +110,10 @@ export const LotDetails = () => {
 
   const handleEditClick = () => {
     handleEditLotButtonClick(navigate, lotId);
+  };
+
+  const handleChangeStatusClick = () => {
+    handleToggleUserLotStatusBtnClick(dispatch);
   };
 
   useEffect(() => {
@@ -123,23 +138,30 @@ export const LotDetails = () => {
   useEffect(() => {
     const { confirmStatus, action, isOpen } = confirmModalData;
 
-    if (!isOpen) {
-      switch (action) {
+    if (!isOpen && confirmStatus) {
+      switch (typeof action === 'string' ? action : action.name) {
+        case 'toggleUserLotStatus':
+          handleChangeLotStatusByUser({
+            dispatch,
+            lotId: selectedLot.id,
+            userStatus: selectedLot.userStatus,
+          });
+          break;
+
         case 'placeBet':
-          confirmStatus && newBet && handlePlaceNewBet(dispatch, newBet);
+          newBet && handlePlaceNewBet(dispatch, newBet);
           break;
 
         case 'deal':
-          confirmStatus &&
-            handleDeal({
-              dispatch: dispatch,
-              lotId: lotId,
-              userId: userInfo.id,
-            });
+          handleDeal({
+            dispatch: dispatch,
+            lotId: lotId,
+            userId: userInfo.id,
+          });
           break;
 
         case 'deactivateLot':
-          confirmStatus && handleDeactivateLot(lotId);
+          handleDeactivateLot(dispatch, lotId);
           break;
       }
     }
@@ -150,7 +172,8 @@ export const LotDetails = () => {
       const currLotBets = _.filter(currentBets, { lotId: _.toNumber(lotId) });
       const lastBet = _.maxBy(currLotBets, 'id');
 
-      setBetFieldValue(lastBet?.amount);
+      dispatch(fetchUser(lastBet?.userId));
+      setLastBet(lastBet);
     }
   }, [currentBets]);
 
@@ -160,7 +183,7 @@ export const LotDetails = () => {
         <CircularProgress />
       </div>
     );
-  } else if (loadingStatus === 'fulfilled' && !selectedLot) {
+  } else if (loadingStatus === 'rejected' && !selectedLot) {
     return;
   }
 
@@ -179,13 +202,35 @@ export const LotDetails = () => {
     size,
     packaging,
     images,
-    bets,
     tags,
   } = selectedLot;
 
   const buySellBtnText = getButtonText(lotType);
-  const isLastBetEqualPrice = betFieldValue === price;
-  const isAuctionLot = lotType === 'auctionSell';
+  const isLastBetEqualPrice = lastBet?.amount === price;
+
+  const {
+    isAuctionLot,
+    isLotTransaction,
+    isLotFinished,
+    isLotExpired,
+    isRejectedByAdminLot,
+    isDeactivatedByUser,
+  } = getLotState(selectedLot);
+
+  const isUserWinner = isLotFinished && userInfo.id === lastBet?.userId;
+  const lotStatuses = selectedLot
+    ? getLotStatuses({
+        tab: 'detailsPage',
+        item: selectedLot,
+        isLotExpired,
+        isLotFinished,
+        isUserWinner,
+        isAuctionLot,
+        isUserLotOwner,
+        isDeactivatedByUser,
+        isAdmin: userType === 'admin',
+      })
+    : [];
 
   const getLocation = () => {
     return (
@@ -205,9 +250,21 @@ export const LotDetails = () => {
     { key: 'Created', value: getFormattedDate(creationDate) },
     {
       key: 'Tags',
-      value: !_.isEmpty(tags) ? <TagsBlock tags={tags} /> : ' No tags',
+      value: !_.isEmpty(tags) ? <TagsBlock tags={tags} /> : 'No tags',
     },
   ];
+
+  if (isLotFinished && (isUserLotOwner || userType === 'admin')) {
+    const winnerData = (
+      <div>
+        name: {lotWinnerData?.username},
+        <br />
+        email: {lotWinnerData?.email}
+      </div>
+    );
+
+    lotDescription.unshift({ key: 'Orderer', value: winnerData });
+  }
 
   return (
     <div className={pageContainer}>
@@ -233,11 +290,21 @@ export const LotDetails = () => {
               </div>
             </div>
             <div className={rightSide}>
+              {userType === 'admin' && !isLotFinished && (
+                <div className={manageLotStatusBlock}>
+                  <ManageLotStatusBlock {...selectedLot} />
+                </div>
+              )}
               <div className={heading}>
                 <h4 className={title}>{title}</h4>
                 <div className={dateCounter}>
-                  {expirationDate && <Timer endDate={expirationDate} />}
+                  {expirationDate && !isLotFinished && (
+                    <Timer endDate={expirationDate} />
+                  )}
                   <div className={id}>{`ID ${id}`}</div>
+                  {!_.isEmpty(lotStatuses) && (
+                    <LotStatusBlock lotStatuses={lotStatuses} />
+                  )}
                 </div>
               </div>
               <div className={descriptionContainer}>
@@ -250,12 +317,11 @@ export const LotDetails = () => {
                     {isAuctionLot && (
                       <>
                         <p className={body2}>Bet</p>
-
                         <div>
-                          {!_.isEmpty(bets) ? (
+                          {isLotTransaction ? (
                             <PriceBlock
-                              totalCost={betFieldValue}
-                              unitCost={betFieldValue / quantity}
+                              totalCost={lastBet?.amount}
+                              unitCost={lastBet?.amount / quantity}
                               currency={currency}
                               className={['detailed', 'auctionSum']}
                             />
@@ -271,17 +337,17 @@ export const LotDetails = () => {
                     userType === 'registeredUser' &&
                     !isUserLotOwner &&
                     !isLastBetEqualPrice && <PlaceBetForm lot={selectedLot} />}
-                  {isUserLotOwner && (
-                    <CustomButton
-                      width="100%"
-                      type="secondary"
-                      text="Edit"
-                      icon={<ModeEditOutlineOutlinedIcon />}
-                      handleClick={handleEditClick}
-                    />
-                  )}
+                  {isUserLotOwner &&
+                    (isRejectedByAdminLot || !isLotTransaction) && (
+                      <CustomButton
+                        width="100%"
+                        type="secondary"
+                        text="Edit"
+                        icon={<ModeEditOutlineOutlinedIcon />}
+                        handleClick={handleEditClick}
+                      />
+                    )}
                 </div>
-
                 <div className={priceContainer}>
                   <div className={priceTotalContainer}>
                     <p className={body2}>Total price</p>
@@ -305,14 +371,20 @@ export const LotDetails = () => {
                         handleClick={handleDealClick}
                       />
                     )}
-                  {isUserLotOwner && !isAuctionLot && (
+                  {isUserLotOwner && !isLotTransaction && (
                     <CustomButton
                       type="secondary"
-                      text="Deactivate"
+                      text={isDeactivatedByUser ? 'Activate' : 'Deactivate'}
                       width="100%"
-                      icon={<PowerSettingsNewOutlinedIcon />}
-                      handleClick={handleDeactivateBtnClick}
-                      color="error"
+                      icon={
+                        isDeactivatedByUser ? (
+                          <PlayArrowOutlinedIcon />
+                        ) : (
+                          <PowerSettingsNewOutlinedIcon />
+                        )
+                      }
+                      handleClick={handleChangeStatusClick}
+                      color={isDeactivatedByUser ? 'success' : 'error'}
                     />
                   )}
                 </div>

@@ -1,0 +1,27 @@
+@import "@scss/colorVariables.module.scss";
+
+.container {
+  align-self: flex-end;
+
+  .changeStatusBtn {
+    border: 1px solid $mainDark !important;
+    border-radius: 4px !important;
+    background-color: $mainLight !important;
+
+    & > div {
+      text-align: center;
+    }
+
+    &:hover {
+      background-color: $mainExtraLight !important;
+    }
+  }
+}
+
+.dialog {
+  & > div > div {
+    width: 80%;
+    max-width: 444px;
+    max-height: 435px;
+  }
+}

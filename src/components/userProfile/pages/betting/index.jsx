@@ -1,35 +1,96 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
 
-import { fetchLots } from '@thunks/fetchLots';
+import _ from 'lodash';
+
+import { fetchUserActivityLots, fetchLotDetails } from '@thunks/fetchLots';
+import { getUserFromCognito } from '@thunks/fetchUsers';
 import { lotListSelector } from '@slices/lotListSlice';
+import { betsSelector } from '@slices/betsSlice';
+import { selectModal } from '@slices/modalSlice';
 
+import PlaceBetModal from '@customModals/placeBetModal';
 import ItemCard from '@components/itemCard';
 
-const Betting = () => {
-  //todo add filter by lot status (active, pending, inactive)
+import { handlePlaceNewBet } from '@helpers/lotHandlers';
+import { getLotState } from '@helpers/lotHandlers/getLotState';
 
-  const currUserId = 1; // todo should be replaced by real current user id
+const Betting = () => {
+  const { tab } = useParams();
   const dispatch = useDispatch();
-  const lots = useSelector(lotListSelector); // todo could be get already filtered from back-end endpoint
+  const userInfo = useSelector((state) => state.usersList.userInfo);
+  const [currUserId, setCurrUserId] = useState(null);
+  const lots = useSelector(lotListSelector);
+  const bets = useSelector(betsSelector);
+  const [selectedLot, setSelectedLot] = useState(null);
+
+  const confirmModalData = useSelector((state) =>
+    selectModal(state, 'confirmModal')
+  );
+  const newBet = useSelector((state) => state.bets.newBet);
+
+  const filteredLotsByActiveTab = _.filter(lots, (item) => {
+    const { isAuctionLot, isActiveLot, lastBet, isLotFinished } =
+      getLotState(item);
+    const isLotOutbid = lastBet?.userId !== currUserId;
+
+    switch (tab) {
+      case 'active':
+        return isAuctionLot && isActiveLot && !isLotOutbid;
+
+      case 'outbid':
+        return isAuctionLot && isActiveLot && isLotOutbid;
+
+      case 'finished':
+        return isAuctionLot && isLotFinished;
+    }
+  });
+
+  const filteredLotsArr = filteredLotsByActiveTab.map((item) => {
+    return (
+      <ItemCard item={item} setSelectedLot={setSelectedLot} key={item.id} />
+    );
+  });
 
   useEffect(() => {
-    dispatch(fetchLots());
+    dispatch(getUserFromCognito());
   }, [dispatch]);
 
-  const filteringLotsByUserId = () => {
-    const filteredLots = lots
-      .filter((item) => item.userId === currUserId)
-      .map((item) => {
-        return <ItemCard {...item} key={item.id} />;
-      });
+  useEffect(() => {
+    if (!userInfo) {
+      return;
+    }
 
-    return <>{filteredLots}</>;
-  };
+    const { id } = userInfo;
 
-  const filteredLots = filteringLotsByUserId();
+    setCurrUserId(id);
+    dispatch(fetchUserActivityLots({ userId: id }));
+  }, [dispatch, userInfo]);
 
-  return <div>{filteredLots}</div>;
+  useEffect(() => {
+    const { confirmStatus, action, isOpen } = confirmModalData;
+
+    if (!isOpen && action === 'placeBet') {
+      confirmStatus && newBet && handlePlaceNewBet(dispatch, newBet);
+    }
+  }, [confirmModalData]);
+
+  useEffect(() => {
+    if (!_.isEmpty(bets)) {
+      const lastBet = _.maxBy(bets, 'id');
+      dispatch(fetchLotDetails(lastBet.lotId));
+    }
+  }, [bets]);
+
+  return (
+    <>
+      <div>{filteredLotsArr}</div>
+      {selectedLot && (
+        <PlaceBetModal lot={selectedLot} setSelectedLot={setSelectedLot} />
+      )}
+    </>
+  );
 };
 
 export default Betting;

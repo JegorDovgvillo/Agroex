@@ -30,7 +30,7 @@
   justify-content: center;
   column-gap: 40px;
   flex-wrap: wrap;
-  padding: 16px 40px;
+  padding: 16px 40px 120px;
 
   .leftSide,
   .rightSide {
@@ -51,6 +51,12 @@
 
   .rightSide {
     row-gap: 24px;
+
+    .manageLotStatusBlock {
+      width: 100%;
+      display: flex;
+      justify-content: flex-end;
+    }
 
     @media screen and (max-width: 1250px) {
       order: 1;
@@ -140,7 +146,6 @@
 
   .betContainer {
     width: 50%;
-    min-height: 274px;
 
     .noBetsBlock {
       color: $monoGrayDark50;

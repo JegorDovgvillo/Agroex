@@ -127,3 +127,14 @@ export const fetchDeal = createAsyncThunk(
     return response.data;
   }
 );
+
+export const fetchUserActivityLots = createAsyncThunk(
+  'lotList/fetchUserActivityLots',
+  async ({ userId }) => {
+    const response = await axiosInstance.get(`${ENDPOINTS.LOTS}/activity`, {
+      params: { userId },
+    });
+
+    return response.data;
+  }
+);

@@ -38,7 +38,7 @@ const Router = () => {
         },
         {
           path: ROUTES.LOTS_DETAILS,
-          element: <PrivateUserRoute Component={LotDetails} />,
+          element: <LotDetails />,
         },
         {
           path: ROUTES.CREATE_NEW_LOT,

@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import _ from 'lodash';
 
 import { Select, MenuItem, Avatar } from '@mui/material';
@@ -25,6 +24,7 @@ const {
   lotImage,
   title,
   cell,
+  actionsCell,
   headerCell,
 } = styles;
 
@@ -37,7 +37,8 @@ export const getTableHead = (
   handleSaveClick,
   handleShowMoreClick,
   handleCancelClick,
-  setEditedValue
+  setEditedValue,
+  viewDetailsCard
 ) => {
   const handleSelectChange = (params, newValue) => {
     setEditedValue(_.camelCase(newValue));
@@ -59,7 +60,7 @@ export const getTableHead = (
       case 'rejected':
         return ['rejected', 'on moderation', 'approved'];
       case 'approved':
-        return ['approved', 'rejected'];
+        return ['approved', 'on moderation', 'rejected'];
     }
 
     return ['new', 'on moderation', 'rejected', 'approved'];
@@ -80,7 +81,7 @@ export const getTableHead = (
         >
           <ImageNotSupportedIcon />
         </Avatar>
-        <p className={title} onClick={handleShowMoreClick(lot.id)}>
+        <p className={title} onClick={() => viewDetailsCard(lot.id)}>
           {lot.title}
         </p>
       </div>
@@ -105,7 +106,7 @@ export const getTableHead = (
   };
 
   const getTableActions = ({ id }) => {
-    const isLotTransaction = !_.isEmpty(_.find(lots, { id: id })?.bets.length);
+    const isLotTransaction = !_.isEmpty(_.find(lots, { id: id })?.bets);
     const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
     const isRowEditable = _.find(lots, { id: id })?.status !== 'finished';
 
@@ -291,7 +292,7 @@ export const getTableHead = (
       field: 'actions',
       type: 'actions',
       headerName: 'Actions',
-      cellClassName: `${cell}`,
+      cellClassName: `${cell} ${actionsCell}`,
       width: 100,
       getActions: ({ id }) => getTableActions({ id }),
     },

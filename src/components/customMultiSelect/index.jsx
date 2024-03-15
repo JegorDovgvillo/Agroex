@@ -19,7 +19,6 @@ const CustomMultiSelect = ({
   units,
   name,
   disabled = false,
-
   required = true,
   itemFieldName,
   label = '',
@@ -41,7 +40,6 @@ const CustomMultiSelect = ({
           MenuProps={MenuProps}
           multiple={true}
           onChange={onChange}
-          placeholder={placeholder}
         >
           {units.map((item, index) => (
             <MenuItem
