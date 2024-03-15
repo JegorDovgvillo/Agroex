@@ -60,22 +60,14 @@ const Filters = ({
   };
 
   const applyFilters = (values) => {
-    const isSubcategorySelected = values.subcategories.length > 0;
-
-    const selectedCategoryIds = values.categories;
-    const subcategoriesByParentId = _.groupBy(currSubcategories, 'parentId');
-    const selectedCategorySubcategoryIds = _.map(
-      selectedCategoryIds,
-      (categoryId) => _.map(subcategoriesByParentId[categoryId], 'id')
-    );
-    const categoriesIdsFromParentIds =
-      !isSubcategorySelected && selectedCategorySubcategoryIds;
-
     const valuesToSubmit = _.omit(
       {
         ...values,
         regions: _.intersection(selectedRegions, regions),
-        categories: categoriesIdsFromParentIds || values.subcategories,
+        categories: _.intersection(
+          selectedSubcategoriesIds,
+          values.subcategories
+        ),
       },
       'subcategories'
     );
@@ -96,17 +88,12 @@ const Filters = ({
   };
 
   useEffect(() => {
-    if (selectedCategoriesIds.length > 0) {
+    if (!_.isEmpty(selectedCategoriesIds)) {
       const filteredSubcategories = _.filter(categories, (item) =>
         _.includes(_.flatten(selectedCategoriesIds), item.parentId)
       );
-      const subcategories = _.filter(categories, 'parentId');
 
-      setSubcategoryUnits(
-        !_.isEmpty(filteredSubcategories)
-          ? filteredSubcategories
-          : subcategories
-      );
+      setSubcategoryUnits(filteredSubcategories);
 
       const filteredSelectedSubcategoriesIds = _.intersection(
         _.flatten(selectedSubcategoriesIds),
@@ -114,6 +101,10 @@ const Filters = ({
       );
 
       setSelectedSubcategoriesIds(filteredSelectedSubcategoriesIds);
+    } else {
+      const subcategories = _.filter(categories, 'parentId');
+
+      setSubcategoryUnits(subcategories);
     }
   }, [selectedCategoriesIds, categories]);
 
