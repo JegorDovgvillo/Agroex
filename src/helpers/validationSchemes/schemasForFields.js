@@ -93,7 +93,7 @@ export const getPasswordFieldValidationSchema = () => {
     .test(
       'contains-special-characters',
       'Password should contain at least one special character',
-      (value) => /[!@#$%^&*(),.?":{}|<>]/.test(value)
+      (value) => /[!@#$%^&*\/(),.?":{}|<>]/.test(value)
     )
     .test(
       'is-long-enough',

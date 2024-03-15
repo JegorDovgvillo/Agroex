@@ -2,11 +2,16 @@ import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import { useDispatch, useSelector } from 'react-redux';
 import { useFormik } from 'formik';
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { updatePassword } from 'aws-amplify/auth';
 
 import { toggleModal } from '@slices/modalSlice';
-import { selectModalState } from '@slices/modalSlice';
+import {
+  selectModalState,
+  selectModal,
+  setModalFields,
+  clearModalsFields,
+} from '@slices/modalSlice';
 
 import CustomPasswordField from '@components/customPasswordField';
 import { CustomButton } from '@buttons/CustomButton';
@@ -14,7 +19,6 @@ import { CustomButton } from '@buttons/CustomButton';
 import { userPasswordsValidationSchema } from '@helpers/validationSchemes/userDataValidationSchemes';
 
 import styles from './infoModal.module.scss';
-import ConfirmActionModal from './confirmActionModal';
 
 const { passwordsBlock, buttonsWrapp, wrapp, title } = styles;
 
@@ -24,13 +28,13 @@ const UpdatePasswordModal = ({ text }) => {
   const isOpen = useSelector((state) =>
     selectModalState(state, 'updatingModal')
   );
-
-  const [confirmStatus, setConfirmStatus] = useState(false);
+  const confirmModalData = useSelector((state) =>
+    selectModal(state, 'confirmModal')
+  );
 
   useEffect(() => {
-    if (confirmStatus) {
-      setConfirmStatus(false);
-
+    if (confirmModalData.confirmStatus) {
+      dispatch(clearModalsFields('confirmModal'));
       handleUpdatePassword(
         formik.values.oldPassword,
         formik.values.newPassword
@@ -39,7 +43,7 @@ const UpdatePasswordModal = ({ text }) => {
       dispatch(toggleModal('updatingModal'));
       formik.resetForm();
     }
-  }, [confirmStatus]);
+  }, [confirmModalData]);
 
   const handleCancelClick = () => {
     formik.resetForm();
@@ -60,6 +64,12 @@ const UpdatePasswordModal = ({ text }) => {
   };
 
   const showConfirm = () => {
+    dispatch(
+      setModalFields({
+        modalId: 'confirmModal',
+        text: 'This action change the password. Do you confirm the action?',
+      })
+    );
     dispatch(toggleModal('confirmModal'));
   };
 
@@ -149,10 +159,6 @@ const UpdatePasswordModal = ({ text }) => {
           </div>
         </Box>
       </Modal>
-      <ConfirmActionModal
-        text="This action change the password. Do you confirm the action?"
-        setConfirmStatus={setConfirmStatus}
-      />
     </div>
   );
 };

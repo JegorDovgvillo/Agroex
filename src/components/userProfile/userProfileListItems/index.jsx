@@ -17,29 +17,29 @@ const { USER_PROFILE_PAGE_TAB } = ROUTES;
 
 const UserProfileListItems = () => {
   const navigate = useNavigate();
-  const { page, tab } = useParams();
+  const { page } = useParams();
 
   const [activePage, setActivePage] = useState(
     _.find(userProfileData, { route: page }) || userProfileData[0]
   );
 
-  const [activeTab, setActiveTab] = useState(
-    _.find(activePage.tabs, { tabRoute: tab }) || _.get(activePage.tabs, '[0]')
-  );
-
   useEffect(() => {
-    const path = generatePath(USER_PROFILE_PAGE_TAB, {
-      page: activePage.route,
-      tab: activeTab?.tabRoute || '',
-    });
+    if (!page) return;
 
-    navigate(path);
-  }, [activePage, activeTab, navigate]);
+    setActivePage(
+      _.find(userProfileData, { route: page }) || userProfileData[0]
+    );
+  }, [page]);
 
   const handleClick = (page) => {
     setActivePage(page);
 
-    setActiveTab(page.tabs?.[0] || null);
+    const path = generatePath(USER_PROFILE_PAGE_TAB, {
+      page: page.route,
+      tab: page.tabs?.[0].tabRoute || '',
+    });
+
+    navigate(path);
   };
 
   return (
