@@ -19,6 +19,7 @@ const CustomMultiSelect = ({
   units,
   name,
   disabled = false,
+  placeholder ='',
   required = true,
   itemFieldName,
   label = '',

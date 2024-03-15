@@ -28,7 +28,10 @@ export const getCoordinate = createAsyncThunk(
   'countries/getCoordinate',
   async ({ countryName }) => {
     const response = await axiosInstance.get(
-      `${MAP_URL}/search?format=json&country=${countryName}`
+      `${MAP_URL}/search?format=json&country=${countryName}`,
+      {
+        headers: { 'Accept-Language': 'en-US' },
+      }
     );
 
     return response.data[0];

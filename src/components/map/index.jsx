@@ -10,14 +10,14 @@ import {
   getAddress,
 } from '@thunks/fetchCountries';
 
-import { updateCoordinate } from '@slices/countriesSlice';
+import { setCountry } from '@slices/countriesSlice';
 import { selectLotDetailById } from '@slices/lotListSlice';
 
 import 'leaflet/dist/leaflet.css';
 
 import styles from './map.module.scss';
 
-const LocationMarker = ({ latitude, longitude, eventHandlers, draggable }) => {
+const LocationMarker = ({ latitude, longitude, eventHandlers }) => {
   const map = useMapEvents({
     click() {
       map.flyTo([latitude, longitude], map.getZoom());
@@ -29,35 +29,61 @@ const LocationMarker = ({ latitude, longitude, eventHandlers, draggable }) => {
     !_.isNil(longitude) && (
       <Marker
         position={[latitude, longitude]}
-        draggable={draggable}
+        draggable
         eventHandlers={eventHandlers}
       ></Marker>
     )
   );
 };
 
-const Map = ({ location, setFieldValue, countries }) => {
+const Map = ({
+  location,
+  setFieldValue,
+  countries,
+  setDisabledMap,
+  disabledMap,
+  markerCoordinate,
+  setMarkerCoordinate,
+  selectedCountry,
+}) => {
   const dispatch = useDispatch();
   const { id } = useParams();
-
-  const [draggable, setDraggable] = useState(true);
-  const [isTouched, setIsTouched] = useState(false);
 
   const selectedLot = useSelector((state) => selectLotDetailById(state, id));
   const countryName = useSelector((state) => state.countries.countryName);
   const address = useSelector((state) => state.countries.address);
-  const countryCoordinate = useSelector(
-    (state) => state.countries.countryCoordinate
+
+  const eventHandlers = useMemo(
+    () => ({
+      dragend(e) {
+        const marker = e.target;
+
+        if (marker != null) {
+          const newPosition = marker.getLatLng();
+
+          setDisabledMap(true);
+          setMarkerCoordinate({
+            lat: newPosition.lat,
+            lon: newPosition.lng,
+          });
+        }
+      },
+    }),
+    []
   );
 
   useEffect(() => {
-    if (location && isTouched) {
+    if (location && !disabledMap) {
       dispatch(fetchCountry({ id: location }));
+    } else if (location && disabledMap && address) {
+      const foundCountry = _.find(countries, { name: address.country });
+
+      dispatch(setCountry(foundCountry));
     }
   }, [location]);
 
   useEffect(() => {
-    if (address && countryName !== address.country) {
+    if (address) {
       const foundCountry = _.find(countries, { name: address.country });
 
       foundCountry && setFieldValue('country', foundCountry.id);
@@ -65,27 +91,37 @@ const Map = ({ location, setFieldValue, countries }) => {
   }, [address]);
 
   useEffect(() => {
-    if (countryName && !selectedLot) {
+    if (selectedCountry) {
+      setMarkerCoordinate({
+        lat: selectedCountry.lat,
+        lon: selectedCountry.lon,
+      });
+    }
+  }, [selectedCountry]);
+
+  useEffect(() => {
+    if (countryName.name && !disabledMap) {
       dispatch(getCoordinate({ countryName: countryName.name }));
     }
   }, [countryName]);
 
   useEffect(() => {
-    if (countryCoordinate) {
+    if (markerCoordinate) {
       dispatch(
         getAddress({
-          latitude: countryCoordinate.lat,
-          longitude: countryCoordinate.lon,
+          latitude: markerCoordinate.lat,
+          longitude: markerCoordinate.lon,
         })
       );
     }
-  }, [countryCoordinate]);
+  }, [markerCoordinate]);
 
   useEffect(() => {
     if (address) {
       const region =
         address.state ||
         address.county ||
+        address.city ||
         address.citytown ||
         address.borough ||
         address.village ||
@@ -100,52 +136,34 @@ const Map = ({ location, setFieldValue, countries }) => {
       navigator.geolocation.getCurrentPosition((position) => {
         const { latitude, longitude } = position.coords;
 
-        dispatch(updateCoordinate({ lat: latitude, lon: longitude }));
+        setMarkerCoordinate({
+          lat: latitude,
+          lon: longitude,
+        });
       });
-    } else {
-      dispatch(
-        updateCoordinate({
-          lat: selectedLot.location.latitude,
-          lon: selectedLot.location.longitude,
-        })
-      );
+    } else if (selectedLot) {
+      setMarkerCoordinate({
+        lat: selectedLot.location.latitude,
+        lon: selectedLot.location.longitude,
+      });
     }
   }, []);
 
-  const eventHandlers = useMemo(
-    () => ({
-      dragend(e) {
-        const marker = e.target;
-
-        if (marker != null) {
-          const newPosition = marker.getLatLng();
-
-          setIsTouched(true);
-          dispatch(
-            updateCoordinate({ lat: newPosition.lat, lon: newPosition.lng })
-          );
-        }
-      },
-    }),
-    []
-  );
-
   return (
     <>
-      {countryCoordinate && (
+      {markerCoordinate && (
         <div className={styles.mapContainer}>
           <MapContainer
-            center={[countryCoordinate.lat, countryCoordinate.lon]}
+            center={[markerCoordinate.lat, markerCoordinate.lon]}
             zoom={7}
             scrollWheelZoom={true}
             className={styles.map}
           >
             <TileLayer url="https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png" />
             <LocationMarker
-              latitude={countryCoordinate.lat}
-              longitude={countryCoordinate.lon}
+              latitude={markerCoordinate.lat}
+              longitude={markerCoordinate.lon}
               eventHandlers={eventHandlers}
-              draggable={draggable}
             />
           </MapContainer>
         </div>
