@@ -29,7 +29,7 @@ const LocationMarker = ({ latitude, longitude, eventHandlers }) => {
     !_.isNil(longitude) && (
       <Marker
         position={[latitude, longitude]}
-        draggable={true}
+        draggable
         eventHandlers={eventHandlers}
       ></Marker>
     )

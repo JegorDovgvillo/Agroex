@@ -26,11 +26,12 @@ export const CustomButton = ({
   width = null,
   handleClick,
   color = 'primary',
-  buttonClass = null,
+  buttonClass,
 }) => {
   const buttonStyles = getStyles(size);
   const variant = getVariant(type);
   const customClass = buttonClass && styles[buttonClass];
+
   return (
     <Button
       startIcon={icon || undefined}
