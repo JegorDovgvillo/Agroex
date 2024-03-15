@@ -34,19 +34,15 @@ import styles from './lotList.module.scss';
 
 const LotList = () => {
   const dispatch = useDispatch();
+
   const [searchParams, setSearchParams] = useSearchParams();
+
   const lots = useSelector(lotListSelector);
   const categories = useSelector(categoriesSelector);
   const bets = useSelector(betsSelector);
-
   const countries = useSelector(countrySelector);
   const users = useSelector(usersListSelector);
   const userInfo = useSelector((state) => state.usersList.userInfo);
-
-  const [selectedCategoriesIds, setSelectedCategoriesIds] = useState([]);
-  const [selectedSubcategoriesIds, setSelectedSubcategoriesIds] = useState([]);
-  const [selectedLot, setSelectedLot] = useState(null);
-
   const confirmModalData = useSelector((state) =>
     selectModal(state, 'confirmModal')
   );
@@ -54,6 +50,12 @@ const LotList = () => {
     selectModal(state, 'adminMessageModal')
   );
   const newBet = useSelector((state) => state.bets.newBet);
+
+  const [selectedCategoriesIds, setSelectedCategoriesIds] = useState([]);
+  const [selectedSubcategoriesIds, setSelectedSubcategoriesIds] = useState([]);
+  const [selectedLot, setSelectedLot] = useState(null);
+  const [selectedCountry, setSelectedCountry] = useState([]);
+  const [selectedRegions, setSelectedRegions] = useState([]);
 
   useEffect(() => {
     dispatch(fetchAllCategories());
@@ -139,6 +141,24 @@ const LotList = () => {
     }
   }, [bets]);
 
+  useEffect(() => {
+    const searchParamsCountry = searchParams.get('countries');
+
+    if (!_.isEmpty(countries) > 0 && searchParamsCountry) {
+      const selectedCountries = _.split(searchParamsCountry, ',').map((id) =>
+        _.find(countries, { id: _.toNumber(id) })
+      );
+      const selectedCountriesIds = _.map(selectedCountries, 'id');
+      const regions = _.flatMap(
+        selectedCountries,
+        (country) => country.regions
+      );
+
+      setSelectedCountry(selectedCountriesIds);
+      setSelectedRegions(regions);
+    }
+  }, [countries, searchParams]);
+
   return (
     <div className={styles.lotListContainer}>
       <div className={styles.breadCrumbsContainer}>
@@ -160,6 +180,10 @@ const LotList = () => {
           setSelectedCategoriesIds={setSelectedCategoriesIds}
           selectedSubcategoriesIds={selectedSubcategoriesIds}
           setSelectedSubcategoriesIds={setSelectedSubcategoriesIds}
+          selectedCountry={selectedCountry}
+          setSelectedCountry={setSelectedCountry}
+          setSelectedRegions={setSelectedRegions}
+          selectedRegions={selectedRegions}
         />
         <div className={styles.lotListWrapp}>
           {lots.map((item) => {
