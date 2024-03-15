@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate, generatePath } from 'react-router-dom';
 
-import { DateTime } from 'luxon';
 import _ from 'lodash';
 
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
@@ -50,7 +49,6 @@ const ItemCard = ({ item, setSelectedLot }) => {
     isLotTransaction,
     isLotFinished,
     isLotExpired,
-    isRejectedByAdminLot,
     isDeactivatedByUser,
     lastBet,
   } = getLotState(item);
@@ -88,7 +86,7 @@ const ItemCard = ({ item, setSelectedLot }) => {
       actionsArr = _.compact([
         ...actionsArr,
         !isLotExpired && isDeactivatedByUser && 'activate',
-        !isLotExpired && isRejectedByAdminLot && 'edit',
+        !isLotExpired && 'edit',
         !isLotTransaction && 'delete',
       ]);
     }
@@ -141,7 +139,7 @@ const ItemCard = ({ item, setSelectedLot }) => {
   return (
     <>
       <div className={styles.cardWrapp} onClick={viewDetailsCard}>
-        <ItemCardInfoBlock item={item}>
+        <ItemCardInfoBlock item={item} userTimeZone={user.zoneinfo}>
           <>
             {!_.isEmpty(lotStatuses) && (
               <LotStatusBlock lotStatuses={lotStatuses} />

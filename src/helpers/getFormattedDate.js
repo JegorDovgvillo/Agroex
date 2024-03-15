@@ -1,4 +1,4 @@
-const getFormattedDate = (date, locale = 'ru') => {
+const getFormattedDate = ({ date, timeZone, locale = 'ru' }) => {
   if (!date) {
     return '';
   }
@@ -12,6 +12,8 @@ const getFormattedDate = (date, locale = 'ru') => {
     hour: 'numeric',
     minute: 'numeric',
     hour12: false,
+    timeZone: timeZone,
+    timeZoneName: 'short', //todo remove after testing
   };
 
   return new Intl.DateTimeFormat(locale, options).format(dateObject);

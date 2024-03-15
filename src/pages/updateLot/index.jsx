@@ -83,7 +83,7 @@ const UpdateLot = () => {
     const lotData = {
       title: values.title,
       description: values.description,
-      variety: 1,
+      variety: values.variety,
       size: values.size,
       packaging: values.packaging,
       duration: values.duration,

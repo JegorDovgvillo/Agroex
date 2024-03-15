@@ -16,7 +16,7 @@ const {
   userDataContainer,
 } = styles;
 
-const AdminDetailedLotView = ({ lot, userData, categories }) => {
+const AdminDetailedLotView = ({ lot, userData, categories, adminTimeZone }) => {
   const {
     id,
     creationDate,
@@ -74,10 +74,16 @@ const AdminDetailedLotView = ({ lot, userData, categories }) => {
     { key: 'Variety', value: variety },
     { key: 'Description', value: description },
     { key: 'Duration', value: getFormattedDuration(duration) },
-    { key: 'Creation Date', value: getFormattedDate(creationDate) },
+    {
+      key: 'Creation Date',
+      value: getFormattedDate({ date: creationDate, timeZone: adminTimeZone }),
+    },
     {
       key: 'Expiration Date',
-      value: getFormattedDate(expirationDate),
+      value: getFormattedDate({
+        date: expirationDate,
+        timeZone: adminTimeZone,
+      }),
     },
     { key: 'Location', value: `${location.countryName}, ${location.region}` },
     { key: 'Size / Packaging', value: `${size} / ${packaging}` },
@@ -93,7 +99,12 @@ const AdminDetailedLotView = ({ lot, userData, categories }) => {
           <span>{`Email: ${email}`}</span>
           <span>{`Phone Number: ${phoneNumber || 'n/a'}`}</span>
           <span>{`Registration Date: ${
-            userCreationDate ? getFormattedDate(userCreationDate) : 'n/a'
+            userCreationDate
+              ? getFormattedDate({
+                  date: userCreationDate,
+                  timeZone: adminTimeZone,
+                })
+              : 'n/a'
           }`}</span>
         </div>
       ),

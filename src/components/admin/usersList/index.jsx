@@ -15,6 +15,7 @@ import {
   fetchUsers,
   changeUserStatus,
   updateUsersInTheDataBase,
+  getUserFromCognito,
 } from '@thunks/fetchUsers';
 
 import { setUserId, usersListSelector } from '@slices/usersListSlice';
@@ -47,6 +48,7 @@ export default function UsersList() {
 
   const users = useSelector(usersListSelector);
   const userId = useSelector((state) => state.usersList.userId);
+  const adminInfo = useSelector((state) => state.usersList.userInfo);
 
   const confirmModalData = useSelector((state) =>
     selectModal(state, 'confirmModal')
@@ -54,6 +56,7 @@ export default function UsersList() {
 
   useEffect(() => {
     dispatch(fetchUsers());
+    dispatch(getUserFromCognito());
   }, [dispatch]);
 
   useEffect(() => {
@@ -133,7 +136,11 @@ export default function UsersList() {
                 <TableCell>{user.username}</TableCell>
                 <TableCell>{user.email}</TableCell>
                 <TableCell>
-                  {user.creationDate && getFormattedDate(user.creationDate)}
+                  {user.creationDate &&
+                    getFormattedDate({
+                      date: user.creationDate,
+                      timeZone: adminInfo.zoneinfo,
+                    })}
                 </TableCell>
                 <TableCell className={verifiedIconContainer}>
                   <>

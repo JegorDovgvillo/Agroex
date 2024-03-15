@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { Button, Dialog, DialogActions, DialogContent } from '@mui/material';
 
-import { fetchUser } from '@thunks/fetchUsers';
+import { getUserFromCognito, fetchUser } from '@thunks/fetchUsers';
 import { fetchLotDetails } from '@thunks/fetchLots';
 import { fetchAllCategories } from '@thunks/fetchCategories';
 import { selectUserById } from '@slices/usersListSlice';
@@ -25,8 +25,13 @@ const DetailedLotViewModal = () => {
   const open = useSelector((state) => selectModalState(state, 'infoModal'));
   const { userId } = useSelector((state) => state.usersList);
   const userData = useSelector((state) => selectUserById(state, userId));
+  const userInfo = useSelector((state) => state.usersList.userInfo);
   const [confirm, setConfirm] = useState(false);
   const categories = useSelector(categoriesSelector);
+
+  useEffect(() => {
+    dispatch(getUserFromCognito());
+  }, []);
 
   useEffect(() => {
     dispatch(fetchLotDetails(lotId));
@@ -60,6 +65,7 @@ const DetailedLotViewModal = () => {
               lot={lot}
               userData={userData}
               categories={categories}
+              adminTimeZone={userInfo.zoneinfo}
             />
           </DialogContent>
           <DialogActions>

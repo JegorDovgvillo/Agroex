@@ -11,9 +11,11 @@ import {
   auctionLotValidationSchema,
 } from '@helpers/validationSchemes/lotValidationSchemes';
 import getSanitizedString from '@helpers/getSanitizedString';
+import { setCorrectedTimeZone } from '@helpers/getCorrectTime';
 import { getDHMSFromMilliseconds } from '@helpers/getDHMSFromMilliseconds';
 import { selectCategoryByParentId } from '@slices/categoriesSlice';
 import { fetchSubcategoryByParentId } from '@thunks/fetchCategories';
+import { getUserFromCognito } from '@thunks/fetchUsers';
 
 import CustomTextField from '@customTextField';
 import CustomAutocompleteField from '../customAutocomplete';
@@ -89,7 +91,8 @@ const LotForm = ({
   const subcategories = useSelector((state) =>
     selectCategoryByParentId(state, selectedCategoryId)
   );
-
+  const userInfo = useSelector((state) => state.usersList.userInfo);
+  const [userTimeZone, setUserTimeZone] = useState(null);
   const formRef = useRef(null);
 
   const handlePlaceItemBtnClick = () => {
@@ -132,6 +135,10 @@ const LotForm = ({
 
     newValues.duration = getTotalMilliseconds(values);
     newValues.tags = getNewTags(values);
+    newValues.expirationDate = setCorrectedTimeZone(
+      values.expirationDate,
+      userTimeZone
+    );
 
     const sanitizedValues = _.mapValues(newValues, (value) => {
       if (_.isString(value)) {
@@ -143,6 +150,16 @@ const LotForm = ({
 
     handleSubmitClick(sanitizedValues, resetForm);
   };
+
+  useEffect(() => {
+    dispatch(getUserFromCognito());
+  }, []);
+
+  useEffect(() => {
+    if (!userInfo) return;
+
+    setUserTimeZone(userInfo.zoneinfo);
+  }, [userInfo]);
 
   useEffect(() => {
     if (

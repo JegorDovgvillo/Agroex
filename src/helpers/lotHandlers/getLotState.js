@@ -10,6 +10,7 @@ export const getLotState = (lot) => {
   const isDeactivatedByUser = lot.userStatus === 'inactive';
   const lastBet = isLotTransaction && _.maxBy(lot.bets, 'id');
   const isActiveLot = lot.status === 'active';
+  const isLotApproved = lot.status === 'approved';
 
   return {
     isAuctionLot,
@@ -21,5 +22,6 @@ export const getLotState = (lot) => {
     isDeactivatedByUser,
     lastBet,
     isActiveLot,
+    isLotApproved,
   };
 };

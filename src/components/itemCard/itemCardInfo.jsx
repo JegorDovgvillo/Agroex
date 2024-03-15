@@ -3,6 +3,7 @@ import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported';
 import getFormattedDate from '@helpers/getFormattedDate';
 import getNumberWithCurrency from '@helpers/getNumberWithCurrency';
 import ENDPOINTS, { IMAGE_URL } from '@helpers/endpoints';
+import { getCorrectedTimeZone } from '@helpers/getCorrectTime';
 
 import { TagsBlock } from '@components/tagsBlock';
 
@@ -10,9 +11,13 @@ import Timer from '../timer';
 
 import styles from './itemCard.module.scss';
 
-const ItemCardInfoBlock = ({ item, children }) => {
+const ItemCardInfoBlock = ({ item, userTimeZone, children }) => {
   const image = item.images[0] || null;
   const isLotFinished = item.status === 'finished';
+  const correctedExpirationDate = getCorrectedTimeZone(
+    item.expirationDate,
+    userTimeZone
+  );
 
   return (
     <>
@@ -38,7 +43,10 @@ const ItemCardInfoBlock = ({ item, children }) => {
 
         <div className={styles.technicalInfo}>
           {!isLotFinished && item.expirationDate && (
-            <Timer endDate={item.expirationDate} />
+            <Timer
+              endDate={correctedExpirationDate}
+              userTimeZone={userTimeZone}
+            />
           )}
           <span className={styles.itemId}>ID{item.id}</span>
         </div>
@@ -52,7 +60,10 @@ const ItemCardInfoBlock = ({ item, children }) => {
             {item.location.countryName}, {item.location.region}
           </span>
           <span className={styles.creationDate}>
-            {getFormattedDate(item.creationDate)}
+            {getFormattedDate({
+              date: item.creationDate,
+              timeZone: userTimeZone,
+            })}
           </span>
           <TagsBlock tags={item.tags} />
         </div>
