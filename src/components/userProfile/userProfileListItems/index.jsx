@@ -17,7 +17,7 @@ const { USER_PROFILE_PAGE_TAB } = ROUTES;
 
 const UserProfileListItems = () => {
   const navigate = useNavigate();
-  const { page, tab } = useParams();
+  const { page } = useParams();
 
   const [activePage, setActivePage] = useState(
     _.find(userProfileData, { route: page }) || userProfileData[0]
@@ -28,7 +28,7 @@ const UserProfileListItems = () => {
       setActivePage(
         _.find(userProfileData, { route: page }) || userProfileData[0]
       );
-  }, [page, tab]);
+  }, [page]);
 
   const handleClick = (page) => {
     setActivePage(page);
