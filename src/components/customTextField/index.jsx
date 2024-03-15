@@ -26,11 +26,11 @@ const CustomTextField = ({
     <div className={styles.wrapp}>
       <label htmlFor={id}>{label}</label>
       <Field
-        disabled={disabled}
         as={TextField}
         type={type}
         name={name}
         id={id}
+        disabled={disabled}
         placeholder={placeholder}
         multiline={multiline}
         rows={rows}
