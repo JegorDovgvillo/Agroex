@@ -17,6 +17,7 @@ const Timer = ({ endDate, userTimeZone }) => {
 
     return () => clearInterval(timeoutId);
   }, [timeNow]);
+
   return <TimeCountDown startDate={timeNow.value} endDate={endDate} />;
 };
 

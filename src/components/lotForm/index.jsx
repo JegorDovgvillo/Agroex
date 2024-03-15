@@ -136,11 +136,10 @@ const LotForm = ({
     newValues.duration = getTotalMilliseconds(values);
     newValues.tags = getNewTags(values);
 
-    const correctedExpirationDate = setCorrectedTimeZone(
+    newValues.expirationDate = setCorrectedTimeZone(
       values.expirationDate,
       userTimeZone
     );
-    newValues.expirationDate = correctedExpirationDate;
 
     const sanitizedValues = _.mapValues(newValues, (value) => {
       if (_.isString(value)) {
