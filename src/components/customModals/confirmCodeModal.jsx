@@ -12,7 +12,7 @@ import { CustomButton } from '../buttons/CustomButton';
 
 import styles from './infoModal.module.scss';
 
-const ConfirmCodeModal = ({ values, sub, zoneinfo, resetForm }) => {
+const ConfirmCodeModal = ({ values, sub, resetForm }) => {
   const dispatch = useDispatch();
 
   const [value, setValue] = useState('');
@@ -28,12 +28,13 @@ const ConfirmCodeModal = ({ values, sub, zoneinfo, resetForm }) => {
     const updateDataUser = {
       ...values,
       username: values.name,
-      zoneinfo,
+      zoneinfo: values.zoneinfo,
     };
 
     dispatch(updateToken());
     dispatch(updateUser({ id: sub, userData: updateDataUser }));
     dispatch(toggleModal('codeModal'));
+    dispatch(toggleModal('updatingUserDataModal'));
   };
 
   const handleClose = () => {
