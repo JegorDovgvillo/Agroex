@@ -31,8 +31,6 @@ export const getLotStatuses = ({
       break;
 
     case 'detailsPage':
-      isLotExpired && lotStatuses.push('expired');
-
       isAdmin && lotStatuses.push(item.innerStatus);
 
       !isLotExpired &&
@@ -47,6 +45,7 @@ export const getLotStatuses = ({
         lotStatuses.push(isUserWinner ? 'won' : 'lose');
 
       isDeactivatedByUser && lotStatuses.push(item.userStatus);
+      isLotExpired && lotStatuses.push('expired');
       break;
   }
 
