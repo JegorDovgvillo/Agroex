@@ -57,7 +57,7 @@ const ItemCard = ({ item, setSelectedLot }) => {
   const [isUserLotOwner, setIsUserLotOwner] = useState(false);
   const isAdmin = userType === 'admin';
   const { tab } = useParams();
-  const isUserWinner = user.id === lastBet.userId;
+  const isUserWinner = user?.id === lastBet.userId;
 
   const priceBtnText = getButtonText(item.lotType);
 
@@ -139,7 +139,7 @@ const ItemCard = ({ item, setSelectedLot }) => {
   return (
     <>
       <div className={styles.cardWrapp} onClick={viewDetailsCard}>
-        <ItemCardInfoBlock item={item} userTimeZone={user.zoneinfo}>
+        <ItemCardInfoBlock item={item} userTimeZone={user?.zoneinfo}>
           <>
             {!_.isEmpty(lotStatuses) && (
               <LotStatusBlock lotStatuses={lotStatuses} />

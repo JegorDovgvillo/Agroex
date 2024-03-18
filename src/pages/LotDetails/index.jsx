@@ -130,6 +130,7 @@ export const LotDetails = () => {
 
     !_.isEmpty(selectedLot) &&
       setIsUserLotOwner(userInfo.id === selectedLot.userId);
+    setLastBet(_.maxBy(selectedLot.bets, 'id'));
     setUserType(
       userInfo['custom:role'] === 'admin' ? 'admin' : 'registeredUser'
     );
@@ -175,6 +176,7 @@ export const LotDetails = () => {
       dispatch(fetchUser(lastBet?.userId));
       setLastBet(lastBet);
     }
+    dispatch(fetchLotDetails(lotId));
   }, [currentBets]);
 
   if (loadingStatus !== 'fulfilled') {
@@ -260,18 +262,30 @@ export const LotDetails = () => {
     },
   ];
 
-  if (isLotFinished && (isUserLotOwner || userType === 'admin')) {
-    const winnerData = (
-      <div>
-        name: {lotWinnerData?.username},
-        <br />
-        email: {lotWinnerData?.email}
-      </div>
-    );
+  if (isUserLotOwner || userType === 'admin') {
+    if (isLotFinished && lotWinnerData) {
+      const winnerData = (
+        <div>
+          name: {lotWinnerData.username},
+          <br />
+          email: {lotWinnerData.email}
+        </div>
+      );
 
+      lotDescription.unshift({
+        key: 'Winner',
+        value: winnerData,
+      });
+    }
+  }
+
+  if (lastBet) {
     lotDescription.unshift({
-      key: 'Orderer',
-      value: lotWinnerData ? winnerData : 'no orderer',
+      key: 'Last bet',
+      value: getFormattedDate({
+        date: lastBet.betTime,
+        timeZone: userInfo.zoneinfo,
+      }),
     });
   }
 
@@ -330,10 +344,10 @@ export const LotDetails = () => {
                       <>
                         <p className={body2}>Bet</p>
                         <div>
-                          {isLotTransaction ? (
+                          {lastBet ? (
                             <PriceBlock
-                              totalCost={lastBet?.amount}
-                              unitCost={lastBet?.amount / quantity}
+                              totalCost={lastBet.amount}
+                              unitCost={lastBet.amount / quantity}
                               currency={currency}
                               className={['detailed', 'auctionSum']}
                             />

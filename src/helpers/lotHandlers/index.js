@@ -63,6 +63,7 @@ export const handleDealBtnClick = (dispatch, isAuctionLot, lot, userId) => {
       lotId: lot.id,
     };
 
+    dispatch(setNewBet(valueToSubmit));
     dispatch(
       setModalFields({
         modalId: 'confirmModal',
@@ -70,7 +71,6 @@ export const handleDealBtnClick = (dispatch, isAuctionLot, lot, userId) => {
         action: 'placeBet',
       })
     );
-    dispatch(setNewBet(valueToSubmit));
   } else {
     dispatch(
       setModalFields({
