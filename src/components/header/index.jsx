@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import AgroexLogo from '@icons/AgroexLogoHeader.svg';
 
+import { AddNewLotButton } from '@components/addNewLotButton';
 import Search from '../search';
 import UserIconInHeader from '../userIconInHeader';
 
@@ -16,6 +17,7 @@ const Header = () => {
           </div>
         </NavLink>
         <Search />
+        <AddNewLotButton />
         <UserIconInHeader />
       </div>
     </header>

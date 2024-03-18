@@ -22,7 +22,6 @@ import CustomMultipleAutocompleteField from '../customMultipleAutocomplete';
 import { CustomButton } from '@buttons/CustomButton';
 import CustomSelect from '@customSelect';
 import CustomDatePicker from '@components/customDatePicker';
-import InfoModal from '@customModals/infoModal';
 import ConfirmActionModal from '@customModals/confirmActionModal';
 import DragAndDrop from '../dragAndDrop';
 
@@ -475,10 +474,6 @@ const LotForm = ({
                     typeOfButton="submit"
                     handleClick={handlePlaceItemBtnClick}
                     disabled={!isFirstSubmit && (!isValid || !isImageAdded)}
-                  />
-                  <InfoModal
-                    title="Success!"
-                    text="Your ad has been published"
                   />
                 </>
               ) : (

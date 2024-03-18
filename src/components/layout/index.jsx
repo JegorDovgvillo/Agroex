@@ -8,6 +8,7 @@ import { getUserFromCognito } from '@thunks/fetchUsers';
 import { selectModal } from '@slices/modalSlice';
 import ConfirmActionModal from '@customModals/confirmActionModal';
 import AdminMessageModal from '@customModals/adminMessageModal';
+import { CustomSnackbar } from '@components/customSnackbar';
 
 import Header from '../header';
 import Footer from '../footer';
@@ -19,12 +20,11 @@ const Layout = () => {
   const confirmActionData = useSelector((state) =>
     selectModal(state, 'confirmModal')
   );
+
   const [text, setText] = useState('');
 
   useEffect(() => {
-    if (_.isEqual(text, confirmActionData.text)) {
-      return;
-    }
+    if (_.isEqual(text, confirmActionData.text)) return;
 
     setText(confirmActionData.text);
   }, [confirmActionData.text]);
@@ -42,6 +42,7 @@ const Layout = () => {
       <Footer />
       <ConfirmActionModal text={text} />
       <AdminMessageModal />
+      <CustomSnackbar />
     </div>
   );
 };

@@ -25,7 +25,7 @@ import {
   lotListSelector,
   setLotId,
   clearErrors,
-  clearChangeLotLoadingStatus,
+  clearStatus,
 } from '@slices/lotListSlice';
 import { setUserId, usersListSelector } from '@slices/usersListSlice';
 
@@ -227,7 +227,7 @@ export default function AdminLotsList() {
   useEffect(() => {
     if (changeLotLoadingStatus === 'rejected' && lotListErrors) {
       dispatch(clearErrors());
-      dispatch(clearChangeLotLoadingStatus());
+      dispatch(clearStatus('changeLotLoadingStatus'));
       dispatch(clearModalsFields(['confirmModal', 'adminMessageModal']));
     }
 
@@ -238,7 +238,7 @@ export default function AdminLotsList() {
           mode: GridRowModes.View,
         },
       });
-      dispatch(clearChangeLotLoadingStatus());
+      dispatch(clearStatus('changeLotLoadingStatus'));
       dispatch(clearModalsFields(['confirmModal', 'adminMessageModal']));
     }
   }, [lotListErrors, changeLotLoadingStatus]);
