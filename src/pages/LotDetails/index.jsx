@@ -254,7 +254,7 @@ export const LotDetails = () => {
       key: 'Created',
       value: getFormattedDate({
         date: creationDate,
-        timeZone: userInfo.zoneinfo,
+        timeZone: userInfo?.zoneinfo,
       }),
     },
     {
@@ -287,7 +287,7 @@ export const LotDetails = () => {
       key: 'Last bet',
       value: getFormattedDate({
         date: lastBet.betTime,
-        timeZone: userInfo.zoneinfo,
+        timeZone: userInfo?.zoneinfo,
       }),
     });
   }
@@ -327,7 +327,7 @@ export const LotDetails = () => {
                   {expirationDate && !isLotFinished && (
                     <Timer
                       endDate={expirationDate}
-                      userTimeZone={userInfo.zoneinfo}
+                      userTimeZone={userInfo?.zoneinfo}
                     />
                   )}
                   <div className={id}>{`ID ${id}`}</div>
