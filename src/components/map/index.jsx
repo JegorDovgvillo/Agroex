@@ -1,8 +1,9 @@
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
-import React, { useState, useEffect, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router';
 import _ from 'lodash';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
 import {
   fetchCountry,
@@ -151,7 +152,7 @@ const Map = ({
 
   return (
     <>
-      {markerCoordinate && (
+      {markerCoordinate ? (
         <div className={styles.mapContainer}>
           <MapContainer
             center={[markerCoordinate.lat, markerCoordinate.lon]}
@@ -166,6 +167,13 @@ const Map = ({
               eventHandlers={eventHandlers}
             />
           </MapContainer>
+        </div>
+      ) : (
+        <div className={styles.errorMessageContainer}>
+          <p>
+            <ErrorOutlineIcon />
+            Enable geolocation in your browser or select a country
+          </p>
         </div>
       )}
     </>

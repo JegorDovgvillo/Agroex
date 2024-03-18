@@ -83,4 +83,12 @@
   width: 210px;
   padding: 16.5px 14px !important;
   margin: 0 16px 28px 0 !important;
+
+  @media only all and (max-width: 1000px) {
+    width: 190px;
+  }
+
+  @media only all and (max-width: 880px) {
+    width: 165px;
+  }
 }

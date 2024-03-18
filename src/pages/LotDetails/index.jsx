@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import _ from 'lodash';
+import { MapContainer, TileLayer, Marker } from 'react-leaflet';
 
 import CircularProgress from '@mui/material/CircularProgress';
 import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported';
@@ -435,6 +436,25 @@ export const LotDetails = () => {
             </div>
           </>
         }
+      </div>
+      <div className={styles.mapContainer}>
+        <MapContainer
+          center={[
+            selectedLot.location.latitude,
+            selectedLot.location.longitude,
+          ]}
+          zoom={13}
+          scrollWheelZoom={true}
+          className={styles.map}
+        >
+          <TileLayer url="https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png" />
+          <Marker
+            position={[
+              selectedLot.location.latitude,
+              selectedLot.location.longitude,
+            ]}
+          ></Marker>
+        </MapContainer>
       </div>
     </div>
   );
