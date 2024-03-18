@@ -21,13 +21,14 @@ const getBadgeProps = (lotStatuses) => {
       case 'buy':
         return [{ type: 'info', text: getFormattedString(status) }];
       case 'rejected':
-        return [{ type: 'error', text: 'rejected' }];
+        return [{ type: 'error', text: 'rejected by admin' }];
       case 'inactive':
         return [{ type: 'warning', text: 'deactivated by user' }];
       case 'finished':
-      case 'approved':
       case 'won':
         return [{ type: 'success', text: getFormattedString(status) }];
+      case 'approved':
+        return [{ type: 'success', text: 'approved by admin' }];
       case 'expired':
       case 'lose':
         return [{ type: 'warning', text: getFormattedString(status) }];

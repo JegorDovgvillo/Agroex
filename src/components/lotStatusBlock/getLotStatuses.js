@@ -12,8 +12,6 @@ export const getLotStatuses = ({
   const isLotApproved = item.innerStatus === 'approved';
   const lotStatuses = [item.lotType];
 
-  isLotFinished && lotStatuses.push('finished');
-
   switch (tab) {
     case 'pending':
       lotStatuses.push(item.innerStatus);
@@ -31,8 +29,6 @@ export const getLotStatuses = ({
       break;
 
     case 'detailsPage':
-      isLotExpired && lotStatuses.push('expired');
-
       isAdmin && lotStatuses.push(item.innerStatus);
 
       !isLotExpired &&
@@ -47,8 +43,11 @@ export const getLotStatuses = ({
         lotStatuses.push(isUserWinner ? 'won' : 'lose');
 
       isDeactivatedByUser && lotStatuses.push(item.userStatus);
+      isLotExpired && lotStatuses.push('expired');
       break;
   }
+
+  isLotFinished && lotStatuses.push('finished');
 
   return lotStatuses;
 };

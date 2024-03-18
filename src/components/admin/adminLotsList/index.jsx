@@ -122,12 +122,12 @@ export default function AdminLotsList() {
   };
 
   const handleEditClick = (id) => {
-    setCurrLotId(id);
     setEditedValue('');
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
   };
 
-  const handleSaveClick = () => {
+  const handleSaveClick = (id) => {
+    setCurrLotId(id);
     if (!editedValue) {
       setRowModesModel({
         ...rowModesModel,

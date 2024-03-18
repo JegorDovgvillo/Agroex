@@ -128,7 +128,7 @@ export const getTableHead = (
           key={`saveIcon${id}`}
           icon={<SaveIcon />}
           label="Save"
-          onClick={handleSaveClick}
+          onClick={() => handleSaveClick(id)}
           className={saveIcon}
         />,
         <GridActionsCellItem
