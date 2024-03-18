@@ -169,14 +169,15 @@ export const LotDetails = () => {
   }, [confirmModalData, betModalData]);
 
   useEffect(() => {
-    if (!_.isEmpty(currentBets)) {
-      const currLotBets = _.filter(currentBets, { lotId: _.toNumber(lotId) });
-      const lastBet = _.maxBy(currLotBets, 'id');
+    if (_.isEmpty(currentBets)) return;
 
-      dispatch(fetchUser(lastBet?.userId));
-      setLastBet(lastBet);
-    }
-    dispatch(fetchLotDetails(lotId));
+    const currLotBets = _.filter(currentBets, { lotId: _.toNumber(lotId) });
+    const lastBet = _.maxBy(currLotBets, 'id');
+    const isMaxBet = lastBet?.amount === selectedLot?.price;
+
+    dispatch(fetchUser(lastBet?.userId));
+    setLastBet(lastBet);
+    isMaxBet && dispatch(fetchLotDetails(lotId));
   }, [currentBets]);
 
   if (loadingStatus !== 'fulfilled') {
