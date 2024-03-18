@@ -89,7 +89,7 @@ const LotForm = ({
   );
   const [selectedLotType, setSelectedLotType] = useState(initialValues.lotType);
   const [isAuctionLot, setIsAuctionLot] = useState(
-    selectedLotType === 'auctionSell'
+    selectedLotType === 'auction sell'
   );
   const [validationSchema, setValidationSchema] = useState(lotValidationSchema);
 
@@ -138,6 +138,7 @@ const LotForm = ({
       newValues.subcategory = subcategory.id;
     }
 
+    newValues.lotType = _.camelCase(values.lotType);
     newValues.duration = getTotalMilliseconds(values);
     newValues.tags = getNewTags(values);
     newValues.expirationDate = setCorrectedTimeZone(
@@ -183,7 +184,7 @@ const LotForm = ({
 
   useEffect(() => {
     if (selectedLotType) {
-      const isAuctionLot = selectedLotType === 'auctionSell';
+      const isAuctionLot = selectedLotType === 'auction sell';
 
       setIsAuctionLot(isAuctionLot);
       setValidationSchema(
@@ -259,7 +260,7 @@ const LotForm = ({
                   label="Lot type"
                   id="lotType"
                   name="lotType"
-                  units={['sell', 'buy', 'auctionSell']}
+                  units={['sell', 'buy', 'auction sell']}
                   placeholder="Lot type"
                   value={values.lotType}
                   errors={errors.lotType}
@@ -345,20 +346,53 @@ const LotForm = ({
                   errors={errors.size}
                   touched={!isCreateNotSubmittedForm || touched.size}
                 />
-                <CustomSelect
-                  label="Currency"
-                  units={['USD']}
-                  name="priceUnits"
-                  disabled={true}
-                  placeholder="Currency"
-                  value={values.priceUnits}
-                  errors={errors.priceUnits}
-                  touched={!isCreateNotSubmittedForm || touched.priceUnits}
-                  setFieldValue={setFieldValue}
-                />
               </div>
+              {isAuctionLot && (
+                <div className={styles.inputBlock}>
+                  <div className={styles.auctionLotDurationBlock}>
+                    <h6 className={styles.auctionLotDurationTitle}>
+                      Auction duration
+                    </h6>
+                    <div className={styles.auctionLotDurationInputs}>
+                      <CustomTextField
+                        id="days"
+                        name="days"
+                        type="number"
+                        fieldType={'lotDuration'}
+                        label="Days"
+                        placeholder="Days"
+                        value={values.days}
+                        errors={errors.days}
+                        touched={!isCreateNotSubmittedForm || touched.days}
+                      />
+                      <CustomTextField
+                        id="hours"
+                        name="hours"
+                        type="number"
+                        fieldType={'lotDuration'}
+                        label="Hours"
+                        placeholder="Hours"
+                        value={values.hours}
+                        errors={errors.hours}
+                        touched={!isCreateNotSubmittedForm || touched.hours}
+                      />
+                      <CustomTextField
+                        id="minutes"
+                        name="minutes"
+                        type="number"
+                        fieldType={'lotDuration'}
+                        label="Minutes"
+                        placeholder="Minutes"
+                        value={values.minutes}
+                        errors={errors.minutes}
+                        touched={!isCreateNotSubmittedForm || touched.minutes}
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
               <div className={styles.inputBlock}>
-                {!isAuctionLot ? (
+                {!isAuctionLot && (
                   <CustomDatePicker
                     value={values.expirationDate}
                     onChange={(date) => {
@@ -370,55 +404,7 @@ const LotForm = ({
                       !isCreateNotSubmittedForm || touched.expirationDate
                     }
                   />
-                ) : (
-                  <div className={styles.auctionLotDurationBlock}>
-                    <h6 className={styles.auctionLotDurationTitle}>
-                      Auction duration
-                    </h6>
-                    <div className={styles.auctionLotDurationInputs}>
-                      <CustomTextField
-                        id="days"
-                        name="days"
-                        type="number"
-                        fieldType={'lotDuration'}
-                        placeholder="Days"
-                        value={values.days}
-                        errors={errors.days}
-                        touched={!isCreateNotSubmittedForm || touched.days}
-                      />
-                      <CustomTextField
-                        id="hours"
-                        name="hours"
-                        type="number"
-                        fieldType={'lotDuration'}
-                        placeholder="Hours"
-                        value={values.hours}
-                        errors={errors.hours}
-                        touched={!isCreateNotSubmittedForm || touched.hours}
-                      />
-                      <CustomTextField
-                        id="minutes"
-                        name="minutes"
-                        type="number"
-                        fieldType={'lotDuration'}
-                        placeholder="Minutes"
-                        value={values.minutes}
-                        errors={errors.minutes}
-                        touched={!isCreateNotSubmittedForm || touched.minutes}
-                      />
-                    </div>
-                  </div>
                 )}
-                <CustomTextField
-                  label="Price"
-                  id="price"
-                  name="price"
-                  type="number"
-                  placeholder="Enter the price"
-                  value={values.price}
-                  errors={errors.price}
-                  touched={!isCreateNotSubmittedForm || touched.price}
-                />
                 {isAuctionLot && (
                   <CustomTextField
                     label="Min price"
@@ -431,6 +417,27 @@ const LotForm = ({
                     touched={!isCreateNotSubmittedForm || touched.minPrice}
                   />
                 )}
+                <CustomTextField
+                  label="Price"
+                  id="price"
+                  name="price"
+                  type="number"
+                  placeholder="Enter the price"
+                  value={values.price}
+                  errors={errors.price}
+                  touched={!isCreateNotSubmittedForm || touched.price}
+                />
+                <CustomSelect
+                  label="Currency"
+                  units={['USD']}
+                  name="priceUnits"
+                  disabled={true}
+                  placeholder="Currency"
+                  value={values.priceUnits}
+                  errors={errors.priceUnits}
+                  touched={!isCreateNotSubmittedForm || touched.priceUnits}
+                  setFieldValue={setFieldValue}
+                />
               </div>
               <div className={styles.inputBlock}></div>
               <div className={styles.inputBlock}>
@@ -447,7 +454,6 @@ const LotForm = ({
                   setFieldValue={setFieldValue}
                 />
               </div>
-
               <DragAndDrop
                 files={files}
                 setFiles={setFiles}

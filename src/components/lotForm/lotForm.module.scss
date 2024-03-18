@@ -39,6 +39,10 @@
       display: flex;
       flex-direction: column;
 
+      .auctionLotDurationTitle {
+        margin: 0 0 16px 0;
+      }
+
       .auctionLotDurationInputs {
         display: flex;
       }
