@@ -28,25 +28,13 @@ const UserUpdateForm = ({ user: { name, email, zoneinfo } }) => {
 
   return (
     <Box className={formContainer}>
-      <TextField
-        id="name"
-        name="name"
-        label="Name"
-        disabled={true}
-        value={name}
-      />
-      <TextField
-        id="email"
-        name="email"
-        label="Email"
-        disabled={true}
-        value={email}
-      />
+      <TextField id="name" name="name" label="Name" disabled value={name} />
+      <TextField id="email" name="email" label="Email" disabled value={email} />
       <TextField
         id="zoneinfo"
         name="zoneinfo"
         label="Zone info"
-        disabled={true}
+        disabled
         value={zoneinfo}
       />
       <CustomButton

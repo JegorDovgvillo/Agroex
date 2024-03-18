@@ -85,7 +85,6 @@ const UpdateUserDataModal = ({
     switch (nextStepEmail || nextStepName) {
       case 'CONFIRM_ATTRIBUTE_WITH_CODE':
         dispatch(toggleModal('codeModal'));
-
         break;
 
       case 'DONE':
