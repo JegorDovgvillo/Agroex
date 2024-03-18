@@ -13,6 +13,7 @@ import {
 import getSanitizedString from '@helpers/getSanitizedString';
 import { setCorrectedTimeZone } from '@helpers/getCorrectTime';
 import { getDHMSFromMilliseconds } from '@helpers/getDHMSFromMilliseconds';
+import { CURRENCY } from '@helpers/currency';
 import { selectCategoryByParentId } from '@slices/categoriesSlice';
 import { fetchSubcategoryByParentId } from '@thunks/fetchCategories';
 
@@ -31,6 +32,7 @@ import Map from '../map';
 const getFormattedString = (str) => {
   return _.words(_.startCase(str)).join(' ').toLowerCase();
 };
+const currencyUnits = _.map(CURRENCY, 'key');
 
 const LotForm = ({
   selectedLot,
@@ -74,7 +76,7 @@ const LotForm = ({
     quantity: selectedLot?.quantity,
     price: selectedLot?.price,
     minPrice: selectedLot?.minPrice,
-    priceUnits: 'USD',
+    priceUnits: currencyUnits[0],
     lotType: lotType,
     size: selectedLot?.size,
     expirationDate: selectedLot?.expirationDate,
@@ -428,9 +430,8 @@ const LotForm = ({
                 />
                 <CustomSelect
                   label="Currency"
-                  units={['USD']}
+                  units={currencyUnits}
                   name="priceUnits"
-                  disabled={true}
                   placeholder="Currency"
                   value={values.priceUnits}
                   errors={errors.priceUnits}
