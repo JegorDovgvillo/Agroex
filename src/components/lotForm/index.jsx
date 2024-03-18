@@ -30,6 +30,10 @@ import DragAndDrop from '../dragAndDrop';
 import styles from './lotForm.module.scss';
 import Map from '../map';
 
+const getFormattedString = (str) => {
+  return _.words(_.startCase(str)).join(' ').toLowerCase();
+};
+
 const LotForm = ({
   selectedLot,
   handleSubmitClick,
@@ -58,6 +62,7 @@ const LotForm = ({
   } = getDHMSFromMilliseconds(selectedLot?.duration);
 
   const [disabledMap, setDisabledMap] = useState(true);
+  const lotType = getFormattedString(selectedLot?.lotType);
 
   const initialValues = {
     title: selectedLot?.title,
@@ -72,7 +77,7 @@ const LotForm = ({
     price: selectedLot?.price,
     minPrice: selectedLot?.minPrice,
     priceUnits: 'USD',
-    lotType: selectedLot?.lotType,
+    lotType: lotType,
     size: selectedLot?.size,
     expirationDate: selectedLot?.expirationDate,
     duration: selectedLot?.expirationDate,
