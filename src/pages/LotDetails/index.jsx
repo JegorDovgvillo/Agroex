@@ -263,21 +263,23 @@ export const LotDetails = () => {
     },
   ];
 
-  if (isUserLotOwner || userType === 'admin') {
-    if (isLotFinished && lotWinnerData) {
-      const winnerData = (
-        <div>
-          name: {lotWinnerData.username},
-          <br />
-          email: {lotWinnerData.email}
-        </div>
-      );
+  if (
+    (isUserLotOwner || userType === 'admin') &&
+    isLotFinished &&
+    lotWinnerData
+  ) {
+    const winnerData = (
+      <div>
+        name: {lotWinnerData.username},
+        <br />
+        email: {lotWinnerData.email}
+      </div>
+    );
 
-      lotDescription.unshift({
-        key: 'Winner',
-        value: winnerData,
-      });
-    }
+    lotDescription.unshift({
+      key: 'Winner',
+      value: winnerData,
+    });
   }
 
   if (lastBet) {
