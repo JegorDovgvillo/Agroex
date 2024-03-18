@@ -12,8 +12,6 @@ export const getLotStatuses = ({
   const isLotApproved = item.innerStatus === 'approved';
   const lotStatuses = [item.lotType];
 
-  isLotFinished && lotStatuses.push('finished');
-
   switch (tab) {
     case 'pending':
       lotStatuses.push(item.innerStatus);
@@ -48,6 +46,8 @@ export const getLotStatuses = ({
       isLotExpired && lotStatuses.push('expired');
       break;
   }
+
+  isLotFinished && lotStatuses.push('finished');
 
   return lotStatuses;
 };
