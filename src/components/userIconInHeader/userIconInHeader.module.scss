@@ -1,4 +1,6 @@
 @import "@scss/colorVariables.module.scss";
+@import "@scss/typography.module.scss";
+
 .container {
   .avatar {
     width: 48px;
@@ -15,7 +17,7 @@
     box-shadow: 0px 4px 24px 0px #0000001f;
     position: absolute;
     top: 80px;
-    right: 65px;
+    right: 60px;
     min-width: 300px;
 
     .linkWrapp {
@@ -44,14 +46,14 @@
       }
 
       &:last-child {
+        border-top: solid 1px $monoGraySelect;
+        padding: 16px;
+        cursor: pointer;
+
         span {
           display: flex;
           gap: 15px;
         }
-
-        border-top: solid 1px $monoGraySelect;
-        padding: 16px;
-        cursor: pointer;
 
         &:hover {
           transition: 0.7s all ease-in-out;
@@ -76,7 +78,20 @@
   .enabled {
     visibility: hidden;
   }
+
   .active {
     visibility: visible;
+  }
+}
+
+.loginLink {
+  text-decoration: none;
+  @include body1;
+  display: flex;
+  gap: 10px;
+  color: black;
+
+  svg {
+    color: $mainBase;
   }
 }
