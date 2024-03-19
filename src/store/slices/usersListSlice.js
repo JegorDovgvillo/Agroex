@@ -83,7 +83,7 @@ const usersListSlice = createSlice({
       })
       .addCase(updateToken.fulfilled, (state, action) => {
         state.loadingStatus = 'fulfilled';
-        usersListAdapter.upsertOne(state, action.payload);
+        state.userInfo = action.payload;
         state.userId = action.payload.id;
       })
       .addCase(updateToken.rejected, (state) => {
