@@ -24,7 +24,6 @@ const Search = () => {
   };
 
   const resetSearch = (e) => {
-
     if (_.isEmpty(inputValue)) {
       setIsActive(false);
     } else {
@@ -34,7 +33,7 @@ const Search = () => {
 
   useEffect(() => {
     const keyword = searchParams.get('keyword');
-    
+
     if (_.isNil(keyword)) {
       setInputValue('');
     } else {
