@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import _ from 'lodash';
-import { MapContainer, TileLayer, Marker } from 'react-leaflet';
 
 import CircularProgress from '@mui/material/CircularProgress';
 import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported';
@@ -20,6 +19,7 @@ import { PlaceBetForm } from '@components/placeBetForm';
 import { TagsBlock } from '@components/tagsBlock';
 import LotStatusBlock from '@components/lotStatusBlock';
 import { getLotStatuses } from '@components/lotStatusBlock/getLotStatuses';
+import Map from '@components/map';
 
 import getNumberWithCurrency from '@helpers/getNumberWithCurrency';
 import getFormattedDate from '@helpers/getFormattedDate';
@@ -437,25 +437,13 @@ export const LotDetails = () => {
           </>
         }
       </div>
-      <div className={styles.mapContainer}>
-        <MapContainer
-          center={[
-            selectedLot.location.latitude,
-            selectedLot.location.longitude,
-          ]}
-          zoom={13}
-          scrollWheelZoom={true}
-          className={styles.map}
-        >
-          <TileLayer url="https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png" />
-          <Marker
-            position={[
-              selectedLot.location.latitude,
-              selectedLot.location.longitude,
-            ]}
-          ></Marker>
-        </MapContainer>
-      </div>
+      <Map
+        isFullFunctionality={false}
+        markerCoordinate={{
+          lat: selectedLot.location.latitude,
+          lon: selectedLot.location.longitude,
+        }}
+      />
     </div>
   );
 };

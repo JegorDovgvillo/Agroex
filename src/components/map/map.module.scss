@@ -24,6 +24,18 @@
   }
 }
 
+.itemCardMap {
+  display: flex;
+  flex: 1 0 600px;
+  padding: 16px 40px;
+  font-family: sans-serif;
+
+  .map {
+    display: flex;
+    flex: 1;
+  }
+}
+
 .errorMessageContainer {
   display: flex;
   flex: 1;

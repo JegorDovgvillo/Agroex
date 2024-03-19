@@ -23,18 +23,6 @@
   display: flex;
   width: 100%;
   flex-direction: column;
-
-  .mapContainer {
-    display: flex;
-    flex: 1 0 500px;
-    padding: 16px 40px;
-    font-family: sans-serif;
-
-    .map {
-      display: flex;
-      flex: 1;
-    }
-  }
 }
 
 .container {
