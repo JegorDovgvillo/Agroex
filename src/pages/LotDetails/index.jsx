@@ -438,7 +438,7 @@ export const LotDetails = () => {
         }
       </div>
       <Map
-        isFullFunctionality={false}
+        restrictFunctionallity={true}
         markerCoordinate={{
           lat: selectedLot.location.latitude,
           lon: selectedLot.location.longitude,

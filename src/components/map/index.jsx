@@ -18,19 +18,19 @@ import 'leaflet/dist/leaflet.css';
 
 import styles from './map.module.scss';
 
-const LocationMarker = ({ latitude, longitude, eventHandlers }) => {
+const LocationMarker = ({ position, eventHandlers, draggable }) => {
   const map = useMapEvents({
     click() {
-      map.flyTo([latitude, longitude], map.getZoom());
+      map.flyTo([position.latitude, position.longitude], map.getZoom());
     },
   });
 
   return (
-    !_.isNil(latitude) &&
-    !_.isNil(longitude) && (
+    !_.isNil(position.latitude) &&
+    !_.isNil(position.longitude) && (
       <Marker
-        position={[latitude, longitude]}
-        draggable
+        position={[position.latitude, position.longitude]}
+        draggable={draggable}
         eventHandlers={eventHandlers}
       ></Marker>
     )
@@ -46,16 +46,24 @@ const Map = ({
   markerCoordinate,
   setMarkerCoordinate,
   selectedCountry,
-  isFullFunctionality = true,
+  restrictFunctionallity,
 }) => {
   const dispatch = useDispatch();
   const { id } = useParams();
 
-  const selectedLot = useSelector((state) => selectLotDetailById(state, id));
-  const countryName = useSelector((state) => state.countries.countryName);
-  const address = useSelector((state) => state.countries.address);
+  const selectedLot = useSelector((state) =>
+    restrictFunctionallity ? null : selectLotDetailById(state, id)
+  );
+  const countryName = useSelector((state) =>
+    restrictFunctionallity ? null : state.countries.countryName
+  );
+  const address = useSelector((state) =>
+    restrictFunctionallity ? null : state.countries.address
+  );
 
-  const containerClass = isFullFunctionality ? styles.mapContainer : styles.itemCardMap
+  const containerClass = restrictFunctionallity
+    ? styles.itemCardMap
+    : styles.mapContainer;
 
   const eventHandlers = useMemo(
     () => ({
@@ -77,7 +85,7 @@ const Map = ({
   );
 
   useEffect(() => {
-    if (location && !disabledMap && isFullFunctionality) {
+    if (location && !disabledMap) {
       dispatch(fetchCountry({ id: location }));
     } else if (location && disabledMap && address) {
       const foundCountry = _.find(countries, { name: address.country });
@@ -87,7 +95,7 @@ const Map = ({
   }, [location]);
 
   useEffect(() => {
-    if (address && isFullFunctionality) {
+    if (address) {
       const foundCountry = _.find(countries, { name: address.country });
 
       foundCountry && setFieldValue('country', foundCountry.id);
@@ -95,7 +103,7 @@ const Map = ({
   }, [address]);
 
   useEffect(() => {
-    if (selectedCountry && isFullFunctionality) {
+    if (selectedCountry) {
       setMarkerCoordinate({
         lat: selectedCountry.lat,
         lon: selectedCountry.lon,
@@ -104,13 +112,13 @@ const Map = ({
   }, [selectedCountry]);
 
   useEffect(() => {
-    if (countryName.name && !disabledMap && isFullFunctionality) {
+    if (countryName?.name && !disabledMap) {
       dispatch(getCoordinate({ countryName: countryName.name }));
     }
   }, [countryName]);
 
   useEffect(() => {
-    if (markerCoordinate && isFullFunctionality) {
+    if (markerCoordinate && !restrictFunctionallity) {
       dispatch(
         getAddress({
           latitude: markerCoordinate.lat,
@@ -121,7 +129,7 @@ const Map = ({
   }, [markerCoordinate]);
 
   useEffect(() => {
-    if (address && isFullFunctionality) {
+    if (address) {
       const region =
         address.state ||
         address.county ||
@@ -136,7 +144,7 @@ const Map = ({
   }, [address]);
 
   useEffect(() => {
-    if (!selectedLot && isFullFunctionality) {
+    if (!selectedLot && !restrictFunctionallity) {
       navigator.geolocation.getCurrentPosition((position) => {
         const { latitude, longitude } = position.coords;
 
@@ -145,7 +153,7 @@ const Map = ({
           lon: longitude,
         });
       });
-    } else if (selectedLot && isFullFunctionality) {
+    } else if (selectedLot) {
       setMarkerCoordinate({
         lat: selectedLot.location.latitude,
         lon: selectedLot.location.longitude,
@@ -164,20 +172,14 @@ const Map = ({
             className={styles.map}
           >
             <TileLayer url="https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png" />
-            {isFullFunctionality ? (
-              <LocationMarker
-                latitude={markerCoordinate.lat}
-                longitude={markerCoordinate.lon}
-                eventHandlers={eventHandlers}
-              />
-            ) : (
-              <Marker
-                position={[
-                  selectedLot.location.latitude,
-                  selectedLot.location.longitude,
-                ]}
-              ></Marker>
-            )}
+            <LocationMarker
+              position={{
+                latitude: markerCoordinate.lat,
+                longitude: markerCoordinate.lon,
+              }}
+              draggable={!restrictFunctionallity}
+              eventHandlers={eventHandlers}
+            />
           </MapContainer>
         </div>
       ) : (
