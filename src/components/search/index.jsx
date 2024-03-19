@@ -1,5 +1,5 @@
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
 import CloseIcon from '@mui/icons-material/Close';
@@ -7,6 +7,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import ROUTES from '@helpers/routeNames';
 
 import styles from './search.module.scss';
+import _ from 'lodash';
 
 const Search = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -22,9 +23,24 @@ const Search = () => {
     }
   };
 
-  const resetSearch = () => {
-    setInputValue('');
+  const resetSearch = (e) => {
+
+    if (_.isEmpty(inputValue)) {
+      setIsActive(false);
+    } else {
+      setInputValue('');
+    }
   };
+
+  useEffect(() => {
+    const keyword = searchParams.get('keyword');
+    
+    if (_.isNil(keyword)) {
+      setInputValue('');
+    } else {
+      setInputValue(keyword);
+    }
+  }, [searchParams]);
 
   return (
     <>
