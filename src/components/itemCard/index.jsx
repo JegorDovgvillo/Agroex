@@ -135,7 +135,7 @@ const ItemCard = ({ item, setSelectedLot }) => {
     setIsUserLotOwner(user.id === item.userId);
     setUserType(user['custom:role'] === 'admin' ? 'admin' : 'registeredUser');
   }, [user]);
-  console.log(userType);
+
   return (
     <>
       <div className={styles.cardWrapp} onClick={viewDetailsCard}>

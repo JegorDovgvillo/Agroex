@@ -71,25 +71,28 @@ const LotList = () => {
   }, [searchParams]);
 
   useEffect(() => {
-    const searchParamsCategoryIds = searchParams.get('categories');
-    const searchParamsSubcategoryIds = searchParams.get('subcategories');
-
-    if (!_.isEmpty(categories)) {
+    if (!_.isEmpty(categories) && searchParams.has('categories')) {
+      const searchParamsCategoryIds = searchParams.get('categories');
       const selectedCategories = _.split(searchParamsCategoryIds, ',').map(
         (id) => _.find(categories, { id: _.toNumber(id) })
       );
       const parentIds = _.uniqBy(_.map(selectedCategories, 'id'));
+
+      setSelectedCategoriesIds(parentIds);
+    }
+  }, [categories, searchParams]);
+
+  useEffect(() => {
+    if (searchParams.has('subcategories')) {
+      const searchParamsSubcategoryIds = searchParams.get('subcategories');
       const selectedSubcategoriesIds = _.split(
         searchParamsSubcategoryIds,
         ','
       ).map(Number);
 
-      setSelectedCategoriesIds(parentIds && parentIds);
-      setSelectedSubcategoriesIds(
-        selectedSubcategoriesIds && selectedSubcategoriesIds
-      );
+      setSelectedSubcategoriesIds(selectedSubcategoriesIds);
     }
-  }, [categories, searchParams]);
+  }, [searchParams]);
 
   useEffect(() => {
     const { confirmStatus, action, isOpen } = confirmModalData;
@@ -146,20 +149,25 @@ const LotList = () => {
   }, [bets]);
 
   useEffect(() => {
-    const searchParamsCountry = searchParams.get('countries');
-    const searchParamsRegions = searchParams.get('regions');
-
-    if (!_.isEmpty(countries) > 0 && searchParamsCountry) {
+    if (searchParams.has('countries')) {
+      const searchParamsCountry = searchParams.get('countries');
       const selectedCountries = _.split(searchParamsCountry, ',').map((id) =>
         _.find(countries, { id: _.toNumber(id) })
       );
       const selectedCountriesIds = _.map(selectedCountries, 'id');
-      const selectedRegions = _.split(searchParamsRegions, ',');
 
-      setSelectedCountry(selectedCountriesIds && selectedCountriesIds);
-      setSelectedRegions(selectedRegions && selectedRegions);
+      setSelectedCountry(selectedCountriesIds);
     }
   }, [countries, searchParams]);
+
+  useEffect(() => {
+    if (searchParams.has('regions')) {
+      const searchParamsRegions = searchParams.get('regions');
+      const selectedRegions = _.split(searchParamsRegions, ',');
+
+      setSelectedRegions(selectedRegions);
+    }
+  }, [searchParams]);
 
   return (
     <div className={styles.lotListContainer}>

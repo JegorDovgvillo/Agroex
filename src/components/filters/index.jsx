@@ -116,17 +116,17 @@ const Filters = ({
       users: searchParams.get('users')
         ? getNumbersArray(searchParams.get('users'))
         : [],
-      categories: searchParams.get('categories')
+      categories: searchParams.has('categories')
         ? searchParams.get('categories').split(',').map(Number)
         : [],
-      subcategories: searchParams.get('subcategories')
+      subcategories: searchParams.has('subcategories')
         ? searchParams.get('subcategories').split(',').map(Number)
         : [],
       lotType: searchParams.get('lotType') || '',
-      countries: searchParams.get('countries')
+      countries: searchParams.has('countries')
         ? searchParams.get('countries').split(',').map(Number)
         : [],
-      regions: searchParams.get('regions')
+      regions: searchParams.has('regions')
         ? searchParams.get('regions').split(',')
         : [],
     });
