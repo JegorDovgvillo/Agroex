@@ -19,6 +19,7 @@ import {
 import { selectRootCategories } from '@slices/categoriesSlice';
 import { countrySelector } from '@slices/countriesSlice';
 import { clearStatus } from '@slices/lotListSlice';
+import { getSelectedCurrency } from '@slices/currencySlice';
 
 import LotForm from '@components/lotForm';
 
@@ -37,6 +38,7 @@ const CreateNewLot = () => {
   const customSnackbarData = useSelector((state) =>
     selectModal(state, 'snackbar')
   );
+  const selectedCurrency = useSelector(getSelectedCurrency);
 
   const [markerCoordinate, setMarkerCoordinate] = useState(null);
   const [files, setFiles] = useState([]);
@@ -92,7 +94,7 @@ const CreateNewLot = () => {
 
     formData.append('data', JSON.stringify(lotData));
 
-    dispatch(createLot(formData));
+    dispatch(createLot({ formData, currency: selectedCurrency }));
     setFiles([]);
     resetForm();
   };

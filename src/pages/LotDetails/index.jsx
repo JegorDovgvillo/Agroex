@@ -40,6 +40,7 @@ import { selectLotDetailById } from '@slices/lotListSlice';
 import { selectModal } from '@slices/modalSlice';
 import { betsSelector } from '@slices/betsSlice';
 import { selectUserById } from '@slices/usersListSlice';
+import { getSelectedCurrency } from '@slices/currencySlice';
 
 import { fetchLotDetails } from '@thunks/fetchLots';
 import { fetchAllCategories } from '@thunks/fetchCategories';
@@ -87,6 +88,7 @@ export const LotDetails = () => {
   const { loadingStatus } = useSelector((state) => state.lotList);
   const selectedLot = useSelector((state) => selectLotDetailById(state, lotId));
   const userInfo = useSelector((state) => state.usersList.userInfo);
+  const selectedCurrency = useSelector(getSelectedCurrency);
 
   const [userType, setUserType] = useState('unregisteredUser');
   const [isUserLotOwner, setIsUserLotOwner] = useState(false);
@@ -119,7 +121,6 @@ export const LotDetails = () => {
 
   useEffect(() => {
     dispatch(fetchAllCategories());
-    dispatch(fetchLotDetails(lotId));
     dispatch(fetchBetsByLotId({ id: lotId }));
   }, []);
 
@@ -150,7 +151,8 @@ export const LotDetails = () => {
           break;
 
         case 'placeBet':
-          newBet && handlePlaceNewBet(dispatch, newBet);
+          newBet &&
+            handlePlaceNewBet(dispatch, newBet, selectedLot.originalCurrency);
           break;
 
         case 'deal':
@@ -158,6 +160,7 @@ export const LotDetails = () => {
             dispatch: dispatch,
             lotId: lotId,
             userId: userInfo.id,
+            currency: selectedLot.originalCurrency,
           });
           break;
 
@@ -172,13 +175,21 @@ export const LotDetails = () => {
     if (_.isEmpty(currentBets)) return;
 
     const currLotBets = _.filter(currentBets, { lotId: _.toNumber(lotId) });
+
     const lastBet = _.maxBy(currLotBets, 'id');
     const isMaxBet = lastBet?.amount === selectedLot?.price;
 
     dispatch(fetchUser(lastBet?.userId));
     setLastBet(lastBet);
-    isMaxBet && dispatch(fetchLotDetails(lotId));
+    isMaxBet &&
+      dispatch(fetchLotDetails({ id: lotId, currency: selectedCurrency }));
   }, [currentBets]);
+
+  useEffect(() => {
+    if (!selectedCurrency) return;
+
+    dispatch(fetchLotDetails({ id: lotId, currency: selectedCurrency }));
+  }, [selectedCurrency]);
 
   if (loadingStatus !== 'fulfilled') {
     return (
@@ -206,9 +217,15 @@ export const LotDetails = () => {
     packaging,
     images,
     tags,
+    originalPrice,
+    originalCurrency,
   } = selectedLot;
 
-  const buySellBtnText = getButtonText(lotType);
+  const originalPriceWithCurrency = getNumberWithCurrency(
+    originalPrice,
+    originalCurrency
+  );
+  const buySellBtnText = getButtonText(lotType, originalPriceWithCurrency);
   const isLastBetEqualPrice = lastBet?.amount === price;
 
   const {
@@ -351,7 +368,7 @@ export const LotDetails = () => {
                             <PriceBlock
                               totalCost={lastBet.amount}
                               unitCost={lastBet.amount / quantity}
-                              currency={currency}
+                              currency={originalCurrency}
                               className={['detailed', 'auctionSum']}
                             />
                           ) : (
@@ -386,13 +403,16 @@ export const LotDetails = () => {
                         totalCost={price}
                         unitCost={price / quantity}
                         currency={currency}
+                        originalCost={originalPrice}
+                        originalUnitCost={originalPrice / quantity}
+                        originalCurrency={originalCurrency}
                         className={['detailed']}
                       />
                     </div>
                   </div>
                   {userType === 'registeredUser' &&
                     !isUserLotOwner &&
-                    !isLastBetEqualPrice && (
+                    !isLotFinished && (
                       <CustomButton
                         type="primary"
                         width="100%"

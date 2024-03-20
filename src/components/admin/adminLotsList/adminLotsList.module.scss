@@ -16,6 +16,11 @@
   .cell {
     text-align: center !important;
     justify-content: center !important;
+
+    &:focus,
+    &:active {
+      outline: solid 1px transparent !important;
+    }
   }
 
   .actionsCell {
@@ -43,6 +48,11 @@
 
   .statusSelectField {
     width: 100%;
+
+    &:focus,
+    &:active {
+      outline: solid 1px transparent !important;
+    }
   }
 
   .saveIcon {

@@ -20,6 +20,7 @@ import { countrySelector } from '@slices/countriesSlice';
 import { lotListSelector, clearLots } from '@slices/lotListSlice';
 import { betsSelector } from '@slices/betsSlice';
 import { selectModal, toggleModal } from '@slices/modalSlice';
+import { getSelectedCurrency } from '@slices/currencySlice';
 
 import {
   handlePlaceNewBet,
@@ -49,6 +50,7 @@ const LotList = () => {
     selectModal(state, 'adminMessageModal')
   );
   const newBet = useSelector((state) => state.bets.newBet);
+  const selectedCurrency = useSelector(getSelectedCurrency);
 
   const [selectedCategoriesIds, setSelectedCategoriesIds] = useState([]);
   const [selectedSubcategoriesIds, setSelectedSubcategoriesIds] = useState([]);
@@ -67,8 +69,10 @@ const LotList = () => {
   }, []);
 
   useEffect(() => {
-    dispatch(filteredLots(searchParams));
-  }, [searchParams]);
+    dispatch(
+      filteredLots({ values: searchParams, currency: selectedCurrency })
+    );
+  }, [searchParams, selectedCurrency]);
 
   useEffect(() => {
     const searchParamsCategoryIds = searchParams.get('categories');
@@ -91,7 +95,9 @@ const LotList = () => {
     if (!isOpen) {
       switch (action) {
         case 'placeBet':
-          confirmStatus && newBet && handlePlaceNewBet(dispatch, newBet);
+          confirmStatus &&
+            newBet &&
+            handlePlaceNewBet(dispatch, newBet, selectedLot.originalCurrency);
           break;
 
         case 'deal':
@@ -100,6 +106,7 @@ const LotList = () => {
               dispatch: dispatch,
               lotId: selectedLot.id,
               userId: userInfo?.id,
+              currency: selectedLot.originalCurrency,
             });
           break;
 
@@ -127,6 +134,7 @@ const LotList = () => {
         lotId: selectedLot.id,
         status: 'rejected',
         adminMessage,
+        selectedCurrency,
       });
     }
   }, [adminMessageData]);
@@ -135,7 +143,9 @@ const LotList = () => {
     if (!_.isEmpty(bets)) {
       const lastBet = _.maxBy(bets, 'id');
 
-      dispatch(fetchLotDetails(lastBet.lotId));
+      dispatch(
+        fetchLotDetails({ id: lastBet.lotId, currency: selectedCurrency })
+      );
     }
   }, [bets]);
 

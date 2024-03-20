@@ -58,7 +58,7 @@ export const handleDealBtnClick = (dispatch, isAuctionLot, lot, userId) => {
 
   if (isAuctionLot) {
     const valueToSubmit = {
-      amount: lot.price,
+      amount: lot.originalPrice,
       userId: userId,
       lotId: lot.id,
     };
@@ -82,16 +82,27 @@ export const handleDealBtnClick = (dispatch, isAuctionLot, lot, userId) => {
   }
 };
 
-export const handlePlaceNewBet = (dispatch, newBet) => {
-  dispatch(fetchPlaceBet({ id: newBet.lotId, betData: newBet }));
+export const handlePlaceNewBet = (dispatch, newBet, currency) => {
+  dispatch(
+    fetchPlaceBet({
+      id: newBet.lotId,
+      betData: newBet,
+      currency,
+    })
+  );
   dispatch(setNewBet(null));
   dispatch(clearModalsFields(['confirmModal', 'placeBetModal']));
 };
 
 export const handleDeal = (params) => {
-  const { dispatch, lotId, userId } = params;
+  const { dispatch, lotId, userId, currency } = params;
 
-  dispatch(fetchDeal({ id: lotId, userId: userId }));
+  dispatch(
+    fetchDeal({
+      values: { id: lotId, userId: userId },
+      currency: currency,
+    })
+  );
   dispatch(clearModalsFields('confirmModal'));
 };
 
@@ -115,12 +126,14 @@ export const handleChangeLotStatusByAdmin = ({
   lotId,
   status,
   adminMessage,
+  selectedCurrency,
 }) => {
   dispatch(
     changeLotStatusByAdmin({
       lotId: lotId,
       status: status,
       adminComment: adminMessage,
+      currency: selectedCurrency,
     })
   );
   dispatch(clearModalsFields(['adminMessageModal', 'confirmModal']));

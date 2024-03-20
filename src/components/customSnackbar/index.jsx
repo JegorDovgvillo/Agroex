@@ -23,15 +23,6 @@ export const CustomSnackbar = () => {
     dispatch(toggleModal('snackbar'));
   };
 
-  useEffect(() => {
-    if (!customSnackbarData.message) return;
-
-    setSnackbarProps({
-      massage: customSnackbarData.message,
-      severity: customSnackbarData.severity,
-    });
-  }, [customSnackbarData]);
-
   return (
     <div>
       {message && (

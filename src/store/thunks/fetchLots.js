@@ -11,10 +11,11 @@ export const fetchLots = createAsyncThunk('lotList/fetchLots', async () => {
 
 export const updateLot = createAsyncThunk(
   'lotList/updateLot',
-  async ({ id, lotData }) => {
+  async ({ id, lotData, currency }) => {
     const response = await axiosInstance.put(
       `${ENDPOINTS.LOTS}/${id}`,
-      lotData
+      lotData,
+      { headers: { currency } }
     );
 
     return response.data;
@@ -23,8 +24,11 @@ export const updateLot = createAsyncThunk(
 
 export const fetchLotDetails = createAsyncThunk(
   'lotList/fetchLotDetails',
-  async (id) => {
-    const response = await axiosInstance.get(`${ENDPOINTS.LOTS}/${id}`);
+  async ({ id, currency }) => {
+    console.log(id);
+    const response = await axiosInstance.get(`${ENDPOINTS.LOTS}/${id}`, {
+      headers: { currency },
+    });
 
     return response.data;
   }
@@ -32,8 +36,10 @@ export const fetchLotDetails = createAsyncThunk(
 
 export const createLot = createAsyncThunk(
   'lotList/createLot',
-  async (formData) => {
-    const response = await axiosInstance.post(ENDPOINTS.LOTS, formData);
+  async ({ formData, currency }) => {
+    const response = await axiosInstance.post(ENDPOINTS.LOTS, formData, {
+      headers: { currency },
+    });
 
     return response.data;
   }
@@ -50,8 +56,10 @@ export const deleteLot = createAsyncThunk(
 
 export const filteredLots = createAsyncThunk(
   'lotList/filteredLots',
-  async (values) => {
-    const response = await axiosInstance.get(`${ENDPOINTS.LOTS}?${values}`);
+  async ({ values, currency }) => {
+    const response = await axiosInstance.get(`${ENDPOINTS.LOTS}?${values}`, {
+      headers: { currency },
+    });
 
     return response.data;
   }
@@ -59,9 +67,10 @@ export const filteredLots = createAsyncThunk(
 
 export const getFilteredLots = createAsyncThunk(
   'lotList/getFilteredLots',
-  async ({ ...values }) => {
+  async ({ params, currency }) => {
     const response = await axiosInstance.get(`${ENDPOINTS.LOTS}`, {
-      params: values,
+      params: params,
+      headers: { currency },
     });
 
     return response.data;
@@ -87,7 +96,7 @@ export const changeLotStatusByUser = createAsyncThunk(
 
 export const changeLotStatusByAdmin = createAsyncThunk(
   'lotList/changeLotStatusByAdmin',
-  async ({ lotId, status, adminComment }, { rejectWithValue }) => {
+  async ({ lotId, status, adminComment, currency }, { rejectWithValue }) => {
     const endpoints = {
       onModeration: 'moderate',
       approved: 'approve',
@@ -103,6 +112,7 @@ export const changeLotStatusByAdmin = createAsyncThunk(
           params: {
             adminComment,
           },
+          headers: { currency },
         }
       );
 
@@ -115,12 +125,13 @@ export const changeLotStatusByAdmin = createAsyncThunk(
 
 export const fetchDeal = createAsyncThunk(
   'lotList/fetchDeal',
-  async ({ ...values }) => {
+  async ({ values, currency }) => {
     const response = await axiosInstance.post(
       `${ENDPOINTS.LOTS}/${values.id}/buy`,
       null,
       {
-        params: values,
+        headers: { currency },
+        params: { userId: values.userId },
       }
     );
 
@@ -130,9 +141,10 @@ export const fetchDeal = createAsyncThunk(
 
 export const fetchUserActivityLots = createAsyncThunk(
   'lotList/fetchUserActivityLots',
-  async ({ userId }) => {
+  async ({ userId, currency }) => {
     const response = await axiosInstance.get(`${ENDPOINTS.LOTS}/activity`, {
       params: { userId },
+      headers: { currency },
     });
 
     return response.data;

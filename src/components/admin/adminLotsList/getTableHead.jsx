@@ -247,14 +247,14 @@ export const getTableHead = (
       headerName: 'Price',
       cellClassName: `${cell}`,
       headerClassName: `${headerCell}`,
-      width: 100,
+      width: 150,
     },
     {
       field: 'minPrice',
       headerName: 'Min Price',
       cellClassName: `${cell}`,
       headerClassName: `${headerCell}`,
-      width: 100,
+      width: 150,
     },
     {
       field: 'status',

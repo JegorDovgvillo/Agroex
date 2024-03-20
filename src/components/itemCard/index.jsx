@@ -159,7 +159,7 @@ const ItemCard = ({ item, setSelectedLot }) => {
                       className={['list', 'auctionSum']}
                       totalCost={lastBet.amount}
                       unitCost={lastBet.amount / item.quantity}
-                      currency={item.currency}
+                      currency={item.originalCurrency}
                     />
                   ) : (
                     <h6 className={auctionSum}>No bets</h6>
@@ -197,6 +197,9 @@ const ItemCard = ({ item, setSelectedLot }) => {
                 totalCost={item.price}
                 unitCost={item.price / item.quantity}
                 currency={item.currency}
+                originalCost={item.originalPrice}
+                originalUnitCost={item.originalPrice / item.quantity}
+                originalCurrency={item.originalCurrency}
               />
 
               {userType === 'registeredUser' &&

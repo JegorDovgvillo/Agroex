@@ -9,6 +9,7 @@ import { selectRootCategories } from '@slices/categoriesSlice';
 import { countrySelector } from '@slices/countriesSlice';
 import { tagsSelector } from '@slices/tagsSlice';
 import { toggleModal } from '@slices/modalSlice';
+import { getSelectedCurrency } from '@slices/currencySlice';
 
 import { fetchCountries } from '@thunks/fetchCountries';
 import { deleteLot, updateLot, fetchLotDetails } from '@thunks/fetchLots';
@@ -32,6 +33,7 @@ const UpdateLot = () => {
   const selectedCountry = useSelector(
     (state) => state.countries.markerCoordinate
   );
+  const selectedCurrency = useSelector(getSelectedCurrency);
 
   const [confirmStatus, setConfirmStatus] = useState(false);
   const [files, setFiles] = useState([]);
@@ -61,7 +63,7 @@ const UpdateLot = () => {
   }, [selectedLot]);
 
   useEffect(() => {
-    dispatch(fetchLotDetails(lotId));
+    dispatch(fetchLotDetails({ id: lotId, currency: selectedCurrency }));
     dispatch(fetchAllCategories());
     dispatch(fetchCountries({ existed: false }));
     dispatch(fetchTags());
@@ -116,7 +118,9 @@ const UpdateLot = () => {
 
     formData.append('data', JSON.stringify(lotData));
 
-    dispatch(updateLot({ id: lotId, lotData: formData }));
+    dispatch(
+      updateLot({ id: lotId, lotData: formData, currency: selectedCurrency })
+    );
     dispatch(toggleModal('infoModal'));
     setFiles([]);
     navigate(-1);

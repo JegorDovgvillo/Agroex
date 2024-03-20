@@ -1,4 +1,4 @@
-export const getButtonText = (lotType) => {
+export const getButtonText = (lotType, price) => {
   let text = '';
 
   switch (lotType) {
@@ -12,5 +12,7 @@ export const getButtonText = (lotType) => {
       break;
   }
 
-  return `${text} now`;
+  const totalPrice = price ? `for ${price}` : '';
+
+  return `${text} now ${totalPrice}`;
 };

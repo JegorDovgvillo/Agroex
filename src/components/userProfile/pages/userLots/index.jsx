@@ -12,6 +12,7 @@ import {
 
 import { lotListSelector } from '@slices/lotListSlice';
 import { selectModal, clearModalsFields } from '@slices/modalSlice';
+import { getSelectedCurrency } from '@slices/currencySlice';
 
 import ItemCard from '@components/itemCard';
 
@@ -23,6 +24,7 @@ const UserLots = () => {
   const confirmModalData = useSelector((state) =>
     selectModal(state, 'confirmModal')
   );
+  const selectedCurrency = useSelector(getSelectedCurrency);
 
   const filteredLotsByActiveTab = filter(lots, (item) => {
     const isActiveLotStatus = item.status === 'active';
@@ -54,8 +56,13 @@ const UserLots = () => {
 
   useEffect(() => {
     currUserId &&
-      dispatch(getFilteredLots({ status: 'all', users: currUserId }));
-  }, [dispatch, currUserId]);
+      dispatch(
+        getFilteredLots({
+          params: { status: 'all', users: currUserId },
+          currency: selectedCurrency,
+        })
+      );
+  }, [dispatch, currUserId, selectedCurrency]);
 
   useEffect(() => {
     const { confirmStatus, action, isOpen } = confirmModalData;

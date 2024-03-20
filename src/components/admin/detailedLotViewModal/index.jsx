@@ -10,6 +10,7 @@ import { selectUserById } from '@slices/usersListSlice';
 import { toggleModal, selectModalState } from '@slices/modalSlice';
 import { selectLotDetailById } from '@slices/lotListSlice';
 import { categoriesSelector } from '@slices/categoriesSlice';
+import { getSelectedCurrency } from '@slices/currencySlice';
 
 import AdminDetailedLotView from '../adminDetailedLotView';
 import ConfirmActionModal from '@customModals/confirmActionModal';
@@ -24,16 +25,21 @@ const DetailedLotViewModal = () => {
   const lot = useSelector((state) => selectLotDetailById(state, lotId));
   const open = useSelector((state) => selectModalState(state, 'infoModal'));
   const { userId } = useSelector((state) => state.usersList);
-  const userData = useSelector((state) => selectUserById(state, userId));
+  const userData = useSelector((state) => selectUserById(state, lot?.userId));
   const userInfo = useSelector((state) => state.usersList.userInfo);
   const [confirm, setConfirm] = useState(false);
   const categories = useSelector(categoriesSelector);
+  const selectedCurrency = useSelector(getSelectedCurrency);
 
   useEffect(() => {
     dispatch(fetchLotDetails(lotId));
+  }, []);
+
+  useEffect(() => {
+    dispatch(fetchLotDetails({ id: lotId, currency: selectedCurrency }));
     dispatch(fetchUser(userId));
     dispatch(fetchAllCategories());
-  }, [dispatch, lotId, userId]);
+  }, [dispatch, lotId, userId, selectedCurrency]);
 
   useEffect(() => {
     if (confirm) {
