@@ -128,15 +128,19 @@ export const PlaceBetForm = ({ lot, type }) => {
               ),
             }}
           />
+
           <FormHelperText
             id="outlined-weight-helper-text"
             className={helperText}
           >
-            {`${getNumberWithCurrency(
-              values.amount / lot.quantity,
-              currency.key
-            )}/ton`}
+            {values.amount
+              ? `${getNumberWithCurrency(
+                  values.amount / lot.quantity,
+                  currency.key
+                )}/ton`
+              : ''}
           </FormHelperText>
+
           {isModal ? (
             <CustomButton
               text="Bet"
