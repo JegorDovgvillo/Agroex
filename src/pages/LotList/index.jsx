@@ -72,16 +72,22 @@ const LotList = () => {
 
   useEffect(() => {
     const searchParamsCategoryIds = searchParams.get('categories');
+    const searchParamsSubcategoryIds = searchParams.get('subcategories');
 
-    if (categories.length > 0 && searchParamsCategoryIds) {
+    if (!_.isEmpty(categories)) {
       const selectedCategories = _.split(searchParamsCategoryIds, ',').map(
         (id) => _.find(categories, { id: _.toNumber(id) })
       );
-      const selectedSubcategoriesIds = _.map(selectedCategories, 'id');
-      const parentIds = _.uniqBy(_.map(selectedCategories, 'parentId'));
+      const parentIds = _.uniqBy(_.map(selectedCategories, 'id'));
+      const selectedSubcategoriesIds = _.split(
+        searchParamsSubcategoryIds,
+        ','
+      ).map(Number);
 
-      setSelectedCategoriesIds(parentIds);
-      setSelectedSubcategoriesIds(selectedSubcategoriesIds);
+      setSelectedCategoriesIds(parentIds && parentIds);
+      setSelectedSubcategoriesIds(
+        selectedSubcategoriesIds && selectedSubcategoriesIds
+      );
     }
   }, [categories, searchParams]);
 
@@ -141,19 +147,17 @@ const LotList = () => {
 
   useEffect(() => {
     const searchParamsCountry = searchParams.get('countries');
+    const searchParamsRegions = searchParams.get('regions');
 
     if (!_.isEmpty(countries) > 0 && searchParamsCountry) {
       const selectedCountries = _.split(searchParamsCountry, ',').map((id) =>
         _.find(countries, { id: _.toNumber(id) })
       );
       const selectedCountriesIds = _.map(selectedCountries, 'id');
-      const regions = _.flatMap(
-        selectedCountries,
-        (country) => country.regions
-      );
+      const selectedRegions = _.split(searchParamsRegions, ',');
 
-      setSelectedCountry(selectedCountriesIds);
-      setSelectedRegions(regions);
+      setSelectedCountry(selectedCountriesIds && selectedCountriesIds);
+      setSelectedRegions(selectedRegions && selectedRegions);
     }
   }, [countries, searchParams]);
 
