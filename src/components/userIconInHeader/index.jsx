@@ -92,10 +92,6 @@ const UserIconInHeader = () => {
     }
   }, [userInfo]);
 
-  useEffect(() => {
-    dispatch(getUserFromCognito());
-  }, []);
-
   return (
     <>
       {userInfo && links ? (
