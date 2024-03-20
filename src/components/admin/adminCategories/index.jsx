@@ -71,30 +71,31 @@ export default function CategoriesList() {
 
     if (!confirmStatus || isOpen) return;
 
-    dispatch(deleteCategory({ id: 'categoryId' }));
+    dispatch(deleteCategory({ id: categoryId }));
     dispatch(clearModalsFields('confirmModal'));
   }, [confirmModalData, categoryId, dispatch]);
 
   useEffect(() => {
     if (!errors) return;
 
-    setModalFields({
-      modalId: 'snackbar',
-      text: errors.detail || errors.title,
-    });
+    dispatch(
+      setModalFields({
+        modalId: 'snackbar',
+        message: errors.detail || errors.title,
+        severity: 'error',
+      })
+    );
     dispatch(toggleModal('snackbar'));
-
-    //console.log(errors);
   }, [errors]);
 
-  useDispatch(() => {
-    if (!snackbarData) return;
+  useEffect(() => {
+    if (!snackbarData.message) return;
 
     const { isOpen } = snackbarData;
 
     if (!isOpen) {
       dispatch(clearModalsFields('snackbar'));
-      dispatch(clearErrors);
+      dispatch(clearErrors());
     }
   }, [snackbarData]);
 

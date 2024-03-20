@@ -3,7 +3,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '@helpers/axiosInstance';
 import ENDPOINTS from '@helpers/endpoints';
 
-export const fetchCategories = createAsyncThunk(
+/* export const fetchCategories = createAsyncThunk(
   'categories/fetchCategories',
   async () => {
     const response = await axiosInstance.get(ENDPOINTS.CATEGORIES);
@@ -11,7 +11,7 @@ export const fetchCategories = createAsyncThunk(
     return response.data;
   }
 );
-
+ */
 export const deleteCategory = createAsyncThunk(
   'categories/deleteCategory',
   async ({ id }, { rejectWithValue }) => {
@@ -29,42 +29,58 @@ export const deleteCategory = createAsyncThunk(
 
 export const updateCategory = createAsyncThunk(
   'categories/updateCategory',
-  async ({ id, categoryData }) => {
-    const response = await axiosInstance.put(
-      `${ENDPOINTS.CATEGORIES}/${id}`,
-      categoryData
-    );
+  async ({ id, categoryData }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.put(
+        `${ENDPOINTS.CATEGORIES}/${id}`,
+        categoryData
+      );
 
-    return response.data;
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
   }
 );
 
 export const createCategory = createAsyncThunk(
   'categories/createCategory',
-  async ({dataCategory}) => {
-    const response = await axiosInstance.post(
-      ENDPOINTS.CATEGORIES,
-      dataCategory
-    );
+  async (dataCategory, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.post(
+        ENDPOINTS.CATEGORIES,
+        dataCategory
+      );
 
-    return response.data;
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
   }
 );
 
 export const fetchAllCategories = createAsyncThunk(
   'categories/fetchCategories',
-  async () => {
-    const response = await axiosInstance.get(ENDPOINTS.CATEGORIES_ALL);
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.get(ENDPOINTS.CATEGORIES_ALL);
 
-    return response.data;
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
   }
 );
 
 export const fetchSubcategoryByParentId = createAsyncThunk(
   'categories/fetchCategories',
-  async (id) => {
-    const response = await axiosInstance.get(`${ENDPOINTS.CATEGORIES}/${id}`);
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.get(`${ENDPOINTS.CATEGORIES}/${id}`);
 
-    return response.data;
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
   }
 );

@@ -7,7 +7,7 @@ import {
 import { filter } from 'lodash';
 
 import {
-  fetchCategories,
+  fetchAllCategories,
   deleteCategory,
   updateCategory,
   createCategory,
@@ -34,15 +34,16 @@ const categoriesSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchCategories.pending, (state) => {
+      .addCase(fetchAllCategories.pending, (state) => {
         state.loadingStatus = 'pending';
       })
-      .addCase(fetchCategories.fulfilled, (state, action) => {
+      .addCase(fetchAllCategories.fulfilled, (state, action) => {
         state.loadingStatus = 'fulfilled';
         categoriesAdapter.addMany(state, action.payload);
       })
-      .addCase(fetchCategories.rejected, (state) => {
+      .addCase(fetchAllCategories.rejected, (state, action) => {
         state.loadingStatus = 'rejected';
+        state.errors = action.payload;
       })
       .addCase(deleteCategory.pending, (state) => {
         state.loadingStatus = 'pending';
@@ -62,8 +63,9 @@ const categoriesSlice = createSlice({
         state.loadingStatus = 'fulfilled';
         categoriesAdapter.upsertOne(state, action.payload);
       })
-      .addCase(updateCategory.rejected, (state) => {
+      .addCase(updateCategory.rejected, (state, action) => {
         state.loadingStatus = 'rejected';
+        state.errors = action.payload;
       })
       .addCase(createCategory.pending, (state) => {
         state.loadingStatus = 'pending';
@@ -72,8 +74,9 @@ const categoriesSlice = createSlice({
         state.loadingStatus = 'fulfilled';
         categoriesAdapter.setOne(state, action.payload);
       })
-      .addCase(createCategory.rejected, (state) => {
+      .addCase(createCategory.rejected, (state, action) => {
         state.loadingStatus = 'rejected';
+        state.errors = action.payload;
       });
   },
 });
