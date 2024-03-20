@@ -12,11 +12,15 @@ import AddIcon from '@mui/icons-material/Add';
 
 import { fetchAllCategories } from '@thunks/fetchCategories';
 import { categoriesSelector } from '@slices/categoriesSlice';
-import { toggleModal } from '@slices/modalSlice';
+import {
+  selectModal,
+  toggleModal,
+  clearModalsFields,
+  setModalFields,
+} from '@slices/modalSlice';
 import { setCategoryId } from '@slices/categoriesSlice';
 import { deleteCategory } from '@thunks/fetchCategories';
 
-import ConfirmActionModal from '@customModals/confirmActionModal';
 import ModalForCreatingCategory from '@customModals/modalForCreatingCategory';
 import ModalForUpdatingCategory from '@customModals/modalForUpdaitingCategory';
 
@@ -36,7 +40,9 @@ export default function CategoriesList() {
   const dispatch = useDispatch();
   const categories = useSelector(categoriesSelector);
   const categoryId = useSelector((state) => state.categories.categoryId);
-  const [confirmStatus, setConfirmStatus] = useState(false);
+  const confirmModalData = useSelector((state) =>
+    selectModal(state, 'confirmModal')
+  );
 
   useEffect(() => {
     dispatch(fetchAllCategories());
@@ -48,16 +54,27 @@ export default function CategoriesList() {
   };
 
   const showConfirm = (id) => {
+    dispatch(
+      setModalFields({
+        modalId: 'confirmModal',
+        text: 'This action delete the category. Do you confirm the action?',
+        action: 'deleteCategory',
+      })
+    );
     dispatch(toggleModal('confirmModal'));
     dispatch(setCategoryId(id));
   };
 
   useEffect(() => {
-    if (confirmStatus) {
+    const { confirmStatus, action, isOpen } = confirmModalData;
+
+    if (!confirmStatus || isOpen) return;
+
+    if (action === 'deleteCategory') {
       dispatch(deleteCategory({ id: categoryId }));
-      setConfirmStatus(false);
+      dispatch(clearModalsFields('confirmModal'));
     }
-  }, [confirmStatus, categoryId, dispatch]);
+  }, [confirmModalData, categoryId, dispatch]);
 
   return (
     <>
@@ -116,10 +133,6 @@ export default function CategoriesList() {
       </Table>
       <ModalForCreatingCategory />
       <ModalForUpdatingCategory />
-      <ConfirmActionModal
-        text="This action delete the category. Do you confirm the action?"
-        setConfirmStatus={setConfirmStatus}
-      />
     </>
   );
 }
