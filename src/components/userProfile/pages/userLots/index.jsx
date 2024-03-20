@@ -4,7 +4,6 @@ import { useParams } from 'react-router-dom';
 
 import { includes, find, filter } from 'lodash';
 
-import { getUserFromCognito } from '@thunks/fetchUsers';
 import {
   getFilteredLots,
   changeLotStatusByUser,
@@ -54,7 +53,6 @@ const UserLots = () => {
   });
 
   useEffect(() => {
-    dispatch(getUserFromCognito());
     currUserId &&
       dispatch(getFilteredLots({ status: 'all', users: currUserId }));
   }, [dispatch, currUserId]);

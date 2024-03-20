@@ -13,7 +13,6 @@ import { fetchAllCategories } from '@thunks/fetchCategories';
 import { fetchCountries } from '@thunks/fetchCountries';
 import { filteredLots, fetchLotDetails } from '@thunks/fetchLots';
 import { fetchUsers } from '@thunks/fetchUsers';
-import { getUserFromCognito } from '@thunks/fetchUsers';
 
 import { usersListSelector } from '@slices/usersListSlice';
 import { categoriesSelector } from '@slices/categoriesSlice';
@@ -61,7 +60,6 @@ const LotList = () => {
     dispatch(fetchAllCategories());
     dispatch(fetchCountries({ existed: true }));
     dispatch(fetchUsers());
-    dispatch(getUserFromCognito());
 
     return () => {
       dispatch(clearLots());

@@ -6,8 +6,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import _ from 'lodash';
 
-import { getUserFromCognito } from '@thunks/fetchUsers';
-
 import { lotListSelector } from '@slices/lotListSlice';
 import { deleteUserInfo } from '@slices/usersListSlice';
 
@@ -44,10 +42,6 @@ const UserIconInHeader = () => {
       renderLinks();
     }
   }, [userInfo]);
-
-  useEffect(() => {
-    dispatch(getUserFromCognito());
-  }, []);
 
   const createUserIcon = () => {
     const initials = userInfo.name

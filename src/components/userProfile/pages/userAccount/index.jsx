@@ -6,8 +6,6 @@ import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { Avatar, FormControlLabel, CircularProgress } from '@mui/material';
 import HttpsOutlinedIcon from '@mui/icons-material/HttpsOutlined';
 
-import { getUserFromCognito } from '@thunks/fetchUsers';
-
 import { toggleModal } from '@slices/modalSlice';
 import { deleteUserInfo } from '@slices/usersListSlice';
 
@@ -40,10 +38,6 @@ const UserAccount = () => {
   const user = useSelector((state) => state.usersList.userInfo);
 
   const [isFormDisabled, setFormDisabled] = useState(true);
-
-  useEffect(() => {
-    dispatch(getUserFromCognito());
-  }, []);
 
   if (!user) {
     return (

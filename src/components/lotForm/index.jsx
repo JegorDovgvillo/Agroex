@@ -15,7 +15,6 @@ import { setCorrectedTimeZone } from '@helpers/getCorrectTime';
 import { getDHMSFromMilliseconds } from '@helpers/getDHMSFromMilliseconds';
 import { selectCategoryByParentId } from '@slices/categoriesSlice';
 import { fetchSubcategoryByParentId } from '@thunks/fetchCategories';
-import { getUserFromCognito } from '@thunks/fetchUsers';
 
 import CustomTextField from '@customTextField';
 import CustomAutocompleteField from '../customAutocomplete';
@@ -161,10 +160,6 @@ const LotForm = ({
 
     handleSubmitClick(sanitizedValues, resetForm);
   };
-
-  useEffect(() => {
-    dispatch(getUserFromCognito());
-  }, []);
 
   useEffect(() => {
     if (!userInfo) return;

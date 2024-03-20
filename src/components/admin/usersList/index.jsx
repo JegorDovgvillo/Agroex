@@ -15,7 +15,6 @@ import {
   fetchUsers,
   changeUserStatus,
   updateUsersInTheDataBase,
-  getUserFromCognito,
 } from '@thunks/fetchUsers';
 
 import { setUserId, usersListSelector } from '@slices/usersListSlice';
@@ -56,7 +55,6 @@ export default function UsersList() {
 
   useEffect(() => {
     dispatch(fetchUsers());
-    dispatch(getUserFromCognito());
   }, [dispatch]);
 
   useEffect(() => {

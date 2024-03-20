@@ -5,7 +5,6 @@ import { useParams } from 'react-router-dom';
 import _ from 'lodash';
 
 import { fetchUserActivityLots, fetchLotDetails } from '@thunks/fetchLots';
-import { getUserFromCognito } from '@thunks/fetchUsers';
 import { lotListSelector } from '@slices/lotListSlice';
 import { betsSelector } from '@slices/betsSlice';
 import { selectModal } from '@slices/modalSlice';
@@ -52,10 +51,6 @@ const Betting = () => {
       <ItemCard item={item} setSelectedLot={setSelectedLot} key={item.id} />
     );
   });
-
-  useEffect(() => {
-    dispatch(getUserFromCognito());
-  }, [dispatch]);
 
   useEffect(() => {
     if (!userInfo) {
