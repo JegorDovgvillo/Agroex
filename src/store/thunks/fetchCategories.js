@@ -14,12 +14,16 @@ export const fetchCategories = createAsyncThunk(
 
 export const deleteCategory = createAsyncThunk(
   'categories/deleteCategory',
-  async ({ id }) => {
-    const response = await axiosInstance.delete(
-      `${ENDPOINTS.CATEGORIES}/${id}`
-    );
+  async ({ id }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.delete(
+        `${ENDPOINTS.CATEGORIES}/${id}`
+      );
 
-    return response.data;
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
   }
 );
 

@@ -18,6 +18,7 @@ const categoriesAdapter = createEntityAdapter();
 const initialState = categoriesAdapter.getInitialState({
   loadingStatus: 'idle',
   categoryId: null,
+  errors: null,
 });
 
 const categoriesSlice = createSlice({
@@ -26,6 +27,9 @@ const categoriesSlice = createSlice({
   reducers: {
     setCategoryId: (state, action) => {
       state.categoryId = action.payload;
+    },
+    clearErrors: (state) => {
+      state.errors = null;
     },
   },
   extraReducers: (builder) => {
@@ -47,8 +51,9 @@ const categoriesSlice = createSlice({
         state.loadingStatus = 'fulfilled';
         categoriesAdapter.removeOne(state, action.payload);
       })
-      .addCase(deleteCategory.rejected, (state) => {
+      .addCase(deleteCategory.rejected, (state, action) => {
         state.loadingStatus = 'rejected';
+        state.errors = action.payload;
       })
       .addCase(updateCategory.pending, (state) => {
         state.loadingStatus = 'pending';
@@ -75,7 +80,7 @@ const categoriesSlice = createSlice({
 
 const { actions, reducer } = categoriesSlice;
 
-export const { setCategoryId } = actions;
+export const { setCategoryId, clearErrors } = actions;
 
 const { selectAll } = categoriesAdapter.getSelectors(
   (state) => state.categories

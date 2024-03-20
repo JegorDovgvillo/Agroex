@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -18,7 +18,7 @@ import {
   clearModalsFields,
   setModalFields,
 } from '@slices/modalSlice';
-import { setCategoryId } from '@slices/categoriesSlice';
+import { setCategoryId, clearErrors } from '@slices/categoriesSlice';
 import { deleteCategory } from '@thunks/fetchCategories';
 
 import ModalForCreatingCategory from '@customModals/modalForCreatingCategory';
@@ -43,6 +43,8 @@ export default function CategoriesList() {
   const confirmModalData = useSelector((state) =>
     selectModal(state, 'confirmModal')
   );
+  const snackbarData = useSelector((state) => selectModal(state, 'snackbar'));
+  const errors = useSelector((state) => state.categories.errors);
 
   useEffect(() => {
     dispatch(fetchAllCategories());
@@ -58,7 +60,6 @@ export default function CategoriesList() {
       setModalFields({
         modalId: 'confirmModal',
         text: 'This action delete the category. Do you confirm the action?',
-        action: 'deleteCategory',
       })
     );
     dispatch(toggleModal('confirmModal'));
@@ -66,15 +67,36 @@ export default function CategoriesList() {
   };
 
   useEffect(() => {
-    const { confirmStatus, action, isOpen } = confirmModalData;
+    const { confirmStatus, isOpen } = confirmModalData;
 
     if (!confirmStatus || isOpen) return;
 
-    if (action === 'deleteCategory') {
-      dispatch(deleteCategory({ id: categoryId }));
-      dispatch(clearModalsFields('confirmModal'));
-    }
+    dispatch(deleteCategory({ id: 'categoryId' }));
+    dispatch(clearModalsFields('confirmModal'));
   }, [confirmModalData, categoryId, dispatch]);
+
+  useEffect(() => {
+    if (!errors) return;
+
+    setModalFields({
+      modalId: 'snackbar',
+      text: errors.detail || errors.title,
+    });
+    dispatch(toggleModal('snackbar'));
+
+    //console.log(errors);
+  }, [errors]);
+
+  useDispatch(() => {
+    if (!snackbarData) return;
+
+    const { isOpen } = snackbarData;
+
+    if (!isOpen) {
+      dispatch(clearModalsFields('snackbar'));
+      dispatch(clearErrors);
+    }
+  }, [snackbarData]);
 
   return (
     <>
