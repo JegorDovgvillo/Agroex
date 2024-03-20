@@ -1,3 +1,5 @@
+import Divider from '@mui/material/Divider';
+
 import getNumberWithCurrency from '@helpers/getNumberWithCurrency';
 
 import styles from './priceBlock.module.scss';
@@ -10,6 +12,7 @@ const PriceBlock = ({
   originalUnitCost,
   originalCurrency = currency,
   className,
+  detailedPage = false,
 }) => {
   const classNames = className.map((c) => styles[c]).join(' ');
   const costWithCurrency = getNumberWithCurrency(totalCost, currency);
@@ -27,13 +30,37 @@ const PriceBlock = ({
 
   return (
     <div className={`${styles.container} ${classNames}`}>
-      <p>{costWithCurrency}</p>
-      <span>{`${unitCostWithCurrency}/ton`}</span>
-      {!isSameCurrency && (
-        <div className={styles.original}>
-          <p>{originalCostWithCurrency}</p>
-          <span>{`${originalUnitCostWithCurrency}/ton`}</span>
-        </div>
+      <div className={styles.priceRow}>
+        <p>{costWithCurrency}</p>
+        {detailedPage && !isSameCurrency && (
+          <>
+            <Divider orientation="vertical" variant="middle" flexItem />
+            <p className={styles.original}>{originalCostWithCurrency}</p>
+          </>
+        )}
+      </div>
+      <div className={styles.priceRow}>
+        <span>{`${unitCostWithCurrency}/ton`}</span>
+        {detailedPage && !isSameCurrency && (
+          <>
+            <Divider orientation="vertical" flexItem />
+            <span
+              className={styles.original}
+            >{`${originalUnitCostWithCurrency}/ton`}</span>
+          </>
+        )}
+      </div>
+
+      {!isSameCurrency && !detailedPage && (
+        <>
+          <Divider className={styles.divider} />
+          <div>
+            <p className={styles.original}>{originalCostWithCurrency}</p>
+            <span className={styles.original}>
+              {`${originalUnitCostWithCurrency}/ton`}
+            </span>
+          </div>
+        </>
       )}
     </div>
   );

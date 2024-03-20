@@ -7,18 +7,28 @@
   align-items: flex-start;
   color: $monoBlack;
   margin-bottom: 30px;
+
+  .priceRow {
+    display: flex;
+    column-gap: 6px;
+    align-items: center;
+  }
+}
+
+.divider {
+  padding: 6px 0;
+  width: 100%;
 }
 
 .detailed {
   row-gap: 4px;
 
-  .original {
-    color: $systemDark;
+  p.original {
+    @include h5;
+  }
 
-    p {
-      color: $systemDark;
-      @include h5;
-    }
+  span.original {
+    @include body2;
   }
 
   p {
@@ -33,7 +43,7 @@
 }
 
 .list {
-  row-gap: 8px;
+  row-gap: 4px;
 
   p {
     color: $monoBlack;
@@ -46,17 +56,12 @@
     @include body2;
   }
 
-  .original {
-    color: $systemDark;
+  p.original {
+    @include body1;
+  }
 
-    p {
-      color: $systemDark;
-      @include body1;
-    }
-
-    span {
-      @include helperText;
-    }
+  p.span {
+    @include helperText;
   }
 }
 

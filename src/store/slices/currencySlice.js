@@ -1,11 +1,9 @@
 import { createSlice, createEntityAdapter } from '@reduxjs/toolkit';
 
-import { CURRENCY } from '@helpers/currency';
-
 const currencyAdapter = createEntityAdapter();
 
 const initialState = currencyAdapter.getInitialState({
-  selectedCurrency: CURRENCY[0].key,
+  selectedCurrency: null,
 });
 
 const currencySlice = createSlice({

@@ -407,6 +407,7 @@ export const LotDetails = () => {
                         originalUnitCost={originalPrice / quantity}
                         originalCurrency={originalCurrency}
                         className={['detailed']}
+                        detailedPage={true}
                       />
                     </div>
                   </div>

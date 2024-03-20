@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { find } from 'lodash';
+import _ from 'lodash';
 
 import { Avatar, Button, Menu, MenuItem } from '@mui/material';
 
@@ -17,9 +17,12 @@ const { currencyContainer, currencyMenuItem, flag, menuButton } = styles;
 export const CurrencySelect = () => {
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(null);
+  const storedCurrencies =
+    JSON.parse(localStorage.getItem('selectedCurrencies')) || [];
   const selectedCurrencyKey = useSelector(getSelectedCurrency);
-  const selectedCurrency = find(CURRENCY, { key: selectedCurrencyKey });
+  const [currencyItem, setCurrencyItem] = useState(null);
   const isOpen = Boolean(anchorEl);
+  const userInfo = useSelector((state) => state.usersList.userInfo);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -29,6 +32,38 @@ export const CurrencySelect = () => {
     dispatch(setSelectedCurrency(currency));
     setAnchorEl(null);
   };
+
+  useEffect(() => {
+    const userCurrency = _.find(storedCurrencies, {
+      userId: userInfo?.id || 'unregisteredUser',
+    });
+
+    dispatch(setSelectedCurrency(userCurrency?.currency || CURRENCY[0].key));
+  }, [dispatch, userInfo]);
+
+  useEffect(() => {
+    if (!selectedCurrencyKey) return;
+
+    setCurrencyItem(_.find(CURRENCY, { key: selectedCurrencyKey }));
+
+    const existingCurrencyIndex = _.findIndex(storedCurrencies, {
+      userId: userInfo?.id || 'unregisteredUser',
+    });
+
+    if (existingCurrencyIndex !== -1) {
+      storedCurrencies[existingCurrencyIndex].currency = selectedCurrencyKey;
+    } else {
+      storedCurrencies.push({
+        userId: userInfo?.id || 'unregisteredUser',
+        currency: selectedCurrencyKey,
+      });
+    }
+
+    localStorage.setItem(
+      'selectedCurrencies',
+      JSON.stringify(storedCurrencies)
+    );
+  }, [selectedCurrencyKey]);
 
   return (
     <div>
@@ -42,7 +77,7 @@ export const CurrencySelect = () => {
       >
         <Avatar
           alt="Flag icon"
-          src={selectedCurrency.iconSrc}
+          src={currencyItem?.iconSrc}
           className={flag}
           variant="square"
         />

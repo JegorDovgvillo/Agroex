@@ -25,7 +25,6 @@ export const updateLot = createAsyncThunk(
 export const fetchLotDetails = createAsyncThunk(
   'lotList/fetchLotDetails',
   async ({ id, currency }) => {
-    console.log(id);
     const response = await axiosInstance.get(`${ENDPOINTS.LOTS}/${id}`, {
       headers: { currency },
     });

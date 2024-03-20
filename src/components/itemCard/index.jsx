@@ -135,7 +135,7 @@ const ItemCard = ({ item, setSelectedLot }) => {
     setIsUserLotOwner(user.id === item.userId);
     setUserType(user['custom:role'] === 'admin' ? 'admin' : 'registeredUser');
   }, [user]);
-  console.log(userType);
+
   return (
     <>
       <div className={styles.cardWrapp} onClick={viewDetailsCard}>
@@ -159,7 +159,7 @@ const ItemCard = ({ item, setSelectedLot }) => {
                       className={['list', 'auctionSum']}
                       totalCost={lastBet.amount}
                       unitCost={lastBet.amount / item.quantity}
-                      currency={item.originalCurrency}
+                      currency={item.currency}
                     />
                   ) : (
                     <h6 className={auctionSum}>No bets</h6>
