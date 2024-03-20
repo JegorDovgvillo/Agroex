@@ -12,7 +12,7 @@ import {
 import { CircularProgress } from '@mui/material';
 
 import { getFilteredLots } from '@thunks/fetchLots';
-import { getUserFromCognito, fetchUsers } from '@thunks/fetchUsers';
+import { fetchUsers } from '@thunks/fetchUsers';
 
 import {
   toggleModal,
@@ -199,7 +199,6 @@ export default function AdminLotsList() {
   };
 
   useEffect(() => {
-    dispatch(getUserFromCognito());
     dispatch(getFilteredLots({ status: 'all' }));
     dispatch(fetchUsers());
   }, [dispatch]);

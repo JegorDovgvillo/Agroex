@@ -42,7 +42,7 @@ import { selectUserById } from '@slices/usersListSlice';
 
 import { fetchLotDetails } from '@thunks/fetchLots';
 import { fetchAllCategories } from '@thunks/fetchCategories';
-import { getUserFromCognito, fetchUser } from '@thunks/fetchUsers';
+import { fetchUser } from '@thunks/fetchUsers';
 import { fetchBetsByLotId } from '@thunks/fetchBets';
 
 import { ManageLotStatusBlock } from './manageLotStatusBlock';
@@ -117,7 +117,6 @@ export const LotDetails = () => {
   };
 
   useEffect(() => {
-    dispatch(getUserFromCognito());
     dispatch(fetchAllCategories());
     dispatch(fetchLotDetails(lotId));
     dispatch(fetchBetsByLotId({ id: lotId }));

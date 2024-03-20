@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Outlet } from 'react-router';
 import _ from 'lodash';
+
+import { getUserFromCognito } from '@thunks/fetchUsers';
 
 import { selectModal } from '@slices/modalSlice';
 import ConfirmActionModal from '@customModals/confirmActionModal';
@@ -13,6 +15,7 @@ import Footer from '../footer';
 import styles from './layout.module.scss';
 
 const Layout = () => {
+  const dispatch = useDispatch();
   const confirmActionData = useSelector((state) =>
     selectModal(state, 'confirmModal')
   );
@@ -25,6 +28,10 @@ const Layout = () => {
 
     setText(confirmActionData.text);
   }, [confirmActionData.text]);
+
+  useEffect(() => {
+    dispatch(getUserFromCognito());
+  }, []);
 
   return (
     <div className={styles.container}>

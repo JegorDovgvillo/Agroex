@@ -10,7 +10,6 @@ import { countrySelector } from '@slices/countriesSlice';
 import { tagsSelector } from '@slices/tagsSlice';
 import { toggleModal } from '@slices/modalSlice';
 
-import { getUserFromCognito } from '@thunks/fetchUsers';
 import { fetchCountries } from '@thunks/fetchCountries';
 import { deleteLot, updateLot, fetchLotDetails } from '@thunks/fetchLots';
 import { fetchAllCategories } from '@thunks/fetchCategories';
@@ -64,7 +63,6 @@ const UpdateLot = () => {
   useEffect(() => {
     dispatch(fetchLotDetails(lotId));
     dispatch(fetchAllCategories());
-    dispatch(getUserFromCognito());
     dispatch(fetchCountries({ existed: false }));
     dispatch(fetchTags());
   }, [dispatch]);

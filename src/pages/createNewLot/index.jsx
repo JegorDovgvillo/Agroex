@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import _ from 'lodash';
 import { withAuthenticator } from '@aws-amplify/ui-react';
 
-import { getUserFromCognito } from '@thunks/fetchUsers';
 import { fetchAllCategories } from '@thunks/fetchCategories';
 import { fetchCountries } from '@thunks/fetchCountries';
 import { fetchTags } from '@thunks/fetchTags';
@@ -35,7 +34,6 @@ const CreateNewLot = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getUserFromCognito());
     dispatch(fetchAllCategories());
     dispatch(fetchCountries({ existed: false }));
     dispatch(fetchTags());

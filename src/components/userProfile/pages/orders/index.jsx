@@ -1,10 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
 import _ from 'lodash';
 
-import { getUserFromCognito } from '@thunks/fetchUsers';
 import { fetchUserActivityLots } from '@thunks/fetchLots';
 import { lotListSelector } from '@slices/lotListSlice';
 
@@ -13,7 +12,6 @@ import { getLotState } from '@helpers/lotHandlers/getLotState';
 import ItemCard from '@components/itemCard';
 
 const UserOrders = () => {
-  const { tab } = useParams();
   const dispatch = useDispatch();
   const userInfo = useSelector((state) => state.usersList.userInfo);
   const lots = useSelector(lotListSelector);
@@ -27,10 +25,6 @@ const UserOrders = () => {
   const filteredLotsArr = filteredLotsByActiveTab.map((item) => {
     return <ItemCard item={item} key={item.id} />;
   });
-
-  useEffect(() => {
-    dispatch(getUserFromCognito());
-  }, [dispatch]);
 
   useEffect(() => {
     if (!userInfo) {

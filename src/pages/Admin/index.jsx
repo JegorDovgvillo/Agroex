@@ -5,8 +5,6 @@ import { toLower } from 'lodash';
 
 import { CssBaseline, Toolbar } from '@mui/material';
 
-import { getUserFromCognito } from '@thunks/fetchUsers';
-
 import { MainListItems } from '@components/admin/adminListItems';
 import CustomAppBar from '@components/customAppBar';
 import CustomDrawer from '@components/customDrawer';
@@ -19,7 +17,6 @@ import styles from './admin.module.scss';
 const { ADMIN_PAGE } = ROUTES;
 
 const AdminPage = () => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { page } = useParams();
 
@@ -31,8 +28,6 @@ const AdminPage = () => {
   };
 
   useEffect(() => {
-    dispatch(getUserFromCognito());
-
     const handleResize = () => {
       setIsOpen(window.innerWidth > 1200);
       setIsBarVisible(window.innerWidth > 1200);
