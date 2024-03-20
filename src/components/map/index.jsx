@@ -1,8 +1,9 @@
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
-import React, { useState, useEffect, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router';
 import _ from 'lodash';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
 import {
   fetchCountry,
@@ -17,19 +18,19 @@ import 'leaflet/dist/leaflet.css';
 
 import styles from './map.module.scss';
 
-const LocationMarker = ({ latitude, longitude, eventHandlers }) => {
+const LocationMarker = ({ position, eventHandlers, draggable }) => {
   const map = useMapEvents({
     click() {
-      map.flyTo([latitude, longitude], map.getZoom());
+      map.flyTo([position.latitude, position.longitude], map.getZoom());
     },
   });
 
   return (
-    !_.isNil(latitude) &&
-    !_.isNil(longitude) && (
+    !_.isNil(position.latitude) &&
+    !_.isNil(position.longitude) && (
       <Marker
-        position={[latitude, longitude]}
-        draggable
+        position={[position.latitude, position.longitude]}
+        draggable={draggable}
         eventHandlers={eventHandlers}
       ></Marker>
     )
@@ -45,13 +46,24 @@ const Map = ({
   markerCoordinate,
   setMarkerCoordinate,
   selectedCountry,
+  restrictFunctionallity,
 }) => {
   const dispatch = useDispatch();
   const { id } = useParams();
 
-  const selectedLot = useSelector((state) => selectLotDetailById(state, id));
-  const countryName = useSelector((state) => state.countries.countryName);
-  const address = useSelector((state) => state.countries.address);
+  const selectedLot = useSelector((state) =>
+    restrictFunctionallity ? null : selectLotDetailById(state, id)
+  );
+  const countryName = useSelector((state) =>
+    restrictFunctionallity ? null : state.countries.countryName
+  );
+  const address = useSelector((state) =>
+    restrictFunctionallity ? null : state.countries.address
+  );
+
+  const containerClass = restrictFunctionallity
+    ? styles.itemCardMap
+    : styles.mapContainer;
 
   const eventHandlers = useMemo(
     () => ({
@@ -100,13 +112,13 @@ const Map = ({
   }, [selectedCountry]);
 
   useEffect(() => {
-    if (countryName.name && !disabledMap) {
+    if (countryName?.name && !disabledMap) {
       dispatch(getCoordinate({ countryName: countryName.name }));
     }
   }, [countryName]);
 
   useEffect(() => {
-    if (markerCoordinate) {
+    if (markerCoordinate && !restrictFunctionallity) {
       dispatch(
         getAddress({
           latitude: markerCoordinate.lat,
@@ -132,7 +144,7 @@ const Map = ({
   }, [address]);
 
   useEffect(() => {
-    if (!selectedLot) {
+    if (!selectedLot && !restrictFunctionallity) {
       navigator.geolocation.getCurrentPosition((position) => {
         const { latitude, longitude } = position.coords;
 
@@ -151,8 +163,8 @@ const Map = ({
 
   return (
     <>
-      {markerCoordinate && (
-        <div className={styles.mapContainer}>
+      {markerCoordinate ? (
+        <div className={containerClass}>
           <MapContainer
             center={[markerCoordinate.lat, markerCoordinate.lon]}
             zoom={7}
@@ -161,11 +173,21 @@ const Map = ({
           >
             <TileLayer url="https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png" />
             <LocationMarker
-              latitude={markerCoordinate.lat}
-              longitude={markerCoordinate.lon}
+              position={{
+                latitude: markerCoordinate.lat,
+                longitude: markerCoordinate.lon,
+              }}
+              draggable={!restrictFunctionallity}
               eventHandlers={eventHandlers}
             />
           </MapContainer>
+        </div>
+      ) : (
+        <div className={styles.errorMessageContainer}>
+          <p>
+            <ErrorOutlineIcon />
+            Enable geolocation in your browser or select a country
+          </p>
         </div>
       )}
     </>

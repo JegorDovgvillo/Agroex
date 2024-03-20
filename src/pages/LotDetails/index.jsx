@@ -19,6 +19,7 @@ import { PlaceBetForm } from '@components/placeBetForm';
 import { TagsBlock } from '@components/tagsBlock';
 import LotStatusBlock from '@components/lotStatusBlock';
 import { getLotStatuses } from '@components/lotStatusBlock/getLotStatuses';
+import Map from '@components/map';
 
 import getNumberWithCurrency from '@helpers/getNumberWithCurrency';
 import getFormattedDate from '@helpers/getFormattedDate';
@@ -435,6 +436,13 @@ export const LotDetails = () => {
           </>
         }
       </div>
+      <Map
+        restrictFunctionallity={true}
+        markerCoordinate={{
+          lat: selectedLot.location.latitude,
+          lon: selectedLot.location.longitude,
+        }}
+      />
     </div>
   );
 };
