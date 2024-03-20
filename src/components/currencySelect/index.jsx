@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { find } from 'lodash';
 
 import { Avatar, Button, Menu, MenuItem } from '@mui/material';
 
 import { CURRENCY } from '@helpers/currency';
-import { setSelectedCurrency } from '@slices/currencySlice';
+import {
+  setSelectedCurrency,
+  getSelectedCurrency,
+} from '@slices/currencySlice';
 
 import styles from './currencySelect.module.scss';
 
@@ -14,16 +17,9 @@ const { currencyContainer, currencyMenuItem, flag, menuButton } = styles;
 export const CurrencySelect = () => {
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(null);
-  const storedCurrency = localStorage.getItem('selectedCurrency');
-  const selectedCurrencyKey = storedCurrency || CURRENCY[0].key;
+  const selectedCurrencyKey = useSelector(getSelectedCurrency);
   const selectedCurrency = find(CURRENCY, { key: selectedCurrencyKey });
   const isOpen = Boolean(anchorEl);
-
-  useEffect(() => {
-    !storedCurrency &&
-      localStorage.setItem('selectedCurrency', selectedCurrencyKey);
-    dispatch(setSelectedCurrency(selectedCurrencyKey));
-  }, []);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -31,7 +27,6 @@ export const CurrencySelect = () => {
 
   const handleClose = (currency) => {
     dispatch(setSelectedCurrency(currency));
-    localStorage.setItem('selectedCurrency', currency);
     setAnchorEl(null);
   };
 
