@@ -70,6 +70,14 @@ export const PlaceBetForm = ({ lot, type }) => {
   const getValidationSchema = () =>
     placeBetValidationSchema(minAmount, maxAmount, currency.key);
 
+  const formatAmountPerTon = (amount) => {
+    if (!amount || !lot.quantity) {
+      return '';
+    }
+
+    return `${getNumberWithCurrency(amount / lot.quantity, currency.key)}/ton`;
+  };
+
   useEffect(() => {
     if (placeBetStatus === 'fulfilled') {
       resetFormFunc && resetFormFunc();
@@ -133,12 +141,7 @@ export const PlaceBetForm = ({ lot, type }) => {
             id="outlined-weight-helper-text"
             className={helperText}
           >
-            {values.amount
-              ? `${getNumberWithCurrency(
-                  values.amount / lot.quantity,
-                  currency.key
-                )}/ton`
-              : ''}
+            {formatAmountPerTon(values.amount)}
           </FormHelperText>
 
           {isModal ? (

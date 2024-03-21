@@ -131,7 +131,7 @@ const UserIconInHeader = () => {
         </div>
       ) : (
         <NavLink to={ROUTES.LOG_IN} className={styles.loginLink}>
-          Log in
+          Sign in
           <LoginIcon />
         </NavLink>
       )}

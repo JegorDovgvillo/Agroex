@@ -70,9 +70,9 @@ export const CurrencySelect = () => {
       <Button
         className={`${currencyContainer} ${menuButton}`}
         id="currency-button"
-        aria-controls={isOpen ? 'currency-menu' : undefined}
+        aria-controls={isOpen && 'currency-menu'}
         aria-haspopup="true"
-        aria-expanded={isOpen ? 'true' : undefined}
+        aria-expanded={isOpen && 'true'}
         onClick={handleClick}
       >
         <Avatar

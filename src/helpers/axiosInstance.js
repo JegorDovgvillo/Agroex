@@ -16,8 +16,6 @@ axiosInstance.interceptors.request.use(
         config.headers.Authorization = `Bearer ${idToken}`;
       }
     }
-    /* const storedCurrency = localStorage.getItem('selectedCurrency');
-    config.headers.currency = storedCurrency; */
 
     return config;
   },
