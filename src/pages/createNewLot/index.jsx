@@ -11,9 +11,9 @@ import { createLot } from '@thunks/fetchLots';
 import { tagsSelector } from '@slices/tagsSlice';
 import {
   toggleModal,
-  selectModal,
   setModalFields,
   clearModalsFields,
+  selectModal,
 } from '@slices/modalSlice';
 import { selectRootCategories } from '@slices/categoriesSlice';
 import { countrySelector } from '@slices/countriesSlice';
@@ -26,6 +26,7 @@ const MAXIMUM_NUMBER_OF_IMG = import.meta.env.VITE_MAXIMUM_NUMBER_OF_IMG;
 
 const CreateNewLot = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const categories = useSelector(selectRootCategories);
   const country = useSelector(countrySelector);
   const tags = useSelector(tagsSelector);
@@ -34,17 +35,16 @@ const CreateNewLot = () => {
     (state) => state.countries.markerCoordinate
   );
   const createLotStatus = useSelector((state) => state.lotList.createLotStatus);
-  const customSnackbarData = useSelector((state) =>
-    selectModal(state, 'snackbar')
-  );
   const selectedCurrency = useSelector(getSelectedCurrency);
+  const snackbarData = useSelector((state) => selectModal(state, 'snackbar'));
+  const submitErrorMessage = useSelector(
+    (state) => state.lotList.errors?.message
+  );
 
   const [markerCoordinate, setMarkerCoordinate] = useState(null);
   const [files, setFiles] = useState([]);
   const [disabled, setDisabled] = useState(false);
   const [maxFilesPerDrop, setMaxFilesPerDrop] = useState(MAXIMUM_NUMBER_OF_IMG);
-
-  const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(fetchAllCategories());
@@ -52,7 +52,7 @@ const CreateNewLot = () => {
     dispatch(fetchTags());
   }, [dispatch]);
 
-  const handleSubmitClick = async (values, resetForm) => {
+  const handleSubmitClick = async (values) => {
     const formData = new FormData();
 
     const subcategory =
@@ -68,13 +68,13 @@ const CreateNewLot = () => {
       packaging: values.packaging,
       duration: values.duration,
       quantity: values.quantity,
-      originalPrice: values.price,
-      originalMinPrice: values.minPrice,
-      originalCurrency: values.priceUnits,
+      originalPrice: values.originalPrice,
+      originalMinPrice: values.originalMinPrice,
+      originalCurrency: values.originalCurrency,
       expirationDate: values.expirationDate,
       productCategory: {
         ...subcategory,
-        parentId: values.category,
+        parentId: values.productCategory,
       },
       lotType: values.lotType,
       userId: userId.sub,
@@ -86,7 +86,7 @@ const CreateNewLot = () => {
       },
       tags: values.tags,
     };
-
+    console.log(lotData);
     files.forEach((file) => {
       formData.append('file', file);
     });
@@ -94,32 +94,43 @@ const CreateNewLot = () => {
     formData.append('data', JSON.stringify(lotData));
 
     dispatch(createLot({ formData, currency: selectedCurrency }));
-    setFiles([]);
-    resetForm();
   };
 
   useEffect(() => {
-    if (createLotStatus === 'fulfilled') {
-      dispatch(
-        setModalFields({
-          modalId: 'snackbar',
-          message: 'Your lot has been successfully added',
-          severity: 'success',
-        })
-      );
-      dispatch(toggleModal('snackbar'));
+    switch (createLotStatus) {
+      case 'fulfilled':
+        dispatch(
+          setModalFields({
+            modalId: 'snackbar',
+            message: 'Your lot has been successfully added',
+            severity: 'success',
+          })
+        );
+        dispatch(toggleModal('snackbar'));
+        navigate(-1);
+        dispatch(clearStatus('createLotStatus'));
+        break;
+
+      case 'rejected':
+        dispatch(
+          setModalFields({
+            modalId: 'snackbar',
+            message: submitErrorMessage,
+            severity: 'error',
+          })
+        );
+        dispatch(toggleModal('snackbar'));
+        break;
     }
   }, [createLotStatus]);
 
   useEffect(() => {
-    const { isOpen, message } = customSnackbarData;
+    const { isOpen, message } = snackbarData;
 
-    if (!isOpen && message) {
-      navigate(-1);
-      dispatch(clearModalsFields('snackbar'));
-      dispatch(clearStatus('createLotStatus'));
-    }
-  }, [customSnackbarData]);
+    if (isOpen || !message) return;
+
+    clearModalsFields('snackbar');
+  }, [snackbarData]);
 
   const isDataLoaded = _.every(
     [categories, country, tags],

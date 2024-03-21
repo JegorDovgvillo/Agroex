@@ -23,7 +23,6 @@ import CustomMultipleAutocompleteField from '../customMultipleAutocomplete';
 import { CustomButton } from '@buttons/CustomButton';
 import CustomSelect from '@customSelect';
 import CustomDatePicker from '@components/customDatePicker';
-import ConfirmActionModal from '@customModals/confirmActionModal';
 import DragAndDrop from '../dragAndDrop';
 
 import styles from './lotForm.module.scss';
@@ -41,7 +40,6 @@ const LotForm = ({
   categories,
   tags,
   formType,
-  setConfirmStatus,
   showConfirm,
   files,
   setFiles,
@@ -63,24 +61,25 @@ const LotForm = ({
 
   const [disabledMap, setDisabledMap] = useState(true);
   const lotType = getFormattedString(selectedLot?.lotType);
+  const submitErrors = useSelector((state) => state.lotList.errors?.errors);
 
   const initialValues = {
     title: selectedLot?.title,
     country: selectedLot?.location.countryId,
     region: selectedLot?.location.region,
-    category: selectedLot?.productCategory.parentId,
+    productCategory: selectedLot?.productCategory.parentId,
     subcategory: selectedLot?.productCategory.title,
     variety: selectedLot?.variety,
     description: selectedLot?.description,
     packaging: selectedLot?.packaging,
     quantity: selectedLot?.quantity,
-    price: selectedLot?.originalPrice,
-    minPrice: selectedLot?.originalMinPrice,
-    priceUnits: selectedLot?.originalCurrency,
+    originalPrice: selectedLot?.originalPrice,
+    originalMinPrice: selectedLot?.originalMinPrice,
+    originalCurrency: selectedLot?.originalCurrency,
     lotType: lotType,
     size: selectedLot?.size,
     expirationDate: selectedLot?.expirationDate,
-    duration: selectedLot?.expirationDate,
+    duration: selectedLot?.duration,
     tags: selectedLot?.tags,
     days: days,
     hours: hours,
@@ -90,7 +89,7 @@ const LotForm = ({
 
   const [isFirstSubmit, setIsFirstSubmit] = useState(true);
   const [selectedCategoryId, setSelectedCategoryId] = useState(
-    initialValues.category
+    initialValues.productCategory
   );
   const [selectedLotType, setSelectedLotType] = useState(initialValues.lotType);
   const [isAuctionLot, setIsAuctionLot] = useState(
@@ -132,10 +131,10 @@ const LotForm = ({
       return tag || { title: getSanitizedString(tagTitle) };
     });
 
-    return newTags;
+    return _.uniqBy(newTags, 'title');
   };
 
-  const handleSubmit = (values, { resetForm }) => {
+  const handleSubmit = (values) => {
     const newValues = _.omit(values, ['days', 'hours', 'minutes']);
     const subcategory = _.find(subcategories, { title: values.subcategory });
 
@@ -159,7 +158,7 @@ const LotForm = ({
       return value;
     });
 
-    handleSubmitClick(sanitizedValues, resetForm);
+    handleSubmitClick(sanitizedValues);
   };
 
   useEffect(() => {
@@ -171,7 +170,7 @@ const LotForm = ({
   useEffect(() => {
     if (
       (formType !== 'create' && formRef.current) ||
-      (formType === 'create' && isFirstSubmit && isFirstSubmit)
+      (formType === 'create' && isFirstSubmit)
     ) {
       formRef.current.validateForm();
     }
@@ -193,6 +192,18 @@ const LotForm = ({
       );
     }
   }, [selectedLotType]);
+
+  useEffect(() => {
+    if (!submitErrors) return;
+
+    formRef.current.setErrors(submitErrors);
+  }, [submitErrors]);
+
+  useEffect(() => {
+    return () => {
+      setFiles([]);
+    };
+  }, []);
 
   return (
     <Formik
@@ -220,8 +231,9 @@ const LotForm = ({
                   placeholder="Enter the title"
                   name="title"
                   value={values.title}
-                  errors={errors.title}
+                  errors={errors.title || submitErrors?.title}
                   touched={!isCreateNotSubmittedForm || touched.title}
+                  setFieldValue={setFieldValue}
                 />
                 <CustomSelect
                   label="Location"
@@ -230,7 +242,7 @@ const LotForm = ({
                   name="country"
                   placeholder="Choose country"
                   value={values.country}
-                  errors={errors.country}
+                  errors={errors.country || submitErrors?.country}
                   touched={!isCreateNotSubmittedForm || touched.country}
                   setFieldValue={setFieldValue}
                   disabled={disabledMap}
@@ -242,8 +254,9 @@ const LotForm = ({
                   name="region"
                   disabled={true}
                   value={values.region}
-                  errors={errors.region}
+                  errors={errors.region || submitErrors?.region}
                   touched={!isCreateNotSubmittedForm || touched.region}
+                  setFieldValue={setFieldValue}
                 />
                 <div className={styles.disabledMapWrapp}>
                   <CustomButton
@@ -264,7 +277,7 @@ const LotForm = ({
                   units={['sell', 'buy', 'auction sell']}
                   placeholder="Lot type"
                   value={values.lotType}
-                  errors={errors.lotType}
+                  errors={errors.lotType || submitErrors?.lotType}
                   touched={!isCreateNotSubmittedForm || touched.lotType}
                   handleChange={setSelectedLotType}
                   setFieldValue={setFieldValue}
@@ -273,11 +286,14 @@ const LotForm = ({
                   label="Category"
                   units={categories}
                   itemFieldName="title"
-                  name="category"
+                  name="productCategory"
                   placeholder="Choose category"
-                  value={values.category}
-                  errors={errors.category}
-                  touched={!isCreateNotSubmittedForm || touched.category}
+                  value={values.productCategory}
+                  errors={
+                    errors.productCategory ||
+                    (!values.productCategory && submitErrors?.productCategory)
+                  }
+                  touched={!isCreateNotSubmittedForm || touched.productCategory}
                   handleChange={setSelectedCategoryId}
                   setFieldValue={setFieldValue}
                 />
@@ -288,7 +304,10 @@ const LotForm = ({
                   placeholder="Enter the subcategory"
                   name="subcategory"
                   value={values.subcategory}
-                  errors={errors.subcategory}
+                  errors={
+                    errors.subcategory ||
+                    (!values.subcategory && submitErrors?.productCategory)
+                  }
                   touched={!isCreateNotSubmittedForm || touched.subcategory}
                   options={subcategories}
                   setFieldValue={setFieldValue}
@@ -300,8 +319,9 @@ const LotForm = ({
                   placeholder="Enter the variety"
                   name="variety"
                   value={values.variety}
-                  errors={errors.variety}
+                  errors={errors.variety || submitErrors?.variety}
                   touched={!isCreateNotSubmittedForm || touched.variety}
+                  setFieldValue={setFieldValue}
                 />
               </div>
               <CustomTextField
@@ -312,9 +332,10 @@ const LotForm = ({
                 rows={4}
                 type="textarea"
                 value={values.description}
-                errors={errors.description}
+                errors={errors.description || submitErrors?.description}
                 touched={!isCreateNotSubmittedForm || touched.description}
                 fieldType="textarea"
+                setFieldValue={setFieldValue}
               />
               <div className={styles.inputBlock}>
                 <CustomTextField
@@ -324,8 +345,9 @@ const LotForm = ({
                   name="packaging"
                   required={false}
                   value={values.packaging}
-                  errors={errors.packaging}
+                  errors={errors.packaging || submitErrors?.packaging}
                   touched={!isCreateNotSubmittedForm || touched.packaging}
+                  setFieldValue={setFieldValue}
                 />
                 <CustomTextField
                   label="Quantity"
@@ -334,8 +356,9 @@ const LotForm = ({
                   placeholder="Enter the quantity"
                   name="quantity"
                   value={values.quantity}
-                  errors={errors.quantity}
+                  errors={errors.quantity || submitErrors?.quantity}
                   touched={!isCreateNotSubmittedForm || touched.quantity}
+                  setFieldValue={setFieldValue}
                 />
                 <CustomTextField
                   label="Size"
@@ -344,8 +367,9 @@ const LotForm = ({
                   required={false}
                   name="size"
                   value={values.size}
-                  errors={errors.size}
+                  errors={errors.size || submitErrors?.size}
                   touched={!isCreateNotSubmittedForm || touched.size}
+                  setFieldValue={setFieldValue}
                 />
               </div>
               {isAuctionLot && (
@@ -363,8 +387,9 @@ const LotForm = ({
                         label="Days"
                         placeholder="Days"
                         value={values.days}
-                        errors={errors.days}
+                        errors={errors.days || submitErrors?.days}
                         touched={!isCreateNotSubmittedForm || touched.days}
+                        setFieldValue={setFieldValue}
                       />
                       <CustomTextField
                         id="hours"
@@ -374,8 +399,9 @@ const LotForm = ({
                         label="Hours"
                         placeholder="Hours"
                         value={values.hours}
-                        errors={errors.hours}
+                        errors={errors.hours || submitErrors?.hours}
                         touched={!isCreateNotSubmittedForm || touched.hours}
+                        setFieldValue={setFieldValue}
                       />
                       <CustomTextField
                         id="minutes"
@@ -385,8 +411,9 @@ const LotForm = ({
                         label="Minutes"
                         placeholder="Minutes"
                         value={values.minutes}
-                        errors={errors.minutes}
+                        errors={errors.minutes || submitErrors?.duration}
                         touched={!isCreateNotSubmittedForm || touched.minutes}
+                        setFieldValue={setFieldValue}
                       />
                     </div>
                   </div>
@@ -395,12 +422,15 @@ const LotForm = ({
               <div className={styles.inputBlock}>
                 {!isAuctionLot && (
                   <CustomDatePicker
+                    name="expirationDate"
                     value={values.expirationDate}
                     onChange={(date) => {
                       setFieldTouched('expirationDate', true);
                       setFieldValue('expirationDate', date);
                     }}
-                    errors={errors.expirationDate}
+                    errors={
+                      errors.expirationDate || submitErrors?.expirationDate
+                    }
                     touched={
                       !isCreateNotSubmittedForm || touched.expirationDate
                     }
@@ -409,33 +439,43 @@ const LotForm = ({
                 {isAuctionLot && (
                   <CustomTextField
                     label="Min price"
-                    id="minPrice"
-                    name="minPrice"
+                    id="originalMinPrice"
+                    name="originalMinPrice"
                     type="number"
                     placeholder="Enter the min price"
-                    value={values.minPrice}
-                    errors={errors.minPrice}
-                    touched={!isCreateNotSubmittedForm || touched.minPrice}
+                    value={values.originalMinPrice}
+                    errors={
+                      errors.originalMinPrice || submitErrors?.originalMinPrice
+                    }
+                    touched={
+                      !isCreateNotSubmittedForm || touched.originalMinPrice
+                    }
+                    setFieldValue={setFieldValue}
                   />
                 )}
                 <CustomTextField
                   label="Price"
-                  id="price"
-                  name="price"
+                  id="originalPrice"
+                  name="originalPrice"
                   type="number"
                   placeholder="Enter the price"
-                  value={values.price}
-                  errors={errors.price}
-                  touched={!isCreateNotSubmittedForm || touched.price}
+                  value={values.originalPrice}
+                  errors={errors.originalPrice || submitErrors?.originalPrice}
+                  touched={!isCreateNotSubmittedForm || touched.originalPrice}
+                  setFieldValue={setFieldValue}
                 />
                 <CustomSelect
                   label="Currency"
                   units={currencyUnits}
-                  name="priceUnits"
+                  name="originalCurrency"
                   placeholder="Currency"
-                  value={values.priceUnits}
-                  errors={errors.priceUnits}
-                  touched={!isCreateNotSubmittedForm || touched.priceUnits}
+                  value={values.originalCurrency}
+                  errors={
+                    errors.originalCurrency || submitErrors?.originalCurrency
+                  }
+                  touched={
+                    !isCreateNotSubmittedForm || touched.originalCurrency
+                  }
                   setFieldValue={setFieldValue}
                 />
               </div>
@@ -449,7 +489,7 @@ const LotForm = ({
                   placeholder="Select or type a tag"
                   name="tags"
                   value={values.tags}
-                  errors={errors.tags}
+                  errors={errors.tags || submitErrors?.tags}
                   options={tags}
                   setFieldValue={setFieldValue}
                 />
@@ -462,7 +502,7 @@ const LotForm = ({
                 disabled={disabled}
                 setDisabled={setDisabled}
               />
-              {!isImageAdded && (
+              {!isImageAdded && !isFirstSubmit && (
                 <FormHelperText error className={styles.dropDownHelperText}>
                   At least one picture must be uploaded
                 </FormHelperText>
@@ -474,7 +514,11 @@ const LotForm = ({
                     width="auto"
                     typeOfButton="submit"
                     handleClick={handlePlaceItemBtnClick}
-                    disabled={!isFirstSubmit && (!isValid || !isImageAdded)}
+                    disabled={
+                      !isFirstSubmit &&
+                      (!isValid || !isImageAdded) &&
+                      !submitErrors
+                    }
                   />
                 </>
               ) : (
@@ -483,17 +527,13 @@ const LotForm = ({
                     text="Update an item"
                     width="auto"
                     typeOfButton="submit"
-                    disabled={!isValid || !isImageAdded}
+                    disabled={!isValid || !isImageAdded || submitErrors}
                   />
                   <CustomButton
                     text="Delete an item"
                     width="auto"
                     typeOfButton="button"
                     handleClick={showConfirm}
-                  />
-                  <ConfirmActionModal
-                    text="This action delete the lot. Do you confirm the action?"
-                    setConfirmStatus={setConfirmStatus}
                   />
                 </div>
               )}

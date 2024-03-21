@@ -91,7 +91,7 @@ const ModalForUpdatingCategory = () => {
             onSubmit={handleSubmitClick}
             validationSchema={categoryTitleValidationSchema}
           >
-            {({ values, errors, touched, isValid }) => (
+            {({ values, errors, touched, isValid, setFieldValue }) => (
               <Form>
                 <CustomTextField
                   name="title"
@@ -102,6 +102,7 @@ const ModalForUpdatingCategory = () => {
                   errors={errors.title}
                   touched={touched.title}
                   type="modalTextField"
+                  setFieldValue={setFieldValue}
                 />
                 <div className={styles.buttonsWrapp}>
                   <CustomUploadButton

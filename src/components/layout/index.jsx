@@ -7,9 +7,8 @@ import { fetchAuthSession } from 'aws-amplify/auth';
 
 import { getUserFromCognito } from '@thunks/fetchUsers';
 
-import { selectModal } from '@slices/modalSlice';
 import { setMessage } from '@slices/sseSlice';
-
+import { selectModal, clearModalsFields } from '@slices/modalSlice';
 import ConfirmActionModal from '@customModals/confirmActionModal';
 import AdminMessageModal from '@customModals/adminMessageModal';
 import { CustomSnackbar } from '@components/customSnackbar';
@@ -27,6 +26,9 @@ const Layout = () => {
   const userInfo = useSelector((state) => state.usersList.userInfo);
   const confirmActionData = useSelector((state) =>
     selectModal(state, 'confirmModal')
+  );
+  const customSnackbarData = useSelector((state) =>
+    selectModal(state, 'snackbar')
   );
 
   const [text, setText] = useState('');
@@ -67,6 +69,14 @@ const Layout = () => {
       sseConnection.close();
     }
   }, [userInfo]);
+
+  useEffect(() => {
+    const { isOpen, message } = customSnackbarData;
+
+    if (!isOpen && message) {
+      dispatch(clearModalsFields('snackbar'));
+    }
+  }, [customSnackbarData]);
 
   return (
     <div className={styles.container}>

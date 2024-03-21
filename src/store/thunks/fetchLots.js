@@ -11,14 +11,18 @@ export const fetchLots = createAsyncThunk('lotList/fetchLots', async () => {
 
 export const updateLot = createAsyncThunk(
   'lotList/updateLot',
-  async ({ id, lotData, currency }) => {
-    const response = await axiosInstance.put(
-      `${ENDPOINTS.LOTS}/${id}`,
-      lotData,
-      { headers: { currency } }
-    );
+  async ({ id, lotData, currency }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.put(
+        `${ENDPOINTS.LOTS}/${id}`,
+        lotData,
+        { headers: { currency } }
+      );
 
-    return response.data;
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
   }
 );
 
@@ -35,21 +39,29 @@ export const fetchLotDetails = createAsyncThunk(
 
 export const createLot = createAsyncThunk(
   'lotList/createLot',
-  async ({ formData, currency }) => {
-    const response = await axiosInstance.post(ENDPOINTS.LOTS, formData, {
-      headers: { currency },
-    });
+  async ({ formData, currency }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.post(ENDPOINTS.LOTS, formData, {
+        headers: { currency },
+      });
 
-    return response.data;
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
   }
 );
 
 export const deleteLot = createAsyncThunk(
   'lotList/deleteLot',
-  async ({ id }) => {
-    const response = await axiosInstance.delete(`${ENDPOINTS.LOTS}/${id}`);
+  async ({ id }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.delete(`${ENDPOINTS.LOTS}/${id}`);
 
-    return response.data;
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
   }
 );
 

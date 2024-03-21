@@ -93,7 +93,7 @@ export const PlaceBetForm = ({ lot, type }) => {
       onSubmit={handleSubmit}
       validationSchema={getValidationSchema}
     >
-      {({ values, errors, touched, isValid }) => (
+      {({ values, errors, touched, isValid, setFieldValue }) => (
         <Form className={formContainer}>
           {isModal && (
             <CustomTextField
@@ -108,6 +108,7 @@ export const PlaceBetForm = ({ lot, type }) => {
                   <InputAdornment position="start">Ton</InputAdornment>
                 ),
               }}
+              setFieldValue={setFieldValue}
             />
           )}
           <CustomTextField
@@ -135,6 +136,7 @@ export const PlaceBetForm = ({ lot, type }) => {
                 </InputAdornment>
               ),
             }}
+            setFieldValue={setFieldValue}
           />
 
           <FormHelperText

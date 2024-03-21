@@ -16,14 +16,14 @@ const commonLotFieldsValidationSchema = {
   region: getTextFieldValidationSchema(1, 30),
   variety: getTextFieldValidationSchema(1, 30),
   country: getSelectFieldValidationSchema('country'),
-  category: getSelectFieldValidationSchema('category'),
+  productCategory: getSelectFieldValidationSchema('category'),
   subcategory: getTextFieldValidationSchema(1, 35),
-  description: getTextFieldValidationSchema(20, 1000),
+  description: getTextFieldValidationSchema(1, 1000),
   size: getTextFieldValidationSchema(1, 10),
   packaging: getTextFieldValidationSchema(1, 10),
   quantity: getNumberFieldValidationSchema(1, 999),
-  price: getNumberFieldValidationSchema(1, 9999),
-  priceUnits: getSelectFieldValidationSchema('currency'),
+  originalPrice: getNumberFieldValidationSchema(1, 9999),
+  originalCurrency: getSelectFieldValidationSchema('currency'),
   lotType: getSelectFieldValidationSchema('lot type'),
   tags: tagsFieldValidationSchema(1, 10),
 };
@@ -40,7 +40,7 @@ export const lotValidationSchema = object().shape({
 
 export const auctionLotValidationSchema = object().shape({
   ...commonLotFieldsValidationSchema,
-  minPrice: getNumberFieldValidationSchema(1, 9999).test(
+  originalMinPrice: getNumberFieldValidationSchema(1, 9999).test(
     'lessThanPrice',
     'Minimum price should be less than price',
     function (value) {

@@ -4,6 +4,8 @@ import {
   createSelector,
 } from '@reduxjs/toolkit';
 
+import _ from 'lodash';
+
 import {
   fetchLots,
   fetchLotDetails,
@@ -24,6 +26,8 @@ const initialState = lotListAdapter.getInitialState({
   loadingStatus: 'idle',
   changeLotLoadingStatus: 'idle',
   createLotStatus: 'idle',
+  updateLotStatus: 'idle',
+  deleteLotStatus: 'idle',
   lotId: null,
   errors: null,
 });
@@ -41,6 +45,15 @@ const lotListSlice = createSlice({
     clearStatus: (state, action) => {
       state[action.payload] = 'idle';
     },
+    deleteError: (state, action) => {
+      if (!state.errors) return;
+
+      state.errors.errors = _.omit(state.errors.errors, action.payload);
+
+      if (_.isEmpty(state.errors.errors)) {
+        state.errors = null;
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -55,14 +68,15 @@ const lotListSlice = createSlice({
         state.loadingStatus = 'rejected';
       })
       .addCase(updateLot.pending, (state) => {
-        state.loadingStatus = 'pending';
+        state.updateLotStatus = 'pending';
       })
       .addCase(updateLot.fulfilled, (state, action) => {
-        state.loadingStatus = 'fulfilled';
+        state.updateLotStatus = 'fulfilled';
         lotListAdapter.upsertOne(state, action.payload);
       })
-      .addCase(updateLot.rejected, (state) => {
-        state.loadingStatus = 'rejected';
+      .addCase(updateLot.rejected, (state, action) => {
+        state.updateLotStatus = 'rejected';
+        state.errors = action.payload;
       })
       .addCase(fetchLotDetails.pending, (state) => {
         state.loadingStatus = 'pending';
@@ -75,16 +89,17 @@ const lotListSlice = createSlice({
         state.loadingStatus = 'rejected';
       })
       .addCase(deleteLot.pending, (state) => {
-        state.loadingStatus = 'pending';
+        state.deleteLotStatus = 'pending';
       })
       .addCase(deleteLot.fulfilled, (state, action) => {
         const { id } = action.meta.arg;
 
         lotListAdapter.removeOne(state, id);
-        state.loadingStatus = 'fulfilled';
+        state.deleteLotStatus = 'fulfilled';
       })
-      .addCase(deleteLot.rejected, (state) => {
-        state.loadingStatus = 'rejected';
+      .addCase(deleteLot.rejected, (state, action) => {
+        state.deleteLotStatus = 'rejected';
+        state.errors = action.payload;
       })
       .addCase(createLot.pending, (state) => {
         state.createLotStatus = 'pending';
@@ -93,8 +108,9 @@ const lotListSlice = createSlice({
         lotListAdapter.addOne(state, action.payload);
         state.createLotStatus = 'fulfilled';
       })
-      .addCase(createLot.rejected, (state) => {
+      .addCase(createLot.rejected, (state, action) => {
         state.createLotStatus = 'rejected';
+        state.errors = action.payload;
       })
       .addCase(filteredLots.pending, (state) => {
         state.loadingStatus = 'pending';
@@ -171,6 +187,7 @@ export const { selectById: selectLotDetailById } = lotListAdapter.getSelectors(
 );
 
 const { actions, reducer } = lotListSlice;
-export const { setLotId, clearErrors, clearStatus } = actions;
+export const { setLotId, clearLots, clearErrors, clearStatus, deleteError } =
+  actions;
 
 export default reducer;

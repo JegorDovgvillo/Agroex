@@ -5,6 +5,7 @@
   flex-direction: column;
   align-items: flex-start;
   width: 100%;
+  margin: 0 16px 24px 0;
 
   &.error {
     margin: 0 16px 0 0 !important;
@@ -13,7 +14,6 @@
   .select,
   .input {
     width: 210px;
-    margin: 0 16px 24px 0 !important;
 
     &.betInput {
       width: 100%;
