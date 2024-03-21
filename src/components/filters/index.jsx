@@ -60,17 +60,15 @@ const Filters = ({
   };
 
   const applyFilters = (values) => {
-    const valuesToSubmit = _.omit(
-      {
-        ...values,
-        regions: _.intersection(selectedRegions, regions),
-        categories: _.intersection(
-          selectedSubcategoriesIds,
-          values.subcategories
-        ),
-      },
-      'subcategories'
-    );
+    const valuesToSubmit = _.omit({
+      ...values,
+      regions: _.intersection(selectedRegions, regions),
+      categories: selectedCategoriesIds,
+      subcategories: _.intersection(
+        selectedSubcategoriesIds,
+        values.subcategories
+      ),
+    });
 
     const filteredParams = _.toPairs(
       _.pickBy(
@@ -118,13 +116,17 @@ const Filters = ({
       users: searchParams.get('users')
         ? getNumbersArray(searchParams.get('users'))
         : [],
-      categories: selectedCategoriesIds,
-      subcategories: selectedSubcategoriesIds,
+      categories: searchParams.has('categories')
+        ? searchParams.get('categories').split(',').map(Number)
+        : [],
+      subcategories: searchParams.has('subcategories')
+        ? searchParams.get('subcategories').split(',').map(Number)
+        : [],
       lotType: searchParams.get('lotType') || '',
-      countries: searchParams.get('countries')
+      countries: searchParams.has('countries')
         ? searchParams.get('countries').split(',').map(Number)
         : [],
-      regions: searchParams.get('regions')
+      regions: searchParams.has('regions')
         ? searchParams.get('regions').split(',')
         : [],
     });
