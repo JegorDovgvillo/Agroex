@@ -197,6 +197,9 @@ const ItemCard = ({ item, setSelectedLot }) => {
                 totalCost={item.price}
                 unitCost={item.price / item.quantity}
                 currency={item.currency}
+                originalCost={item.originalPrice}
+                originalUnitCost={item.originalPrice / item.quantity}
+                originalCurrency={item.originalCurrency}
               />
 
               {userType === 'registeredUser' &&

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import _ from 'lodash';
 import { withAuthenticator } from '@aws-amplify/ui-react';
 
@@ -9,15 +10,23 @@ import { fetchTags } from '@thunks/fetchTags';
 import { createLot } from '@thunks/fetchLots';
 
 import { tagsSelector } from '@slices/tagsSlice';
-import { toggleModal } from '@slices/modalSlice';
+import {
+  toggleModal,
+  selectModal,
+  setModalFields,
+  clearModalsFields,
+} from '@slices/modalSlice';
 import { selectRootCategories } from '@slices/categoriesSlice';
 import { countrySelector } from '@slices/countriesSlice';
+import { clearStatus } from '@slices/lotListSlice';
+import { getSelectedCurrency } from '@slices/currencySlice';
 
 import LotForm from '@components/lotForm';
 
 const MAXIMUM_NUMBER_OF_IMG = import.meta.env.VITE_MAXIMUM_NUMBER_OF_IMG;
 
 const CreateNewLot = () => {
+  const navigate = useNavigate();
   const categories = useSelector(selectRootCategories);
   const country = useSelector(countrySelector);
   const tags = useSelector(tagsSelector);
@@ -25,6 +34,11 @@ const CreateNewLot = () => {
   const selectedCountry = useSelector(
     (state) => state.countries.markerCoordinate
   );
+  const createLotStatus = useSelector((state) => state.lotList.createLotStatus);
+  const customSnackbarData = useSelector((state) =>
+    selectModal(state, 'snackbar')
+  );
+  const selectedCurrency = useSelector(getSelectedCurrency);
 
   const [markerCoordinate, setMarkerCoordinate] = useState(null);
   const [files, setFiles] = useState([]);
@@ -80,11 +94,33 @@ const CreateNewLot = () => {
 
     formData.append('data', JSON.stringify(lotData));
 
-    dispatch(createLot(formData));
-    dispatch(toggleModal('infoModal'));
+    dispatch(createLot({ formData, currency: selectedCurrency }));
     setFiles([]);
     resetForm();
   };
+
+  useEffect(() => {
+    if (createLotStatus === 'fulfilled') {
+      dispatch(
+        setModalFields({
+          modalId: 'snackbar',
+          message: 'Your lot has been successfully added',
+          severity: 'success',
+        })
+      );
+      dispatch(toggleModal('snackbar'));
+    }
+  }, [createLotStatus]);
+
+  useEffect(() => {
+    const { isOpen, message } = customSnackbarData;
+
+    if (!isOpen && message) {
+      navigate(-1);
+      dispatch(clearModalsFields('snackbar'));
+      dispatch(clearStatus('createLotStatus'));
+    }
+  }, [customSnackbarData]);
 
   const isDataLoaded = _.every(
     [categories, country, tags],

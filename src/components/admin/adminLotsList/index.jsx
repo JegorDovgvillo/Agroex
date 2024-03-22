@@ -25,9 +25,10 @@ import {
   lotListSelector,
   setLotId,
   clearErrors,
-  clearChangeLotLoadingStatus,
+  clearStatus,
 } from '@slices/lotListSlice';
 import { setUserId, usersListSelector } from '@slices/usersListSlice';
+import { getSelectedCurrency } from '@slices/currencySlice';
 
 import getFormattedDate from '@helpers/getFormattedDate';
 import getNumberWithCurrency from '@helpers/getNumberWithCurrency';
@@ -114,6 +115,7 @@ export default function AdminLotsList() {
   const changeLotLoadingStatus = useSelector(
     (state) => state.lotList.changeLotLoadingStatus
   );
+  const selectedCurrency = useSelector(getSelectedCurrency);
 
   const handleRowEditStop = (params, event) => {
     if (params.reason === GridRowEditStopReasons.rowFocusOut) {
@@ -195,6 +197,7 @@ export default function AdminLotsList() {
       lotId: currLotId,
       status: editedValue,
       adminMessage,
+      selectedCurrency,
     });
   };
 
@@ -202,6 +205,12 @@ export default function AdminLotsList() {
     dispatch(getFilteredLots({ status: 'all' }));
     dispatch(fetchUsers());
   }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(
+      getFilteredLots({ params: { status: 'all' }, currency: selectedCurrency })
+    );
+  }, [dispatch, selectedCurrency]);
 
   useEffect(() => {
     if (lots.length && users.length) {
@@ -227,7 +236,7 @@ export default function AdminLotsList() {
   useEffect(() => {
     if (changeLotLoadingStatus === 'rejected' && lotListErrors) {
       dispatch(clearErrors());
-      dispatch(clearChangeLotLoadingStatus());
+      dispatch(clearStatus('changeLotLoadingStatus'));
       dispatch(clearModalsFields(['confirmModal', 'adminMessageModal']));
     }
 
@@ -238,7 +247,7 @@ export default function AdminLotsList() {
           mode: GridRowModes.View,
         },
       });
-      dispatch(clearChangeLotLoadingStatus());
+      dispatch(clearStatus('changeLotLoadingStatus'));
       dispatch(clearModalsFields(['confirmModal', 'adminMessageModal']));
     }
   }, [lotListErrors, changeLotLoadingStatus]);

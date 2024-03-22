@@ -7,10 +7,29 @@
   align-items: flex-start;
   color: $monoBlack;
   margin-bottom: 30px;
+
+  .priceRow {
+    display: flex;
+    column-gap: 6px;
+    align-items: center;
+  }
+}
+
+.divider {
+  padding: 6px 0;
+  width: 100%;
 }
 
 .detailed {
   row-gap: 4px;
+
+  p.original {
+    @include h5;
+  }
+
+  span.original {
+    @include body2;
+  }
 
   p {
     margin: 0;
@@ -24,7 +43,7 @@
 }
 
 .list {
-  row-gap: 8px;
+  row-gap: 4px;
 
   p {
     color: $monoBlack;
@@ -35,6 +54,14 @@
   span {
     text-align: left;
     @include body2;
+  }
+
+  p.original {
+    @include body1;
+  }
+
+  p.span {
+    @include helperText;
   }
 }
 

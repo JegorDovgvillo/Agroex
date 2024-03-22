@@ -5,11 +5,14 @@ import ENDPOINTS from '@helpers/endpoints';
 
 export const fetchPlaceBet = createAsyncThunk(
   'bets/fetchBets',
-  async ({ id, betData }, { rejectWithValue }) => {
+  async ({ id, betData, currency }, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.post(
         `${ENDPOINTS.BETS}/${id}`,
-        betData
+        betData,
+        {
+          headers: { currency },
+        }
       );
 
       return response.data;

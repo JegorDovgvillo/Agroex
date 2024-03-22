@@ -26,16 +26,16 @@ export const PlaceBetForm = ({ lot, type }) => {
   const isModal = type === 'modal';
   const [isFirstSubmit, setIsFirstSubmit] = useState(true);
   const userInfo = useSelector((state) => state.usersList.userInfo);
-  const userCurrency = 'USD'; //todo select currency from store
-  const currency = _.find(CURRENCY, { key: userCurrency });
+
+  const currency = _.find(CURRENCY, { key: lot.originalCurrency });
   const [lastBet, setLastBet] = useState(_.maxBy(lot.bets, 'id')?.amount);
 
   const [minAmount, setMinAmount] = useState(
-    !_.isEmpty(lot.bets) ? lastBet + 1 : _.toNumber(lot.minPrice) + 1
+    !_.isEmpty(lot.bets) ? lastBet + 1 : _.toNumber(lot.originalMinPrice) + 1
   );
-  const maxAmount = lot.price;
-  const minAmountWithCurrency = getNumberWithCurrency(minAmount, userCurrency);
-  const maxAmountWithCurrency = getNumberWithCurrency(maxAmount, userCurrency);
+  const maxAmount = lot.originalPrice;
+  const minAmountWithCurrency = getNumberWithCurrency(minAmount, currency.key);
+  const maxAmountWithCurrency = getNumberWithCurrency(maxAmount, currency.key);
   const amountHelperText = `From ${minAmountWithCurrency} to ${maxAmountWithCurrency}`;
   const placeBetStatus = useSelector(
     (state) => state.bets.placeBetLoadingStatus
@@ -68,7 +68,15 @@ export const PlaceBetForm = ({ lot, type }) => {
   };
 
   const getValidationSchema = () =>
-    placeBetValidationSchema(minAmount, maxAmount, userCurrency);
+    placeBetValidationSchema(minAmount, maxAmount, currency.key);
+
+  const formatAmountPerTon = (amount) => {
+    if (!amount || !lot.quantity) {
+      return '';
+    }
+
+    return `${getNumberWithCurrency(amount / lot.quantity, currency.key)}/ton`;
+  };
 
   useEffect(() => {
     if (placeBetStatus === 'fulfilled') {
@@ -128,15 +136,14 @@ export const PlaceBetForm = ({ lot, type }) => {
               ),
             }}
           />
+
           <FormHelperText
             id="outlined-weight-helper-text"
             className={helperText}
           >
-            {`${getNumberWithCurrency(
-              values.amount / lot.quantity,
-              userCurrency
-            )}/ton`}
+            {formatAmountPerTon(values.amount)}
           </FormHelperText>
+
           {isModal ? (
             <CustomButton
               text="Bet"

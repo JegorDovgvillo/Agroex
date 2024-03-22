@@ -1,0 +1,25 @@
+@import "../../scss/typography.module.scss";
+@import "../../scss/colorVariables.module.scss";
+
+.currencyContainer {
+  display: flex;
+  column-gap: 8px;
+
+  &.menuButton {
+    @include body1;
+    color: $monoBlack;
+  }
+
+  &.currencyMenuItem {
+    padding: 8px 36px !important;
+  }
+
+  .flag {
+    width: 28px;
+    height: 20px;
+
+    img {
+      object-fit: contain;
+    }
+  }
+}

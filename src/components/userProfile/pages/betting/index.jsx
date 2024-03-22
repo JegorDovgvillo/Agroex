@@ -8,6 +8,7 @@ import { fetchUserActivityLots, fetchLotDetails } from '@thunks/fetchLots';
 import { lotListSelector } from '@slices/lotListSlice';
 import { betsSelector } from '@slices/betsSlice';
 import { selectModal } from '@slices/modalSlice';
+import { getSelectedCurrency } from '@slices/currencySlice';
 
 import PlaceBetModal from '@customModals/placeBetModal';
 import ItemCard from '@components/itemCard';
@@ -22,6 +23,7 @@ const Betting = () => {
   const [currUserId, setCurrUserId] = useState(null);
   const lots = useSelector(lotListSelector);
   const bets = useSelector(betsSelector);
+  const selectedCurrency = useSelector(getSelectedCurrency);
   const [selectedLot, setSelectedLot] = useState(null);
 
   const confirmModalData = useSelector((state) =>
@@ -60,21 +62,25 @@ const Betting = () => {
     const { id } = userInfo;
 
     setCurrUserId(id);
-    dispatch(fetchUserActivityLots({ userId: id }));
-  }, [dispatch, userInfo]);
+    dispatch(fetchUserActivityLots({ userId: id, currency: selectedCurrency }));
+  }, [dispatch, userInfo, selectedCurrency]);
 
   useEffect(() => {
     const { confirmStatus, action, isOpen } = confirmModalData;
 
     if (!isOpen && action === 'placeBet') {
-      confirmStatus && newBet && handlePlaceNewBet(dispatch, newBet);
+      confirmStatus &&
+        newBet &&
+        handlePlaceNewBet(dispatch, newBet, selectedLot.originalCurrency);
     }
   }, [confirmModalData]);
 
   useEffect(() => {
     if (!_.isEmpty(bets)) {
       const lastBet = _.maxBy(bets, 'id');
-      dispatch(fetchLotDetails(lastBet.lotId));
+      dispatch(
+        fetchLotDetails({ id: lastBet.lotId, currency: selectedCurrency })
+      );
     }
   }, [bets]);
 

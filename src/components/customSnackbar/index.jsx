@@ -1,15 +1,19 @@
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { Snackbar, Alert } from '@mui/material';
 
 import { toggleModal } from '@slices/modalSlice';
-import { selectModalState } from '@slices/modalSlice';
+import { selectModal } from '@slices/modalSlice';
 
 // severity could be "success", "info", "warning", "error"
 
-export const CustomSnackbar = ({ snackbarProps }) => {
+export const CustomSnackbar = () => {
   const dispatch = useDispatch();
-  const isOpen = useSelector((state) => selectModalState(state, 'snackbar'));
+  const customSnackbarData = useSelector((state) =>
+    selectModal(state, 'snackbar')
+  );
+  const { isOpen, message, severity } = customSnackbarData;
 
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -21,7 +25,7 @@ export const CustomSnackbar = ({ snackbarProps }) => {
 
   return (
     <div>
-      {snackbarProps && (
+      {message && (
         <Snackbar
           open={isOpen}
           autoHideDuration={6000}
@@ -30,11 +34,11 @@ export const CustomSnackbar = ({ snackbarProps }) => {
         >
           <Alert
             onClose={handleClose}
-            severity={snackbarProps.severity}
+            severity={severity}
             variant="outlined"
             sx={{ bgcolor: 'background.paper', width: '100%' }}
           >
-            {snackbarProps.message}
+            {message}
           </Alert>
         </Snackbar>
       )}

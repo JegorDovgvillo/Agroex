@@ -23,6 +23,7 @@ const lotListAdapter = createEntityAdapter();
 const initialState = lotListAdapter.getInitialState({
   loadingStatus: 'idle',
   changeLotLoadingStatus: 'idle',
+  createLotStatus: 'idle',
   lotId: null,
   errors: null,
 });
@@ -40,8 +41,8 @@ const lotListSlice = createSlice({
     clearErrors: (state) => {
       state.errors = null;
     },
-    clearChangeLotLoadingStatus: (state) => {
-      state.changeLotLoadingStatus = 'idle';
+    clearStatus: (state, action) => {
+      state[action.payload] = 'idle';
     },
   },
   extraReducers: (builder) => {
@@ -89,14 +90,14 @@ const lotListSlice = createSlice({
         state.loadingStatus = 'rejected';
       })
       .addCase(createLot.pending, (state) => {
-        state.loadingStatus = 'pending';
+        state.createLotStatus = 'pending';
       })
       .addCase(createLot.fulfilled, (state, action) => {
         lotListAdapter.addOne(state, action.payload);
-        state.loadingStatus = 'fulfilled';
+        state.createLotStatus = 'fulfilled';
       })
       .addCase(createLot.rejected, (state) => {
-        state.loadingStatus = 'rejected';
+        state.createLotStatus = 'rejected';
       })
       .addCase(filteredLots.pending, (state) => {
         state.loadingStatus = 'pending';
@@ -173,7 +174,6 @@ export const { selectById: selectLotDetailById } = lotListAdapter.getSelectors(
 );
 
 const { actions, reducer } = lotListSlice;
-export const { setLotId, clearLots, clearErrors, clearChangeLotLoadingStatus } =
-  actions;
+export const { setLotId, clearLots, clearErrors, clearStatus } = actions;
 
 export default reducer;

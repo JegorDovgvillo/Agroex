@@ -6,6 +6,7 @@ import _ from 'lodash';
 
 import { fetchUserActivityLots } from '@thunks/fetchLots';
 import { lotListSelector } from '@slices/lotListSlice';
+import { getSelectedCurrency } from '@slices/currencySlice';
 
 import { getLotState } from '@helpers/lotHandlers/getLotState';
 
@@ -15,6 +16,7 @@ const UserOrders = () => {
   const dispatch = useDispatch();
   const userInfo = useSelector((state) => state.usersList.userInfo);
   const lots = useSelector(lotListSelector);
+  const selectedCurrency = useSelector(getSelectedCurrency);
 
   const filteredLotsByActiveTab = _.filter(lots, (item) => {
     const { isAuctionLot, isLotFinished } = getLotState(item);
@@ -27,14 +29,14 @@ const UserOrders = () => {
   });
 
   useEffect(() => {
-    if (!userInfo) {
+    if (!userInfo || !selectedCurrency) {
       return;
     }
 
     const { id } = userInfo;
 
-    dispatch(fetchUserActivityLots({ userId: id }));
-  }, [dispatch, userInfo]);
+    dispatch(fetchUserActivityLots({ userId: id, currency: selectedCurrency }));
+  }, [dispatch, userInfo, selectedCurrency]);
 
   return <div>{filteredLotsArr} </div>;
 };

@@ -15,6 +15,7 @@ import {
 import { CustomButton } from '@buttons/CustomButton';
 
 import { toggleModal, setModalFields, selectModal } from '@slices/modalSlice';
+import { getSelectedCurrency } from '@slices/currencySlice';
 
 import { handleChangeLotStatusByAdmin } from '@helpers/lotHandlers';
 
@@ -52,6 +53,7 @@ export const ChangeStatusModal = (props) => {
   const confirmModalData = useSelector((state) =>
     selectModal(state, 'confirmModal')
   );
+  const selectedCurrency = useSelector(getSelectedCurrency);
 
   const handleEntering = () => {
     if (radioGroupRef.current != null) {
@@ -97,6 +99,7 @@ export const ChangeStatusModal = (props) => {
         lotId: lot.id,
         status: _.camelCase(value),
         adminMessage: null,
+        selectedCurrency,
       });
     }
   }, [confirmModalData]);
@@ -111,6 +114,7 @@ export const ChangeStatusModal = (props) => {
         lotId: lot.id,
         status: value,
         adminMessage: adminMessage,
+        selectedCurrency,
       });
     }
   }, [adminMessageModalData.adminMessage]);
