@@ -69,6 +69,8 @@ const LotList = () => {
   }, []);
 
   useEffect(() => {
+    if (!selectedCurrency) return;
+
     dispatch(
       filteredLots({ values: searchParams, currency: selectedCurrency })
     );
