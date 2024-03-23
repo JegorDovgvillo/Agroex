@@ -44,7 +44,9 @@ const CustomUploadButton = ({
         <>
           <p>Selected image:</p>
           <img src={imageSrc} alt="Uploaded" />
-          <CloseIcon onClick={removeFile} className={styles.closeIcon} />
+          {file && (
+            <CloseIcon onClick={removeFile} className={styles.closeIcon} />
+          )}
         </>
       )}
       <div className={styles.buttons}>
