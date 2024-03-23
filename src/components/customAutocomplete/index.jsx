@@ -35,6 +35,7 @@ const CustomAutocompleteField = ({
         onChange={(event, newValue) => {
           setFieldValue(name, newValue);
         }}
+        sx={{ width: '100%' }}
         renderInput={(params) => (
           <Field
             as={TextField}

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Box, Modal } from '@mui/material';
 import { Formik, Form } from 'formik';
+import CloseIcon from '@mui/icons-material/Close';
 
 import { toggleModal, selectModalState } from '@slices/modalSlice';
 import {
@@ -20,30 +21,54 @@ import {
 } from '@helpers/validationSchemes/lotValidationSchemes';
 
 import CustomSelect from '../customSelect';
-import { CustomButton } from '@buttons/CustomButton';
+import CustomAutocompleteField from '../customAutocomplete';
+import CustomUploadButton from '../customUploadButton';
 
 import styles from './infoModal.module.scss';
-import CustomAutocompleteField from '../customAutocomplete';
 
 const ModalForCreatingCategory = () => {
   const dispatch = useDispatch();
+
+  const [file, setFile] = useState(null);
+  const [imageSrc, setImageSrc] = useState(null);
+  const [isCreatingCategory, setIsCreatingCategory] = useState(true);
+  const [selectedCategoryId, setSelectedCategoryId] = useState(
+    initialValues.parentId
+  );
+
+  const rootCategories = useSelector(selectRootCategories);
+  const isOpen = useSelector((state) =>
+    selectModalState(state, 'creatingModal')
+  );
 
   const initialValues = {
     title: '',
     parentId: '',
   };
 
-  const isOpen = useSelector((state) =>
-    selectModalState(state, 'creatingModal')
-  );
-  const rootCategories = useSelector(selectRootCategories);
-  const [isCreatingCategory, setIsCreatingCategory] = useState(true);
-  const [selectedCategoryId, setSelectedCategoryId] = useState(
-    initialValues.parentId
+  const handleSubmit = (values, { resetForm }) => {
+    const formData = new FormData();
+    const data = {
+      parentId: values.parentId ? values.parentId : 0,
+      title: values.title,
+    };
+
+    formData.append('file', file);
+    formData.append('data', JSON.stringify(data));
+    dispatch(createCategory({ dataCategory: formData }));
+    dispatch(toggleModal('creatingModal'));
+    setFile(null);
+    setImageSrc(null);
+    resetForm();
+  };
+
+  const subcategories = useSelector((state) =>
+    selectCategoryByParentId(state, selectedCategoryId)
   );
 
-  const handleSubmit = (values) => {
-    dispatch(createCategory(values));
+  const closePopup = () => {
+    setFile(null);
+    setImageSrc(null);
     dispatch(toggleModal('creatingModal'));
   };
 
@@ -53,9 +78,14 @@ const ModalForCreatingCategory = () => {
     }
   }, [selectedCategoryId]);
 
-  const subcategories = useSelector((state) =>
-    selectCategoryByParentId(state, selectedCategoryId)
-  );
+  useEffect(() => {
+    if (file) {
+      const src = file.preview;
+      setImageSrc(src);
+    } else {
+      setImageSrc(null);
+    }
+  }, [file]);
 
   return (
     <div>
@@ -63,19 +93,18 @@ const ModalForCreatingCategory = () => {
         open={isOpen}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
-        onClose={() => {
-          dispatch(toggleModal('creatingModal'));
-        }}
+        onClose={closePopup}
       >
         <Box className={styles.wrapp}>
           <h2 className={styles.title}>
+            <CloseIcon className={styles.closeIcon} onClick={closePopup} />
             {isCreatingCategory
               ? 'Create new Category'
               : 'Create new subcategory'}
           </h2>
           <Formik
             initialValues={initialValues}
-            onSubmit={(values) => handleSubmit(values)}
+            onSubmit={handleSubmit}
             validationSchema={
               isCreatingCategory
                 ? categoryTitleValidationSchema
@@ -89,7 +118,7 @@ const ModalForCreatingCategory = () => {
                     units={rootCategories}
                     itemFieldName="title"
                     name="parentId"
-                    width="210px"
+                    width="100%"
                     disabled={false}
                     margin="0 16px 24px 0"
                     placeholder="Choose category"
@@ -99,6 +128,7 @@ const ModalForCreatingCategory = () => {
                     touched={touched.parentId}
                     handleChange={setSelectedCategoryId}
                     setFieldValue={setFieldValue}
+                    fieldType="modalTextField"
                   />
                 )}
                 <CustomAutocompleteField
@@ -118,14 +148,18 @@ const ModalForCreatingCategory = () => {
                   touched={touched.title}
                   setFieldValue={setFieldValue}
                   options={subcategories}
+                  type="modalTextField"
                 />
-
-                <CustomButton
-                  text="Create"
-                  width="210px"
-                  typeOfButton="submit"
-                  disabled={!isValid}
-                />
+                <div className={styles.buttonsWrapp}>
+                  <CustomUploadButton
+                    file={file}
+                    setFile={setFile}
+                    imageSrc={imageSrc}
+                    setImageSrc={setImageSrc}
+                    isValid={isValid}
+                    buttonName="Create"
+                  />
+                </div>
               </Form>
             )}
           </Formik>

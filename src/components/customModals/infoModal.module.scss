@@ -34,16 +34,12 @@
   .buttonsWrapp {
     display: flex;
     flex-direction: column;
+    position: relative;
     gap: 15px;
 
     img {
       width: 100%;
       height: 250px;
-    }
-
-    .buttons {
-      display: flex;
-      gap: 93px;
     }
 
     .deleteIcon {

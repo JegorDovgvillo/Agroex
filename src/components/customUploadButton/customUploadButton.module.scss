@@ -1,0 +1,17 @@
+.buttons {
+  display: flex;
+  gap: 93px;
+}
+
+.closeIcon {
+  position: absolute;
+  right: -15px;
+  cursor: pointer;
+}
+
+.uploadButton {
+  gap: 10px !important;
+  span {
+    height: 20px;
+  }
+}

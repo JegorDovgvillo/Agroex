@@ -37,7 +37,7 @@ export const updateCategory = createAsyncThunk(
 
 export const createCategory = createAsyncThunk(
   'categories/createCategory',
-  async (dataCategory) => {
+  async ({dataCategory}) => {
     const response = await axiosInstance.post(
       ENDPOINTS.CATEGORIES,
       dataCategory

@@ -2,12 +2,8 @@ import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import { useDispatch, useSelector } from 'react-redux';
 import { Formik, Form } from 'formik';
-import { useState, useEffect, useRef } from 'react';
-import Button from '@mui/material/Button';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import { v4 as uuidv4 } from 'uuid';
+import { useState, useEffect } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
-import _ from 'lodash';
 
 import { updateCategory } from '@thunks/fetchCategories';
 
@@ -19,17 +15,17 @@ import ENDPOINTS, { IMAGE_URL } from '@helpers/endpoints';
 import { categoryTitleValidationSchema } from '@helpers/validationSchemes/lotValidationSchemes';
 
 import CustomTextField from '@customTextField';
-import { CustomButton } from '@buttons/CustomButton';
+import CustomUploadButton from '../customUploadButton';
+
+import bannerImage from '@assets/images/banner.png';
 
 import styles from './infoModal.module.scss';
 
-
 const ModalForUpdatingCategory = () => {
   const dispatch = useDispatch();
-  const fileInputRef = useRef();
 
   const [file, setFile] = useState(null);
-  const [iamgeSrc, setImageSrc] = useState(null);
+  const [imageSrc, setImageSrc] = useState(null);
 
   const isOpen = useSelector((state) =>
     selectModalState(state, 'updatingModal')
@@ -57,45 +53,28 @@ const ModalForUpdatingCategory = () => {
     formData.append('file', file);
     formData.append('data', JSON.stringify(data));
     dispatch(updateCategory({ id: categoryId, categoryData: formData }));
-
+    dispatch(toggleModal('updatingModal'));
     resetForm();
   };
 
-  const handleFileChange = (event) => {
-    const newFile = event.target.files[0];
-
-    setFile(
-      _.assign(newFile, {
-        preview: URL.createObjectURL(newFile),
-        id: uuidv4(),
-      })
-    );
-  };
-
   const closePopup = () => {
-    dispatch(toggleModal('updatingModal'));
     setFile(null);
     setImageSrc(null);
-  };
-
-  const removeFile = () => {
-    if (file) {
-      fileInputRef.current.value = '';
-
-      setFile(null);
-      URL.revokeObjectURL(file.preview);
-    }
+    dispatch(toggleModal('updatingModal'));
   };
 
   useEffect(() => {
-    if (file || (categoryFields && categoryFields.image)) {
-      const src = file
-        ? file.preview
-        : `${IMAGE_URL}${ENDPOINTS.IMAGES}/${categoryFields.image}`;
-
+    if (file) {
+      const src = file.preview;
+      setImageSrc(src);
+    } else if (categoryFields && categoryFields.image) {
+      const src = `${IMAGE_URL}${ENDPOINTS.IMAGES}/${categoryFields.image}`;
+      setImageSrc(src);
+    } else {
+      const src = bannerImage;
       setImageSrc(src);
     }
-  }, [file, categoryFields]);
+  }, [file, isOpen, categoryFields]);
 
   return (
     <div>
@@ -126,35 +105,14 @@ const ModalForUpdatingCategory = () => {
                   type="modalTextField"
                 />
                 <div className={styles.buttonsWrapp}>
-                  <p>Selected image:</p>
-                  <img src={iamgeSrc} alt="Uploaded" />
-                  <CloseIcon
-                    onClick={removeFile}
-                    className={styles.deleteIcon}
+                  <CustomUploadButton
+                    file={file}
+                    setFile={setFile}
+                    imageSrc={imageSrc}
+                    setImageSrc={setImageSrc}
+                    isValid={isValid}
+                    buttonName="Update"
                   />
-                  <div className={styles.buttons}>
-                    <Button
-                      component="label"
-                      variant="contained"
-                      sx={{ width: '210px' }}
-                    >
-                      <CloudUploadIcon />
-                      <span>Upload file</span>
-                      <input
-                        ref={fileInputRef}
-                        type="file"
-                        style={{ display: 'none' }}
-                        onChange={handleFileChange}
-                        accept="image/*"
-                      />
-                    </Button>
-                    <CustomButton
-                      disabled={!isValid}
-                      text="Update"
-                      width="210px"
-                      typeOfButton="submit"
-                    />
-                  </div>
                 </div>
               </Form>
             )}
