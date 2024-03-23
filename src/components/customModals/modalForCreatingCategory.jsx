@@ -29,6 +29,11 @@ import styles from './infoModal.module.scss';
 const ModalForCreatingCategory = () => {
   const dispatch = useDispatch();
 
+  const initialValues = {
+    title: '',
+    parentId: '',
+  };
+
   const [file, setFile] = useState(null);
   const [imageSrc, setImageSrc] = useState(null);
   const [isCreatingCategory, setIsCreatingCategory] = useState(true);
@@ -40,11 +45,6 @@ const ModalForCreatingCategory = () => {
   const isOpen = useSelector((state) =>
     selectModalState(state, 'creatingModal')
   );
-
-  const initialValues = {
-    title: '',
-    parentId: '',
-  };
 
   const handleSubmit = (values, { resetForm }) => {
     const formData = new FormData();
