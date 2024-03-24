@@ -18,13 +18,28 @@ const HomePage = () => {
   const { category } = useParams();
 
   const categories = useSelector(selectRootCategories);
+  const fetchCategoriesLoadingStatus = useSelector(
+    (state) => state.categories.fetchAllCategoriesStatus
+  );
 
   useEffect(() => {
     dispatch(fetchAllCategories());
   }, [dispatch]);
 
   useEffect(() => {
-    if (isEmpty(categories)) return;
+    if (
+      fetchCategoriesLoadingStatus !== 'fulfilled' &&
+      fetchCategoriesLoadingStatus !== 'rejected'
+    )
+      return;
+
+    if (
+      fetchCategoriesLoadingStatus === 'rejected' ||
+      (fetchCategoriesLoadingStatus === 'fulfilled' && isEmpty(categories))
+    ) {
+      navigate(`/${NOT_FOUND}`);
+      return;
+    }
 
     if (!category) {
       const defaultCategory = toLower(categories[0].title);
@@ -36,7 +51,7 @@ const HomePage = () => {
     if (category && !some(categories, ['title', capitalize(category)])) {
       navigate(`/${NOT_FOUND}`);
     }
-  }, [categories]);
+  }, [categories, fetchCategoriesLoadingStatus]);
 
   return (
     <>{categories.length > 0 && <HomePageTabPanel categories={categories} />}</>

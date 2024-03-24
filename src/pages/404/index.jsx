@@ -50,11 +50,13 @@ const NotFoundPage = () => {
         </h3>
         <h5>but you can</h5>
         <Stack spacing={2} direction="row">
-          <CustomButton
-            text="Go home"
-            typeOfButton="button"
-            handleClick={handleGoHome}
-          />
+          {homePagePath && (
+            <CustomButton
+              text="Go home"
+              typeOfButton="button"
+              handleClick={handleGoHome}
+            />
+          )}
           <CustomButton
             text="See lots"
             typeOfButton="button"
