@@ -51,6 +51,7 @@ const LotForm = ({
   markerCoordinate,
   setMarkerCoordinate,
   selectedCountry,
+  loading,
 }) => {
   const dispatch = useDispatch();
   const {
@@ -519,6 +520,7 @@ const LotForm = ({
                       (!isValid || !isImageAdded) &&
                       !submitErrors
                     }
+                    loading={loading}
                   />
                 </>
               ) : (

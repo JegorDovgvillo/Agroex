@@ -32,7 +32,6 @@ const CustomTextField = ({
     setFieldValue(name, e.target.value);
 
     if (name === 'days' || name === 'hours' || name === 'minutes') {
-      console.log(name);
       dispatch(deleteError('duration'));
       return;
     }

@@ -22,10 +22,12 @@ import { fetchAllCategories } from '@thunks/fetchCategories';
 import { fetchTags } from '@thunks/fetchTags';
 
 import convertImagesToFiles from '@helpers/convertImagesToFiles';
+import ROUTES from '@helpers/routeNames';
 
 import LotForm from '@components/lotForm';
 
 const MAXIMUM_NUMBER_OF_IMG = import.meta.env.VITE_MAXIMUM_NUMBER_OF_IMG;
+const { NOT_FOUND } = ROUTES;
 
 const UpdateLot = () => {
   const dispatch = useDispatch();
@@ -33,9 +35,19 @@ const UpdateLot = () => {
   const { id: lotId } = useParams();
 
   const categories = useSelector(selectRootCategories);
-  const country = useSelector(countrySelector);
+  const categoriesLoadingStatus = useSelector(
+    (state) => state.categories.fetchAllCategoriesStatus
+  );
+  const countries = useSelector(countrySelector);
+  const countriesLoadingStatus = useSelector(
+    (state) => state.countries.fetchCountriesStatus
+  );
   const selectedLot = useSelector((state) => selectLotDetailById(state, lotId));
+  const selectedLotLoadingStatus = useSelector(
+    (state) => state.lotList.loadingStatus
+  );
   const tags = useSelector(tagsSelector);
+  const tagsLoadingStatus = useSelector((state) => state.tags.fetchTagsStatus);
   const userId = useSelector((state) => state.usersList.userInfo);
   const selectedCountry = useSelector(
     (state) => state.countries.markerCoordinate
@@ -50,6 +62,7 @@ const UpdateLot = () => {
   const submitErrorMessage = useSelector(
     (state) => state.lotList.errors?.message
   );
+  const [isDataLoaded, setIsDataLoaded] = useState(null);
 
   const [files, setFiles] = useState([]);
   const [disabled, setDisabled] = useState(false);
@@ -65,28 +78,6 @@ const UpdateLot = () => {
     );
     dispatch(toggleModal('confirmModal'));
   };
-
-  useEffect(() => {
-    const { confirmStatus, isOpen } = confirmModalData;
-
-    if (!confirmStatus || isOpen) return;
-
-    dispatch(deleteLot({ id: lotId }));
-    dispatch(clearModalsFields('confirmModal'));
-  }, [confirmModalData]);
-
-  useEffect(() => {
-    if (!selectedLot) return;
-
-    convertImagesToFiles(selectedLot.images || [], setFiles);
-  }, [selectedLot]);
-
-  useEffect(() => {
-    dispatch(fetchLotDetails({ id: lotId, currency: selectedCurrency }));
-    dispatch(fetchAllCategories());
-    dispatch(fetchCountries({ existed: false }));
-    dispatch(fetchTags());
-  }, [dispatch]);
 
   const handleUpdateClick = async (values) => {
     const formData = new FormData();
@@ -142,12 +133,33 @@ const UpdateLot = () => {
     );
   };
 
-  const isDataLoaded =
-    selectedLot &&
-    _.every(
-      [categories, country, tags],
-      (arr) => _.isArray(arr) && !_.isEmpty(arr)
-    );
+  useEffect(() => {
+    dispatch(fetchLotDetails({ id: lotId, currency: selectedCurrency }));
+    dispatch(fetchAllCategories());
+    dispatch(fetchCountries({ existed: false }));
+    dispatch(fetchTags());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (
+      selectedLotLoadingStatus !== 'rejected' &&
+      selectedLotLoadingStatus !== 'fulfilled'
+    )
+      return;
+    console.log(selectedLot);
+    if (!selectedLot) navigate(`/${NOT_FOUND}`);
+
+    convertImagesToFiles(selectedLot?.images || [], setFiles);
+  }, [selectedLot, selectedLotLoadingStatus]);
+
+  useEffect(() => {
+    const { confirmStatus, isOpen } = confirmModalData;
+
+    if (!confirmStatus || isOpen) return;
+
+    dispatch(deleteLot({ id: lotId }));
+    dispatch(clearModalsFields('confirmModal'));
+  }, [confirmModalData]);
 
   useEffect(() => {
     switch (updateLotStatus) {
@@ -214,13 +226,47 @@ const UpdateLot = () => {
     clearModalsFields('snackbar');
   }, [snackbarData]);
 
+  useEffect(() => {
+    if (
+      !_.every(
+        [categoriesLoadingStatus, countriesLoadingStatus, tagsLoadingStatus],
+        (status) => status === 'fulfilled' || status === 'rejected'
+      )
+    ) {
+      return;
+    }
+
+    const isCategoriesLoaded =
+      categoriesLoadingStatus === 'fulfilled' && !_.isEmpty(categories);
+    const isCountriesLoaded =
+      countriesLoadingStatus === 'fulfilled' && !_.isEmpty(countries);
+    const isTagsLoaded = tagsLoadingStatus === 'fulfilled' && !_.isEmpty(tags);
+
+    setIsDataLoaded(
+      _.every([isCategoriesLoaded, isCountriesLoaded, isTagsLoaded])
+    );
+  }, [
+    categories,
+    categoriesLoadingStatus,
+    tags,
+    tagsLoadingStatus,
+    countries,
+    countriesLoadingStatus,
+  ]);
+
+  useEffect(() => {
+    if (_.isNull(isDataLoaded)) return;
+
+    if (!isDataLoaded) navigate(`/${NOT_FOUND}`);
+  }, [isDataLoaded]);
+
   return (
     <>
       {isDataLoaded && (
         <LotForm
           selectedLot={selectedLot}
           handleSubmitClick={handleUpdateClick}
-          country={country}
+          country={countries}
           categories={categories}
           formType="update"
           showConfirm={showConfirm}

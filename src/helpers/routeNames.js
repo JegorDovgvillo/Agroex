@@ -14,6 +14,8 @@ const ROUTES = {
   USER_PROFILE_PAGE_TAB: '/user-profile/:page/:tab',
 
   LOG_IN: '/log-in',
+
+  NOT_FOUND: 'not-found',
 };
 
 export const ADMIN_PAGES = {

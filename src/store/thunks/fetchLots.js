@@ -28,12 +28,16 @@ export const updateLot = createAsyncThunk(
 
 export const fetchLotDetails = createAsyncThunk(
   'lotList/fetchLotDetails',
-  async ({ id, currency }) => {
-    const response = await axiosInstance.get(`${ENDPOINTS.LOTS}/${id}`, {
-      headers: { currency },
-    });
+  async ({ id, currency }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.get(`${ENDPOINTS.LOTS}/${id}`, {
+        headers: { currency },
+      });
 
-    return response.data;
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
   }
 );
 

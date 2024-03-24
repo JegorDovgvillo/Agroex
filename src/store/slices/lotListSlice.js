@@ -39,6 +39,10 @@ const lotListSlice = createSlice({
     setLotId: (state, action) => {
       state.lotId = action.payload;
     },
+    clearLots: (state) => {
+      lotListAdapter.removeAll(state);
+      state.loadingStatus = 'idle';
+    },
     clearErrors: (state) => {
       state.errors = null;
     },

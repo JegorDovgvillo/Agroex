@@ -44,7 +44,7 @@ export const auctionLotValidationSchema = object().shape({
     'lessThanPrice',
     'Minimum price should be less than price',
     function (value) {
-      const price = this.parent.price;
+      const price = this.parent.originalPrice;
 
       return value < price;
     }

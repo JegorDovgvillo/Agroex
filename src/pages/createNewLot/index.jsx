@@ -21,15 +21,24 @@ import { clearStatus } from '@slices/lotListSlice';
 import { getSelectedCurrency } from '@slices/currencySlice';
 
 import LotForm from '@components/lotForm';
+import ROUTES from '@helpers/routeNames';
 
 const MAXIMUM_NUMBER_OF_IMG = import.meta.env.VITE_MAXIMUM_NUMBER_OF_IMG;
+const { NOT_FOUND } = ROUTES;
 
 const CreateNewLot = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const categories = useSelector(selectRootCategories);
-  const country = useSelector(countrySelector);
+  const categoriesLoadingStatus = useSelector(
+    (state) => state.categories.fetchAllCategoriesStatus
+  );
+  const countries = useSelector(countrySelector);
+  const countriesLoadingStatus = useSelector(
+    (state) => state.countries.fetchCountriesStatus
+  );
   const tags = useSelector(tagsSelector);
+  const tagsLoadingStatus = useSelector((state) => state.tags.fetchTagsStatus);
   const userId = useSelector((state) => state.usersList.userInfo);
   const selectedCountry = useSelector(
     (state) => state.countries.markerCoordinate
@@ -45,6 +54,8 @@ const CreateNewLot = () => {
   const [files, setFiles] = useState([]);
   const [disabled, setDisabled] = useState(false);
   const [maxFilesPerDrop, setMaxFilesPerDrop] = useState(MAXIMUM_NUMBER_OF_IMG);
+  const [loading, setLoading] = useState(false);
+  const [isDataLoaded, setIsDataLoaded] = useState(null);
 
   useEffect(() => {
     dispatch(fetchAllCategories());
@@ -53,6 +64,7 @@ const CreateNewLot = () => {
   }, [dispatch]);
 
   const handleSubmitClick = async (values) => {
+    setLoading(true);
     const formData = new FormData();
 
     const subcategory =
@@ -86,7 +98,7 @@ const CreateNewLot = () => {
       },
       tags: values.tags,
     };
-    console.log(lotData);
+
     files.forEach((file) => {
       formData.append('file', file);
     });
@@ -99,6 +111,7 @@ const CreateNewLot = () => {
   useEffect(() => {
     switch (createLotStatus) {
       case 'fulfilled':
+        setLoading(false);
         dispatch(
           setModalFields({
             modalId: 'snackbar',
@@ -112,6 +125,7 @@ const CreateNewLot = () => {
         break;
 
       case 'rejected':
+        setLoading(false);
         dispatch(
           setModalFields({
             modalId: 'snackbar',
@@ -132,17 +146,46 @@ const CreateNewLot = () => {
     clearModalsFields('snackbar');
   }, [snackbarData]);
 
-  const isDataLoaded = _.every(
-    [categories, country, tags],
-    (arr) => !_.isEmpty(arr)
-  );
+  useEffect(() => {
+    if (
+      !_.every(
+        [categoriesLoadingStatus, countriesLoadingStatus, tagsLoadingStatus],
+        (status) => status === 'fulfilled' || status === 'rejected'
+      )
+    ) {
+      return;
+    }
+
+    const isCategoriesLoaded =
+      categoriesLoadingStatus === 'fulfilled' && !_.isEmpty(categories);
+    const isCountriesLoaded =
+      countriesLoadingStatus === 'fulfilled' && !_.isEmpty(countries);
+    const isTagsLoaded = tagsLoadingStatus === 'fulfilled' && !_.isEmpty(tags);
+
+    setIsDataLoaded(
+      _.every([isCategoriesLoaded, isCountriesLoaded, isTagsLoaded])
+    );
+  }, [
+    categories,
+    categoriesLoadingStatus,
+    tags,
+    tagsLoadingStatus,
+    countries,
+    countriesLoadingStatus,
+  ]);
+
+  useEffect(() => {
+    if (_.isNull(isDataLoaded)) return;
+
+    if (!isDataLoaded) navigate(`/${NOT_FOUND}`);
+  }, [isDataLoaded]);
 
   return (
     <>
       {isDataLoaded && (
         <LotForm
           handleSubmitClick={handleSubmitClick}
-          country={country}
+          country={countries}
           categories={categories}
           formType="create"
           files={files}
@@ -156,6 +199,7 @@ const CreateNewLot = () => {
           markerCoordinate={markerCoordinate}
           setMarkerCoordinate={setMarkerCoordinate}
           selectedCountry={selectedCountry}
+          loading={loading}
         />
       )}
     </>

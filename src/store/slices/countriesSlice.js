@@ -15,6 +15,7 @@ const countryAdapter = createEntityAdapter();
 
 const initialState = countryAdapter.getInitialState({
   loadingStatus: 'idle',
+  fetchCountriesStatus: 'idle',
   countryName: '',
   address: null,
 });
@@ -30,14 +31,14 @@ const countriesSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchCountries.pending, (state) => {
-        state.loadingStatus = 'pending';
+        state.fetchCountriesStatus = 'pending';
       })
       .addCase(fetchCountries.fulfilled, (state, action) => {
-        state.loadingStatus = 'fulfilled';
+        state.fetchCountriesStatus = 'fulfilled';
         countryAdapter.addMany(state, action.payload);
       })
       .addCase(fetchCountries.rejected, (state) => {
-        state.loadingStatus = 'rejected';
+        state.fetchCountriesStatus = 'rejected';
       })
       .addCase(fetchCountry.pending, (state) => {
         state.loadingStatus = 'pending';

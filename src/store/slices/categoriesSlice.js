@@ -17,6 +17,7 @@ const categoriesAdapter = createEntityAdapter();
 
 const initialState = categoriesAdapter.getInitialState({
   loadingStatus: 'idle',
+  fetchAllCategoriesStatus: 'idle',
   categoryId: null,
   errors: null,
 });
@@ -35,14 +36,14 @@ const categoriesSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchAllCategories.pending, (state) => {
-        state.loadingStatus = 'pending';
+        state.fetchAllCategoriesStatus = 'pending';
       })
       .addCase(fetchAllCategories.fulfilled, (state, action) => {
-        state.loadingStatus = 'fulfilled';
+        state.fetchAllCategoriesStatus = 'fulfilled';
         categoriesAdapter.addMany(state, action.payload);
       })
       .addCase(fetchAllCategories.rejected, (state, action) => {
-        state.loadingStatus = 'rejected';
+        state.fetchAllCategoriesStatus = 'rejected';
         state.errors = action.payload;
       })
       .addCase(deleteCategory.pending, (state) => {

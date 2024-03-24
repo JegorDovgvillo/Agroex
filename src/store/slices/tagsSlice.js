@@ -10,6 +10,7 @@ const tagsAdapter = createEntityAdapter();
 
 const initialState = tagsAdapter.getInitialState({
   loadingStatus: 'idle',
+  fetchTagsStatus: 'idle',
 });
 
 const tagsSlice = createSlice({
@@ -19,14 +20,14 @@ const tagsSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchTags.pending, (state) => {
-        state.loadingStatus = 'pending';
+        state.fetchTagsStatus = 'pending';
       })
       .addCase(fetchTags.fulfilled, (state, action) => {
-        state.loadingStatus = 'fulfilled';
+        state.fetchTagsStatus = 'fulfilled';
         tagsAdapter.addMany(state, action.payload);
       })
       .addCase(fetchTags.rejected, (state) => {
-        state.loadingStatus = 'rejected';
+        state.fetchTagsStatus = 'rejected';
       })
 
       .addCase(updateTag.pending, (state) => {
