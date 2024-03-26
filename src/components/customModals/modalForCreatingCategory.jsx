@@ -4,7 +4,11 @@ import { Box, Modal } from '@mui/material';
 import { Formik, Form } from 'formik';
 import CloseIcon from '@mui/icons-material/Close';
 
-import { toggleModal, selectModalState } from '@slices/modalSlice';
+import {
+  toggleModal,
+  selectModalState,
+  setModalFields,
+} from '@slices/modalSlice';
 import {
   createCategory,
   fetchSubcategoryByParentId,
@@ -19,12 +23,15 @@ import {
   categoryTitleValidationSchema,
   subcategoryCreationValidationSchema,
 } from '@helpers/validationSchemes/lotValidationSchemes';
+import { snackbarTitles } from '@helpers/fetchResultMessages';
 
 import CustomSelect from '../customSelect';
 import CustomAutocompleteField from '../customAutocomplete';
 import CustomUploadButton from '../customUploadButton';
 
 import styles from './infoModal.module.scss';
+
+const { successCategoryCreate } = snackbarTitles;
 
 const ModalForCreatingCategory = () => {
   const dispatch = useDispatch();
@@ -46,7 +53,7 @@ const ModalForCreatingCategory = () => {
     selectModalState(state, 'creatingModal')
   );
 
-  const handleSubmit = (values, { resetForm }) => {
+  const handleSubmit = async (values, { resetForm }) => {
     const formData = new FormData();
     const data = {
       parentId: values.parentId ? values.parentId : 0,
@@ -55,11 +62,26 @@ const ModalForCreatingCategory = () => {
 
     formData.append('file', file);
     formData.append('data', JSON.stringify(data));
-    dispatch(createCategory({ dataCategory: formData }));
-    dispatch(toggleModal('creatingModal'));
-    setFile(null);
-    setImageSrc(null);
-    resetForm();
+    const resultAction = await dispatch(
+      createCategory({ dataCategory: formData })
+    );
+    const isSuccessAction = createCategory.fulfilled.match(resultAction);
+
+    if (isSuccessAction) {
+      dispatch(
+        setModalFields({
+          modalId: 'snackbar',
+          message: successCategoryCreate,
+          severity: 'success',
+          isOpen: true,
+        })
+      );
+
+      dispatch(toggleModal('creatingModal'));
+      setFile(null);
+      setImageSrc(null);
+      resetForm();
+    }
   };
 
   const subcategories = useSelector((state) =>

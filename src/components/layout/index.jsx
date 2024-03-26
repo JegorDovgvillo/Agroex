@@ -12,6 +12,7 @@ import { selectModal, clearModalsFields } from '@slices/modalSlice';
 import ConfirmActionModal from '@customModals/confirmActionModal';
 import AdminMessageModal from '@customModals/adminMessageModal';
 import { CustomSnackbar } from '@components/customSnackbar';
+import { ErrorHandler } from '@components/errorHandler';
 
 import ENDPOINTS, { BASE_URL } from '@helpers/endpoints';
 
@@ -30,6 +31,12 @@ const Layout = () => {
   const customSnackbarData = useSelector((state) =>
     selectModal(state, 'snackbar')
   );
+  const categoriesState = useSelector((state) => state.categories);
+  const lotListState = useSelector((state) => state.lotList);
+  const [statesWithErrors, setStatesWithErrors] = useState([]);
+  /* const { bets, categories, countries, lotList, tags, usersList } = useSelector(
+    (state) => state
+  ); */
 
   const [text, setText] = useState('');
   const [sseConnection, setSseConnection] = useState(null);
@@ -78,6 +85,15 @@ const Layout = () => {
     }
   }, [customSnackbarData]);
 
+  useEffect(() => {
+    const statesWithErrors = _.filter(
+      [categoriesState, lotListState],
+      (state) => !_.isNull(state.errors)
+    );
+
+    setStatesWithErrors(statesWithErrors);
+  }, [categoriesState, lotListState]);
+
   return (
     <div className={styles.container}>
       <Header />
@@ -88,6 +104,9 @@ const Layout = () => {
       <ConfirmActionModal text={text} />
       <AdminMessageModal />
       <CustomSnackbar />
+      {!_.isEmpty(statesWithErrors) && (
+        <ErrorHandler states={statesWithErrors} />
+      )}
     </div>
   );
 };

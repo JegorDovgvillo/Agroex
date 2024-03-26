@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import styles from './banner.module.scss';
 import bannerImage from '@assets/images/banner.png';
-import ENDPOINTS, { IMAGE_URL } from '@helpers/endpoints';
+import { IMAGE_URL } from '@helpers/endpoints';
 const { container, titleRow } = styles;
 
 const SubcategoryBanner = ({ title, path, image }) => {
@@ -11,7 +11,7 @@ const SubcategoryBanner = ({ title, path, image }) => {
     navigate(path);
   };
 
-  const src = image ? `${IMAGE_URL}${ENDPOINTS.IMAGES}/${image}` : bannerImage;
+  const src = image ? `${IMAGE_URL}/${image}` : bannerImage;
 
   return (
     <div className={container} onClick={handleClick}>

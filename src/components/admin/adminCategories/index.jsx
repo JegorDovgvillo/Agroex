@@ -18,14 +18,17 @@ import {
   clearModalsFields,
   setModalFields,
 } from '@slices/modalSlice';
-import { setCategoryId, clearErrors } from '@slices/categoriesSlice';
+import { setCategoryId, clearCategoriesErrors } from '@slices/categoriesSlice';
 import { deleteCategory } from '@thunks/fetchCategories';
 
 import ModalForCreatingCategory from '@customModals/modalForCreatingCategory';
 import ModalForUpdatingCategory from '@customModals/modalForUpdaitingCategory';
 
+import { snackbarTitles } from '@helpers/fetchResultMessages';
+
 import styles from '../usersList/usersList.module.scss';
 
+const { successCategoryDelete } = snackbarTitles;
 const {
   tableRow,
   userName,
@@ -43,8 +46,8 @@ export default function CategoriesList() {
   const confirmModalData = useSelector((state) =>
     selectModal(state, 'confirmModal')
   );
-  const snackbarData = useSelector((state) => selectModal(state, 'snackbar'));
-  const errors = useSelector((state) => state.categories.errors);
+  // const snackbarData = useSelector((state) => selectModal(state, 'snackbar'));
+  // const errors = useSelector((state) => state.categories.errors);
 
   useEffect(() => {
     dispatch(fetchAllCategories());
@@ -71,33 +74,25 @@ export default function CategoriesList() {
 
     if (!confirmStatus || isOpen) return;
 
-    dispatch(deleteCategory({ id: categoryId }));
+    (async () => {
+      const resultAction = await dispatch(deleteCategory({ id: categoryId }));
+
+      const isSuccessAction = deleteCategory.fulfilled.match(resultAction);
+
+      if (isSuccessAction) {
+        dispatch(
+          setModalFields({
+            modalId: 'snackbar',
+            message: successCategoryDelete,
+            severity: 'success',
+            isOpen: true,
+          })
+        );
+      }
+    })();
+
     dispatch(clearModalsFields('confirmModal'));
   }, [confirmModalData, categoryId, dispatch]);
-
-  useEffect(() => {
-    if (!errors) return;
-
-    dispatch(
-      setModalFields({
-        modalId: 'snackbar',
-        message: errors.detail || errors.title,
-        severity: 'error',
-      })
-    );
-    dispatch(toggleModal('snackbar'));
-  }, [errors]);
-
-  useEffect(() => {
-    if (!snackbarData.message) return;
-
-    const { isOpen } = snackbarData;
-
-    if (!isOpen) {
-      dispatch(clearModalsFields('snackbar'));
-      dispatch(clearErrors());
-    }
-  }, [snackbarData]);
 
   return (
     <>

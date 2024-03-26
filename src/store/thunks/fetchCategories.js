@@ -13,7 +13,10 @@ export const deleteCategory = createAsyncThunk(
 
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue({
+        status: error.response.status,
+        data: error.response.data,
+      });
     }
   }
 );
@@ -29,14 +32,17 @@ export const updateCategory = createAsyncThunk(
 
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue({
+        status: error.response.status,
+        data: error.response.data,
+      });
     }
   }
 );
 
 export const createCategory = createAsyncThunk(
   'categories/createCategory',
-  async (dataCategory, { rejectWithValue }) => {
+  async ({ dataCategory }, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.post(
         ENDPOINTS.CATEGORIES,
@@ -45,7 +51,10 @@ export const createCategory = createAsyncThunk(
 
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue({
+        status: error.response.status,
+        data: error.response.data,
+      });
     }
   }
 );
@@ -58,7 +67,10 @@ export const fetchAllCategories = createAsyncThunk(
 
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue({
+        status: error.response.status,
+        data: error.response.data,
+      });
     }
   }
 );
@@ -71,7 +83,10 @@ export const fetchSubcategoryByParentId = createAsyncThunk(
 
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue({
+        status: error.response.status,
+        data: error.response.data,
+      });
     }
   }
 );

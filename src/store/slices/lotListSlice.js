@@ -21,19 +21,17 @@ import {
 } from '@thunks/fetchLots';
 
 const lotListAdapter = createEntityAdapter();
+const stateId = 'lotList';
 
 const initialState = lotListAdapter.getInitialState({
+  stateId,
   loadingStatus: 'idle',
-  changeLotLoadingStatus: 'idle',
-  createLotStatus: 'idle',
-  updateLotStatus: 'idle',
-  deleteLotStatus: 'idle',
   lotId: null,
   errors: null,
 });
 
 const lotListSlice = createSlice({
-  name: 'lotList',
+  name: stateId,
   initialState,
   reducers: {
     setLotId: (state, action) => {
@@ -43,7 +41,7 @@ const lotListSlice = createSlice({
       lotListAdapter.removeAll(state);
       state.loadingStatus = 'idle';
     },
-    clearErrors: (state) => {
+    clearLotListErrors: (state) => {
       state.errors = null;
     },
     clearStatus: (state, action) => {
@@ -52,9 +50,12 @@ const lotListSlice = createSlice({
     deleteError: (state, action) => {
       if (!state.errors) return;
 
-      state.errors.errors = _.omit(state.errors.errors, action.payload);
+      state.errors.data.errors = _.omit(
+        state.errors.data.errors,
+        action.payload
+      );
 
-      if (_.isEmpty(state.errors.errors)) {
+      if (_.isEmpty(state.errors.data.errors)) {
         state.errors = null;
       }
     },
@@ -68,18 +69,19 @@ const lotListSlice = createSlice({
         state.loadingStatus = 'fulfilled';
         lotListAdapter.addMany(state, action.payload);
       })
-      .addCase(fetchLots.rejected, (state) => {
+      .addCase(fetchLots.rejected, (state, action) => {
         state.loadingStatus = 'rejected';
+        state.errors = action.payload;
       })
       .addCase(updateLot.pending, (state) => {
-        state.updateLotStatus = 'pending';
+        state.loadingStatus = 'pending';
       })
       .addCase(updateLot.fulfilled, (state, action) => {
-        state.updateLotStatus = 'fulfilled';
+        state.loadingStatus = 'fulfilled';
         lotListAdapter.upsertOne(state, action.payload);
       })
       .addCase(updateLot.rejected, (state, action) => {
-        state.updateLotStatus = 'rejected';
+        state.loadingStatus = 'rejected';
         state.errors = action.payload;
       })
       .addCase(fetchLotDetails.pending, (state) => {
@@ -89,31 +91,32 @@ const lotListSlice = createSlice({
         lotListAdapter.setOne(state, action.payload);
         state.loadingStatus = 'fulfilled';
       })
-      .addCase(fetchLotDetails.rejected, (state) => {
+      .addCase(fetchLotDetails.rejected, (state, action) => {
         state.loadingStatus = 'rejected';
+        state.errors = action.payload;
       })
       .addCase(deleteLot.pending, (state) => {
-        state.deleteLotStatus = 'pending';
+        state.loadingStatus = 'pending';
       })
       .addCase(deleteLot.fulfilled, (state, action) => {
         const { id } = action.meta.arg;
 
         lotListAdapter.removeOne(state, id);
-        state.deleteLotStatus = 'fulfilled';
+        state.loadingStatus = 'fulfilled';
       })
       .addCase(deleteLot.rejected, (state, action) => {
-        state.deleteLotStatus = 'rejected';
+        state.loadingStatus = 'rejected';
         state.errors = action.payload;
       })
       .addCase(createLot.pending, (state) => {
-        state.createLotStatus = 'pending';
+        state.loadingStatus = 'pending';
       })
       .addCase(createLot.fulfilled, (state, action) => {
         lotListAdapter.addOne(state, action.payload);
-        state.createLotStatus = 'fulfilled';
+        state.loadingStatus = 'fulfilled';
       })
       .addCase(createLot.rejected, (state, action) => {
-        state.createLotStatus = 'rejected';
+        state.loadingStatus = 'rejected';
         state.errors = action.payload;
       })
       .addCase(filteredLots.pending, (state) => {
@@ -123,8 +126,9 @@ const lotListSlice = createSlice({
         lotListAdapter.setAll(state, action.payload);
         state.loadingStatus = 'fulfilled';
       })
-      .addCase(filteredLots.rejected, (state) => {
+      .addCase(filteredLots.rejected, (state, action) => {
         state.loadingStatus = 'rejected';
+        state.errors = action.payload;
       })
       .addCase(changeLotStatusByUser.pending, (state) => {
         state.loadingStatus = 'pending';
@@ -133,18 +137,19 @@ const lotListSlice = createSlice({
         lotListAdapter.setOne(state, action.payload);
         state.loadingStatus = 'fulfilled';
       })
-      .addCase(changeLotStatusByUser.rejected, (state) => {
+      .addCase(changeLotStatusByUser.rejected, (state, action) => {
         state.loadingStatus = 'rejected';
+        state.errors = action.payload;
       })
       .addCase(changeLotStatusByAdmin.pending, (state) => {
-        state.changeLotLoadingStatus = 'pending';
+        state.loadingStatus = 'pending';
       })
       .addCase(changeLotStatusByAdmin.fulfilled, (state, action) => {
         lotListAdapter.upsertOne(state, action.payload);
-        state.changeLotLoadingStatus = 'fulfilled';
+        state.loadingStatus = 'fulfilled';
       })
       .addCase(changeLotStatusByAdmin.rejected, (state, action) => {
-        state.changeLotLoadingStatus = 'rejected';
+        state.loadingStatus = 'rejected';
         state.errors = action.payload;
       })
       .addCase(getFilteredLots.pending, (state) => {
@@ -154,8 +159,9 @@ const lotListSlice = createSlice({
         lotListAdapter.setAll(state, action.payload);
         state.loadingStatus = 'fulfilled';
       })
-      .addCase(getFilteredLots.rejected, (state) => {
+      .addCase(getFilteredLots.rejected, (state, action) => {
         state.loadingStatus = 'rejected';
+        state.errors = action.payload;
       })
       .addCase(fetchDeal.pending, (state) => {
         state.loadingStatus = 'pending';
@@ -164,8 +170,9 @@ const lotListSlice = createSlice({
         lotListAdapter.upsertOne(state, action.payload);
         state.loadingStatus = 'fulfilled';
       })
-      .addCase(fetchDeal.rejected, (state) => {
+      .addCase(fetchDeal.rejected, (state, action) => {
         state.loadingStatus = 'rejected';
+        state.errors = action.payload;
       })
       .addCase(fetchUserActivityLots.pending, (state) => {
         state.loadingStatus = 'pending';
@@ -174,8 +181,9 @@ const lotListSlice = createSlice({
         lotListAdapter.setAll(state, action.payload);
         state.loadingStatus = 'fulfilled';
       })
-      .addCase(fetchUserActivityLots.rejected, (state) => {
+      .addCase(fetchUserActivityLots.rejected, (state, action) => {
         state.loadingStatus = 'rejected';
+        state.errors = action.payload;
       });
   },
 });
@@ -191,7 +199,12 @@ export const { selectById: selectLotDetailById } = lotListAdapter.getSelectors(
 );
 
 const { actions, reducer } = lotListSlice;
-export const { setLotId, clearLots, clearErrors, clearStatus, deleteError } =
-  actions;
+export const {
+  setLotId,
+  clearLots,
+  clearLotListErrors,
+  clearStatus,
+  deleteError,
+} = actions;
 
 export default reducer;

@@ -7,15 +7,18 @@ import {
 import { fetchPlaceBet, fetchBetsByLotId } from '@thunks/fetchBets';
 
 const betsAdapter = createEntityAdapter();
+const stateId = 'bets';
 
 const initialState = betsAdapter.getInitialState({
+  stateId,
   loadingStatus: 'idle',
   placeBetLoadingStatus: 'idle',
   newBet: null,
+  errors: null,
 });
 
 const betsSlice = createSlice({
-  name: 'bets',
+  name: stateId,
   initialState,
   reducers: {
     clearPlaceBetLoadingStatus: (state) => {
@@ -23,6 +26,9 @@ const betsSlice = createSlice({
     },
     setNewBet: (state, action) => {
       state.newBet = action.payload;
+    },
+    clearBetsErrors: (state) => {
+      state.bets.errors = null;
     },
   },
   extraReducers: (builder) => {
@@ -34,8 +40,9 @@ const betsSlice = createSlice({
         state.placeBetLoadingStatus = 'fulfilled';
         betsAdapter.setOne(state, action.payload);
       })
-      .addCase(fetchPlaceBet.rejected, (state) => {
+      .addCase(fetchPlaceBet.rejected, (state, action) => {
         state.placeBetLoadingStatus = 'rejected';
+        state.errors = action.payload;
       })
       .addCase(fetchBetsByLotId.pending, (state) => {
         state.loadingStatus = 'pending';
@@ -44,15 +51,17 @@ const betsSlice = createSlice({
         state.loadingStatus = 'fulfilled';
         betsAdapter.setMany(state, action.payload);
       })
-      .addCase(fetchBetsByLotId.rejected, (state) => {
+      .addCase(fetchBetsByLotId.rejected, (state, action) => {
         state.loadingStatus = 'rejected';
+        state.errors = action.payload;
       });
   },
 });
 
 const { actions, reducer } = betsSlice;
 
-export const { clearPlaceBetLoadingStatus, setNewBet } = actions;
+export const { clearPlaceBetLoadingStatus, setNewBet, clearBetsErrors } =
+  actions;
 
 const { selectAll } = betsAdapter.getSelectors((state) => state.bets);
 

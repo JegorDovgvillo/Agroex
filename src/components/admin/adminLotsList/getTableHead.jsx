@@ -73,14 +73,16 @@ export const getTableHead = (
           className={lotImage}
           alt="Lot image"
           src={
-            lot.images.length > 0 ? `${IMAGE_URL}/${lot.images[0].name}` : null
+            !_.isEmpty(lot?.images)
+              ? `${IMAGE_URL}/${lot?.images[0].name}`
+              : null
           }
           variant="rounded"
         >
           <ImageNotSupportedIcon />
         </Avatar>
-        <p className={title} onClick={() => viewDetailsCard(lot.id)}>
-          {lot.title}
+        <p className={title} onClick={() => viewDetailsCard(lot?.id)}>
+          {lot?.title}
         </p>
       </div>
     );

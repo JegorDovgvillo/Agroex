@@ -121,14 +121,14 @@ export const handleDeleteLot = (dispatch, lotId) => {
   dispatch(clearModalsFields('confirmModal'));
 };
 
-export const handleChangeLotStatusByAdmin = ({
+export const handleChangeLotStatusByAdmin = async ({
   dispatch,
   lotId,
   status,
   adminMessage,
   selectedCurrency,
 }) => {
-  dispatch(
+  const resultAction = await dispatch(
     changeLotStatusByAdmin({
       lotId: lotId,
       status: status,
@@ -136,7 +136,10 @@ export const handleChangeLotStatusByAdmin = ({
       currency: selectedCurrency,
     })
   );
+
   dispatch(clearModalsFields(['adminMessageModal', 'confirmModal']));
+
+  return changeLotStatusByAdmin.fulfilled.match(resultAction);
 };
 
 export const handleChangeLotStatusByUser = ({

@@ -15,7 +15,6 @@ import { setCorrectedTimeZone } from '@helpers/getCorrectTime';
 import { getDHMSFromMilliseconds } from '@helpers/getDHMSFromMilliseconds';
 import { CURRENCY } from '@helpers/currency';
 import { selectCategoryByParentId } from '@slices/categoriesSlice';
-import { clearErrors } from '@slices/lotListSlice';
 import { fetchSubcategoryByParentId } from '@thunks/fetchCategories';
 
 import CustomTextField from '@customTextField';
@@ -63,7 +62,9 @@ const LotForm = ({
 
   const [disabledMap, setDisabledMap] = useState(true);
   const lotType = getFormattedString(selectedLot?.lotType);
-  const submitErrors = useSelector((state) => state.lotList.errors?.errors);
+  const submitErrors = useSelector(
+    (state) => state.lotList.errors?.data?.errors
+  );
 
   const initialValues = {
     title: selectedLot?.title,
@@ -185,7 +186,6 @@ const LotForm = ({
 
     return () => {
       setFiles([]);
-      dispatch(clearErrors());
     };
   }, [selectedCategoryId]);
 
@@ -529,7 +529,9 @@ const LotForm = ({
                     text="Update an item"
                     width="auto"
                     typeOfButton="submit"
-                    disabled={!isValid || !isImageAdded || submitErrors}
+                    disabled={
+                      !isValid || !isImageAdded || !_.isEmpty(submitErrors)
+                    }
                   />
                   <CustomButton
                     text="Delete an item"

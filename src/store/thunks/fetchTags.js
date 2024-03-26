@@ -11,28 +11,10 @@ export const fetchTags = createAsyncThunk(
 
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue({
+        status: error.response.status,
+        data: error.response.data,
+      });
     }
-  }
-);
-
-export const updateTag = createAsyncThunk(
-  'tags/updateTag',
-  async ({ id, tagData }) => {
-    const response = await axiosInstance.put(
-      `${ENDPOINTS.TAGS}/${id}`,
-      tagData
-    );
-
-    return response.data;
-  }
-);
-
-export const createTag = createAsyncThunk(
-  'tags/createTag',
-  async (tagTitle) => {
-    const response = await axiosInstance.post(ENDPOINTS.TAGS, tagTitle);
-
-    return response.data;
   }
 );

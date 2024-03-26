@@ -14,36 +14,37 @@ import {
 } from '@thunks/fetchCategories';
 
 const categoriesAdapter = createEntityAdapter();
+const stateId = 'categories';
 
 const initialState = categoriesAdapter.getInitialState({
+  stateId,
   loadingStatus: 'idle',
-  fetchAllCategoriesStatus: 'idle',
   categoryId: null,
   errors: null,
 });
 
 const categoriesSlice = createSlice({
-  name: 'categories',
+  name: stateId,
   initialState,
   reducers: {
     setCategoryId: (state, action) => {
       state.categoryId = action.payload;
     },
-    clearErrors: (state) => {
+    clearCategoriesErrors: (state) => {
       state.errors = null;
     },
   },
   extraReducers: (builder) => {
     builder
       .addCase(fetchAllCategories.pending, (state) => {
-        state.fetchAllCategoriesStatus = 'pending';
+        state.loadingStatus = 'pending';
       })
       .addCase(fetchAllCategories.fulfilled, (state, action) => {
-        state.fetchAllCategoriesStatus = 'fulfilled';
+        state.loadingStatus = 'fulfilled';
         categoriesAdapter.addMany(state, action.payload);
       })
       .addCase(fetchAllCategories.rejected, (state, action) => {
-        state.fetchAllCategoriesStatus = 'rejected';
+        state.loadingStatus = 'rejected';
         state.errors = action.payload;
       })
       .addCase(deleteCategory.pending, (state) => {
@@ -84,7 +85,7 @@ const categoriesSlice = createSlice({
 
 const { actions, reducer } = categoriesSlice;
 
-export const { setCategoryId, clearErrors } = actions;
+export const { setCategoryId, clearCategoriesErrors } = actions;
 
 const { selectAll } = categoriesAdapter.getSelectors(
   (state) => state.categories

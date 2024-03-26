@@ -1,8 +1,8 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate, generatePath } from 'react-router-dom';
 
-import { some, capitalize, isEmpty, toLower, includes } from 'lodash';
+import { some, isEmpty, toLower } from 'lodash';
 
 import { fetchAllCategories } from '@thunks/fetchCategories';
 import { selectRootCategories } from '@slices/categoriesSlice';
@@ -17,23 +17,25 @@ const HomePage = () => {
   const navigate = useNavigate();
   const { category } = useParams();
 
+  const [categoriesFetched, setIsCategoriesFetched] = useState(false);
+
   const categories = useSelector(selectRootCategories);
-  const fetchCategoriesLoadingStatus = useSelector(
-    (state) => state.categories.fetchAllCategoriesStatus
-  );
 
   useEffect(() => {
-    dispatch(fetchAllCategories());
+    (async () => {
+      const resultAction = await dispatch(fetchAllCategories());
+      const isSuccessAction = fetchAllCategories.fulfilled.match(resultAction);
+
+      isSuccessAction
+        ? setIsCategoriesFetched(true)
+        : navigate(`/${NOT_FOUND}`);
+    })();
   }, [dispatch]);
 
   useEffect(() => {
-    if (!includes(['fulfilled', 'rejected'], fetchCategoriesLoadingStatus))
-      return;
+    if (!categoriesFetched) return;
 
-    if (
-      includes(['rejected'], fetchCategoriesLoadingStatus) ||
-      isEmpty(categories)
-    ) {
+    if (isEmpty(categories)) {
       navigate(`/${NOT_FOUND}`);
 
       return;
@@ -46,13 +48,16 @@ const HomePage = () => {
       navigate(path);
     }
 
-    if (category && !some(categories, ['title', capitalize(category)])) {
+    if (
+      category &&
+      !some(categories, (cat) => toLower(cat.title) === toLower(category))
+    ) {
       navigate(`/${NOT_FOUND}`);
     }
-  }, [categories, fetchCategoriesLoadingStatus]);
+  }, [categories, categoriesFetched]);
 
   return (
-    <>{categories.length > 0 && <HomePageTabPanel categories={categories} />}</>
+    <>{!isEmpty(categories) && <HomePageTabPanel categories={categories} />}</>
   );
 };
 

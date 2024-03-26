@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { NavLink, generatePath } from 'react-router-dom';
+import { NavLink, generatePath, useNavigate } from 'react-router-dom';
 import { isEmpty, toLower } from 'lodash';
 import AgroexLogo from '@icons/AgroexLogoHeader.svg';
 
@@ -19,21 +19,27 @@ import styles from './header.module.scss';
 
 const Header = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const [homePagePath, setHomePagePath] = useState(null);
   const categories = useSelector(selectRootCategories);
 
   useEffect(() => {
-    dispatch(fetchAllCategories());
-  }, [dispatch]);
+    if (!categories) {
+      (async () => {
+        const resultAction = await dispatch(fetchAllCategories());
+        const isSuccessAction =
+          fetchAllCategories.fulfilled.match(resultAction);
 
-  useEffect(() => {
-    if (isEmpty(categories)) return;
+        !isSuccessAction && navigate(`/${NOT_FOUND}`);
+      })();
+    } else if (!isEmpty(categories)) {
+      const defaultCategory = toLower(categories[0].title);
+      const path = generatePath(HOME_PAGE, { category: defaultCategory });
 
-    const defaultCategory = toLower(categories[0].title);
-    const path = generatePath(HOME_PAGE, { category: defaultCategory });
-
-    setHomePagePath(path);
-  }, [categories]);
+      setHomePagePath(path);
+    }
+  }, [dispatch, categories]);
 
   return (
     <header className={styles.header}>
