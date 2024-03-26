@@ -37,7 +37,7 @@ const CustomSelect = ({
 
   return (
     <div className={`${styles.wrapp} ${styles[wrappType]}`}>
-      <FormControl error={errors && touched}>
+      <FormControl error={errors && touched} className={styles[fieldType]}>
         <label htmlFor={name}>{label}</label>
         <Field
           as={Select}
