@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate, generatePath } from 'react-router-dom';
 
-import { some, capitalize, isEmpty, toLower } from 'lodash';
+import { some, capitalize, isEmpty, toLower, includes } from 'lodash';
 
 import { fetchAllCategories } from '@thunks/fetchCategories';
 import { selectRootCategories } from '@slices/categoriesSlice';
@@ -27,17 +27,15 @@ const HomePage = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (
-      fetchCategoriesLoadingStatus !== 'fulfilled' &&
-      fetchCategoriesLoadingStatus !== 'rejected'
-    )
+    if (!includes(['fulfilled', 'rejected'], fetchCategoriesLoadingStatus))
       return;
 
     if (
-      fetchCategoriesLoadingStatus === 'rejected' ||
-      (fetchCategoriesLoadingStatus === 'fulfilled' && isEmpty(categories))
+      includes(['rejected'], fetchCategoriesLoadingStatus) ||
+      isEmpty(categories)
     ) {
       navigate(`/${NOT_FOUND}`);
+
       return;
     }
 

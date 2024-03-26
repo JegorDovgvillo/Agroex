@@ -2,7 +2,7 @@ import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported';
 
 import getFormattedDate from '@helpers/getFormattedDate';
 import getNumberWithCurrency from '@helpers/getNumberWithCurrency';
-import ENDPOINTS, { IMAGE_URL } from '@helpers/endpoints';
+import { IMAGE_URL } from '@helpers/endpoints';
 import { getCorrectedTimeZone } from '@helpers/getCorrectTime';
 
 import { TagsBlock } from '@components/tagsBlock';
@@ -24,7 +24,7 @@ const ItemCardInfoBlock = ({ item, userTimeZone, children }) => {
       <div className={styles.imageContainer}>
         {image && image.name ? (
           <img
-            src={`${IMAGE_URL}${ENDPOINTS.IMAGES}/${image.name}`}
+            src={`${IMAGE_URL}/${image.name}`}
             className={styles.image}
             alt="item image"
           />

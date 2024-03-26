@@ -115,9 +115,7 @@ const DragAndDrop = ({
         {files.map((file) => (
           <li key={file.id}>
             <img
-              src={
-                file.preview || `${IMAGE_URL}${ENDPOINTS.IMAGES}/${file.name}`
-              }
+              src={file.preview || `${IMAGE_URL}/${file.name}`}
               alt={file.name}
               width={120}
               height={120}

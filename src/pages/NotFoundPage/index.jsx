@@ -10,7 +10,7 @@ import { selectRootCategories } from '@slices/categoriesSlice';
 import ROUTES from '@helpers/routeNames';
 import imageSrc from '@assets/images/notFound.jpg';
 
-import styles from './404.module.scss';
+import styles from './notFoundPage.module.scss';
 
 const { pageWrapper, container, title } = styles;
 

@@ -10,7 +10,7 @@ import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported';
 
 import { GridRowModes, GridActionsCellItem } from '@mui/x-data-grid';
 
-import ENDPOINTS, { IMAGE_URL } from '@helpers/endpoints';
+import { IMAGE_URL } from '@helpers/endpoints';
 
 import styles from './adminLotsList.module.scss';
 
@@ -27,8 +27,6 @@ const {
   actionsCell,
   headerCell,
 } = styles;
-
-const baseURL = `${IMAGE_URL}${ENDPOINTS.IMAGES}`;
 
 export const getTableHead = (
   lots,
@@ -75,7 +73,7 @@ export const getTableHead = (
           className={lotImage}
           alt="Lot image"
           src={
-            lot.images.length > 0 ? `${baseURL}/${lot.images[0].name}` : null
+            lot.images.length > 0 ? `${IMAGE_URL}/${lot.images[0].name}` : null
           }
           variant="rounded"
         >

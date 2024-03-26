@@ -2,6 +2,8 @@ import { useDispatch } from 'react-redux';
 import { TextField } from '@mui/material';
 import { Field } from 'formik';
 
+import { includes } from 'lodash';
+
 import { deleteError } from '@slices/lotListSlice';
 
 import styles from './customTextField.module.scss';
@@ -31,7 +33,7 @@ const CustomTextField = ({
   const handleChange = (e) => {
     setFieldValue(name, e.target.value);
 
-    if (name === 'days' || name === 'hours' || name === 'minutes') {
+    if (includes(['days', 'hours', 'minutes'], name)) {
       dispatch(deleteError('duration'));
       return;
     }

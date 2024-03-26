@@ -15,6 +15,7 @@ import { setCorrectedTimeZone } from '@helpers/getCorrectTime';
 import { getDHMSFromMilliseconds } from '@helpers/getDHMSFromMilliseconds';
 import { CURRENCY } from '@helpers/currency';
 import { selectCategoryByParentId } from '@slices/categoriesSlice';
+import { clearErrors } from '@slices/lotListSlice';
 import { fetchSubcategoryByParentId } from '@thunks/fetchCategories';
 
 import CustomTextField from '@customTextField';
@@ -181,6 +182,11 @@ const LotForm = ({
     if (selectedCategoryId) {
       dispatch(fetchSubcategoryByParentId(selectedCategoryId));
     }
+
+    return () => {
+      setFiles([]);
+      dispatch(clearErrors());
+    };
   }, [selectedCategoryId]);
 
   useEffect(() => {
@@ -199,12 +205,6 @@ const LotForm = ({
 
     formRef.current.setErrors(submitErrors);
   }, [submitErrors]);
-
-  useEffect(() => {
-    return () => {
-      setFiles([]);
-    };
-  }, []);
 
   return (
     <Formik

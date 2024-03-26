@@ -8,7 +8,7 @@ import UpdateLot from '@pages/updateLot';
 import UserProfile from '@pages/UserProfile';
 import HomePage from '@pages/HomePage';
 import Login from '@pages/login';
-import NotFoundPage from '@pages/404';
+import NotFoundPage from '@pages/NotFoundPage';
 
 import Layout from '@components/layout';
 import UserProfilePage from '@components/userProfile/userProfilePage';
@@ -84,10 +84,6 @@ const Router = () => {
           element: <NotFoundPage />,
         },
       ],
-    },
-    {
-      path: '*',
-      element: <NotFoundPage />,
     },
   ]);
 

@@ -141,12 +141,8 @@ const UpdateLot = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (
-      selectedLotLoadingStatus !== 'rejected' &&
-      selectedLotLoadingStatus !== 'fulfilled'
-    )
-      return;
-    console.log(selectedLot);
+    if (_.includes(['rejected', 'fulfilled'], selectedLotLoadingStatus)) return;
+
     if (!selectedLot) navigate(`/${NOT_FOUND}`);
 
     convertImagesToFiles(selectedLot?.images || [], setFiles);
@@ -169,9 +165,9 @@ const UpdateLot = () => {
             modalId: 'snackbar',
             message: 'Your lot has been successfully updated',
             severity: 'success',
+            isOpen: true,
           })
         );
-        dispatch(toggleModal('snackbar'));
         setFiles([]);
         navigate(-1);
         dispatch(clearStatus('updateLotStatus'));
@@ -183,9 +179,9 @@ const UpdateLot = () => {
             modalId: 'snackbar',
             message: submitErrorMessage,
             severity: 'error',
+            isOpen: true,
           })
         );
-        dispatch(toggleModal('snackbar'));
         break;
     }
   }, [updateLotStatus]);
@@ -198,9 +194,9 @@ const UpdateLot = () => {
             modalId: 'snackbar',
             message: 'Your lot has been successfully deleted',
             severity: 'success',
+            isOpen: true,
           })
         );
-        dispatch(toggleModal('snackbar'));
         navigate(-1);
         dispatch(clearStatus('deleteLotStatus'));
         break;
@@ -211,9 +207,9 @@ const UpdateLot = () => {
             modalId: 'snackbar',
             message: submitErrorMessage,
             severity: 'error',
+            isOpen: true,
           })
         );
-        dispatch(toggleModal('snackbar'));
         break;
     }
   }, [deleteLotStatus]);
@@ -230,7 +226,7 @@ const UpdateLot = () => {
     if (
       !_.every(
         [categoriesLoadingStatus, countriesLoadingStatus, tagsLoadingStatus],
-        (status) => status === 'fulfilled' || status === 'rejected'
+        (status) => _.includes(['fulfilled', 'rejected'], status)
       )
     ) {
       return;
