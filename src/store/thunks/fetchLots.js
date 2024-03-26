@@ -22,8 +22,8 @@ export const updateLot = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue({
-        status: error.response.status,
-        data: error.response.data,
+        status: error?.response?.status,
+        data: error?.response?.data,
       });
     }
   }
@@ -40,8 +40,8 @@ export const fetchLotDetails = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue({
-        status: error.response.status,
-        data: error.response.data,
+        status: error?.response?.status,
+        data: error?.response?.data,
       });
     }
   }
@@ -58,8 +58,8 @@ export const createLot = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue({
-        status: error.response.status,
-        data: error.response.data,
+        status: error?.response?.status,
+        data: error?.response?.data,
       });
     }
   }
@@ -74,8 +74,8 @@ export const deleteLot = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue({
-        status: error.response.status,
-        data: error.response.data,
+        status: error?.response?.status,
+        data: error?.response?.data,
       });
     }
   }
@@ -92,8 +92,8 @@ export const filteredLots = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue({
-        status: error.response.status,
-        data: error.response.data,
+        status: error?.response?.status,
+        data: error?.response?.data,
       });
     }
   }
@@ -111,8 +111,8 @@ export const getFilteredLots = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue({
-        status: error.response.status,
-        data: error.response.data,
+        status: error?.response?.status,
+        data: error?.response?.data,
       });
     }
   }
@@ -135,8 +135,8 @@ export const changeLotStatusByUser = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue({
-        status: error.response.status,
-        data: error.response.data,
+        status: error?.response?.status,
+        data: error?.response?.data,
       });
     }
   }
@@ -167,8 +167,8 @@ export const changeLotStatusByAdmin = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue({
-        status: error.response.status,
-        data: error.response.data,
+        status: error?.response?.status,
+        data: error?.response?.data,
       });
     }
   }
@@ -190,8 +190,8 @@ export const fetchDeal = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue({
-        status: error.response.status,
-        data: error.response.data,
+        status: error?.response?.status,
+        data: error?.response?.data,
       });
     }
   }
@@ -209,8 +209,8 @@ export const fetchUserActivityLots = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue({
-        status: error.response.status,
-        data: error.response.data,
+        status: error?.response?.status,
+        data: error?.response?.data,
       });
     }
   }

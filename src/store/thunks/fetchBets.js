@@ -18,8 +18,8 @@ export const fetchPlaceBet = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue({
-        status: error.response.status,
-        data: error.response.data,
+        status: error?.response?.status,
+        data: error?.response?.data,
       });
     }
   }
@@ -34,8 +34,8 @@ export const fetchBetsByLotId = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue({
-        status: error.response.status,
-        data: error.response.data,
+        status: error?.response?.status,
+        data: error?.response?.data,
       });
     }
   }

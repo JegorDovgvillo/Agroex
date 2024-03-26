@@ -14,8 +14,8 @@ export const deleteCategory = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue({
-        status: error.response.status,
-        data: error.response.data,
+        status: error?.response?.status,
+        data: error?.response?.data,
       });
     }
   }
@@ -33,8 +33,8 @@ export const updateCategory = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue({
-        status: error.response.status,
-        data: error.response.data,
+        status: error?.response?.status,
+        data: error?.response?.data,
       });
     }
   }
@@ -52,8 +52,8 @@ export const createCategory = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue({
-        status: error.response.status,
-        data: error.response.data,
+        status: error?.response?.status,
+        data: error?.response?.data,
       });
     }
   }
@@ -68,8 +68,8 @@ export const fetchAllCategories = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue({
-        status: error.response.status,
-        data: error.response.data,
+        status: error?.response?.status,
+        data: error?.response?.data,
       });
     }
   }
@@ -84,8 +84,8 @@ export const fetchSubcategoryByParentId = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue({
-        status: error.response.status,
-        data: error.response.data,
+        status: error?.response?.status,
+        data: error?.response?.data,
       });
     }
   }

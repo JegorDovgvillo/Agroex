@@ -13,8 +13,8 @@ export const fetchUsers = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue({
-        status: error.response.status,
-        data: error.response.data,
+        status: error?.response?.status,
+        data: error?.response?.data,
       });
     }
   }
@@ -29,8 +29,8 @@ export const deleteUser = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue({
-        status: error.response.status,
-        data: error.response.data,
+        status: error?.response?.status,
+        data: error?.response?.data,
       });
     }
   }
@@ -48,8 +48,8 @@ export const updateUser = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue({
-        status: error.response.status,
-        data: error.response.data,
+        status: error?.response?.status,
+        data: error?.response?.data,
       });
     }
   }
@@ -64,8 +64,8 @@ export const fetchUser = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue({
-        status: error.response.status,
-        data: error.response.data,
+        status: error?.response?.status,
+        data: error?.response?.data,
       });
     }
   }
@@ -81,8 +81,8 @@ export const getUserFromCognito = createAsyncThunk(
       return userInfo;
     } catch (error) {
       return rejectWithValue({
-        status: error.response.status,
-        data: error.response.data,
+        status: error?.response?.status,
+        data: error?.response?.data,
       });
     }
   }
@@ -99,8 +99,8 @@ export const updateToken = createAsyncThunk(
       return userInfo;
     } catch (error) {
       return rejectWithValue({
-        status: error.response.status,
-        data: error.response.data,
+        status: error?.response?.status,
+        data: error?.response?.data,
       });
     }
   }
@@ -115,8 +115,8 @@ export const createUser = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue({
-        status: error.response.status,
-        data: error.response.data,
+        status: error?.response?.status,
+        data: error?.response?.data,
       });
     }
   }
@@ -133,8 +133,8 @@ export const changeUserStatus = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue({
-        status: error.response.status,
-        data: error.response.data,
+        status: error?.response?.status,
+        data: error?.response?.data,
       });
     }
   }
@@ -152,8 +152,8 @@ export const updateUsersInTheDataBase = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue({
-        status: error.response.status,
-        data: error.response.data,
+        status: error?.response?.status,
+        data: error?.response?.data,
       });
     }
   }

@@ -12,8 +12,8 @@ export const fetchTags = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue({
-        status: error.response.status,
-        data: error.response.data,
+        status: error?.response?.status,
+        data: error?.response?.data,
       });
     }
   }
