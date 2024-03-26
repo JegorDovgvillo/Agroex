@@ -18,15 +18,9 @@ import {
   toggleModal,
   selectModalState,
   setModalFields,
-  clearModalsFields,
   selectModal,
 } from '@slices/modalSlice';
-import {
-  lotListSelector,
-  setLotId,
-  // clearLotListErrors,
-  // clearStatus,
-} from '@slices/lotListSlice';
+import { lotListSelector, setLotId } from '@slices/lotListSlice';
 import { setUserId, usersListSelector } from '@slices/usersListSlice';
 import { getSelectedCurrency } from '@slices/currencySlice';
 

@@ -34,9 +34,6 @@ const Layout = () => {
   const categoriesState = useSelector((state) => state.categories);
   const lotListState = useSelector((state) => state.lotList);
   const [statesWithErrors, setStatesWithErrors] = useState([]);
-  /* const { bets, categories, countries, lotList, tags, usersList } = useSelector(
-    (state) => state
-  ); */
 
   const [text, setText] = useState('');
   const [sseConnection, setSseConnection] = useState(null);

@@ -76,7 +76,6 @@ const ModalForCreatingCategory = () => {
           isOpen: true,
         })
       );
-
       dispatch(toggleModal('creatingModal'));
       setFile(null);
       setImageSrc(null);

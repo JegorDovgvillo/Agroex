@@ -18,7 +18,7 @@ import {
   clearModalsFields,
   setModalFields,
 } from '@slices/modalSlice';
-import { setCategoryId, clearCategoriesErrors } from '@slices/categoriesSlice';
+import { setCategoryId } from '@slices/categoriesSlice';
 import { deleteCategory } from '@thunks/fetchCategories';
 
 import ModalForCreatingCategory from '@customModals/modalForCreatingCategory';
@@ -46,8 +46,6 @@ export default function CategoriesList() {
   const confirmModalData = useSelector((state) =>
     selectModal(state, 'confirmModal')
   );
-  // const snackbarData = useSelector((state) => selectModal(state, 'snackbar'));
-  // const errors = useSelector((state) => state.categories.errors);
 
   useEffect(() => {
     dispatch(fetchAllCategories());
