@@ -81,6 +81,7 @@ const ModalForCreatingCategory = () => {
   useEffect(() => {
     if (file) {
       const src = file.preview;
+
       setImageSrc(src);
     } else {
       setImageSrc(null);

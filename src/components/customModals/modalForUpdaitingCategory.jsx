@@ -64,17 +64,16 @@ const ModalForUpdatingCategory = () => {
   };
 
   useEffect(() => {
+    let src = bannerImage;
+
     if (file) {
-      const src = file.preview;
-      setImageSrc(src);
-    } else if (categoryFields && categoryFields.image) {
-      const src = `${IMAGE_URL}${ENDPOINTS.IMAGES}/${categoryFields.image}`;
-      setImageSrc(src);
-    } else {
-      const src = bannerImage;
-      setImageSrc(src);
+      src = file.preview;
+    } else if (categoryFields?.image) {
+      src = `${IMAGE_URL}${ENDPOINTS.IMAGES}/${categoryFields.image}`;
     }
-  }, [file, isOpen, categoryFields]);
+
+    setImageSrc(src);
+  }, [file, categoryFields]);
 
   return (
     <div>
