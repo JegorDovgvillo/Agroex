@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Outlet } from 'react-router';
 import _ from 'lodash';
+import { EventSource } from 'extended-eventsource';
+import { fetchAuthSession } from 'aws-amplify/auth';
 
 import { getUserFromCognito } from '@thunks/fetchUsers';
 
@@ -9,6 +11,8 @@ import { selectModal } from '@slices/modalSlice';
 import ConfirmActionModal from '@customModals/confirmActionModal';
 import AdminMessageModal from '@customModals/adminMessageModal';
 import { CustomSnackbar } from '@components/customSnackbar';
+
+import ENDPOINTS, { BASE_URL } from '@helpers/endpoints';
 
 import Header from '../header';
 import Footer from '../footer';
@@ -21,6 +25,7 @@ const Layout = () => {
     selectModal(state, 'confirmModal')
   );
 
+  const [sseConnection, setSseConnection] = useState(null);
   const [text, setText] = useState('');
 
   useEffect(() => {
@@ -32,6 +37,21 @@ const Layout = () => {
   useEffect(() => {
     dispatch(getUserFromCognito());
   }, []);
+
+  useEffect(() => {
+    openConnection().then((data) => setSseConnection(data));
+  }, []);
+
+  const openConnection = async () => {
+    const { idToken } = (await fetchAuthSession()).tokens ?? {};
+    const sse = new EventSource(`${BASE_URL}${ENDPOINTS.SSE}`, {
+      headers: {
+        Authorization: `Bearer ${idToken}`,
+      },
+    });
+
+    return sse;
+  };
 
   return (
     <div className={styles.container}>
