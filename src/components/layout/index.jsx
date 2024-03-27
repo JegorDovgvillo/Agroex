@@ -28,6 +28,17 @@ const Layout = () => {
   const [sseConnection, setSseConnection] = useState(null);
   const [text, setText] = useState('');
 
+  const openConnection = async () => {
+    const { idToken } = (await fetchAuthSession()).tokens ?? {};
+    const sse = new EventSource(`${BASE_URL}${ENDPOINTS.SSE}`, {
+      headers: {
+        Authorization: `Bearer ${idToken}`,
+      },
+    });
+
+    return sse;
+  };
+
   useEffect(() => {
     if (_.isEqual(text, confirmActionData.text)) return;
 
@@ -41,17 +52,6 @@ const Layout = () => {
   useEffect(() => {
     openConnection().then((data) => setSseConnection(data));
   }, []);
-
-  const openConnection = async () => {
-    const { idToken } = (await fetchAuthSession()).tokens ?? {};
-    const sse = new EventSource(`${BASE_URL}${ENDPOINTS.SSE}`, {
-      headers: {
-        Authorization: `Bearer ${idToken}`,
-      },
-    });
-
-    return sse;
-  };
 
   return (
     <div className={styles.container}>
