@@ -84,16 +84,21 @@ export const CurrencySelect = () => {
         {selectedCurrencyKey}
       </Button>
       <Menu
-        id="currency-menu"
-        anchorEl={anchorEl}
-        open={isOpen}
-        onClose={() => handleClose(selectedCurrencyKey)}
-        MenuListProps={{
-          'aria-labelledby': 'currency-button',
-        }}
-        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-      >
+          id="currency-menu"
+          anchorEl={anchorEl}
+          open={isOpen}
+          onClose={() => handleClose(selectedCurrencyKey)}
+          MenuListProps={{
+            'aria-labelledby': 'currency-button',
+          }}
+          transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+          anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+          sx={{
+            '& .MuiPaper-root': {
+              boxShadow: '0px 4px 24px 0px #0000001f', 
+            },
+          }}
+        >
         {CURRENCY.map((item) => (
           <MenuItem
             className={`${currencyContainer} ${currencyMenuItem}`}

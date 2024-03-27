@@ -8,6 +8,8 @@ import { fetchAuthSession } from 'aws-amplify/auth';
 import { getUserFromCognito } from '@thunks/fetchUsers';
 
 import { selectModal } from '@slices/modalSlice';
+import { setMessage } from '@slices/sseSlice';
+
 import ConfirmActionModal from '@customModals/confirmActionModal';
 import AdminMessageModal from '@customModals/adminMessageModal';
 import { CustomSnackbar } from '@components/customSnackbar';
@@ -21,11 +23,11 @@ import styles from './layout.module.scss';
 
 const Layout = () => {
   const dispatch = useDispatch();
+
   const confirmActionData = useSelector((state) =>
     selectModal(state, 'confirmModal')
   );
 
-  const [sseConnection, setSseConnection] = useState(null);
   const [text, setText] = useState('');
 
   const openConnection = async () => {
@@ -50,7 +52,12 @@ const Layout = () => {
   }, []);
 
   useEffect(() => {
-    openConnection().then((data) => setSseConnection(data));
+    openConnection().then(
+      (data) =>
+        (data.onmessage = (event) => {
+          dispatch(setMessage(JSON.parse(event.data)));
+        })
+    );
   }, []);
 
   return (

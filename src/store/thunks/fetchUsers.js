@@ -81,7 +81,7 @@ export const changeUserStatus = createAsyncThunk(
 export const updateUsersInTheDataBase = createAsyncThunk(
   'usersList/updateDataBase',
   async () => {
-    const {idToken} = (await fetchAuthSession()).tokens ?? {};
+    const { idToken } = (await fetchAuthSession()).tokens ?? {};
     const response = await axiosInstance.get(ENDPOINTS.UPDATE_DB, {
       headers: { Authorization: `Bearer ${idToken}` },
     });

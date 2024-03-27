@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import _ from 'lodash';
-import { withAuthenticator } from '@aws-amplify/ui-react';
 
 import { fetchAllCategories } from '@thunks/fetchCategories';
 import { fetchCountries } from '@thunks/fetchCountries';
@@ -152,4 +151,4 @@ const CreateNewLot = () => {
   );
 };
 
-export default withAuthenticator(CreateNewLot);
+export default CreateNewLot;
