@@ -72,6 +72,14 @@
   .modalTextField {
     width: 100%;
   }
+
+  &.adminReportType {
+    width: 350px;
+
+    .adminReportType {
+      width: 300px;
+    }
+  }
 }
 
 .tag {
