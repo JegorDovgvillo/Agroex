@@ -62,8 +62,6 @@ const AdminReports = () => {
     })?.reportType;
 
     dispatch(fetchReport({ reportType: reportTypeToSubmit, params }));
-
-    return;
   };
 
   const getUnits = (field) => {

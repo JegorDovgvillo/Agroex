@@ -12,7 +12,6 @@ const initialState = reportsAdapter.getInitialState({
 const reportsSlice = createSlice({
   name: 'reports',
   initialState,
-
   extraReducers: (builder) => {
     builder
       .addCase(fetchReport.pending, (state) => {
