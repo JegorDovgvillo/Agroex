@@ -161,7 +161,7 @@ const AdminReports = () => {
                   touched={touched.lotType}
                   setFieldValue={setFieldValue}
                 />
-                {_.includes(selectedReportData.reportFields, 'countryId') &&
+                {_.includes(selectedReportData?.reportFields, 'countryId') &&
                   countries && (
                     <CustomSelect
                       label="Country"
