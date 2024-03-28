@@ -12,7 +12,7 @@ import { selectRootCategories } from '@slices/categoriesSlice';
 import { countrySelector } from '@slices/countriesSlice';
 import { getSelectedCurrency } from '@slices/currencySlice';
 
-import { useLoadedWithoutErrorsSelector } from '@store/selectors';
+import { useLoadedWithoutErrorsSelector } from '@selectors';
 
 import LotForm from '@components/lotForm';
 import ROUTES from '@helpers/routeNames';
@@ -24,6 +24,7 @@ const { NOT_FOUND } = ROUTES;
 const CreateNewLot = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const createLot = useCreateLot();
   const categories = useSelector(selectRootCategories);
   const countries = useSelector(countrySelector);
   const tags = useSelector(tagsSelector);
@@ -93,10 +94,11 @@ const CreateNewLot = () => {
 
     formData.append('data', JSON.stringify(lotData));
 
-    useCreateLot({ formData, currency: selectedCurrency });
+    createLot({ formData, currency: selectedCurrency });
   };
 
   useEffect(() => {
+    console.log(isDataFetched);
     if (!isDataFetched) return;
 
     const isNoEmptyData = _.every(

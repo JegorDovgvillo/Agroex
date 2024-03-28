@@ -16,7 +16,7 @@ const stateId = 'countries';
 
 const initialState = countryAdapter.getInitialState({
   stateId,
-  loadingStatus: false,
+  loadingStatus: null,
   countryName: '',
   address: null,
   errors: null,

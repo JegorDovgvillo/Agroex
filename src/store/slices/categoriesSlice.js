@@ -18,7 +18,7 @@ const stateId = 'categories';
 
 const initialState = categoriesAdapter.getInitialState({
   stateId,
-  loadingStatus: false,
+  loadingStatus: null,
   categoryId: null,
   errors: null,
 });

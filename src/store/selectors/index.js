@@ -1,15 +1,23 @@
 import { useSelector } from 'react-redux';
-import { every } from 'lodash';
+import { some } from 'lodash';
 
-export const useLoadedWithoutErrorsSelector = () => {
-  return (sliceNames) => {
-    const allSliceResults = sliceNames.map((sliceName) => {
-      const { loadingStatus, errors } = useSelector(
-        (state) => state[sliceName]
-      );
-      return !every(loadingStatus, errors);
-    });
+export const useLoadedWithoutErrorsSelector = (sliceNames) => {
+  const isDataSlicesLoaded = sliceNames.map((sliceName) => {
+    const sliceState = useSelector((state) => state[sliceName]);
+    const { loadingStatus, errors } = sliceState;
+    console.log(sliceName, loadingStatus, errors);
+    if (loadingStatus !== false) return null;
 
-    return every(allSliceResults);
-  };
+    return errors ? false : true;
+  });
+  console.log(isDataSlicesLoaded);
+  if (some(isDataSlicesLoaded, (item) => item === null)) {
+    return null;
+  }
+
+  if (some(isDataSlicesLoaded, (item) => item === false)) {
+    return false;
+  }
+
+  return true;
 };

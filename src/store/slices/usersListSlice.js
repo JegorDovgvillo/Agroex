@@ -17,7 +17,7 @@ const stateId = 'usersList';
 
 const initialState = usersListAdapter.getInitialState({
   stateId,
-  loadingStatus: false,
+  loadingStatus: null,
   userId: null,
   userInfo: null,
   errors: null,

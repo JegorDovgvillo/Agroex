@@ -11,7 +11,7 @@ const stateId = 'bets';
 
 const initialState = betsAdapter.getInitialState({
   stateId,
-  loadingStatus: false,
+  loadingStatus: null,
   placeBetLoadingStatus: false,
   newBet: null,
   errors: null,

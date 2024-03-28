@@ -25,7 +25,7 @@ const stateId = 'lotList';
 
 const initialState = lotListAdapter.getInitialState({
   stateId,
-  loadingStatus: false,
+  loadingStatus: null,
   lotId: null,
   errors: null,
 });

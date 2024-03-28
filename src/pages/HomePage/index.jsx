@@ -2,10 +2,12 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate, generatePath } from 'react-router-dom';
 
-import { some, isEmpty, toLower } from 'lodash';
+import { some, isEmpty, toLower, isNull } from 'lodash';
 
 import { fetchAllCategories } from '@thunks/fetchCategories';
 import { selectRootCategories } from '@slices/categoriesSlice';
+import { useLoadedWithoutErrorsSelector } from '@selectors';
+
 import ROUTES from '@helpers/routeNames';
 
 import HomePageTabPanel from '@components/customTabPanels/homePageTabPanel';
@@ -18,19 +20,18 @@ const HomePage = () => {
   const { category } = useParams();
 
   const [categoriesFetched, setIsCategoriesFetched] = useState(false);
-
+  const isCategoriesLoaded = useLoadedWithoutErrorsSelector(['categories']);
   const categories = useSelector(selectRootCategories);
 
   useEffect(() => {
-    (async () => {
-      const resultAction = await dispatch(fetchAllCategories());
-      const isSuccessAction = fetchAllCategories.fulfilled.match(resultAction);
-
-      isSuccessAction
+    if (isNull(isCategoriesLoaded)) {
+      dispatch(fetchAllCategories());
+    } else {
+      isCategoriesLoaded
         ? setIsCategoriesFetched(true)
         : navigate(`/${NOT_FOUND}`);
-    })();
-  }, [dispatch]);
+    }
+  }, [dispatch, isCategoriesLoaded]);
 
   useEffect(() => {
     if (!categoriesFetched) return;

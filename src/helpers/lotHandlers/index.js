@@ -89,7 +89,7 @@ export const handleDealBtnClick = (dispatch, isAuctionLot, lot, userId) => {
   }
 };
 
-export const useCreateLot = () => {
+export function useCreateLot() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { loadingStatus, errors } = useSelector((state) => state.lotList);
@@ -112,7 +112,7 @@ export const useCreateLot = () => {
     dispatch(setNewBet(null));
     dispatch(clearModalsFields(['confirmModal', 'placeBetModal']));
   };
-};
+}
 
 export const handlePlaceNewBet = (dispatch, newBet, currency) => {
   dispatch(
