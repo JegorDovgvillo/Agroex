@@ -1,4 +1,8 @@
+import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+
 import ROUTES from '@helpers/routeNames';
+import { getSnackbarMessages } from '@helpers/getSnackbarMessages';
 
 import {
   clearModalsFields,
@@ -12,9 +16,12 @@ import {
   changeLotStatusByUser,
   changeLotStatusByAdmin,
   deleteLot,
+  createLot,
 } from '@thunks/fetchLots';
 
 import { fetchPlaceBet } from '@thunks/fetchBets';
+
+const { successLotCreate } = getSnackbarMessages();
 
 export const handleDeactivateBtnClick = (dispatch, isAdmin = false) => {
   dispatch(
@@ -82,6 +89,31 @@ export const handleDealBtnClick = (dispatch, isAuctionLot, lot, userId) => {
   }
 };
 
+export const useCreateLot = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { loadingStatus, errors } = useSelector((state) => state.lotList);
+
+  return async ({ formData, currency }) => {
+    await dispatch(createLot({ formData, currency }));
+
+    if (!loadingStatus && !errors) {
+      dispatch(
+        setModalFields({
+          modalId: 'snackbar',
+          message: successLotCreate,
+          severity: 'success',
+          isOpen: true,
+        })
+      );
+      navigate(-1);
+    }
+
+    dispatch(setNewBet(null));
+    dispatch(clearModalsFields(['confirmModal', 'placeBetModal']));
+  };
+};
+
 export const handlePlaceNewBet = (dispatch, newBet, currency) => {
   dispatch(
     fetchPlaceBet({
@@ -94,6 +126,23 @@ export const handlePlaceNewBet = (dispatch, newBet, currency) => {
   dispatch(clearModalsFields(['confirmModal', 'placeBetModal']));
 };
 
+/* 
+export const useHandlePlaceNewBet = () => {
+  const dispatch = useDispatch();
+
+  return (newBet, currency) => {
+    dispatch(
+      fetchPlaceBet({
+        id: newBet.lotId,
+        betData: newBet,
+        currency,
+      })
+    );
+    dispatch(setNewBet(null));
+    dispatch(clearModalsFields(['confirmModal', 'placeBetModal']));
+  };
+};
+ */
 export const handleDeal = (params) => {
   const { dispatch, lotId, userId, currency } = params;
 

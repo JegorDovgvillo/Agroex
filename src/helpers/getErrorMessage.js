@@ -1,6 +1,10 @@
-import { snackbarTitles, snackbarMessages } from '@helpers/fetchResultMessages';
+import {
+  getSnackbarMessages,
+  snackbarMessages,
+} from '@helpers/getSnackbarMessages';
 
-const { authError, serverError, badRequestError, unknown } = snackbarTitles;
+const { authError, serverError, badRequestError, unknown } =
+  getSnackbarMessages;
 const { login } = snackbarMessages;
 
 export const getErrorMessage = (errors) => {

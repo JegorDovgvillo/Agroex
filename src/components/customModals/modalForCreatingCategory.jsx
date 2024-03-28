@@ -23,7 +23,7 @@ import {
   categoryTitleValidationSchema,
   subcategoryCreationValidationSchema,
 } from '@helpers/validationSchemes/lotValidationSchemes';
-import { snackbarTitles } from '@helpers/fetchResultMessages';
+import { getSnackbarMessages } from '@helpers/getSnackbarMessages';
 
 import CustomSelect from '../customSelect';
 import CustomAutocompleteField from '../customAutocomplete';
@@ -31,7 +31,7 @@ import CustomUploadButton from '../customUploadButton';
 
 import styles from './infoModal.module.scss';
 
-const { successCategoryCreate } = snackbarTitles;
+const { successCategoryCreate } = getSnackbarMessages();
 
 const ModalForCreatingCategory = () => {
   const dispatch = useDispatch();

@@ -22,13 +22,13 @@ import { fetchTags } from '@thunks/fetchTags';
 
 import convertImagesToFiles from '@helpers/convertImagesToFiles';
 import ROUTES from '@helpers/routeNames';
-import { snackbarTitles } from '@helpers/fetchResultMessages';
+import { getSnackbarMessages } from '@helpers/getSnackbarMessages';
 
 import LotForm from '@components/lotForm';
 
 const MAXIMUM_NUMBER_OF_IMG = import.meta.env.VITE_MAXIMUM_NUMBER_OF_IMG;
 const { NOT_FOUND } = ROUTES;
-const { successLotUpdate, successLotDelete } = snackbarTitles;
+const { successLotUpdate, successLotDelete } = getSnackbarMessages();
 
 const UpdateLot = () => {
   const dispatch = useDispatch();

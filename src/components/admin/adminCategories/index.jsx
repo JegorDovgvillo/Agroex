@@ -24,11 +24,11 @@ import { deleteCategory } from '@thunks/fetchCategories';
 import ModalForCreatingCategory from '@customModals/modalForCreatingCategory';
 import ModalForUpdatingCategory from '@customModals/modalForUpdaitingCategory';
 
-import { snackbarTitles } from '@helpers/fetchResultMessages';
+import { getSnackbarMessages } from '@helpers/getSnackbarMessages';
 
 import styles from '../usersList/usersList.module.scss';
 
-const { successCategoryDelete } = snackbarTitles;
+const { successCategoryDelete } = getSnackbarMessages();
 const {
   tableRow,
   userName,
@@ -46,6 +46,7 @@ export default function CategoriesList() {
   const confirmModalData = useSelector((state) =>
     selectModal(state, 'confirmModal')
   );
+  const { loading, errors } = useSelector((state) => state.categories);
 
   useEffect(() => {
     dispatch(fetchAllCategories());
@@ -67,29 +68,29 @@ export default function CategoriesList() {
     dispatch(setCategoryId(id));
   };
 
+  const handleDeleteCategory = async (categoryId) => {
+    await dispatch(deleteCategory({ id: categoryId }));
+
+    if (!loading && !errors) {
+      dispatch(
+        setModalFields({
+          modalId: 'snackbar',
+          message: successCategoryDelete,
+          severity: 'success',
+          isOpen: true,
+        })
+      );
+    }
+  };
+
   useEffect(() => {
     const { confirmStatus, isOpen } = confirmModalData;
 
     if (!confirmStatus || isOpen) return;
 
-    (async () => {
-      const resultAction = await dispatch(deleteCategory({ id: categoryId }));
-
-      const isSuccessAction = deleteCategory.fulfilled.match(resultAction);
-
-      if (isSuccessAction) {
-        dispatch(
-          setModalFields({
-            modalId: 'snackbar',
-            message: successCategoryDelete,
-            severity: 'success',
-            isOpen: true,
-          })
-        );
-      }
-    })();
-
     dispatch(clearModalsFields('confirmModal'));
+
+    handleDeleteCategory(categoryId);
   }, [confirmModalData, categoryId, dispatch]);
 
   return (

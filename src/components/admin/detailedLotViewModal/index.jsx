@@ -1,17 +1,12 @@
-import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import _ from 'lodash';
 
 import { Button, Dialog, DialogActions, DialogContent } from '@mui/material';
 
-import { fetchUser } from '@thunks/fetchUsers';
-import { fetchLotDetails } from '@thunks/fetchLots';
-import { fetchAllCategories } from '@thunks/fetchCategories';
 import { selectUserById } from '@slices/usersListSlice';
 import { toggleModal, selectModalState } from '@slices/modalSlice';
 import { selectLotDetailById } from '@slices/lotListSlice';
 import { categoriesSelector } from '@slices/categoriesSlice';
-import { getSelectedCurrency } from '@slices/currencySlice';
 
 import AdminDetailedLotView from '../adminDetailedLotView';
 

@@ -6,21 +6,20 @@ import _ from 'lodash';
 import { fetchAllCategories } from '@thunks/fetchCategories';
 import { fetchCountries } from '@thunks/fetchCountries';
 import { fetchTags } from '@thunks/fetchTags';
-import { createLot } from '@thunks/fetchLots';
 
 import { tagsSelector } from '@slices/tagsSlice';
-import { setModalFields } from '@slices/modalSlice';
 import { selectRootCategories } from '@slices/categoriesSlice';
 import { countrySelector } from '@slices/countriesSlice';
 import { getSelectedCurrency } from '@slices/currencySlice';
 
+import { useLoadedWithoutErrorsSelector } from '@store/selectors';
+
 import LotForm from '@components/lotForm';
 import ROUTES from '@helpers/routeNames';
-import { snackbarTitles } from '@helpers/fetchResultMessages';
+import { useCreateLot } from '@helpers/lotHandlers';
 
 const MAXIMUM_NUMBER_OF_IMG = import.meta.env.VITE_MAXIMUM_NUMBER_OF_IMG;
 const { NOT_FOUND } = ROUTES;
-const { successLotCreate } = snackbarTitles;
 
 const CreateNewLot = () => {
   const navigate = useNavigate();
@@ -38,28 +37,19 @@ const CreateNewLot = () => {
   const [files, setFiles] = useState([]);
   const [disabled, setDisabled] = useState(false);
   const [maxFilesPerDrop, setMaxFilesPerDrop] = useState(MAXIMUM_NUMBER_OF_IMG);
-  const [isDataFetched, setIsDataFetched] = useState(null);
+
   const [isDataLoaded, setIsDataLoaded] = useState(null);
 
+  const isDataFetched = useLoadedWithoutErrorsSelector([
+    'categories',
+    'tags',
+    'countries',
+  ]);
+
   useEffect(() => {
-    (async () => {
-      const resultFetchCategories = await dispatch(fetchAllCategories());
-      const resultFetchCountries = await dispatch(
-        fetchCountries({ existed: false })
-      );
-      const resultFetchTags = await dispatch(fetchTags());
-
-      const isCategoriesLoaded = fetchAllCategories.fulfilled.match(
-        resultFetchCategories
-      );
-      const isCountriesLoaded =
-        fetchCountries.fulfilled.match(resultFetchCountries);
-      const isTagsLoaded = fetchTags.fulfilled.match(resultFetchTags);
-
-      setIsDataFetched(
-        _.every([isCategoriesLoaded, isCountriesLoaded, isTagsLoaded])
-      );
-    })();
+    dispatch(fetchAllCategories());
+    dispatch(fetchTags());
+    dispatch(fetchCountries({ existed: false }));
   }, [dispatch]);
 
   const handleSubmitClick = async (values) => {
@@ -103,41 +93,19 @@ const CreateNewLot = () => {
 
     formData.append('data', JSON.stringify(lotData));
 
-    const resultAction = await dispatch(
-      createLot({ formData, currency: selectedCurrency })
-    );
-
-    if (createLot.fulfilled.match(resultAction)) {
-      dispatch(
-        setModalFields({
-          modalId: 'snackbar',
-          message: successLotCreate,
-          severity: 'success',
-          isOpen: true,
-        })
-      );
-      navigate(-1);
-    }
+    useCreateLot({ formData, currency: selectedCurrency });
   };
 
   useEffect(() => {
     if (!isDataFetched) return;
 
-    const isAllDataLoaded = _.every(
+    const isNoEmptyData = _.every(
       [categories, countries, tags],
       (item) => !_.isEmpty(item)
     );
 
-    isAllDataLoaded
-      ? setIsDataLoaded(isAllDataLoaded)
-      : navigate(`/${NOT_FOUND}`);
+    isNoEmptyData ? setIsDataLoaded(isNoEmptyData) : navigate(`/${NOT_FOUND}`);
   }, [categories, tags, countries, isDataFetched]);
-
-  useEffect(() => {
-    if (_.isNull(isDataLoaded) || isDataLoaded) return;
-
-    navigate(`/${NOT_FOUND}`);
-  }, [isDataLoaded]);
 
   return (
     <>
