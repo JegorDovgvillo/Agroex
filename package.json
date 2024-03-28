@@ -23,6 +23,7 @@
     "@reduxjs/toolkit": "^2.0.1",
     "aws-amplify": "^6.0.17",
     "axios": "^1.6.7",
+    "extended-eventsource": "^1.4.6",
     "formik": "^2.4.5",
     "json-server": "^1.0.0-alpha.22",
     "leaflet": "^1.9.4",
