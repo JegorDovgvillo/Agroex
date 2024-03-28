@@ -15,6 +15,7 @@ const ENDPOINTS = {
   UPDATE_DB: '/users/updatedb',
   BETS: '/bets',
   SSE: '/sse/open-sse-stream',
+  REPORTS: '/reports',
 };
 
 export default ENDPOINTS;

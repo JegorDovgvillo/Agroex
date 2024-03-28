@@ -1,0 +1,81 @@
+export const reportsData = [
+  {
+    id: 0,
+    reportType: 'baseLot',
+    name: 'Base lot',
+    description:
+      'Returns the list of lots according to the selected parameters',
+    reportFields: ['actualStartDate', 'expirationDate', 'lotType', 'countryId'],
+  },
+  {
+    id: 1,
+    reportType: 'lotByMaxPrice',
+    name: 'Lots by max price',
+    description: 'Returns 10 lots with highest price',
+    reportFields: ['actualStartDate', 'expirationDate', 'lotType', 'countryId'],
+  },
+  {
+    id: 2,
+    reportType: 'userByLotCount',
+    name: 'Owners by lots amount',
+    description: 'Returns 10 lot owners with max amount of lots',
+    reportFields: ['actualStartDate', 'expirationDate', 'lotType', 'countryId'],
+  },
+  {
+    id: 3,
+    reportType: 'ownersByBets',
+    name: 'Owners by orders sum',
+    description: 'Returns 10 owners with max sum of lots orders',
+    reportFields: ['actualStartDate', 'expirationDate', 'lotType', 'countryId'],
+  },
+  {
+    id: 4,
+    reportType: 'participantsByBets',
+    name: 'Participants by order price',
+    description: 'Returns 10 users with the maximum order price',
+    reportFields: ['actualStartDate', 'expirationDate', 'lotType', 'countryId'],
+  },
+  {
+    id: 5,
+    reportType: 'countryByLotPrice',
+    name: 'Country by lot price',
+    description: 'Returns 10 countries with max sum of lot prices',
+    reportFields: ['actualStartDate', 'expirationDate', 'lotType'],
+  },
+  {
+    id: 6,
+    reportType: 'countryByLotCount',
+    name: 'Country by lot count',
+    description: ' Returns 10 countries with max count of lots',
+    reportFields: ['actualStartDate', 'expirationDate', 'lotType'],
+  },
+  {
+    id: 7,
+    reportType: 'countryByOwnersLotsBets',
+    name: 'Country by owners lots',
+    description: 'Returns 10 countries with max count of lot owners',
+    reportFields: ['actualStartDate', 'expirationDate', 'lotType'],
+  },
+  {
+    id: 8,
+    reportType: 'countryByParticipantBets',
+    name: 'Country by participant bets',
+    description: 'Returns 10 countries with max sum of bets by participants',
+    reportFields: ['actualStartDate', 'expirationDate', 'lotType'],
+  },
+  {
+    id: 9,
+    reportType: 'countryByParticipantCount',
+    name: 'Country by participant count',
+    description: 'Returns 10 countries with max count of lots participants',
+    reportFields: ['actualStartDate', 'expirationDate', 'lotType'],
+  },
+  {
+    id: 10,
+    reportType: 'countryByOwnersLotsBets',
+    name: 'Country by owners lots bets',
+    description:
+      'Returns 10 countries with max sum of bets on lots by owners with highest sum of bets on their lots',
+    reportFields: ['actualStartDate', 'expirationDate', 'lotType'],
+  },
+];

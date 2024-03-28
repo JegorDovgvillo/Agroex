@@ -20,6 +20,7 @@ export const ADMIN_PAGES = {
   ADMIN_CATEGORIES: 'categories',
   ADMIN_USERS: 'users',
   ADMIN_LOTS: 'lots',
+  ADMIN_REPORTS: 'reports',
 };
 
 export const USER_PROFILE_PAGE_ROTES = {

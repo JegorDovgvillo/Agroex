@@ -7,7 +7,13 @@ import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 
 import styles from './customDatePicker.module.scss';
 
-const CustomDatePicker = ({ onChange, value, errors, touched }) => {
+const CustomDatePicker = ({
+  onChange,
+  value,
+  errors,
+  touched,
+  label = 'Expiration date',
+}) => {
   const [date, setDate] = useState(null);
 
   useEffect(() => {
@@ -30,7 +36,7 @@ const CustomDatePicker = ({ onChange, value, errors, touched }) => {
         }`}
       >
         <FormControl error={isError}>
-          <label>Expiration date</label>
+          <label>{label}</label>
           <DateTimePicker
             value={date}
             onChange={handleDateChange}
