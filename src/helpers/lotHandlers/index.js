@@ -17,11 +17,13 @@ import {
   changeLotStatusByAdmin,
   deleteLot,
   createLot,
+  updateLot,
 } from '@thunks/fetchLots';
 
 import { fetchPlaceBet } from '@thunks/fetchBets';
 
-const { successLotCreate } = getSnackbarMessages();
+const { successLotCreate, successLotUpdate, successLotDelete } =
+  getSnackbarMessages();
 
 export const handleDeactivateBtnClick = (dispatch, isAdmin = false) => {
   dispatch(
@@ -108,9 +110,50 @@ export function useCreateLot() {
       );
       navigate(-1);
     }
+  };
+}
 
-    dispatch(setNewBet(null));
-    dispatch(clearModalsFields(['confirmModal', 'placeBetModal']));
+export function useUpdateLot() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { loadingStatus, errors } = useSelector((state) => state.lotList);
+
+  return async ({ id, lotData, currency }) => {
+    await dispatch(updateLot({ id, lotData, currency }));
+
+    if (!loadingStatus && !errors) {
+      dispatch(
+        setModalFields({
+          modalId: 'snackbar',
+          message: successLotUpdate,
+          severity: 'success',
+          isOpen: true,
+        })
+      );
+      navigate(-1);
+    }
+  };
+}
+
+export function useDeleteLot() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { loadingStatus, errors } = useSelector((state) => state.lotList);
+
+  return async ({ id }) => {
+    await dispatch(deleteLot({ id }));
+
+    if (!loadingStatus && !errors) {
+      dispatch(
+        setModalFields({
+          modalId: 'snackbar',
+          message: successLotDelete,
+          severity: 'success',
+          isOpen: true,
+        })
+      );
+      navigate(-1);
+    }
   };
 }
 

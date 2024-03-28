@@ -5,12 +5,12 @@ export const useLoadedWithoutErrorsSelector = (sliceNames) => {
   const isDataSlicesLoaded = sliceNames.map((sliceName) => {
     const sliceState = useSelector((state) => state[sliceName]);
     const { loadingStatus, errors } = sliceState;
-    console.log(sliceName, loadingStatus, errors);
+    // console.log(sliceName, loadingStatus, errors);
     if (loadingStatus !== false) return null;
 
     return errors ? false : true;
   });
-  console.log(isDataSlicesLoaded);
+  //console.log(isDataSlicesLoaded);
   if (some(isDataSlicesLoaded, (item) => item === null)) {
     return null;
   }

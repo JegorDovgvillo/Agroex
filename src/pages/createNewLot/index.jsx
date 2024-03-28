@@ -38,7 +38,6 @@ const CreateNewLot = () => {
   const [files, setFiles] = useState([]);
   const [disabled, setDisabled] = useState(false);
   const [maxFilesPerDrop, setMaxFilesPerDrop] = useState(MAXIMUM_NUMBER_OF_IMG);
-
   const [isDataLoaded, setIsDataLoaded] = useState(null);
 
   const isDataFetched = useLoadedWithoutErrorsSelector([
@@ -98,7 +97,6 @@ const CreateNewLot = () => {
   };
 
   useEffect(() => {
-    console.log(isDataFetched);
     if (!isDataFetched) return;
 
     const isNoEmptyData = _.every(

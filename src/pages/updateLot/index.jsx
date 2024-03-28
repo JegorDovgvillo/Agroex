@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import _ from 'lodash';
 
-import { selectLotDetailById, clearStatus } from '@slices/lotListSlice';
+import { selectLotDetailById } from '@slices/lotListSlice';
 import { selectRootCategories } from '@slices/categoriesSlice';
 import { countrySelector } from '@slices/countriesSlice';
 import { tagsSelector } from '@slices/tagsSlice';
@@ -16,23 +16,26 @@ import {
 import { getSelectedCurrency } from '@slices/currencySlice';
 
 import { fetchCountries } from '@thunks/fetchCountries';
-import { deleteLot, updateLot, fetchLotDetails } from '@thunks/fetchLots';
+import { deleteLot, fetchLotDetails } from '@thunks/fetchLots';
 import { fetchAllCategories } from '@thunks/fetchCategories';
 import { fetchTags } from '@thunks/fetchTags';
 
+import { useLoadedWithoutErrorsSelector } from '@selectors';
+
 import convertImagesToFiles from '@helpers/convertImagesToFiles';
 import ROUTES from '@helpers/routeNames';
-import { getSnackbarMessages } from '@helpers/getSnackbarMessages';
 
 import LotForm from '@components/lotForm';
+import { useUpdateLot, useDeleteLot } from '@helpers/lotHandlers';
 
 const MAXIMUM_NUMBER_OF_IMG = import.meta.env.VITE_MAXIMUM_NUMBER_OF_IMG;
 const { NOT_FOUND } = ROUTES;
-const { successLotUpdate, successLotDelete } = getSnackbarMessages();
 
 const UpdateLot = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const updateLot = useUpdateLot();
+  const deleteLot = useDeleteLot();
   const { id: lotId } = useParams();
 
   const categories = useSelector(selectRootCategories);
@@ -48,12 +51,19 @@ const UpdateLot = () => {
     selectModal(state, 'confirmModal')
   );
 
-  const [isDataFetched, setIsDataFetched] = useState(null);
   const [isDataLoaded, setIsDataLoaded] = useState(null);
   const [files, setFiles] = useState([]);
   const [disabled, setDisabled] = useState(false);
   const [maxFilesPerDrop, setMaxFilesPerDrop] = useState(MAXIMUM_NUMBER_OF_IMG);
   const [markerCoordinate, setMarkerCoordinate] = useState(null);
+
+  const isDataFetched = useLoadedWithoutErrorsSelector([
+    'categories',
+    'tags',
+    'countries',
+  ]);
+
+  const isLotDetailsLoaded = useLoadedWithoutErrorsSelector(['lotList']);
 
   const showConfirm = () => {
     dispatch(
@@ -65,7 +75,7 @@ const UpdateLot = () => {
     );
   };
 
-  const handleUpdateClick = async (values) => {
+  const handleUpdateClick = (values) => {
     const formData = new FormData();
 
     const subcategory =
@@ -114,79 +124,36 @@ const UpdateLot = () => {
 
     formData.append('data', JSON.stringify(lotData));
 
-    const resultAction = await dispatch(
-      updateLot({ id: lotId, lotData: formData, currency: selectedCurrency })
-    );
+    updateLot({ id: lotId, lotData: formData, currency: selectedCurrency });
 
-    if (updateLot.fulfilled.match(resultAction)) {
-      dispatch(
-        setModalFields({
-          modalId: 'snackbar',
-          message: successLotUpdate,
-          severity: 'success',
-          isOpen: true,
-        })
-      );
-      setFiles([]);
-      navigate(-1);
-    }
+    setFiles([]);
   };
 
   useEffect(() => {
-    (async () => {
-      const resultFetchLotDetails = await dispatch(
-        fetchLotDetails({ id: lotId, currency: selectedCurrency })
-      );
-      const resultFetchCategories = await dispatch(fetchAllCategories());
-      const resultFetchCountries = await dispatch(
-        fetchCountries({ existed: false })
-      );
-      const resultFetchTags = await dispatch(fetchTags());
-
-      const isLotDetailsLoaded = fetchLotDetails.fulfilled.match(
-        resultFetchLotDetails
-      );
-      const isCategoriesLoaded = fetchAllCategories.fulfilled.match(
-        resultFetchCategories
-      );
-      const isCountriesLoaded =
-        fetchCountries.fulfilled.match(resultFetchCountries);
-      const isTagsLoaded = fetchTags.fulfilled.match(resultFetchTags);
-
-      if (!isLotDetailsLoaded) navigate(`/${NOT_FOUND}`);
-
-      setIsDataFetched(
-        _.every([isCategoriesLoaded, isCountriesLoaded, isTagsLoaded])
-      );
-    })();
+    dispatch(fetchLotDetails({ id: lotId, currency: selectedCurrency }));
+    dispatch(fetchAllCategories());
+    dispatch(fetchCountries({ existed: false }));
+    dispatch(fetchTags());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (_.isNull(isLotDetailsLoaded)) return;
+
+    !isLotDetailsLoaded && navigate(`/${NOT_FOUND}`);
+  }, [isLotDetailsLoaded]);
 
   useEffect(() => {
     const { confirmStatus, isOpen } = confirmModalData;
 
     if (!confirmStatus || isOpen) return;
 
-    const resultAction = (async () =>
-      await dispatch(deleteLot({ id: lotId })))();
-
-    if (deleteLot.fulfilled.match(resultAction)) {
-      dispatch(
-        setModalFields({
-          modalId: 'snackbar',
-          message: successLotDelete,
-          severity: 'success',
-          isOpen: true,
-        })
-      );
-      setFiles([]);
-      navigate(-1);
-    }
-
+    deleteLot({ id: lotId });
+    setFiles([]);
     dispatch(clearModalsFields('confirmModal'));
   }, [confirmModalData]);
 
   useEffect(() => {
-    if (!isDataFetched || !selectedLot) return;
+    if (_.isNull(isDataFetched) || !selectedLot) return;
 
     convertImagesToFiles(selectedLot.images || [], setFiles);
 
