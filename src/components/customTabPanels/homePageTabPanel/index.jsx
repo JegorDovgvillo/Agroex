@@ -39,7 +39,7 @@ const { LOTS, HOME_PAGE } = ROUTES;
 
 function a11yProps(index) {
   return {
-    'id': `simple-tab-${index}`,
+    id: `simple-tab-${index}`,
     'aria-controls': `simple-tabpanel-${index}`,
   };
 }
@@ -80,9 +80,13 @@ const HomePageTabPanel = ({ categories }) => {
 
   const handleCategoryLotsClick = (id) => {
     const targetSubcategories = _.filter(subcategories, ['parentId', id]);
+    const targetCategories = _.filter(categories, ['id', id]);
 
     navigate(LOTS);
-    setSearchParams([['categories', _.map(targetSubcategories, 'id')]]);
+    setSearchParams([
+      ['subcategories', _.map(targetSubcategories, 'id')],
+      ['categories', _.map(targetCategories, 'id')],
+    ]);
   };
 
   const handleShowAllClick = () => {

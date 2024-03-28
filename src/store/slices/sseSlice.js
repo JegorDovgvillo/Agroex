@@ -22,11 +22,16 @@ const sseSlice = createSlice({
         }
       }
     },
+    deleteMessage: (state, action) => {
+      state.messages = state.messages.filter(
+        (item) => item.id !== action.payload
+      );
+    },
   },
 });
 
 const { reducer, actions } = sseSlice;
 
-export const { setMessage } = actions;
+export const { setMessage, deleteMessage } = actions;
 
 export default reducer;

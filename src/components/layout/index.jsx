@@ -24,11 +24,13 @@ import styles from './layout.module.scss';
 const Layout = () => {
   const dispatch = useDispatch();
 
+  const userInfo = useSelector((state) => state.usersList.userInfo);
   const confirmActionData = useSelector((state) =>
     selectModal(state, 'confirmModal')
   );
 
   const [text, setText] = useState('');
+  const [sseConnection, setSseConnection] = useState(null);
 
   const openConnection = async () => {
     const { idToken } = (await fetchAuthSession()).tokens ?? {};

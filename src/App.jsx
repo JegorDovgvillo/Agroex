@@ -13,7 +13,7 @@ import { customTheme } from './theme';
 
 function App() {
   cognitoUserPoolsTokenProvider.setKeyValueStorage(
-    new CookieStorage({ path: '/', secure: true, sameSite: 'strict' })
+    new CookieStorage({ secure: true, sameSite: 'strict' })
   );
 
   Amplify.configure(awsConfigUsers);

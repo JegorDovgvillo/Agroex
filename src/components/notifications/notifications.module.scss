@@ -9,12 +9,14 @@
 
     svg {
       font-size: 27px;
+      cursor: pointer;
     }
 
     span {
-      bottom: 24px;
+      bottom: 20px;
       position: absolute;
-      right: -10px;
+      right: -7px;
+      width: 14px;
       color: $activated;
     }
   }

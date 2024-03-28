@@ -12,14 +12,26 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
+
+    p {
+      font-size: 15px;
+      position: relative;
+      bottom: 15px;
+    }
+
+    .title {
+      display: flex;
+      gap: 10px;
+    }
   }
 
   p {
     @include body1;
   }
 
-  h5 {
-    @include h5;
+  h6 {
+    @include h6;
+    line-height: 24px;
   }
 
   p.active,
@@ -28,7 +40,8 @@
   }
 
   p.disabled,
-  h6.disabled {
+  h6.disabled,
+  svg {
     opacity: 0.5;
   }
 
@@ -48,5 +61,6 @@
     display: flex;
     flex-direction: row;
     gap: 20px;
+    justify-content: flex-end;
   }
 }
