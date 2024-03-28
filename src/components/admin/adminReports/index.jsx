@@ -4,16 +4,16 @@ import { Form, Formik } from 'formik';
 import _ from 'lodash';
 import { DateTime } from 'luxon';
 
-import Paper from '@mui/material/Paper';
-
 import CustomSelect from '@customSelect';
 import CustomDatePicker from '@components/customDatePicker';
+import { reportsData } from '@components/admin/adminReports/reportsData';
 import { CustomButton } from '@buttons/CustomButton';
 
 import { countrySelector } from '@slices/countriesSlice';
 import { fetchCountries } from '@thunks/fetchCountries';
-import { fetchReport } from '@thunks/fetchReport';
+import { fetchReport } from '@thunks/fetchReports';
 
+import { adminReportsValidationSchema } from '@helpers/validationSchemes/adminReportsValidationSchema';
 import {
   getCorrectedTimeZone,
   setCorrectedTimeZone,
@@ -21,80 +21,9 @@ import {
 
 import styles from './adminReports.module.scss';
 
-const { row, datesRow } = styles;
+const { row } = styles;
 
-const reportsData = [
-  {
-    id: 0,
-    reportType: 'baseLot',
-    description:
-      'Returns the list of lots according to the selected parameters',
-    reportFields: ['actualStartDate', 'expirationDate', 'lotType', 'countryId'],
-  },
-  {
-    id: 1,
-    reportType: 'lotByMaxPrice',
-    description: 'Returns 10 lots with highest price',
-    reportFields: ['actualStartDate', 'expirationDate', 'lotType', 'countryId'],
-  },
-  {
-    id: 2,
-    reportType: 'userByLotCount',
-    description: 'Returns 10 users with max amount',
-    reportFields: ['actualStartDate', 'expirationDate', 'lotType', 'countryId'],
-  },
-  {
-    id: 3,
-    reportType: 'ownersByBets',
-    description: 'Returns 10 users with max sum of bets on their lots',
-    reportFields: ['actualStartDate', 'expirationDate', 'lotType', 'countryId'],
-  },
-  {
-    id: 4,
-    reportType: 'participantsByBets',
-    description: 'Returns 10 users with max sum of bets on lots',
-    reportFields: ['actualStartDate', 'expirationDate', 'lotType', 'countryId'],
-  },
-  {
-    id: 5,
-    reportType: 'countryByLotPrice',
-    description: 'Returns 10 countries with max sum of lot prices',
-    reportFields: ['actualStartDate', 'expirationDate', 'lotType'],
-  },
-  {
-    id: 6,
-    reportType: 'countryByLotCount',
-    description: ' Returns 10 countries with max count of lots',
-    reportFields: ['actualStartDate', 'expirationDate', 'lotType'],
-  },
-  {
-    id: 7,
-    reportType: 'countryByOwnersLotsBets',
-    description: 'Returns 10 countries with max count of lot owners',
-    reportFields: ['actualStartDate', 'expirationDate', 'lotType'],
-  },
-  {
-    id: 8,
-    reportType: 'countryByParticipantBets',
-    description:
-      'Returns 10 countries with max sum of bets on lots by owners with highest sum of bets on their lots',
-    reportFields: ['actualStartDate', 'expirationDate', 'lotType'],
-  },
-  {
-    id: 9,
-    reportType: 'countryByParticipantCount',
-    description: 'Returns 10 countries with max count of lots participants',
-    reportFields: ['actualStartDate', 'expirationDate', 'lotType'],
-  },
-  {
-    id: 10,
-    reportType: 'countryByOwnersLotsBets',
-    description: 'Returns 10 countries with max sum of bets by participants',
-    reportFields: ['actualStartDate', 'expirationDate', 'lotType'],
-  },
-];
-
-const defaultStatDate = '2000-01-02T02:00:01.647Z';
+const defaultStatDate = '2000-01-01T00:00:01.647Z';
 
 const AdminReports = () => {
   const dispatch = useDispatch();
@@ -130,6 +59,7 @@ const AdminReports = () => {
     const reportTypeToSubmit = _.camelCase(reportType);
 
     dispatch(fetchReport({ reportType: reportTypeToSubmit, params }));
+
     return;
   };
 
@@ -144,7 +74,7 @@ const AdminReports = () => {
   };
 
   useEffect(() => {
-    dispatch(fetchCountries({ existed: true }));
+    dispatch(fetchCountries({ existed: false }));
   }, []);
 
   useEffect(() => {
@@ -152,9 +82,13 @@ const AdminReports = () => {
       _.find(reportsData, { reportType: _.camelCase(selectedReportType) })
     );
   }, [selectedReportType]);
-  //console.log(initialValues);
+
   return (
-    <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+    <Formik
+      initialValues={initialValues}
+      validationSchema={adminReportsValidationSchema}
+      onSubmit={handleSubmit}
+    >
       {({
         values,
         errors,
@@ -171,7 +105,6 @@ const AdminReports = () => {
                   label="Report type"
                   id="reportType"
                   name="reportType"
-                  required
                   units={_.map(reportsData, (report) =>
                     _.startCase(report.reportType)
                   )}
@@ -179,8 +112,8 @@ const AdminReports = () => {
                   value={values.reportType}
                   wrappType="adminReportType"
                   fieldType="adminReportType"
-                  // errors={errors.reportType}
-                  //touched={!isCreateNotSubmittedForm || touched.lotType}
+                  errors={errors.reportType}
+                  touched={touched.reportType}
                   handleChange={setSelectedReportType}
                   setFieldValue={setFieldValue}
                 />
@@ -192,25 +125,21 @@ const AdminReports = () => {
                   label="Start date"
                   value={values.actualStartDate}
                   onChange={(date) => {
-                    //setFieldTouched('actualStartDate', true);
+                    setFieldTouched('actualStartDate', true);
                     setFieldValue('actualStartDate', date);
                   }}
-                  //errors={errors.expirationDate}
-                  //touched={
-                  //  !isCreateNotSubmittedForm || touched.expirationDate
-                  //}
+                  errors={errors.actualStartDate}
+                  touched={touched.actualStartDate}
                 />
                 <CustomDatePicker
                   label="End date"
                   value={values.expirationDate}
                   onChange={(date) => {
-                    // setFieldTouched('expirationDate', true);
+                    setFieldTouched('expirationDate', true);
                     setFieldValue('expirationDate', date);
                   }}
-                  // errors={errors.expirationDate}
-                  //touched={
-                  //  !isCreateNotSubmittedForm || touched.expirationDate
-                  //}
+                  errors={errors.expirationDate}
+                  touched={touched.expirationDate}
                 />
               </div>
               <div className={row}>
@@ -227,9 +156,8 @@ const AdminReports = () => {
                         units={getUnits(field)}
                         placeholder={_.startCase(field)}
                         value={values[field]}
-                        //errors={errors.lotType}
-                        //touched={!isCreateNotSubmittedForm || touched.lotType}
-                        //handleChange={setSelectedLotType}
+                        errors={errors[field]}
+                        touched={touched[field]}
                         setFieldValue={setFieldValue}
                       />
                     )}
@@ -241,6 +169,7 @@ const AdminReports = () => {
                 text="Get report"
                 width="auto"
                 typeOfButton="submit"
+                disabled={!isValid}
               />
             </Form>
           </div>

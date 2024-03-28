@@ -159,7 +159,7 @@ const ItemCard = ({ item, setSelectedLot }) => {
                       className={['list', 'auctionSum']}
                       totalCost={lastBet.amount}
                       unitCost={lastBet.amount / item.quantity}
-                      currency={item.currency}
+                      currency={item.originalCurrency}
                     />
                   ) : (
                     <h6 className={auctionSum}>No bets</h6>
