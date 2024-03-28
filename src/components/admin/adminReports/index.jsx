@@ -45,6 +45,7 @@ const AdminReports = () => {
     initialValues.reportType
   );
   const [selectedReportData, setSelectedReportData] = useState(null);
+  const [isFirstSubmit, setIsFirstSubmit] = useState(true);
 
   const handleSubmit = (values) => {
     const { reportType, actualStartDate, expirationDate, lotType, countryId } =
@@ -73,6 +74,12 @@ const AdminReports = () => {
       case 'countryId':
         return _.map(countries, 'name');
     }
+  };
+
+  const handleClick = () => {
+    if (!isFirstSubmit) return;
+
+    setIsFirstSubmit(false);
   };
 
   useEffect(() => {
@@ -111,7 +118,7 @@ const AdminReports = () => {
                   wrappType="adminReportType"
                   fieldType="adminReportType"
                   errors={errors.reportType}
-                  touched={touched.reportType}
+                  touched={!isFirstSubmit || touched.reportType}
                   handleChange={setSelectedReportType}
                   setFieldValue={setFieldValue}
                 />
@@ -141,33 +148,42 @@ const AdminReports = () => {
                 />
               </div>
               <div className={row}>
-                {selectedReportData?.reportFields?.map((field) => (
-                  <div key={field}>
-                    {!_.includes(
-                      ['actualStartDate', 'expirationDate'],
-                      field
-                    ) && (
-                      <CustomSelect
-                        label={_.startCase(field)}
-                        id={field}
-                        name={field}
-                        units={getUnits(field)}
-                        placeholder={_.startCase(field)}
-                        value={values[field]}
-                        errors={errors[field]}
-                        touched={touched[field]}
-                        setFieldValue={setFieldValue}
-                      />
-                    )}
-                  </div>
-                ))}
+                <CustomSelect
+                  label="Lot type"
+                  id="lotType"
+                  name="lotType"
+                  wrappType="adminReportType"
+                  fieldType="adminReportType"
+                  units={getUnits('lotType')}
+                  placeholder="Select lot type"
+                  value={values.lotType}
+                  errors={errors.lotType}
+                  touched={touched.lotType}
+                  setFieldValue={setFieldValue}
+                />
+                {countries && (
+                  <CustomSelect
+                    label="Country"
+                    id="countryId"
+                    name="countryId"
+                    wrappType="adminReportType"
+                    fieldType="adminReportType"
+                    units={getUnits('countryId')}
+                    placeholder="Select country"
+                    value={values.countryId}
+                    errors={errors.countryId}
+                    touched={touched.countryId}
+                    setFieldValue={setFieldValue}
+                  />
+                )}
               </div>
 
               <CustomButton
                 text="Get report"
                 width="auto"
                 typeOfButton="submit"
-                disabled={!isValid}
+                handleClick={handleClick}
+                disabled={!isValid && !isFirstSubmit}
               />
             </Form>
           </div>
