@@ -17,7 +17,7 @@ import { fetchUsers } from '@thunks/fetchUsers';
 import { usersListSelector } from '@slices/usersListSlice';
 import { categoriesSelector } from '@slices/categoriesSlice';
 import { countrySelector } from '@slices/countriesSlice';
-import { lotListSelector, clearLots } from '@slices/lotListSlice';
+import { lotListSelector } from '@slices/lotListSlice';
 import { betsSelector } from '@slices/betsSlice';
 import { selectModal, toggleModal } from '@slices/modalSlice';
 import { getSelectedCurrency } from '@slices/currencySlice';
@@ -62,10 +62,6 @@ const LotList = () => {
     dispatch(fetchAllCategories());
     dispatch(fetchCountries({ existed: true }));
     dispatch(fetchUsers());
-
-    return () => {
-      dispatch(clearLots());
-    };
   }, []);
 
   useEffect(() => {
