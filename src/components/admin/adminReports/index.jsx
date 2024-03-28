@@ -161,21 +161,22 @@ const AdminReports = () => {
                   touched={touched.lotType}
                   setFieldValue={setFieldValue}
                 />
-                {countries && (
-                  <CustomSelect
-                    label="Country"
-                    id="countryId"
-                    name="countryId"
-                    wrappType="adminReportType"
-                    fieldType="adminReportType"
-                    units={getUnits('countryId')}
-                    placeholder="Select country"
-                    value={values.countryId}
-                    errors={errors.countryId}
-                    touched={touched.countryId}
-                    setFieldValue={setFieldValue}
-                  />
-                )}
+                {_.includes(selectedReportData.reportFields, 'countryId') &&
+                  countries && (
+                    <CustomSelect
+                      label="Country"
+                      id="countryId"
+                      name="countryId"
+                      wrappType="adminReportType"
+                      fieldType="adminReportType"
+                      units={getUnits('countryId')}
+                      placeholder="Select country"
+                      value={values.countryId}
+                      errors={errors.countryId}
+                      touched={touched.countryId}
+                      setFieldValue={setFieldValue}
+                    />
+                  )}
               </div>
 
               <CustomButton
