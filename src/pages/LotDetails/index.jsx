@@ -191,7 +191,7 @@ export const LotDetails = () => {
     dispatch(fetchLotDetails({ id: lotId, currency: selectedCurrency }));
   }, [selectedCurrency]);
 
-  if (loadingStatus !== 'fulfilled') {
+  if (loadingStatus !== false) {
     return (
       <div className={container}>
         <CircularProgress />

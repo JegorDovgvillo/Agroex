@@ -18,7 +18,7 @@ const stateId = 'categories';
 
 const initialState = categoriesAdapter.getInitialState({
   stateId,
-  loadingStatus: 'idle',
+  loadingStatus: false,
   categoryId: null,
   errors: null,
 });
@@ -30,54 +30,55 @@ const categoriesSlice = createSlice({
     setCategoryId: (state, action) => {
       state.categoryId = action.payload;
     },
-    clearCategoriesErrors: (state) => {
-      state.errors = null;
-    },
   },
   extraReducers: (builder) => {
     builder
       .addCase(fetchAllCategories.pending, (state) => {
-        state.loadingStatus = 'pending';
+        state.errors = null;
+        state.loadingStatus = true;
       })
       .addCase(fetchAllCategories.fulfilled, (state, action) => {
-        state.loadingStatus = 'fulfilled';
+        state.loadingStatus = false;
         categoriesAdapter.addMany(state, action.payload);
       })
       .addCase(fetchAllCategories.rejected, (state, action) => {
-        state.loadingStatus = 'rejected';
+        state.loadingStatus = false;
         state.errors = action.payload;
       })
       .addCase(deleteCategory.pending, (state) => {
-        state.loadingStatus = 'pending';
+        state.errors = null;
+        state.loadingStatus = true;
       })
       .addCase(deleteCategory.fulfilled, (state, action) => {
-        state.loadingStatus = 'fulfilled';
+        state.loadingStatus = false;
         categoriesAdapter.removeOne(state, action.payload);
       })
       .addCase(deleteCategory.rejected, (state, action) => {
-        state.loadingStatus = 'rejected';
+        state.loadingStatus = false;
         state.errors = action.payload;
       })
       .addCase(updateCategory.pending, (state) => {
-        state.loadingStatus = 'pending';
+        state.errors = null;
+        state.loadingStatus = true;
       })
       .addCase(updateCategory.fulfilled, (state, action) => {
-        state.loadingStatus = 'fulfilled';
+        state.loadingStatus = false;
         categoriesAdapter.upsertOne(state, action.payload);
       })
       .addCase(updateCategory.rejected, (state, action) => {
-        state.loadingStatus = 'rejected';
+        state.loadingStatus = false;
         state.errors = action.payload;
       })
       .addCase(createCategory.pending, (state) => {
-        state.loadingStatus = 'pending';
+        state.errors = null;
+        state.loadingStatus = true;
       })
       .addCase(createCategory.fulfilled, (state, action) => {
-        state.loadingStatus = 'fulfilled';
+        state.loadingStatus = false;
         categoriesAdapter.setOne(state, action.payload);
       })
       .addCase(createCategory.rejected, (state, action) => {
-        state.loadingStatus = 'rejected';
+        state.loadingStatus = false;
         state.errors = action.payload;
       });
   },
@@ -85,7 +86,7 @@ const categoriesSlice = createSlice({
 
 const { actions, reducer } = categoriesSlice;
 
-export const { setCategoryId, clearCategoriesErrors } = actions;
+export const { setCategoryId } = actions;
 
 const { selectAll } = categoriesAdapter.getSelectors(
   (state) => state.categories

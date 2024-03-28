@@ -11,8 +11,8 @@ const stateId = 'bets';
 
 const initialState = betsAdapter.getInitialState({
   stateId,
-  loadingStatus: 'idle',
-  placeBetLoadingStatus: 'idle',
+  loadingStatus: false,
+  placeBetLoadingStatus: false,
   newBet: null,
   errors: null,
 });
@@ -22,37 +22,36 @@ const betsSlice = createSlice({
   initialState,
   reducers: {
     clearPlaceBetLoadingStatus: (state) => {
-      state.placeBetLoadingStatus = 'idle';
+      state.placeBetLoadingStatus = false;
     },
     setNewBet: (state, action) => {
       state.newBet = action.payload;
-    },
-    clearBetsErrors: (state) => {
-      state.bets.errors = null;
     },
   },
   extraReducers: (builder) => {
     builder
       .addCase(fetchPlaceBet.pending, (state) => {
-        state.placeBetLoadingStatus = 'pending';
+        state.errors = null;
+        state.placeBetLoadingStatus = true;
       })
       .addCase(fetchPlaceBet.fulfilled, (state, action) => {
-        state.placeBetLoadingStatus = 'fulfilled';
+        state.placeBetLoadingStatus = false;
         betsAdapter.setOne(state, action.payload);
       })
       .addCase(fetchPlaceBet.rejected, (state, action) => {
-        state.placeBetLoadingStatus = 'rejected';
+        state.placeBetLoadingStatus = false;
         state.errors = action.payload;
       })
       .addCase(fetchBetsByLotId.pending, (state) => {
-        state.loadingStatus = 'pending';
+        state.errors = null;
+        state.loadingStatus = true;
       })
       .addCase(fetchBetsByLotId.fulfilled, (state, action) => {
-        state.loadingStatus = 'fulfilled';
+        state.loadingStatus = false;
         betsAdapter.setMany(state, action.payload);
       })
       .addCase(fetchBetsByLotId.rejected, (state, action) => {
-        state.loadingStatus = 'rejected';
+        state.loadingStatus = false;
         state.errors = action.payload;
       });
   },
@@ -60,8 +59,7 @@ const betsSlice = createSlice({
 
 const { actions, reducer } = betsSlice;
 
-export const { clearPlaceBetLoadingStatus, setNewBet, clearBetsErrors } =
-  actions;
+export const { clearPlaceBetLoadingStatus, setNewBet } = actions;
 
 const { selectAll } = betsAdapter.getSelectors((state) => state.bets);
 

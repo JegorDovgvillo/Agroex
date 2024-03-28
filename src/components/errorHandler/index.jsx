@@ -4,7 +4,6 @@ import _ from 'lodash';
 
 import { setModalFields } from '@slices/modalSlice';
 
-import { clearStateErrors } from '@helpers/clearStateErrors';
 import { getErrorMessage } from '@helpers/getErrorMessage';
 
 export const ErrorHandler = ({ states }) => {
@@ -24,8 +23,6 @@ export const ErrorHandler = ({ states }) => {
           isOpen: true,
         })
       );
-
-      if (!errors?.data?.errors) dispatch(clearStateErrors(stateId));
     });
   }, []);
 

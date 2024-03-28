@@ -79,7 +79,7 @@ export const PlaceBetForm = ({ lot, type }) => {
   };
 
   useEffect(() => {
-    if (placeBetStatus === 'fulfilled') {
+    if (placeBetStatus === false) {
       resetFormFunc && resetFormFunc();
       setMinAmount(lastBet + 1);
     }
