@@ -56,7 +56,9 @@ const AdminReports = () => {
       lotType: _.camelCase(lotType),
       countryId: _.find(countries, { name: countryId })?.id || null,
     };
-    const reportTypeToSubmit = _.camelCase(reportType);
+    const reportTypeToSubmit = _.find(reportsData, {
+      name: reportType,
+    })?.reportType;
 
     dispatch(fetchReport({ reportType: reportTypeToSubmit, params }));
 
@@ -78,9 +80,7 @@ const AdminReports = () => {
   }, []);
 
   useEffect(() => {
-    setSelectedReportData(
-      _.find(reportsData, { reportType: _.camelCase(selectedReportType) })
-    );
+    setSelectedReportData(_.find(reportsData, { name: selectedReportType }));
   }, [selectedReportType]);
 
   return (
@@ -105,9 +105,7 @@ const AdminReports = () => {
                   label="Report type"
                   id="reportType"
                   name="reportType"
-                  units={_.map(reportsData, (report) =>
-                    _.startCase(report.reportType)
-                  )}
+                  units={_.map(reportsData, 'name')}
                   placeholder="Report type"
                   value={values.reportType}
                   wrappType="adminReportType"
