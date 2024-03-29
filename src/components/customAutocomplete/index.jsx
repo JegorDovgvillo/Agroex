@@ -29,7 +29,7 @@ const CustomAutocompleteField = ({
 
   const handleChange = (newValue) => {
     setFieldValue(name, newValue);
-
+    console.log(errors);
     if (errors && name === 'subcategory') {
       dispatch(deleteError('subcategory'));
     }

@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import _ from 'lodash';
 
@@ -6,12 +5,12 @@ import { setModalFields } from '@slices/modalSlice';
 
 import { getErrorMessage } from '@helpers/getErrorMessage';
 
-export const ErrorHandler = ({ states }) => {
+export const useErrorHandler = () => {
   const dispatch = useDispatch();
 
-  useEffect(() => {
+  return (states) => {
     states.map((state) => {
-      const { errors, stateId } = state;
+      const { errors } = state;
       const { title, message } = getErrorMessage(errors);
 
       dispatch(
@@ -24,7 +23,5 @@ export const ErrorHandler = ({ states }) => {
         })
       );
     });
-  }, []);
-
-  return;
+  };
 };

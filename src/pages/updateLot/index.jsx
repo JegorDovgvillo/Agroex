@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import _ from 'lodash';
 
-import { selectLotDetailById } from '@slices/lotListSlice';
+import { selectLotDetailById, clearErrors } from '@slices/lotListSlice';
 import { selectRootCategories } from '@slices/categoriesSlice';
 import { countrySelector } from '@slices/countriesSlice';
 import { tagsSelector } from '@slices/tagsSlice';
@@ -26,7 +26,7 @@ import convertImagesToFiles from '@helpers/convertImagesToFiles';
 import ROUTES from '@helpers/routeNames';
 
 import LotForm from '@components/lotForm';
-import { useUpdateLot, useDeleteLot } from '@helpers/lotHandlers';
+import { useUpdateLot, useDeleteLot } from '@helpers/customHooks/lotsHooks';
 
 const MAXIMUM_NUMBER_OF_IMG = import.meta.env.VITE_MAXIMUM_NUMBER_OF_IMG;
 const { NOT_FOUND } = ROUTES;
@@ -125,8 +125,6 @@ const UpdateLot = () => {
     formData.append('data', JSON.stringify(lotData));
 
     updateLot({ id: lotId, lotData: formData, currency: selectedCurrency });
-
-    setFiles([]);
   };
 
   useEffect(() => {
@@ -134,10 +132,12 @@ const UpdateLot = () => {
     dispatch(fetchAllCategories());
     dispatch(fetchCountries({ existed: false }));
     dispatch(fetchTags());
-  }, [dispatch]);
+
+    return () => dispatch(clearErrors());
+  }, []);
 
   useEffect(() => {
-    if (_.isNull(isLotDetailsLoaded)) return;
+    if (!_.isEmpty(selectedLot) || _.isNull(isLotDetailsLoaded)) return;
 
     !isLotDetailsLoaded && navigate(`/${NOT_FOUND}`);
   }, [isLotDetailsLoaded]);
@@ -148,8 +148,6 @@ const UpdateLot = () => {
     if (!confirmStatus || isOpen) return;
 
     deleteLot({ id: lotId });
-    setFiles([]);
-    dispatch(clearModalsFields('confirmModal'));
   }, [confirmModalData]);
 
   useEffect(() => {
@@ -161,6 +159,8 @@ const UpdateLot = () => {
       [categories, countries, tags],
       (item) => !_.isEmpty(item)
     );
+
+    console.log('2', !isAllDataLoaded);
 
     isAllDataLoaded
       ? setIsDataLoaded(isAllDataLoaded)

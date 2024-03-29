@@ -13,12 +13,13 @@ import { getSelectedCurrency } from '@slices/currencySlice';
 import PlaceBetModal from '@customModals/placeBetModal';
 import ItemCard from '@components/itemCard';
 
-import { handlePlaceNewBet } from '@helpers/lotHandlers';
 import { getLotState } from '@helpers/lotHandlers/getLotState';
+import { usePlaceNewBet } from '@helpers/customHooks/betsHooks';
 
 const Betting = () => {
   const { tab } = useParams();
   const dispatch = useDispatch();
+  const placeNewBet = usePlaceNewBet();
   const userInfo = useSelector((state) => state.usersList.userInfo);
   const [currUserId, setCurrUserId] = useState(null);
   const lots = useSelector(lotListSelector);
@@ -71,7 +72,7 @@ const Betting = () => {
     if (!isOpen && action === 'placeBet') {
       confirmStatus &&
         newBet &&
-        handlePlaceNewBet(dispatch, newBet, selectedLot.originalCurrency);
+        placeNewBet(newBet, selectedLot.originalCurrency);
     }
   }, [confirmModalData]);
 

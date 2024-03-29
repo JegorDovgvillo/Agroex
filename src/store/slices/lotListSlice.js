@@ -46,7 +46,10 @@ const lotListSlice = createSlice({
       state[action.payload] = false;
     },
     deleteError: (state, action) => {
+      console.log('state', state.errors);
       if (!state.errors) return;
+
+      state.loadingStatus = true;
 
       state.errors.data.errors = _.omit(
         state.errors.data.errors,
@@ -56,6 +59,9 @@ const lotListSlice = createSlice({
       if (_.isEmpty(state.errors.data.errors)) {
         state.errors = null;
       }
+    },
+    clearErrors: (state) => {
+      state.errors = null;
     },
   },
   extraReducers: (builder) => {
@@ -120,6 +126,7 @@ const lotListSlice = createSlice({
       })
       .addCase(createLot.rejected, (state, action) => {
         state.loadingStatus = false;
+        console.log(action);
         state.errors = action.payload;
       })
       .addCase(filteredLots.pending, (state) => {
@@ -208,6 +215,7 @@ export const { selectById: selectLotDetailById } = lotListAdapter.getSelectors(
 );
 
 const { actions, reducer } = lotListSlice;
-export const { setLotId, clearLots, clearStatus, deleteError } = actions;
+export const { setLotId, clearLots, clearStatus, deleteError, clearErrors } =
+  actions;
 
 export default reducer;

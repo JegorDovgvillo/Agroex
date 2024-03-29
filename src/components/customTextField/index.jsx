@@ -35,6 +35,7 @@ const CustomTextField = ({
 
     if (includes(['days', 'hours', 'minutes'], name)) {
       dispatch(deleteError('duration'));
+
       return;
     }
 

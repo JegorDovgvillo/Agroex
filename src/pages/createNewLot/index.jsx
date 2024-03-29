@@ -16,7 +16,7 @@ import { useLoadedWithoutErrorsSelector } from '@selectors';
 
 import LotForm from '@components/lotForm';
 import ROUTES from '@helpers/routeNames';
-import { useCreateLot } from '@helpers/lotHandlers';
+import { useCreateLot } from '@helpers/customHooks/lotsHooks';
 
 const MAXIMUM_NUMBER_OF_IMG = import.meta.env.VITE_MAXIMUM_NUMBER_OF_IMG;
 const { NOT_FOUND } = ROUTES;
@@ -33,6 +33,7 @@ const CreateNewLot = () => {
     (state) => state.countries.markerCoordinate
   );
   const selectedCurrency = useSelector(getSelectedCurrency);
+  const { loadingStatus, errors } = useSelector((state) => state.lotList);
 
   const [markerCoordinate, setMarkerCoordinate] = useState(null);
   const [files, setFiles] = useState([]);

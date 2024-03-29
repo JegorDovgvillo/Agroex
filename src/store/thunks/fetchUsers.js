@@ -57,7 +57,7 @@ export const updateUser = createAsyncThunk(
 
 export const fetchUser = createAsyncThunk(
   'usersList/fetchUser',
-  async (id, { rejectWithValue }) => {
+  async ({ id }, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.get(`${ENDPOINTS.USERS}/${id}`);
 

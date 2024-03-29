@@ -4,11 +4,7 @@ import { useParams } from 'react-router-dom';
 
 import { includes, find, filter } from 'lodash';
 
-import {
-  getFilteredLots,
-  changeLotStatusByUser,
-  deleteLot,
-} from '@thunks/fetchLots';
+import { getFilteredLots } from '@thunks/fetchLots';
 
 import { lotListSelector } from '@slices/lotListSlice';
 import { selectModal, clearModalsFields } from '@slices/modalSlice';
@@ -16,9 +12,16 @@ import { getSelectedCurrency } from '@slices/currencySlice';
 
 import ItemCard from '@components/itemCard';
 
+import {
+  useDeleteLot,
+  useChangeLotStatusByUser,
+} from '@helpers/customHooks/lotsHooks';
+
 const UserLots = () => {
   const { tab } = useParams();
   const dispatch = useDispatch();
+  const deleteLot = useDeleteLot();
+  const changeLotStatusByUser = useChangeLotStatusByUser();
   const currUserId = useSelector((state) => state.usersList.userId);
   const lots = useSelector(lotListSelector);
   const confirmModalData = useSelector((state) =>
@@ -71,18 +74,15 @@ const UserLots = () => {
     if (!isOpen && confirmStatus) {
       switch (action.name) {
         case 'toggleUserLotStatus':
-          dispatch(
-            changeLotStatusByUser({
-              lotId: lot.id,
-              isActive: lot.userStatus === 'active' ? false : true,
-            })
-          );
-          dispatch(clearModalsFields('confirmModal'));
+          changeLotStatusByUser({
+            lotId: lot.id,
+            isActive: lot.userStatus,
+          });
+
           break;
 
         case 'deleteLot':
-          dispatch(deleteLot({ id: action.lotId }));
-          dispatch(clearModalsFields('confirmModal'));
+          deleteLot({ id: action.lotId });
           break;
       }
     }

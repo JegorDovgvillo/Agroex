@@ -4,15 +4,8 @@ import { Box, Modal } from '@mui/material';
 import { Formik, Form } from 'formik';
 import CloseIcon from '@mui/icons-material/Close';
 
-import {
-  toggleModal,
-  selectModalState,
-  setModalFields,
-} from '@slices/modalSlice';
-import {
-  createCategory,
-  fetchSubcategoryByParentId,
-} from '@thunks/fetchCategories';
+import { toggleModal, selectModalState } from '@slices/modalSlice';
+import { fetchSubcategoryByParentId } from '@thunks/fetchCategories';
 
 import {
   selectRootCategories,
@@ -23,7 +16,7 @@ import {
   categoryTitleValidationSchema,
   subcategoryCreationValidationSchema,
 } from '@helpers/validationSchemes/lotValidationSchemes';
-import { getSnackbarMessages } from '@helpers/getSnackbarMessages';
+import { useCreateCategory } from '@helpers/customHooks/categoriesHooks';
 
 import CustomSelect from '../customSelect';
 import CustomAutocompleteField from '../customAutocomplete';
@@ -31,10 +24,9 @@ import CustomUploadButton from '../customUploadButton';
 
 import styles from './infoModal.module.scss';
 
-const { successCategoryCreate } = getSnackbarMessages();
-
 const ModalForCreatingCategory = () => {
   const dispatch = useDispatch();
+  const createCategory = useCreateCategory();
 
   const initialValues = {
     title: '',
@@ -47,8 +39,10 @@ const ModalForCreatingCategory = () => {
   const [selectedCategoryId, setSelectedCategoryId] = useState(
     initialValues.parentId
   );
-
   const rootCategories = useSelector(selectRootCategories);
+  const subcategories = useSelector((state) =>
+    selectCategoryByParentId(state, selectedCategoryId)
+  );
   const isOpen = useSelector((state) =>
     selectModalState(state, 'creatingModal')
   );
@@ -62,30 +56,16 @@ const ModalForCreatingCategory = () => {
 
     formData.append('file', file);
     formData.append('data', JSON.stringify(data));
-    const resultAction = await dispatch(
-      createCategory({ dataCategory: formData })
-    );
-    const isSuccessAction = createCategory.fulfilled.match(resultAction);
 
-    if (isSuccessAction) {
-      dispatch(
-        setModalFields({
-          modalId: 'snackbar',
-          message: successCategoryCreate,
-          severity: 'success',
-          isOpen: true,
-        })
-      );
+    const resultAction = createCategory({ dataCategory: formData });
+
+    if (resultAction) {
       dispatch(toggleModal('creatingModal'));
       setFile(null);
       setImageSrc(null);
       resetForm();
     }
   };
-
-  const subcategories = useSelector((state) =>
-    selectCategoryByParentId(state, selectedCategoryId)
-  );
 
   const closePopup = () => {
     setFile(null);

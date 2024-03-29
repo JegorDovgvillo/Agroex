@@ -33,13 +33,16 @@ const betsSlice = createSlice({
       .addCase(fetchPlaceBet.pending, (state) => {
         state.errors = null;
         state.placeBetLoadingStatus = true;
+        state.loadingStatus = true;
       })
       .addCase(fetchPlaceBet.fulfilled, (state, action) => {
         state.placeBetLoadingStatus = false;
+        state.loadingStatus = false;
         betsAdapter.setOne(state, action.payload);
       })
       .addCase(fetchPlaceBet.rejected, (state, action) => {
         state.placeBetLoadingStatus = false;
+        state.loadingStatus = false;
         state.errors = action.payload;
       })
       .addCase(fetchBetsByLotId.pending, (state) => {

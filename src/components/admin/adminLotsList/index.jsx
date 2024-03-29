@@ -27,8 +27,8 @@ import { getSelectedCurrency } from '@slices/currencySlice';
 import getFormattedDate from '@helpers/getFormattedDate';
 import getNumberWithCurrency from '@helpers/getNumberWithCurrency';
 import { getFormattedDuration } from '@helpers/getFormattedDuration';
-import { handleChangeLotStatusByAdmin } from '@helpers/lotHandlers';
 import ROUTES from '@helpers/routeNames';
+import { useChangeLotStatusByAdmin } from '@helpers/customHooks/lotsHooks';
 
 import DetailedLotViewModal from '../detailedLotViewModal';
 import { getTableHead } from './getTableHead';
@@ -105,6 +105,7 @@ export default function AdminLotsList() {
   const confirmModalData = useSelector((state) =>
     selectModal(state, 'confirmModal')
   );
+  const changeLotStatusByAdmin = useChangeLotStatusByAdmin();
 
   const selectedCurrency = useSelector(getSelectedCurrency);
 
@@ -183,8 +184,7 @@ export default function AdminLotsList() {
 
   const fetchChangeLotStatus = async () => {
     const { adminMessage } = adminMessageModalData;
-    const isLotStatusChanged = await handleChangeLotStatusByAdmin({
-      dispatch,
+    const isLotStatusChanged = await changeLotStatusByAdmin({
       lotId: currLotId,
       status: editedValue,
       adminMessage,

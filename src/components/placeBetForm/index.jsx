@@ -16,7 +16,7 @@ import getNumberWithCurrency from '@helpers/getNumberWithCurrency.js';
 import { toggleModal, setModalFields } from '@slices/modalSlice';
 
 import styles from './placeBetForm.module.scss';
-import { setNewBet } from '../../store/slices/betsSlice';
+import { setNewBet } from '@store/slices/betsSlice';
 
 const { formContainer, helperText, inputAdornment, inputAdornmentError } =
   styles;
@@ -28,18 +28,17 @@ export const PlaceBetForm = ({ lot, type }) => {
   const userInfo = useSelector((state) => state.usersList.userInfo);
 
   const currency = _.find(CURRENCY, { key: lot.originalCurrency });
-  const [lastBet, setLastBet] = useState(_.maxBy(lot.bets, 'id')?.amount);
+  const [lastBet, setLastBet] = useState(lot.lastBet?.amount);
 
   const [minAmount, setMinAmount] = useState(
-    !_.isEmpty(lot.bets) ? lastBet + 1 : _.toNumber(lot.originalMinPrice) + 1
+    lastBet ? _.toNumber(lastBet) + 1 : _.toNumber(lot.originalMinPrice) + 1
   );
+
   const maxAmount = lot.originalPrice;
   const minAmountWithCurrency = getNumberWithCurrency(minAmount, currency.key);
   const maxAmountWithCurrency = getNumberWithCurrency(maxAmount, currency.key);
   const amountHelperText = `From ${minAmountWithCurrency} to ${maxAmountWithCurrency}`;
-  const placeBetStatus = useSelector(
-    (state) => state.bets.placeBetLoadingStatus
-  );
+  const { errors, loadingStatus } = useSelector((state) => state.bets);
   const [resetFormFunc, setResetFormFunc] = useState(null);
 
   const handleBetBtnClick = () => {
@@ -79,11 +78,11 @@ export const PlaceBetForm = ({ lot, type }) => {
   };
 
   useEffect(() => {
-    if (placeBetStatus === false) {
+    if (loadingStatus === false && !errors) {
       resetFormFunc && resetFormFunc();
-      setMinAmount(lastBet + 1);
+      setMinAmount(_.toNumber(lastBet) + 1);
     }
-  }, [placeBetStatus]);
+  }, [loadingStatus, errors]);
 
   return (
     <Formik

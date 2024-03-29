@@ -12,7 +12,8 @@ import { selectModal, clearModalsFields } from '@slices/modalSlice';
 import ConfirmActionModal from '@customModals/confirmActionModal';
 import AdminMessageModal from '@customModals/adminMessageModal';
 import { CustomSnackbar } from '@components/customSnackbar';
-import { ErrorHandler } from '@components/errorHandler';
+
+import { useErrorHandler } from '@helpers/customHooks/errorHandlerHook';
 
 import ENDPOINTS, { BASE_URL } from '@helpers/endpoints';
 
@@ -25,6 +26,7 @@ const Layout = () => {
   const dispatch = useDispatch();
 
   const userInfo = useSelector((state) => state.usersList.userInfo);
+  const errorHandler = useErrorHandler();
   const confirmActionData = useSelector((state) =>
     selectModal(state, 'confirmModal')
   );
@@ -33,7 +35,10 @@ const Layout = () => {
   );
   const categoriesState = useSelector((state) => state.categories);
   const lotListState = useSelector((state) => state.lotList);
-  const [statesWithErrors, setStatesWithErrors] = useState([]);
+  const usersListState = useSelector((state) => state.usersList);
+  const betsState = useSelector((state) => state.bets);
+  const countriesState = useSelector((state) => state.countries);
+  const tagsState = useSelector((state) => state.tags);
 
   const [text, setText] = useState('');
   const [sseConnection, setSseConnection] = useState(null);
@@ -84,12 +89,26 @@ const Layout = () => {
 
   useEffect(() => {
     const statesWithErrors = _.filter(
-      [categoriesState, lotListState],
+      [
+        categoriesState,
+        lotListState,
+        usersListState,
+        betsState,
+        countriesState,
+        tagsState,
+      ],
       (state) => !_.isNull(state.errors)
     );
 
-    setStatesWithErrors(statesWithErrors);
-  }, [categoriesState, lotListState]);
+    !_.isEmpty(statesWithErrors) && errorHandler(statesWithErrors);
+  }, [
+    categoriesState,
+    lotListState,
+    usersListState,
+    betsState,
+    countriesState,
+    tagsState,
+  ]);
 
   return (
     <div className={styles.container}>
@@ -101,9 +120,6 @@ const Layout = () => {
       <ConfirmActionModal text={text} />
       <AdminMessageModal />
       <CustomSnackbar />
-      {!_.isEmpty(statesWithErrors) && (
-        <ErrorHandler states={statesWithErrors} />
-      )}
     </div>
   );
 };

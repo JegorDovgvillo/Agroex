@@ -22,20 +22,23 @@ import { betsSelector } from '@slices/betsSlice';
 import { selectModal, toggleModal } from '@slices/modalSlice';
 import { getSelectedCurrency } from '@slices/currencySlice';
 
+import { usePlaceNewBet, useFetchDeal } from '@helpers/customHooks/betsHooks';
 import {
-  handlePlaceNewBet,
-  handleDeactivateLot,
-  handleDeal,
-  handleDeleteLot,
-  handleChangeLotStatusByAdmin,
-} from '@helpers/lotHandlers';
+  useDeactivateLot,
+  useDeleteLot,
+  useChangeLotStatusByAdmin,
+} from '@helpers/customHooks/lotsHooks';
 
 import styles from './lotList.module.scss';
 
 const LotList = () => {
   const dispatch = useDispatch();
-
+  const placeNewBet = usePlaceNewBet();
+  const fetchDeal = useFetchDeal();
+  const deactivateLot = useDeactivateLot();
+  const deleteLot = useDeleteLot();
   const [searchParams, setSearchParams] = useSearchParams();
+  const changeLotStatusByAdmin = useChangeLotStatusByAdmin();
 
   const lots = useSelector(lotListSelector);
   const categories = useSelector(categoriesSelector);
@@ -104,13 +107,12 @@ const LotList = () => {
         case 'placeBet':
           confirmStatus &&
             newBet &&
-            handlePlaceNewBet(dispatch, newBet, selectedLot.originalCurrency);
+            placeNewBet(newBet, selectedLot.originalCurrency);
           break;
 
         case 'deal':
           confirmStatus &&
-            handleDeal({
-              dispatch: dispatch,
+            fetchDeal({
               lotId: selectedLot.id,
               userId: userInfo?.id,
               currency: selectedLot.originalCurrency,
@@ -118,7 +120,7 @@ const LotList = () => {
           break;
 
         case 'deactivateLot':
-          confirmStatus && handleDeactivateLot(dispatch, selectedLot.id);
+          confirmStatus && deactivateLot(selectedLot.id);
           break;
 
         case 'deactivateLotByAdmin':
@@ -126,7 +128,7 @@ const LotList = () => {
           break;
 
         case 'deleteLot':
-          handleDeleteLot(dispatch, selectedLot.id);
+          deleteLot({ id: selectedLot.id });
           break;
       }
     }
@@ -136,8 +138,7 @@ const LotList = () => {
     const { adminMessage } = adminMessageData;
 
     if (adminMessage) {
-      handleChangeLotStatusByAdmin({
-        dispatch,
+      changeLotStatusByAdmin({
         lotId: selectedLot.id,
         status: 'rejected',
         adminMessage,

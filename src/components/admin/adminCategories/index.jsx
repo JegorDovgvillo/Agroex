@@ -24,11 +24,11 @@ import { deleteCategory } from '@thunks/fetchCategories';
 import ModalForCreatingCategory from '@customModals/modalForCreatingCategory';
 import ModalForUpdatingCategory from '@customModals/modalForUpdaitingCategory';
 
-import { getSnackbarMessages } from '@helpers/getSnackbarMessages';
+import { getFetchResultMessages } from '@helpers/getFetchResultMessages';
 
 import styles from '../usersList/usersList.module.scss';
 
-const { successCategoryDelete } = getSnackbarMessages();
+const { successCategoryDelete } = getFetchResultMessages();
 const {
   tableRow,
   userName,
