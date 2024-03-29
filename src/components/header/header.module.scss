@@ -15,6 +15,9 @@
     align-items: center;
     column-gap: 26px;
     padding: 0 84px;
-    position: relative;
+
+    @media only all and (max-width: 1760px) {
+      padding: 0 48px;
+    }
   }
 }

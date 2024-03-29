@@ -8,6 +8,8 @@ import { fetchAuthSession } from 'aws-amplify/auth';
 import { getUserFromCognito } from '@thunks/fetchUsers';
 
 import { selectModal } from '@slices/modalSlice';
+import { setMessage } from '@slices/sseSlice';
+
 import ConfirmActionModal from '@customModals/confirmActionModal';
 import AdminMessageModal from '@customModals/adminMessageModal';
 import { CustomSnackbar } from '@components/customSnackbar';
@@ -21,12 +23,14 @@ import styles from './layout.module.scss';
 
 const Layout = () => {
   const dispatch = useDispatch();
+
+  const userInfo = useSelector((state) => state.usersList.userInfo);
   const confirmActionData = useSelector((state) =>
     selectModal(state, 'confirmModal')
   );
 
-  const [sseConnection, setSseConnection] = useState(null);
   const [text, setText] = useState('');
+  const [sseConnection, setSseConnection] = useState(null);
 
   const openConnection = async () => {
     const { idToken } = (await fetchAuthSession()).tokens ?? {};
@@ -35,6 +39,8 @@ const Layout = () => {
         Authorization: `Bearer ${idToken}`,
       },
     });
+
+    setSseConnection(sse);
 
     return sse;
   };
@@ -50,8 +56,17 @@ const Layout = () => {
   }, []);
 
   useEffect(() => {
-    openConnection().then((data) => setSseConnection(data));
-  }, []);
+    if (userInfo) {
+      openConnection().then(
+        (data) =>
+          (data.onmessage = (event) => {
+            dispatch(setMessage(JSON.parse(event.data)));
+          })
+      );
+    } else if (!userInfo && sseConnection) {
+      sseConnection.close();
+    }
+  }, [userInfo]);
 
   return (
     <div className={styles.container}>

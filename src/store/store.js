@@ -8,8 +8,8 @@ import countries from './slices/countriesSlice';
 import tags from './slices/tagsSlice';
 import bets from './slices/betsSlice';
 import currency from './slices/currencySlice';
-import sseSlice from './slices/sseSlice';
 import reports from './slices/reportsSlice';
+import sse from './slices/sseSlice';
 
 const store = configureStore({
   reducer: {
@@ -21,8 +21,8 @@ const store = configureStore({
     tags,
     bets,
     currency,
-    sseSlice,
     reports,
+    sse,
   },
   devTools: import.meta.env.DEV,
 });

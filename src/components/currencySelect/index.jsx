@@ -93,6 +93,11 @@ export const CurrencySelect = () => {
         }}
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+        sx={{
+          '& .MuiPaper-root': {
+            boxShadow: '0px 4px 24px 0px #0000001f',
+          },
+        }}
       >
         {CURRENCY.map((item) => (
           <MenuItem

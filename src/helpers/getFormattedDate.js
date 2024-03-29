@@ -13,7 +13,6 @@ const getFormattedDate = ({ date, timeZone, locale = 'ru' }) => {
     minute: 'numeric',
     hour12: false,
     timeZone: timeZone,
-    timeZoneName: 'short', //todo remove after testing
   };
 
   return new Intl.DateTimeFormat(locale, options).format(dateObject);

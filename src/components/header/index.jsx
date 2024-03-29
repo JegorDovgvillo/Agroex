@@ -5,6 +5,7 @@ import { AddNewLotButton } from '@components/addNewLotButton';
 import { CurrencySelect } from '@components/currencySelect';
 import Search from '../search';
 import UserIconInHeader from '../userIconInHeader';
+import Notifications from '../notifications';
 
 import styles from './header.module.scss';
 
@@ -20,6 +21,7 @@ const Header = () => {
         <Search />
         <CurrencySelect />
         <AddNewLotButton />
+        <Notifications />
         <UserIconInHeader />
       </div>
     </header>

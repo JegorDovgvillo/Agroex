@@ -16,6 +16,7 @@ const ENDPOINTS = {
   BETS: '/bets',
   SSE: '/sse/open-sse-stream',
   REPORTS: '/reports',
+  MARK_AS_READ: 'sse/markRead',
 };
 
 export default ENDPOINTS;

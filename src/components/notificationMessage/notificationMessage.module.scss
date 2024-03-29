@@ -1,0 +1,67 @@
+@import "@scss/colorVariables.module.scss";
+@import "@scss/typography.module.scss";
+
+.message {
+  display: flex;
+  gap: 10px;
+  padding: 20px;
+  border-bottom: 1px solid $grayLight1;
+  flex-direction: column;
+
+  .titleBlock {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+
+    p {
+      font-size: 15px;
+      position: relative;
+      bottom: 15px;
+    }
+
+    .title {
+      display: flex;
+      gap: 10px;
+    }
+  }
+
+  p {
+    @include body1;
+    margin-left: 34px;
+  }
+
+  h6 {
+    @include h6;
+    line-height: 24px;
+  }
+
+  p.active,
+  h6.active {
+    font-weight: bold;
+  }
+
+  p.disabled,
+  h6.disabled,
+  svg {
+    opacity: 0.5;
+  }
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:nth-child(odd) {
+    background-color: $grayLight2;
+  }
+
+  &:nth-child(even) {
+    background-color: $monoWhite;
+  }
+
+  .buttonsWrapp {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    justify-content: flex-end;
+  }
+}
