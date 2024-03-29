@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { some } from 'lodash';
+import { some, isEmpty } from 'lodash';
 
 export const useLoadedWithoutErrorsSelector = (sliceNames) => {
   const isDataSlicesLoaded = sliceNames.map((sliceName) => {
@@ -8,7 +8,7 @@ export const useLoadedWithoutErrorsSelector = (sliceNames) => {
 
     if (loadingStatus !== false) return null;
 
-    return errors ? false : true;
+    return isEmpty(errors);
   });
 
   if (some(isDataSlicesLoaded, (item) => item === null)) {

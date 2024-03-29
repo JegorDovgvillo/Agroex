@@ -57,7 +57,7 @@ const ModalForCreatingCategory = () => {
     formData.append('file', file);
     formData.append('data', JSON.stringify(data));
 
-    const resultAction = createCategory({ dataCategory: formData });
+    const resultAction = await createCategory({ dataCategory: formData });
 
     if (resultAction) {
       dispatch(toggleModal('creatingModal'));
