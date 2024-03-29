@@ -8,6 +8,7 @@ import HttpsOutlinedIcon from '@mui/icons-material/HttpsOutlined';
 
 import { toggleModal } from '@slices/modalSlice';
 import { deleteUserInfo } from '@slices/usersListSlice';
+import { clearMessages } from '@slices/sseSlice';
 
 import { CustomButton } from '@components/buttons/CustomButton';
 import { CheckBoxInput } from '@components/checkBox';
@@ -55,6 +56,7 @@ const UserAccount = () => {
 
   const handleSignOut = () => {
     signOut();
+    dispatch(clearMessages());
     navigate(ROUTES.LOG_IN);
     dispatch(deleteUserInfo());
   };

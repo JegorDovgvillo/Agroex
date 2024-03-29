@@ -16,6 +16,7 @@ const Notifications = () => {
   const userInfo = useSelector((state) => state.usersList.userInfo);
 
   const maxMessages = 9;
+  const isEmpty = !_.isEmpty(messages) ? styles.active : styles.disabled;
   const isVisible = active ? styles.visible : styles.invisible;
   const messageAmount =
     !_.isEmpty(messages) && messages.length > maxMessages
@@ -45,7 +46,10 @@ const Notifications = () => {
       {userInfo && (
         <div className={styles.container} ref={iconRef}>
           <div className={styles.icon}>
-            <NotificationsNoneIcon onClick={toggleNotifications} />
+            <NotificationsNoneIcon
+              onClick={toggleNotifications}
+              className={isEmpty}
+            />
             <span>{!_.isEmpty(messages) ? messageAmount : null}</span>
           </div>
           <div className={isVisible}>

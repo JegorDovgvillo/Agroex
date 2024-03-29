@@ -33,7 +33,7 @@ const NotificationMessage = ({
   const userInfo = useSelector((state) => state.usersList.userInfo);
 
   const isDisabled = disabled ? styles.disabled : styles.active;
-  const buttonText = disabled ? 'Was read' : 'Check as read';
+  const buttonText = disabled ? 'Was read' : 'Mark as read';
   const messageIcon = getMessageType(messageType);
   const messageTime = getFormattedDate({
     date: sendTime,
@@ -52,11 +52,10 @@ const NotificationMessage = ({
       id: lotId,
     });
 
-    if (buttonText !== 'Was read') {
-      dispatch(markAsRead(id));
+    if (buttonText === 'Was read') {
+      dispatch(deleteMessage(id));
     }
 
-    dispatch(deleteMessage(id));
     navigate(path);
   };
 

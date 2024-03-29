@@ -9,6 +9,7 @@ import _ from 'lodash';
 
 import { lotListSelector } from '@slices/lotListSlice';
 import { deleteUserInfo } from '@slices/usersListSlice';
+import { clearMessages } from '@slices/sseSlice';
 
 import ROUTES from '@helpers/routeNames';
 
@@ -64,6 +65,7 @@ const UserIconInHeader = () => {
 
   const handleSignOut = () => {
     signOut();
+    dispatch(clearMessages());
     dispatch(deleteUserInfo());
     setIsActive(false);
     navigate(ROUTES.LOG_IN);

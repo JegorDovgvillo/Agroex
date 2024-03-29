@@ -40,6 +40,8 @@ const Layout = () => {
       },
     });
 
+    setSseConnection(sse);
+
     return sse;
   };
 
@@ -54,13 +56,17 @@ const Layout = () => {
   }, []);
 
   useEffect(() => {
-    openConnection().then(
-      (data) =>
-        (data.onmessage = (event) => {
-          dispatch(setMessage(JSON.parse(event.data)));
-        })
-    );
-  }, []);
+    if (userInfo) {
+      openConnection().then(
+        (data) =>
+          (data.onmessage = (event) => {
+            dispatch(setMessage(JSON.parse(event.data)));
+          })
+      );
+    } else if (!userInfo && sseConnection) {
+      sseConnection.close();
+    }
+  }, [userInfo]);
 
   return (
     <div className={styles.container}>

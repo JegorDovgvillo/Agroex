@@ -1,5 +1,5 @@
 import { createSlice, createEntityAdapter } from '@reduxjs/toolkit';
-
+import _ from 'lodash';
 const sseAdapter = createEntityAdapter();
 
 const initialState = sseAdapter.getInitialState({
@@ -14,24 +14,24 @@ const sseSlice = createSlice({
     setMessage: (state, action) => {
       const newMessage = action.payload;
 
-      if (newMessage.id) {
-        const existingMessageIds = state.messages.map((message) => message.id);
-
-        if (!existingMessageIds.includes(newMessage.id)) {
-          state.messages = [...state.messages, newMessage];
-        }
+      if (newMessage.id && !_.some(state.messages, { id: newMessage.id })) {
+        state.messages = [...state.messages, newMessage];
       }
     },
     deleteMessage: (state, action) => {
-      state.messages = state.messages.filter(
+      state.messages = _.filter(
+        state.messages,
         (item) => item.id !== action.payload
       );
+    },
+    clearMessages: (state) => {
+      state.messages = [];
     },
   },
 });
 
 const { reducer, actions } = sseSlice;
 
-export const { setMessage, deleteMessage } = actions;
+export const { setMessage, deleteMessage, clearMessages } = actions;
 
 export default reducer;
