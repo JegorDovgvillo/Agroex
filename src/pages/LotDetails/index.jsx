@@ -26,14 +26,15 @@ import getFormattedDate from '@helpers/getFormattedDate';
 import { getButtonText } from '@helpers/getButtonText';
 import {
   handleToggleUserLotStatusBtnClick,
-  handlePlaceNewBet,
   handleDealBtnClick,
   handleEditLotButtonClick,
-  handleDeal,
-  handleDeactivateLot,
-  handleChangeLotStatusByUser,
 } from '@helpers/lotHandlers';
 import { getLotState } from '@helpers/lotHandlers/getLotState';
+import { usePlaceNewBet, useFetchDeal } from '@helpers/customHooks/betsHooks';
+import {
+  useDeactivateLot,
+  useChangeLotStatusByUser,
+} from '@helpers/customHooks/lotsHooks';
 
 import { categoriesSelector } from '@slices/categoriesSlice';
 import { selectLotDetailById } from '@slices/lotListSlice';
@@ -46,12 +47,15 @@ import { fetchLotDetails } from '@thunks/fetchLots';
 import { fetchAllCategories } from '@thunks/fetchCategories';
 import { fetchUser } from '@thunks/fetchUsers';
 import { fetchBetsByLotId } from '@thunks/fetchBets';
+import ROUTES from '@helpers/routeNames';
 
 import { ManageLotStatusBlock } from './manageLotStatusBlock';
 import attentionIcon from '@icons/attention.svg';
 import mapIcon from '@icons/mapIcon.svg';
 
 import styles from './lotDetails.module.scss';
+
+const { NOT_FOUND } = ROUTES;
 
 const {
   body2,
@@ -83,6 +87,10 @@ export const LotDetails = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { id: lotId } = useParams();
+  const placeNewBet = usePlaceNewBet();
+  const fetchDeal = useFetchDeal();
+  const deactivateLot = useDeactivateLot();
+  const changeLotStatusByUser = useChangeLotStatusByUser();
 
   const [searchParams, setSearchParams] = useSearchParams();
   const { loadingStatus } = useSelector((state) => state.lotList);
@@ -97,7 +105,7 @@ export const LotDetails = () => {
   const confirmModalData = useSelector((state) =>
     selectModal(state, 'confirmModal')
   );
-  const currentBets = useSelector(betsSelector);
+  //const currentBets = useSelector(betsSelector);
   const [lastBet, setLastBet] = useState();
   const betModalData = useSelector((state) =>
     selectModal(state, 'placeBetModal')
@@ -121,7 +129,6 @@ export const LotDetails = () => {
 
   useEffect(() => {
     dispatch(fetchAllCategories());
-    dispatch(fetchBetsByLotId({ id: lotId }));
   }, []);
 
   useEffect(() => {
@@ -131,10 +138,12 @@ export const LotDetails = () => {
 
     !_.isEmpty(selectedLot) &&
       setIsUserLotOwner(userInfo.id === selectedLot.userId);
-    setLastBet(_.maxBy(selectedLot.bets, 'id'));
+    setLastBet(selectedLot.lastBet);
     setUserType(
       userInfo['custom:role'] === 'admin' ? 'admin' : 'registeredUser'
     );
+    selectedLot.lastBet &&
+      dispatch(fetchUser({ id: selectedLot.lastBet.userId }));
   }, [userInfo, selectedLot]);
 
   useEffect(() => {
@@ -143,21 +152,18 @@ export const LotDetails = () => {
     if (!isOpen && confirmStatus) {
       switch (typeof action === 'string' ? action : action.name) {
         case 'toggleUserLotStatus':
-          handleChangeLotStatusByUser({
-            dispatch,
+          changeLotStatusByUser({
             lotId: selectedLot.id,
             userStatus: selectedLot.userStatus,
           });
           break;
 
         case 'placeBet':
-          newBet &&
-            handlePlaceNewBet(dispatch, newBet, selectedLot.originalCurrency);
+          newBet && placeNewBet(newBet, selectedLot.originalCurrency);
           break;
 
         case 'deal':
-          handleDeal({
-            dispatch: dispatch,
+          fetchDeal({
             lotId: lotId,
             userId: userInfo.id,
             currency: selectedLot.originalCurrency,
@@ -165,25 +171,11 @@ export const LotDetails = () => {
           break;
 
         case 'deactivateLot':
-          handleDeactivateLot(dispatch, lotId);
+          deactivateLot(lotId);
           break;
       }
     }
   }, [confirmModalData, betModalData]);
-
-  useEffect(() => {
-    if (_.isEmpty(currentBets)) return;
-
-    const currLotBets = _.filter(currentBets, { lotId: _.toNumber(lotId) });
-
-    const lastBet = _.maxBy(currLotBets, 'id');
-    const isMaxBet = lastBet?.amount === selectedLot?.price;
-
-    dispatch(fetchUser(lastBet?.userId));
-    setLastBet(lastBet);
-    isMaxBet &&
-      dispatch(fetchLotDetails({ id: lotId, currency: selectedCurrency }));
-  }, [currentBets]);
 
   useEffect(() => {
     if (!selectedCurrency) return;
@@ -191,14 +183,14 @@ export const LotDetails = () => {
     dispatch(fetchLotDetails({ id: lotId, currency: selectedCurrency }));
   }, [selectedCurrency]);
 
-  if (loadingStatus !== 'fulfilled') {
+  if (loadingStatus !== false) {
     return (
       <div className={container}>
         <CircularProgress />
       </div>
     );
-  } else if (loadingStatus === 'rejected' && !selectedLot) {
-    return;
+  } else if (loadingStatus === false && !selectedLot) {
+    navigate(`/${NOT_FOUND}`);
   }
 
   const {

@@ -1,4 +1,8 @@
+import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+
 import ROUTES from '@helpers/routeNames';
+import { getFetchResultMessages } from '@helpers/getFetchResultMessages';
 
 import {
   clearModalsFields,
@@ -12,9 +16,14 @@ import {
   changeLotStatusByUser,
   changeLotStatusByAdmin,
   deleteLot,
+  createLot,
+  updateLot,
 } from '@thunks/fetchLots';
 
 import { fetchPlaceBet } from '@thunks/fetchBets';
+
+const { successLotCreate, successLotUpdate, successLotDelete } =
+  getFetchResultMessages();
 
 export const handleDeactivateBtnClick = (dispatch, isAdmin = false) => {
   dispatch(
@@ -80,75 +89,4 @@ export const handleDealBtnClick = (dispatch, isAuctionLot, lot, userId) => {
       })
     );
   }
-};
-
-export const handlePlaceNewBet = (dispatch, newBet, currency) => {
-  dispatch(
-    fetchPlaceBet({
-      id: newBet.lotId,
-      betData: newBet,
-      currency,
-    })
-  );
-  dispatch(setNewBet(null));
-  dispatch(clearModalsFields(['confirmModal', 'placeBetModal']));
-};
-
-export const handleDeal = (params) => {
-  const { dispatch, lotId, userId, currency } = params;
-
-  dispatch(
-    fetchDeal({
-      values: { id: lotId, userId: userId },
-      currency: currency,
-    })
-  );
-  dispatch(clearModalsFields('confirmModal'));
-};
-
-export const handleDeactivateLot = (dispatch, lotId) => {
-  dispatch(
-    changeLotStatusByUser({
-      lotId: lotId,
-      isActive: false,
-    })
-  );
-  dispatch(clearModalsFields('confirmModal'));
-};
-
-export const handleDeleteLot = (dispatch, lotId) => {
-  dispatch(deleteLot({ id: lotId }));
-  dispatch(clearModalsFields('confirmModal'));
-};
-
-export const handleChangeLotStatusByAdmin = ({
-  dispatch,
-  lotId,
-  status,
-  adminMessage,
-  selectedCurrency,
-}) => {
-  dispatch(
-    changeLotStatusByAdmin({
-      lotId: lotId,
-      status: status,
-      adminComment: adminMessage,
-      currency: selectedCurrency,
-    })
-  );
-  dispatch(clearModalsFields(['adminMessageModal', 'confirmModal']));
-};
-
-export const handleChangeLotStatusByUser = ({
-  dispatch,
-  lotId,
-  userStatus,
-}) => {
-  dispatch(
-    changeLotStatusByUser({
-      lotId: lotId,
-      isActive: userStatus === 'active' ? false : true,
-    })
-  );
-  dispatch(clearModalsFields('confirmModal'));
 };

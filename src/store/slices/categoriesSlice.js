@@ -7,21 +7,24 @@ import {
 import { filter } from 'lodash';
 
 import {
-  fetchCategories,
+  fetchAllCategories,
   deleteCategory,
   updateCategory,
   createCategory,
 } from '@thunks/fetchCategories';
 
 const categoriesAdapter = createEntityAdapter();
+const stateId = 'categories';
 
 const initialState = categoriesAdapter.getInitialState({
-  loadingStatus: 'idle',
+  stateId,
+  loadingStatus: null,
   categoryId: null,
+  errors: null,
 });
 
 const categoriesSlice = createSlice({
-  name: 'categories',
+  name: stateId,
   initialState,
   reducers: {
     setCategoryId: (state, action) => {
@@ -30,45 +33,53 @@ const categoriesSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchCategories.pending, (state) => {
-        state.loadingStatus = 'pending';
+      .addCase(fetchAllCategories.pending, (state) => {
+        state.errors = null;
+        state.loadingStatus = true;
       })
-      .addCase(fetchCategories.fulfilled, (state, action) => {
-        state.loadingStatus = 'fulfilled';
+      .addCase(fetchAllCategories.fulfilled, (state, action) => {
+        state.loadingStatus = false;
         categoriesAdapter.addMany(state, action.payload);
       })
-      .addCase(fetchCategories.rejected, (state) => {
-        state.loadingStatus = 'rejected';
+      .addCase(fetchAllCategories.rejected, (state, action) => {
+        state.loadingStatus = false;
+        state.errors = action.payload;
       })
       .addCase(deleteCategory.pending, (state) => {
-        state.loadingStatus = 'pending';
+        state.errors = null;
+        state.loadingStatus = true;
       })
       .addCase(deleteCategory.fulfilled, (state, action) => {
-        state.loadingStatus = 'fulfilled';
+        state.loadingStatus = false;
         categoriesAdapter.removeOne(state, action.payload);
       })
-      .addCase(deleteCategory.rejected, (state) => {
-        state.loadingStatus = 'rejected';
+      .addCase(deleteCategory.rejected, (state, action) => {
+        state.loadingStatus = false;
+        state.errors = action.payload;
       })
       .addCase(updateCategory.pending, (state) => {
-        state.loadingStatus = 'pending';
+        state.errors = null;
+        state.loadingStatus = true;
       })
       .addCase(updateCategory.fulfilled, (state, action) => {
-        state.loadingStatus = 'fulfilled';
+        state.loadingStatus = false;
         categoriesAdapter.upsertOne(state, action.payload);
       })
-      .addCase(updateCategory.rejected, (state) => {
-        state.loadingStatus = 'rejected';
+      .addCase(updateCategory.rejected, (state, action) => {
+        state.loadingStatus = false;
+        state.errors = action.payload;
       })
       .addCase(createCategory.pending, (state) => {
-        state.loadingStatus = 'pending';
+        state.errors = null;
+        state.loadingStatus = true;
       })
       .addCase(createCategory.fulfilled, (state, action) => {
-        state.loadingStatus = 'fulfilled';
+        state.loadingStatus = false;
         categoriesAdapter.setOne(state, action.payload);
       })
-      .addCase(createCategory.rejected, (state) => {
-        state.loadingStatus = 'rejected';
+      .addCase(createCategory.rejected, (state, action) => {
+        state.loadingStatus = false;
+        state.errors = action.payload;
       });
   },
 });

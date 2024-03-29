@@ -53,7 +53,7 @@ const AdminMessageModal = () => {
             onSubmit={handleSubmit}
             validationSchema={adminMessageValidationSchema}
           >
-            {({ values, errors, touched, isValid }) => (
+            {({ values, errors, touched, isValid, setFieldValue }) => (
               <Form>
                 <CustomTextField
                   name="message"
@@ -66,6 +66,7 @@ const AdminMessageModal = () => {
                   value={values.message}
                   errors={errors.message}
                   touched={touched.message}
+                  setFieldValue={setFieldValue}
                 />
                 <div className={buttonsContainer}>
                   <CustomButton

@@ -11,85 +11,134 @@ export const fetchLots = createAsyncThunk('lotList/fetchLots', async () => {
 
 export const updateLot = createAsyncThunk(
   'lotList/updateLot',
-  async ({ id, lotData, currency }) => {
-    const response = await axiosInstance.put(
-      `${ENDPOINTS.LOTS}/${id}`,
-      lotData,
-      { headers: { currency } }
-    );
+  async ({ id, lotData, currency }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.put(
+        `${ENDPOINTS.LOTS}/${id}`,
+        lotData,
+        { headers: { currency } }
+      );
 
-    return response.data;
+      return response.data;
+    } catch (error) {
+      return rejectWithValue({
+        status: error?.response?.status,
+        data: error?.response?.data,
+      });
+    }
   }
 );
 
 export const fetchLotDetails = createAsyncThunk(
   'lotList/fetchLotDetails',
-  async ({ id, currency }) => {
-    const response = await axiosInstance.get(`${ENDPOINTS.LOTS}/${id}`, {
-      headers: { currency },
-    });
+  async ({ id, currency }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.get(`${ENDPOINTS.LOTS}/${id}`, {
+        headers: { currency },
+      });
 
-    return response.data;
+      return response.data;
+    } catch (error) {
+      return rejectWithValue({
+        status: error?.response?.status,
+        data: error?.response?.data,
+      });
+    }
   }
 );
 
 export const createLot = createAsyncThunk(
   'lotList/createLot',
-  async ({ formData, currency }) => {
-    const response = await axiosInstance.post(ENDPOINTS.LOTS, formData, {
-      headers: { currency },
-    });
+  async ({ formData, currency }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.post(ENDPOINTS.LOTS, formData, {
+        headers: { currency },
+      });
 
-    return response.data;
+      return response.data;
+    } catch (error) {
+      return rejectWithValue({
+        status: error?.response?.status,
+        data: error?.response?.data,
+      });
+    }
   }
 );
 
 export const deleteLot = createAsyncThunk(
   'lotList/deleteLot',
-  async ({ id }) => {
-    const response = await axiosInstance.delete(`${ENDPOINTS.LOTS}/${id}`);
+  async ({ id }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.delete(`${ENDPOINTS.LOTS}/${id}`);
 
-    return response.data;
+      return response.data;
+    } catch (error) {
+      return rejectWithValue({
+        status: error?.response?.status,
+        data: error?.response?.data,
+      });
+    }
   }
 );
 
 export const filteredLots = createAsyncThunk(
   'lotList/filteredLots',
-  async ({ values, currency }) => {
-    const response = await axiosInstance.get(`${ENDPOINTS.LOTS}?${values}`, {
-      headers: { currency },
-    });
+  async ({ values, currency }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.get(`${ENDPOINTS.LOTS}?${values}`, {
+        headers: { currency },
+      });
 
-    return response.data;
+      return response.data;
+    } catch (error) {
+      return rejectWithValue({
+        status: error?.response?.status,
+        data: error?.response?.data,
+      });
+    }
   }
 );
 
 export const getFilteredLots = createAsyncThunk(
   'lotList/getFilteredLots',
-  async ({ params, currency }) => {
-    const response = await axiosInstance.get(`${ENDPOINTS.LOTS}`, {
-      params: params,
-      headers: { currency },
-    });
+  async ({ params, currency }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.get(`${ENDPOINTS.LOTS}`, {
+        params: params,
+        headers: { currency },
+      });
 
-    return response.data;
+      return response.data;
+    } catch (error) {
+      return rejectWithValue({
+        status: error?.response?.status,
+        data: error?.response?.data,
+      });
+    }
   }
 );
 
 export const changeLotStatusByUser = createAsyncThunk(
   'lotList/changeLotStatusByUser',
-  async ({ lotId, isActive }) => {
-    const response = await axiosInstance.post(
-      `${ENDPOINTS.LOTS}/${lotId}/userStatus`,
-      null,
-      {
-        params: {
-          status: isActive,
-        },
-      }
-    );
+  async ({ lotId, isActive }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.post(
+        `${ENDPOINTS.LOTS}/${lotId}/userStatus`,
+        null,
+        {
+          params: {
+            status: isActive,
+          },
+        }
+      );
 
-    return response.data;
+      return response.data;
+    } catch (error) {
+      return rejectWithValue({
+        status: error?.response?.status,
+        data: error?.response?.data,
+      });
+    }
   }
 );
 
@@ -117,35 +166,52 @@ export const changeLotStatusByAdmin = createAsyncThunk(
 
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue({
+        status: error?.response?.status,
+        data: error?.response?.data,
+      });
     }
   }
 );
 
 export const fetchDeal = createAsyncThunk(
   'lotList/fetchDeal',
-  async ({ values, currency }) => {
-    const response = await axiosInstance.post(
-      `${ENDPOINTS.LOTS}/${values.id}/buy`,
-      null,
-      {
-        headers: { currency },
-        params: { userId: values.userId },
-      }
-    );
+  async ({ values, currency }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.post(
+        `${ENDPOINTS.LOTS}/${values.id}/buy`,
+        null,
+        {
+          headers: { currency },
+          params: { userId: values.userId },
+        }
+      );
 
-    return response.data;
+      return response.data;
+    } catch (error) {
+      return rejectWithValue({
+        status: error?.response?.status,
+        data: error?.response?.data,
+      });
+    }
   }
 );
 
 export const fetchUserActivityLots = createAsyncThunk(
   'lotList/fetchUserActivityLots',
-  async ({ userId, currency }) => {
-    const response = await axiosInstance.get(`${ENDPOINTS.LOTS}/activity`, {
-      params: { userId },
-      headers: { currency },
-    });
+  async ({ userId, currency }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.get(`${ENDPOINTS.LOTS}/activity`, {
+        params: { userId },
+        headers: { currency },
+      });
 
-    return response.data;
+      return response.data;
+    } catch (error) {
+      return rejectWithValue({
+        status: error?.response?.status,
+        data: error?.response?.data,
+      });
+    }
   }
 );

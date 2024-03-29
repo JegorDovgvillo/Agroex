@@ -1,5 +1,8 @@
+import { useDispatch } from 'react-redux';
 import { Select, MenuItem, FormHelperText, FormControl } from '@mui/material';
 import { Field } from 'formik';
+
+import { deleteError } from '@slices/lotListSlice';
 
 import styles from '@customTextField/customTextField.module.scss';
 
@@ -30,9 +33,12 @@ const CustomSelect = ({
   handleChange = null,
   setFieldValue,
 }) => {
+  const dispatch = useDispatch();
+
   const handleSelectChange = (e) => {
     setFieldValue(name, e.target.value);
     handleChange && handleChange(e.target.value);
+    errors && dispatch(deleteError(name));
   };
 
   return (

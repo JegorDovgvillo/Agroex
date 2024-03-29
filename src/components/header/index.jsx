@@ -13,7 +13,7 @@ const Header = () => {
   return (
     <header className={styles.header}>
       <div className={styles.wrapp}>
-        <NavLink to="/" className={styles.link}>
+        <NavLink to={'/'} className={styles.link}>
           <div>
             <img src={AgroexLogo} alt="Agroex Logo" />
           </div>

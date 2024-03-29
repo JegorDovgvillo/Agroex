@@ -4,55 +4,39 @@ import {
   createSelector,
 } from '@reduxjs/toolkit';
 
-import { fetchTags, updateTag, createTag } from '@thunks/fetchTags';
+import { fetchTags } from '@thunks/fetchTags';
 
 const tagsAdapter = createEntityAdapter();
+const stateId = 'tags';
 
 const initialState = tagsAdapter.getInitialState({
-  loadingStatus: 'idle',
+  stateId,
+  loadingStatus: null,
+  errors: null,
 });
 
 const tagsSlice = createSlice({
-  name: 'tags',
+  name: stateId,
   initialState,
 
   extraReducers: (builder) => {
     builder
       .addCase(fetchTags.pending, (state) => {
-        state.loadingStatus = 'pending';
+        state.errors = null;
+        state.loadingStatus = true;
       })
       .addCase(fetchTags.fulfilled, (state, action) => {
-        state.loadingStatus = 'fulfilled';
+        state.loadingStatus = false;
         tagsAdapter.addMany(state, action.payload);
       })
-      .addCase(fetchTags.rejected, (state) => {
-        state.loadingStatus = 'rejected';
-      })
-
-      .addCase(updateTag.pending, (state) => {
-        state.loadingStatus = 'pending';
-      })
-      .addCase(updateTag.fulfilled, (state, action) => {
-        state.loadingStatus = 'fulfilled';
-        tagsAdapter.upsertOne(state, action.payload);
-      })
-      .addCase(updateTag.rejected, (state) => {
-        state.loadingStatus = 'rejected';
-      })
-      .addCase(createTag.pending, (state) => {
-        state.loadingStatus = 'pending';
-      })
-      .addCase(createTag.fulfilled, (state, action) => {
-        state.loadingStatus = 'fulfilled';
-        tagsAdapter.setOne(state, action.payload);
-      })
-      .addCase(createTag.rejected, (state) => {
-        state.loadingStatus = 'rejected';
+      .addCase(fetchTags.rejected, (state, action) => {
+        state.loadingStatus = false;
+        state.errors = action.payload;
       });
   },
 });
 
-const { reducer } = tagsSlice;
+const { reducer, actions } = tagsSlice;
 
 const { selectAll } = tagsAdapter.getSelectors((state) => state.tags);
 

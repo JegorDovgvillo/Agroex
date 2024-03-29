@@ -7,20 +7,19 @@ import {
 import { fetchPlaceBet, fetchBetsByLotId } from '@thunks/fetchBets';
 
 const betsAdapter = createEntityAdapter();
+const stateId = 'bets';
 
 const initialState = betsAdapter.getInitialState({
-  loadingStatus: 'idle',
-  placeBetLoadingStatus: 'idle',
+  stateId,
+  loadingStatus: null,
   newBet: null,
+  errors: null,
 });
 
 const betsSlice = createSlice({
-  name: 'bets',
+  name: stateId,
   initialState,
   reducers: {
-    clearPlaceBetLoadingStatus: (state) => {
-      state.placeBetLoadingStatus = 'idle';
-    },
     setNewBet: (state, action) => {
       state.newBet = action.payload;
     },
@@ -28,31 +27,35 @@ const betsSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchPlaceBet.pending, (state) => {
-        state.placeBetLoadingStatus = 'pending';
+        state.errors = null;
+        state.loadingStatus = true;
       })
       .addCase(fetchPlaceBet.fulfilled, (state, action) => {
-        state.placeBetLoadingStatus = 'fulfilled';
+        state.loadingStatus = false;
         betsAdapter.setOne(state, action.payload);
       })
-      .addCase(fetchPlaceBet.rejected, (state) => {
-        state.placeBetLoadingStatus = 'rejected';
+      .addCase(fetchPlaceBet.rejected, (state, action) => {
+        state.loadingStatus = false;
+        state.errors = action.payload;
       })
       .addCase(fetchBetsByLotId.pending, (state) => {
-        state.loadingStatus = 'pending';
+        state.errors = null;
+        state.loadingStatus = true;
       })
       .addCase(fetchBetsByLotId.fulfilled, (state, action) => {
-        state.loadingStatus = 'fulfilled';
+        state.loadingStatus = false;
         betsAdapter.setMany(state, action.payload);
       })
-      .addCase(fetchBetsByLotId.rejected, (state) => {
-        state.loadingStatus = 'rejected';
+      .addCase(fetchBetsByLotId.rejected, (state, action) => {
+        state.loadingStatus = false;
+        state.errors = action.payload;
       });
   },
 });
 
 const { actions, reducer } = betsSlice;
 
-export const { clearPlaceBetLoadingStatus, setNewBet } = actions;
+export const { setNewBet } = actions;
 
 const { selectAll } = betsAdapter.getSelectors((state) => state.bets);
 

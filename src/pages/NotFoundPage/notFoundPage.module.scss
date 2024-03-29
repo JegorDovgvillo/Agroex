@@ -1,0 +1,26 @@
+.pageWrapper {
+  display: flex;
+
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    row-gap: 40px;
+    padding: 40px;
+
+    .title {
+      text-align: center;
+    }
+  }
+
+  @media screen and (max-width: 1400px) {
+    flex-direction: column-reverse;
+  }
+
+  @media screen and (max-width: 850px) {
+    img {
+      width: 700px;
+    }
+  }
+}

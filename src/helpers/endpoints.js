@@ -3,7 +3,6 @@ export const IMAGE_URL = import.meta.env.VITE_BASE_IMAGE_URL;
 export const MAP_URL = import.meta.env.VITE_MAP_URL;
 
 const ENDPOINTS = {
-  IMAGES: '/images',
   LOTS: '/lots',
   LOTS_DETAILS: '/lots/details',
   USERS: '/users',

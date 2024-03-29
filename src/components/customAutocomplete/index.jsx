@@ -1,6 +1,10 @@
+import { useDispatch } from 'react-redux';
+
 import Autocomplete from '@mui/material/Autocomplete';
 import { TextField } from '@mui/material';
 import { Field } from 'formik';
+
+import { deleteError } from '@slices/lotListSlice';
 
 import styles from '../customTextField/customTextField.module.scss';
 
@@ -20,10 +24,21 @@ const CustomAutocompleteField = ({
   options,
   setFieldValue,
 }) => {
+  const dispatch = useDispatch();
   const isError = !!errors && !!touched;
 
+  const handleChange = (newValue) => {
+    setFieldValue(name, newValue);
+
+    if (errors && name === 'subcategory') {
+      dispatch(deleteError('subcategory'));
+    }
+
+    errors && dispatch(deleteError(name));
+  };
+
   return (
-    <div className={styles.wrapp}>
+    <div className={styles.wrappAutocomplete}>
       <label htmlFor={id}>{label}</label>
       <Autocomplete
         freeSolo
@@ -32,10 +47,7 @@ const CustomAutocompleteField = ({
         options={options.map((option) => option.title)}
         value={value}
         name={name}
-        onChange={(event, newValue) => {
-          setFieldValue(name, newValue);
-        }}
-        sx={{ width: '100%' }}
+        onChange={(event, newValue) => handleChange(newValue)}
         renderInput={(params) => (
           <Field
             as={TextField}

@@ -166,6 +166,7 @@ const Filters = ({
               required={false}
               fieldType="filterInput"
               value={values.keyword}
+              setFieldValue={setFieldValue}
             />
             <div className={styles.inputWrapp}>
               <CustomTextField
@@ -177,6 +178,7 @@ const Filters = ({
                 fieldType="filterInput"
                 type="number"
                 value={values.minQuantity}
+                setFieldValue={setFieldValue}
               />
               <CustomTextField
                 placeholder="Max quantity"
@@ -187,6 +189,7 @@ const Filters = ({
                 fieldType="filterInput"
                 type="number"
                 value={values.maxQuantity}
+                setFieldValue={setFieldValue}
               />
             </div>
             <div className={styles.inputWrapp}>
@@ -199,6 +202,7 @@ const Filters = ({
                 fieldType="filterInput"
                 type="number"
                 value={values.minPrice}
+                setFieldValue={setFieldValue}
               />
               <CustomTextField
                 placeholder="Max price"
@@ -209,6 +213,7 @@ const Filters = ({
                 fieldType="filterInput"
                 type="number"
                 value={values.maxPrice}
+                setFieldValue={setFieldValue}
               />
             </div>
             <CustomMultiSelect

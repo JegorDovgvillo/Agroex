@@ -73,32 +73,14 @@ export const tagsFieldValidationSchema = (min, max) => {
 };
 
 export const getPasswordFieldValidationSchema = () => {
+  const passwordErrorMessage =
+    'Password should be at least 8 characters long and should contain at least one lowercase and one uppercase Latin alphabet letters, one digit and one special character';
   const commonSchema = string()
     .required(requiredMessage)
-    .test(
-      'contains-digit',
-      'Password should contain at least one digit',
-      (value) => /\d/.test(value)
-    )
-    .test(
-      'contains-lowercase',
-      'Password should contain at least one lowercase letter',
-      (value) => /[a-z]/.test(value)
-    )
-    .test(
-      'contains-uppercase',
-      'Password should contain at least one uppercase letter',
-      (value) => /[A-Z]/.test(value)
-    )
-    .test(
-      'contains-special-characters',
-      'Password should contain at least one special character',
-      (value) => /[!@#$%^&*\/(),.?":{}|<>]/.test(value)
-    )
-    .test(
-      'is-long-enough',
-      'Password should be at least 8 characters long',
-      (value) => value.length >= 8
+    .test('password', passwordErrorMessage, (value) =>
+      /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*\/(),.?":{}|<>]).{8,}$/.test(
+        value
+      )
     );
 
   return commonSchema;

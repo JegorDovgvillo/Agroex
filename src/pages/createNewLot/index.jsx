@@ -6,53 +6,54 @@ import _ from 'lodash';
 import { fetchAllCategories } from '@thunks/fetchCategories';
 import { fetchCountries } from '@thunks/fetchCountries';
 import { fetchTags } from '@thunks/fetchTags';
-import { createLot } from '@thunks/fetchLots';
 
 import { tagsSelector } from '@slices/tagsSlice';
-import {
-  toggleModal,
-  selectModal,
-  setModalFields,
-  clearModalsFields,
-} from '@slices/modalSlice';
 import { selectRootCategories } from '@slices/categoriesSlice';
 import { countrySelector } from '@slices/countriesSlice';
-import { clearStatus } from '@slices/lotListSlice';
 import { getSelectedCurrency } from '@slices/currencySlice';
 
+import { useLoadedWithoutErrorsSelector } from '@selectors';
+
 import LotForm from '@components/lotForm';
+import ROUTES from '@helpers/routeNames';
+import { useCreateLot } from '@helpers/customHooks/lotsHooks';
 
 const MAXIMUM_NUMBER_OF_IMG = import.meta.env.VITE_MAXIMUM_NUMBER_OF_IMG;
+const { NOT_FOUND } = ROUTES;
 
 const CreateNewLot = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const createLot = useCreateLot();
   const categories = useSelector(selectRootCategories);
-  const country = useSelector(countrySelector);
+  const countries = useSelector(countrySelector);
   const tags = useSelector(tagsSelector);
   const userId = useSelector((state) => state.usersList.userInfo);
   const selectedCountry = useSelector(
     (state) => state.countries.markerCoordinate
   );
-  const createLotStatus = useSelector((state) => state.lotList.createLotStatus);
-  const customSnackbarData = useSelector((state) =>
-    selectModal(state, 'snackbar')
-  );
   const selectedCurrency = useSelector(getSelectedCurrency);
+  const { loadingStatus, errors } = useSelector((state) => state.lotList);
 
   const [markerCoordinate, setMarkerCoordinate] = useState(null);
   const [files, setFiles] = useState([]);
   const [disabled, setDisabled] = useState(false);
   const [maxFilesPerDrop, setMaxFilesPerDrop] = useState(MAXIMUM_NUMBER_OF_IMG);
+  const [isDataLoaded, setIsDataLoaded] = useState(null);
 
-  const dispatch = useDispatch();
+  const isDataFetched = useLoadedWithoutErrorsSelector([
+    'categories',
+    'tags',
+    'countries',
+  ]);
 
   useEffect(() => {
     dispatch(fetchAllCategories());
-    dispatch(fetchCountries({ existed: false }));
     dispatch(fetchTags());
+    dispatch(fetchCountries({ existed: false }));
   }, [dispatch]);
 
-  const handleSubmitClick = async (values, resetForm) => {
+  const handleSubmitClick = async (values) => {
     const formData = new FormData();
 
     const subcategory =
@@ -68,13 +69,13 @@ const CreateNewLot = () => {
       packaging: values.packaging,
       duration: values.duration,
       quantity: values.quantity,
-      originalPrice: values.price,
-      originalMinPrice: values.minPrice,
-      originalCurrency: values.priceUnits,
+      originalPrice: values.originalPrice,
+      originalMinPrice: values.originalMinPrice,
+      originalCurrency: values.originalCurrency,
       expirationDate: values.expirationDate,
       productCategory: {
         ...subcategory,
-        parentId: values.category,
+        parentId: values.productCategory,
       },
       lotType: values.lotType,
       userId: userId.sub,
@@ -93,45 +94,26 @@ const CreateNewLot = () => {
 
     formData.append('data', JSON.stringify(lotData));
 
-    dispatch(createLot({ formData, currency: selectedCurrency }));
-    setFiles([]);
-    resetForm();
+    createLot({ formData, currency: selectedCurrency });
   };
 
   useEffect(() => {
-    if (createLotStatus === 'fulfilled') {
-      dispatch(
-        setModalFields({
-          modalId: 'snackbar',
-          message: 'Your lot has been successfully added',
-          severity: 'success',
-        })
-      );
-      dispatch(toggleModal('snackbar'));
-    }
-  }, [createLotStatus]);
+    if (!isDataFetched) return;
 
-  useEffect(() => {
-    const { isOpen, message } = customSnackbarData;
+    const isNoEmptyData = _.every(
+      [categories, countries, tags],
+      (item) => !_.isEmpty(item)
+    );
 
-    if (!isOpen && message) {
-      navigate(-1);
-      dispatch(clearModalsFields('snackbar'));
-      dispatch(clearStatus('createLotStatus'));
-    }
-  }, [customSnackbarData]);
-
-  const isDataLoaded = _.every(
-    [categories, country, tags],
-    (arr) => !_.isEmpty(arr)
-  );
+    isNoEmptyData ? setIsDataLoaded(isNoEmptyData) : navigate(`/${NOT_FOUND}`);
+  }, [categories, tags, countries, isDataFetched]);
 
   return (
     <>
       {isDataLoaded && (
         <LotForm
           handleSubmitClick={handleSubmitClick}
-          country={country}
+          country={countries}
           categories={categories}
           formType="create"
           files={files}

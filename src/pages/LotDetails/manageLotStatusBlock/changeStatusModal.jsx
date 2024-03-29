@@ -17,7 +17,7 @@ import { CustomButton } from '@buttons/CustomButton';
 import { toggleModal, setModalFields, selectModal } from '@slices/modalSlice';
 import { getSelectedCurrency } from '@slices/currencySlice';
 
-import { handleChangeLotStatusByAdmin } from '@helpers/lotHandlers';
+import { useChangeLotStatusByAdmin } from '@helpers/customHooks/lotsHooks';
 
 import styles from './manageLotStatusBlock.module.scss';
 
@@ -42,6 +42,7 @@ const getStatusSelectOptions = (params) => {
 
 export const ChangeStatusModal = (props) => {
   const dispatch = useDispatch();
+  const changeLotStatusByAdmin = useChangeLotStatusByAdmin();
   const { onClose, value: valueProp, isOpen, lot } = props;
   const [value, setValue] = useState(valueProp);
   const radioGroupRef = useRef(null);
@@ -94,8 +95,7 @@ export const ChangeStatusModal = (props) => {
       dispatch(toggleModal('adminMessageModal'));
     } else {
       onClose(value);
-      handleChangeLotStatusByAdmin({
-        dispatch,
+      changeLotStatusByAdmin({
         lotId: lot.id,
         status: _.camelCase(value),
         adminMessage: null,
@@ -109,8 +109,7 @@ export const ChangeStatusModal = (props) => {
 
     if (value === 'rejected' && adminMessage) {
       onClose(value);
-      handleChangeLotStatusByAdmin({
-        dispatch,
+      changeLotStatusByAdmin({
         lotId: lot.id,
         status: value,
         adminMessage: adminMessage,

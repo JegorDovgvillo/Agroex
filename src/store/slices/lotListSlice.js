@@ -4,6 +4,8 @@ import {
   createSelector,
 } from '@reduxjs/toolkit';
 
+import _ from 'lodash';
+
 import {
   fetchLots,
   fetchLotDetails,
@@ -19,143 +21,183 @@ import {
 } from '@thunks/fetchLots';
 
 const lotListAdapter = createEntityAdapter();
+const stateId = 'lotList';
 
 const initialState = lotListAdapter.getInitialState({
-  loadingStatus: 'idle',
-  changeLotLoadingStatus: 'idle',
-  createLotStatus: 'idle',
+  stateId,
+  loadingStatus: null,
   lotId: null,
   errors: null,
 });
 
 const lotListSlice = createSlice({
-  name: 'lotList',
+  name: stateId,
   initialState,
   reducers: {
     setLotId: (state, action) => {
       state.lotId = action.payload;
     },
+    clearLots: (state) => {
+      lotListAdapter.removeAll(state);
+      state.loadingStatus = false;
+    },
+
+    clearStatus: (state, action) => {
+      state[action.payload] = false;
+    },
+    deleteError: (state, action) => {
+      if (!state.errors) return;
+
+      state.loadingStatus = true;
+
+      state.errors.data.errors = _.omit(
+        state.errors.data.errors,
+        action.payload
+      );
+
+      if (_.isEmpty(state.errors.data.errors)) {
+        state.errors = null;
+      }
+    },
     clearErrors: (state) => {
       state.errors = null;
-    },
-    clearStatus: (state, action) => {
-      state[action.payload] = 'idle';
     },
   },
   extraReducers: (builder) => {
     builder
       .addCase(fetchLots.pending, (state) => {
-        state.loadingStatus = 'pending';
+        state.errors = null;
+        state.loadingStatus = true;
       })
       .addCase(fetchLots.fulfilled, (state, action) => {
-        state.loadingStatus = 'fulfilled';
+        state.loadingStatus = false;
         lotListAdapter.addMany(state, action.payload);
       })
-      .addCase(fetchLots.rejected, (state) => {
-        state.loadingStatus = 'rejected';
+      .addCase(fetchLots.rejected, (state, action) => {
+        state.loadingStatus = false;
+        state.errors = action.payload;
       })
       .addCase(updateLot.pending, (state) => {
-        state.loadingStatus = 'pending';
+        state.errors = null;
+        state.loadingStatus = true;
       })
       .addCase(updateLot.fulfilled, (state, action) => {
-        state.loadingStatus = 'fulfilled';
+        state.loadingStatus = false;
         lotListAdapter.upsertOne(state, action.payload);
       })
-      .addCase(updateLot.rejected, (state) => {
-        state.loadingStatus = 'rejected';
+      .addCase(updateLot.rejected, (state, action) => {
+        state.loadingStatus = false;
+        state.errors = action.payload;
       })
       .addCase(fetchLotDetails.pending, (state) => {
-        state.loadingStatus = 'pending';
+        state.errors = null;
+        state.loadingStatus = true;
       })
       .addCase(fetchLotDetails.fulfilled, (state, action) => {
         lotListAdapter.setOne(state, action.payload);
-        state.loadingStatus = 'fulfilled';
+        state.loadingStatus = false;
       })
-      .addCase(fetchLotDetails.rejected, (state) => {
-        state.loadingStatus = 'rejected';
+      .addCase(fetchLotDetails.rejected, (state, action) => {
+        state.loadingStatus = false;
+        state.errors = action.payload;
       })
       .addCase(deleteLot.pending, (state) => {
-        state.loadingStatus = 'pending';
+        state.errors = null;
+        state.loadingStatus = true;
       })
       .addCase(deleteLot.fulfilled, (state, action) => {
         const { id } = action.meta.arg;
 
         lotListAdapter.removeOne(state, id);
-        state.loadingStatus = 'fulfilled';
+        state.loadingStatus = false;
       })
-      .addCase(deleteLot.rejected, (state) => {
-        state.loadingStatus = 'rejected';
+      .addCase(deleteLot.rejected, (state, action) => {
+        state.loadingStatus = false;
+        state.errors = action.payload;
       })
       .addCase(createLot.pending, (state) => {
-        state.createLotStatus = 'pending';
+        state.errors = null;
+        state.loadingStatus = true;
       })
       .addCase(createLot.fulfilled, (state, action) => {
         lotListAdapter.addOne(state, action.payload);
-        state.createLotStatus = 'fulfilled';
+        state.loadingStatus = false;
       })
-      .addCase(createLot.rejected, (state) => {
-        state.createLotStatus = 'rejected';
+      .addCase(createLot.rejected, (state, action) => {
+        state.loadingStatus = false;
+        state.errors = action.payload;
       })
       .addCase(filteredLots.pending, (state) => {
-        state.loadingStatus = 'pending';
+        state.errors = null;
+        state.loadingStatus = true;
       })
       .addCase(filteredLots.fulfilled, (state, action) => {
         lotListAdapter.setAll(state, action.payload);
-        state.loadingStatus = 'fulfilled';
+        state.loadingStatus = false;
       })
-      .addCase(filteredLots.rejected, (state) => {
-        state.loadingStatus = 'rejected';
+      .addCase(filteredLots.rejected, (state, action) => {
+        state.loadingStatus = false;
+        state.errors = action.payload;
       })
       .addCase(changeLotStatusByUser.pending, (state) => {
-        state.loadingStatus = 'pending';
+        state.errors = null;
+        state.loadingStatus = true;
       })
       .addCase(changeLotStatusByUser.fulfilled, (state, action) => {
         lotListAdapter.setOne(state, action.payload);
-        state.loadingStatus = 'fulfilled';
+        state.loadingStatus = false;
       })
-      .addCase(changeLotStatusByUser.rejected, (state) => {
-        state.loadingStatus = 'rejected';
+      .addCase(changeLotStatusByUser.rejected, (state, action) => {
+        state.loadingStatus = false;
+        state.errors = action.payload;
       })
       .addCase(changeLotStatusByAdmin.pending, (state) => {
-        state.changeLotLoadingStatus = 'pending';
+        state.errors = null;
+        state.loadingStatus = true;
       })
       .addCase(changeLotStatusByAdmin.fulfilled, (state, action) => {
         lotListAdapter.upsertOne(state, action.payload);
-        state.changeLotLoadingStatus = 'fulfilled';
+        state.loadingStatus = false;
       })
       .addCase(changeLotStatusByAdmin.rejected, (state, action) => {
-        state.changeLotLoadingStatus = 'rejected';
+        state.loadingStatus = false;
         state.errors = action.payload;
       })
       .addCase(getFilteredLots.pending, (state) => {
-        state.loadingStatus = 'pending';
+        state.errors = null;
+        state.loadingStatus = true;
       })
       .addCase(getFilteredLots.fulfilled, (state, action) => {
         lotListAdapter.setAll(state, action.payload);
-        state.loadingStatus = 'fulfilled';
+        state.loadingStatus = false;
       })
-      .addCase(getFilteredLots.rejected, (state) => {
-        state.loadingStatus = 'rejected';
+      .addCase(getFilteredLots.rejected, (state, action) => {
+        state.loadingStatus = false;
+        state.errors = action.payload;
       })
       .addCase(fetchDeal.pending, (state) => {
-        state.loadingStatus = 'pending';
+        state.errors = null;
+        state.loadingStatus = true;
       })
       .addCase(fetchDeal.fulfilled, (state, action) => {
         lotListAdapter.upsertOne(state, action.payload);
-        state.loadingStatus = 'fulfilled';
+        state.loadingStatus = false;
       })
-      .addCase(fetchDeal.rejected, (state) => {
-        state.loadingStatus = 'rejected';
+      .addCase(fetchDeal.rejected, (state, action) => {
+        state.loadingStatus = false;
+        state.errors = action.payload;
       })
       .addCase(fetchUserActivityLots.pending, (state) => {
-        state.loadingStatus = 'pending';
+        state.errors = null;
+        state.loadingStatus = true;
       })
       .addCase(fetchUserActivityLots.fulfilled, (state, action) => {
         lotListAdapter.setAll(state, action.payload);
-        state.loadingStatus = 'fulfilled';
+        state.loadingStatus = false;
       })
-      .addCase(fetchUserActivityLots.rejected, (state) => {
-        state.loadingStatus = 'rejected';
+      .addCase(fetchUserActivityLots.rejected, (state, action) => {
+        state.loadingStatus = false;
+        state.errors = action.payload;
       });
   },
 });
@@ -171,6 +213,7 @@ export const { selectById: selectLotDetailById } = lotListAdapter.getSelectors(
 );
 
 const { actions, reducer } = lotListSlice;
-export const { setLotId, clearErrors, clearStatus } = actions;
+export const { setLotId, clearLots, clearStatus, deleteError, clearErrors } =
+  actions;
 
 export default reducer;

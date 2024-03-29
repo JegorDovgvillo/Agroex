@@ -19,6 +19,7 @@ export default defineConfig({
       '@store': '/src/store',
       '@thunks': '/src/store/thunks',
       '@slices': '/src/store/slices',
+      '@selectors': '/src/store/selectors',
     },
   },
 });

@@ -1,0 +1,21 @@
+@import "@scss/colorVariables.module.scss";
+
+.alert {
+  width: 100%;
+
+  &.error {
+    background-color: #fdece9;
+  }
+
+  &.info {
+    background-color: $systemExtraLight;
+  }
+
+  &.success {
+    background-color: $successExtraLight;
+  }
+
+  &.warning {
+    background-color: $warningExtraLight;
+  }
+}

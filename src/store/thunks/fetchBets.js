@@ -17,16 +17,26 @@ export const fetchPlaceBet = createAsyncThunk(
 
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue({
+        status: error?.response?.status,
+        data: error?.response?.data,
+      });
     }
   }
 );
 
 export const fetchBetsByLotId = createAsyncThunk(
   'bets/fetchBetsByLotId',
-  async ({ id }) => {
-    const response = await axiosInstance.get(`${ENDPOINTS.BETS}/${id}`);
+  async ({ id }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.get(`${ENDPOINTS.BETS}/${id}`);
 
-    return response.data;
+      return response.data;
+    } catch (error) {
+      return rejectWithValue({
+        status: error?.response?.status,
+        data: error?.response?.data,
+      });
+    }
   }
 );

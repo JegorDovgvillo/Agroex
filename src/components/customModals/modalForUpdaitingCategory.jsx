@@ -11,7 +11,7 @@ import { toggleModal } from '@slices/modalSlice';
 import { selectModalState } from '@slices/modalSlice';
 import { selectCategoryById } from '@slices/categoriesSlice';
 
-import ENDPOINTS, { IMAGE_URL } from '@helpers/endpoints';
+import { IMAGE_URL } from '@helpers/endpoints';
 import { categoryTitleValidationSchema } from '@helpers/validationSchemes/lotValidationSchemes';
 
 import CustomTextField from '@customTextField';
@@ -69,7 +69,7 @@ const ModalForUpdatingCategory = () => {
     if (file) {
       src = file.preview;
     } else if (categoryFields?.image) {
-      src = `${IMAGE_URL}${ENDPOINTS.IMAGES}/${categoryFields.image}`;
+      src = `${IMAGE_URL}/${categoryFields.image}`;
     }
 
     setImageSrc(src);
@@ -91,7 +91,7 @@ const ModalForUpdatingCategory = () => {
             onSubmit={handleSubmitClick}
             validationSchema={categoryTitleValidationSchema}
           >
-            {({ values, errors, touched, isValid }) => (
+            {({ values, errors, touched, isValid, setFieldValue }) => (
               <Form>
                 <CustomTextField
                   name="title"
@@ -102,6 +102,7 @@ const ModalForUpdatingCategory = () => {
                   errors={errors.title}
                   touched={touched.title}
                   type="modalTextField"
+                  setFieldValue={setFieldValue}
                 />
                 <div className={styles.buttonsWrapp}>
                   <CustomUploadButton

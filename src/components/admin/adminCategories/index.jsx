@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -12,16 +12,23 @@ import AddIcon from '@mui/icons-material/Add';
 
 import { fetchAllCategories } from '@thunks/fetchCategories';
 import { categoriesSelector } from '@slices/categoriesSlice';
-import { toggleModal } from '@slices/modalSlice';
+import {
+  selectModal,
+  toggleModal,
+  clearModalsFields,
+  setModalFields,
+} from '@slices/modalSlice';
 import { setCategoryId } from '@slices/categoriesSlice';
 import { deleteCategory } from '@thunks/fetchCategories';
 
-import ConfirmActionModal from '@customModals/confirmActionModal';
 import ModalForCreatingCategory from '@customModals/modalForCreatingCategory';
 import ModalForUpdatingCategory from '@customModals/modalForUpdaitingCategory';
 
+import { getFetchResultMessages } from '@helpers/getFetchResultMessages';
+
 import styles from '../usersList/usersList.module.scss';
 
+const { successCategoryDelete } = getFetchResultMessages();
 const {
   tableRow,
   userName,
@@ -36,7 +43,10 @@ export default function CategoriesList() {
   const dispatch = useDispatch();
   const categories = useSelector(categoriesSelector);
   const categoryId = useSelector((state) => state.categories.categoryId);
-  const [confirmStatus, setConfirmStatus] = useState(false);
+  const confirmModalData = useSelector((state) =>
+    selectModal(state, 'confirmModal')
+  );
+  const { loading, errors } = useSelector((state) => state.categories);
 
   useEffect(() => {
     dispatch(fetchAllCategories());
@@ -48,16 +58,40 @@ export default function CategoriesList() {
   };
 
   const showConfirm = (id) => {
+    dispatch(
+      setModalFields({
+        modalId: 'confirmModal',
+        text: 'This action delete the category. Do you confirm the action?',
+      })
+    );
     dispatch(toggleModal('confirmModal'));
     dispatch(setCategoryId(id));
   };
 
-  useEffect(() => {
-    if (confirmStatus) {
-      dispatch(deleteCategory({ id: categoryId }));
-      setConfirmStatus(false);
+  const handleDeleteCategory = async (categoryId) => {
+    await dispatch(deleteCategory({ id: categoryId }));
+
+    if (!loading && !errors) {
+      dispatch(
+        setModalFields({
+          modalId: 'snackbar',
+          message: successCategoryDelete,
+          severity: 'success',
+          isOpen: true,
+        })
+      );
     }
-  }, [confirmStatus, categoryId, dispatch]);
+  };
+
+  useEffect(() => {
+    const { confirmStatus, isOpen } = confirmModalData;
+
+    if (!confirmStatus || isOpen) return;
+
+    dispatch(clearModalsFields('confirmModal'));
+
+    handleDeleteCategory(categoryId);
+  }, [confirmModalData, categoryId, dispatch]);
 
   return (
     <>
@@ -116,10 +150,6 @@ export default function CategoriesList() {
       </Table>
       <ModalForCreatingCategory />
       <ModalForUpdatingCategory />
-      <ConfirmActionModal
-        text="This action delete the category. Do you confirm the action?"
-        setConfirmStatus={setConfirmStatus}
-      />
     </>
   );
 }

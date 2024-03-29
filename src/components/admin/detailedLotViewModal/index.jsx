@@ -1,19 +1,14 @@
-import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import _ from 'lodash';
 
 import { Button, Dialog, DialogActions, DialogContent } from '@mui/material';
 
-import { fetchUser } from '@thunks/fetchUsers';
-import { fetchLotDetails } from '@thunks/fetchLots';
-import { fetchAllCategories } from '@thunks/fetchCategories';
 import { selectUserById } from '@slices/usersListSlice';
 import { toggleModal, selectModalState } from '@slices/modalSlice';
 import { selectLotDetailById } from '@slices/lotListSlice';
 import { categoriesSelector } from '@slices/categoriesSlice';
-import { getSelectedCurrency } from '@slices/currencySlice';
 
 import AdminDetailedLotView from '../adminDetailedLotView';
-import ConfirmActionModal from '@customModals/confirmActionModal';
 
 import styles from './detailedLotViewModal.module.scss';
 
@@ -24,28 +19,9 @@ const DetailedLotViewModal = () => {
   const { lotId } = useSelector((state) => state.lotList);
   const lot = useSelector((state) => selectLotDetailById(state, lotId));
   const open = useSelector((state) => selectModalState(state, 'infoModal'));
-  const { userId } = useSelector((state) => state.usersList);
   const userData = useSelector((state) => selectUserById(state, lot?.userId));
   const userInfo = useSelector((state) => state.usersList.userInfo);
-  const [confirm, setConfirm] = useState(false);
   const categories = useSelector(categoriesSelector);
-  const selectedCurrency = useSelector(getSelectedCurrency);
-
-  useEffect(() => {
-    dispatch(fetchLotDetails(lotId));
-  }, []);
-
-  useEffect(() => {
-    dispatch(fetchLotDetails({ id: lotId, currency: selectedCurrency }));
-    dispatch(fetchUser(userId));
-    dispatch(fetchAllCategories());
-  }, [dispatch, lotId, userId, selectedCurrency]);
-
-  useEffect(() => {
-    if (confirm) {
-      setConfirm(false);
-    }
-  }, [confirm, lot]);
 
   const handleClose = () => {
     dispatch(toggleModal('infoModal'));
@@ -77,11 +53,6 @@ const DetailedLotViewModal = () => {
           </DialogActions>
         </Dialog>
       )}
-      <ConfirmActionModal
-        text="This action changes the lot status. Do you confirm the action?"
-        setConfirmStatus={setConfirm}
-        modalType="confirmNestedModal"
-      />
     </>
   );
 };

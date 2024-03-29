@@ -5,10 +5,7 @@ import { Formik, Form } from 'formik';
 import CloseIcon from '@mui/icons-material/Close';
 
 import { toggleModal, selectModalState } from '@slices/modalSlice';
-import {
-  createCategory,
-  fetchSubcategoryByParentId,
-} from '@thunks/fetchCategories';
+import { fetchSubcategoryByParentId } from '@thunks/fetchCategories';
 
 import {
   selectRootCategories,
@@ -19,6 +16,7 @@ import {
   categoryTitleValidationSchema,
   subcategoryCreationValidationSchema,
 } from '@helpers/validationSchemes/lotValidationSchemes';
+import { useCreateCategory } from '@helpers/customHooks/categoriesHooks';
 
 import CustomSelect from '../customSelect';
 import CustomAutocompleteField from '../customAutocomplete';
@@ -28,6 +26,7 @@ import styles from './infoModal.module.scss';
 
 const ModalForCreatingCategory = () => {
   const dispatch = useDispatch();
+  const createCategory = useCreateCategory();
 
   const initialValues = {
     title: '',
@@ -40,13 +39,15 @@ const ModalForCreatingCategory = () => {
   const [selectedCategoryId, setSelectedCategoryId] = useState(
     initialValues.parentId
   );
-
   const rootCategories = useSelector(selectRootCategories);
+  const subcategories = useSelector((state) =>
+    selectCategoryByParentId(state, selectedCategoryId)
+  );
   const isOpen = useSelector((state) =>
     selectModalState(state, 'creatingModal')
   );
 
-  const handleSubmit = (values, { resetForm }) => {
+  const handleSubmit = async (values, { resetForm }) => {
     const formData = new FormData();
     const data = {
       parentId: values.parentId ? values.parentId : 0,
@@ -55,16 +56,16 @@ const ModalForCreatingCategory = () => {
 
     formData.append('file', file);
     formData.append('data', JSON.stringify(data));
-    dispatch(createCategory({ dataCategory: formData }));
-    dispatch(toggleModal('creatingModal'));
-    setFile(null);
-    setImageSrc(null);
-    resetForm();
-  };
 
-  const subcategories = useSelector((state) =>
-    selectCategoryByParentId(state, selectedCategoryId)
-  );
+    const resultAction = await createCategory({ dataCategory: formData });
+
+    if (resultAction) {
+      dispatch(toggleModal('creatingModal'));
+      setFile(null);
+      setImageSrc(null);
+      resetForm();
+    }
+  };
 
   const closePopup = () => {
     setFile(null);
@@ -150,6 +151,7 @@ const ModalForCreatingCategory = () => {
                   setFieldValue={setFieldValue}
                   options={subcategories}
                   type="modalTextField"
+                  fieldType="modalTextField"
                 />
                 <div className={styles.buttonsWrapp}>
                   <CustomUploadButton

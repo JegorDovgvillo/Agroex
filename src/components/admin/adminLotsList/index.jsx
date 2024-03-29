@@ -18,23 +18,17 @@ import {
   toggleModal,
   selectModalState,
   setModalFields,
-  clearModalsFields,
   selectModal,
 } from '@slices/modalSlice';
-import {
-  lotListSelector,
-  setLotId,
-  clearErrors,
-  clearStatus,
-} from '@slices/lotListSlice';
+import { lotListSelector, setLotId } from '@slices/lotListSlice';
 import { setUserId, usersListSelector } from '@slices/usersListSlice';
 import { getSelectedCurrency } from '@slices/currencySlice';
 
 import getFormattedDate from '@helpers/getFormattedDate';
 import getNumberWithCurrency from '@helpers/getNumberWithCurrency';
 import { getFormattedDuration } from '@helpers/getFormattedDuration';
-import { handleChangeLotStatusByAdmin } from '@helpers/lotHandlers';
 import ROUTES from '@helpers/routeNames';
+import { useChangeLotStatusByAdmin } from '@helpers/customHooks/lotsHooks';
 
 import DetailedLotViewModal from '../detailedLotViewModal';
 import { getTableHead } from './getTableHead';
@@ -111,10 +105,8 @@ export default function AdminLotsList() {
   const confirmModalData = useSelector((state) =>
     selectModal(state, 'confirmModal')
   );
-  const lotListErrors = useSelector((state) => state.lotList.errors);
-  const changeLotLoadingStatus = useSelector(
-    (state) => state.lotList.changeLotLoadingStatus
-  );
+  const changeLotStatusByAdmin = useChangeLotStatusByAdmin();
+
   const selectedCurrency = useSelector(getSelectedCurrency);
 
   const handleRowEditStop = (params, event) => {
@@ -142,9 +134,9 @@ export default function AdminLotsList() {
         setModalFields({
           modalId: 'confirmModal',
           text: 'This action changes the lot status. Do you confirm the action?',
+          isOpen: true,
         })
       );
-      dispatch(toggleModal('confirmModal'));
     }
   };
 
@@ -190,30 +182,42 @@ export default function AdminLotsList() {
       viewDetailsCard
     );
 
-  const fetchChangeLotStatus = () => {
+  const fetchChangeLotStatus = async () => {
     const { adminMessage } = adminMessageModalData;
-    handleChangeLotStatusByAdmin({
-      dispatch,
+    const isLotStatusChanged = await changeLotStatusByAdmin({
       lotId: currLotId,
       status: editedValue,
       adminMessage,
       selectedCurrency,
     });
+
+    if (isLotStatusChanged) {
+      setRowModesModel({
+        ...rowModesModel,
+        [currLotId]: {
+          mode: GridRowModes.View,
+        },
+      });
+    }
   };
 
   useEffect(() => {
-    dispatch(getFilteredLots({ status: 'all' }));
     dispatch(fetchUsers());
   }, [dispatch]);
 
   useEffect(() => {
+    if (!selectedCurrency) return;
+
     dispatch(
-      getFilteredLots({ params: { status: 'all' }, currency: selectedCurrency })
+      getFilteredLots({
+        params: { status: 'all' },
+        currency: selectedCurrency,
+      })
     );
   }, [dispatch, selectedCurrency]);
 
   useEffect(() => {
-    if (lots.length && users.length) {
+    if (_.every([lots, users], (item) => !_.isEmpty(item))) {
       const rows = getInitialRows(lots, users, adminInfo);
       setRows(rows);
     }
@@ -232,25 +236,6 @@ export default function AdminLotsList() {
       fetchChangeLotStatus();
     }
   }, [adminMessageModalData.adminMessage]);
-
-  useEffect(() => {
-    if (changeLotLoadingStatus === 'rejected' && lotListErrors) {
-      dispatch(clearErrors());
-      dispatch(clearStatus('changeLotLoadingStatus'));
-      dispatch(clearModalsFields(['confirmModal', 'adminMessageModal']));
-    }
-
-    if (changeLotLoadingStatus === 'fulfilled') {
-      setRowModesModel({
-        ...rowModesModel,
-        [currLotId]: {
-          mode: GridRowModes.View,
-        },
-      });
-      dispatch(clearStatus('changeLotLoadingStatus'));
-      dispatch(clearModalsFields(['confirmModal', 'adminMessageModal']));
-    }
-  }, [lotListErrors, changeLotLoadingStatus]);
 
   return (
     <>
