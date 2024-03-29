@@ -27,13 +27,13 @@ const NotificationMessage = ({
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [disabled, setDisabled] = useState(false);
+  const [isRead, setIsRead] = useState(false);
 
   const selectedCurrency = useSelector(getSelectedCurrency);
   const userInfo = useSelector((state) => state.usersList.userInfo);
 
-  const isDisabled = disabled ? styles.disabled : styles.active;
-  const buttonText = disabled ? 'Was read' : 'Mark as read';
+  const isDisabled = isRead ? styles.disabled : styles.active;
+  const buttonText = isRead ? 'Was read' : 'Mark as read';
   const messageIcon = getMessageType(messageType);
   const messageTime = getFormattedDate({
     date: sendTime,
@@ -42,7 +42,7 @@ const NotificationMessage = ({
 
   const checkMessage = () => {
     dispatch(markAsRead(id));
-    setDisabled(true);
+    setIsRead(true);
   };
 
   const goToTheLotPage = () => {
@@ -52,7 +52,7 @@ const NotificationMessage = ({
       id: lotId,
     });
 
-    if (buttonText === 'Was read') {
+    if (isRead) {
       dispatch(deleteMessage(id));
     }
 
@@ -76,7 +76,7 @@ const NotificationMessage = ({
             text={buttonText}
             size="M"
             type="secondary"
-            disabled={disabled}
+            disabled={isRead}
           />
           <CustomButton
             handleClick={goToTheLotPage}
