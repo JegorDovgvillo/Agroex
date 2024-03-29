@@ -10,6 +10,8 @@ import {
   getUserFromCognito,
   updateToken,
   changeUserStatus,
+  updateUser,
+  updateUsersInTheDataBase,
 } from '@thunks/fetchUsers';
 
 const usersListAdapter = createEntityAdapter();
@@ -111,6 +113,29 @@ const usersListSlice = createSlice({
         usersListAdapter.upsertOne(state, action.payload);
       })
       .addCase(changeUserStatus.rejected, (state, action) => {
+        state.loadingStatus = false;
+        state.errors = action.payload;
+      })
+      .addCase(updateUser.pending, (state) => {
+        state.errors = null;
+        state.loadingStatus = true;
+      })
+      .addCase(updateUser.fulfilled, (state) => {
+        state.loadingStatus = false;
+      })
+      .addCase(updateUser.rejected, (state, action) => {
+        state.loadingStatus = false;
+        state.errors = action.payload;
+      })
+      .addCase(updateUsersInTheDataBase.pending, (state) => {
+        state.errors = null;
+        state.loadingStatus = true;
+      })
+      .addCase(updateUsersInTheDataBase.fulfilled, (state, action) => {
+        state.loadingStatus = false;
+        usersListAdapter.setAll(state, action.payload);
+      })
+      .addCase(updateUsersInTheDataBase.rejected, (state, action) => {
         state.loadingStatus = false;
         state.errors = action.payload;
       });
