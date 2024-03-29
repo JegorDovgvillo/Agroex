@@ -38,7 +38,6 @@ const CustomSelect = ({
   const handleSelectChange = (e) => {
     setFieldValue(name, e.target.value);
     handleChange && handleChange(e.target.value);
-    console.log(name, errors);
     errors && dispatch(deleteError(name));
   };
 

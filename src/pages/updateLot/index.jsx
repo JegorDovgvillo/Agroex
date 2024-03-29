@@ -160,8 +160,6 @@ const UpdateLot = () => {
       (item) => !_.isEmpty(item)
     );
 
-    console.log('2', !isAllDataLoaded);
-
     isAllDataLoaded
       ? setIsDataLoaded(isAllDataLoaded)
       : navigate(`/${NOT_FOUND}`);

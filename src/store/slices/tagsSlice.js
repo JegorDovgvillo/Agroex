@@ -12,7 +12,6 @@ const stateId = 'tags';
 const initialState = tagsAdapter.getInitialState({
   stateId,
   loadingStatus: null,
-  fetchTagsStatus: false,
   errors: null,
 });
 
@@ -25,16 +24,13 @@ const tagsSlice = createSlice({
       .addCase(fetchTags.pending, (state) => {
         state.errors = null;
         state.loadingStatus = true;
-        state.fetchTagsStatus = true;
       })
       .addCase(fetchTags.fulfilled, (state, action) => {
         state.loadingStatus = false;
-        state.fetchTagsStatus = false;
         tagsAdapter.addMany(state, action.payload);
       })
       .addCase(fetchTags.rejected, (state, action) => {
         state.loadingStatus = false;
-        state.fetchTagsStatus = false;
         state.errors = action.payload;
       });
   },

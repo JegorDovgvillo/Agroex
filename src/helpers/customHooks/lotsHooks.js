@@ -31,11 +31,9 @@ export function useCreateLot() {
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   useEffect(() => {
-    console.log('isSubmitted', isSubmitted);
     if (_.isNull(loadingStatus) || !isSubmitted) return;
 
     if (!loadingStatus && !errors) {
-      console.log(!loadingStatus && !errors);
       dispatch(
         setModalFields({
           modalId: 'snackbar',
@@ -64,7 +62,6 @@ export function useUpdateLot() {
     if (_.isNull(loadingStatus) || !isSubmitted) return;
 
     if (!loadingStatus && !errors) {
-      console.log('55555');
       dispatch(
         setModalFields({
           modalId: 'snackbar',

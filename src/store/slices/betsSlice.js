@@ -12,7 +12,6 @@ const stateId = 'bets';
 const initialState = betsAdapter.getInitialState({
   stateId,
   loadingStatus: null,
-  placeBetLoadingStatus: false,
   newBet: null,
   errors: null,
 });
@@ -21,9 +20,6 @@ const betsSlice = createSlice({
   name: stateId,
   initialState,
   reducers: {
-    clearPlaceBetLoadingStatus: (state) => {
-      state.placeBetLoadingStatus = false;
-    },
     setNewBet: (state, action) => {
       state.newBet = action.payload;
     },
@@ -32,16 +28,13 @@ const betsSlice = createSlice({
     builder
       .addCase(fetchPlaceBet.pending, (state) => {
         state.errors = null;
-        state.placeBetLoadingStatus = true;
         state.loadingStatus = true;
       })
       .addCase(fetchPlaceBet.fulfilled, (state, action) => {
-        state.placeBetLoadingStatus = false;
         state.loadingStatus = false;
         betsAdapter.setOne(state, action.payload);
       })
       .addCase(fetchPlaceBet.rejected, (state, action) => {
-        state.placeBetLoadingStatus = false;
         state.loadingStatus = false;
         state.errors = action.payload;
       })
@@ -62,7 +55,7 @@ const betsSlice = createSlice({
 
 const { actions, reducer } = betsSlice;
 
-export const { clearPlaceBetLoadingStatus, setNewBet } = actions;
+export const { setNewBet } = actions;
 
 const { selectAll } = betsAdapter.getSelectors((state) => state.bets);
 

@@ -38,7 +38,7 @@ const CustomAutocompleteField = ({
   };
 
   return (
-    <div className={styles.wrapp}>
+    <div className={styles.wrappAutocomplete}>
       <label htmlFor={id}>{label}</label>
       <Autocomplete
         freeSolo

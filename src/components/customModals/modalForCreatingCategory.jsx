@@ -151,6 +151,7 @@ const ModalForCreatingCategory = () => {
                   setFieldValue={setFieldValue}
                   options={subcategories}
                   type="modalTextField"
+                  fieldType="modalTextField"
                 />
                 <div className={styles.buttonsWrapp}>
                   <CustomUploadButton

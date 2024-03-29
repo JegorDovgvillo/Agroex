@@ -46,7 +46,6 @@ const lotListSlice = createSlice({
       state[action.payload] = false;
     },
     deleteError: (state, action) => {
-      console.log('state', state.errors);
       if (!state.errors) return;
 
       state.loadingStatus = true;
@@ -126,7 +125,6 @@ const lotListSlice = createSlice({
       })
       .addCase(createLot.rejected, (state, action) => {
         state.loadingStatus = false;
-        console.log(action);
         state.errors = action.payload;
       })
       .addCase(filteredLots.pending, (state) => {
