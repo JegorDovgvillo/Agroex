@@ -80,9 +80,9 @@ const Layout = () => {
   }, [userInfo]);
 
   useEffect(() => {
-    const { isOpen, message } = customSnackbarData;
+    const { isOpen, message, title } = customSnackbarData;
 
-    if (!isOpen && message) {
+    if (!isOpen && (message || title)) {
       dispatch(clearModalsFields('snackbar'));
     }
   }, [customSnackbarData]);

@@ -36,6 +36,7 @@ import { getTableHead } from './getTableHead';
 import styles from './adminLotsList.module.scss';
 
 const { container, editingRow } = styles;
+const { LOTS_DETAILS, NOT_FOUND } = ROUTES;
 
 const getFormattedString = (str) => {
   return _.words(_.startCase(str)).join(' ').toLowerCase();
@@ -82,6 +83,7 @@ export default function AdminLotsList() {
   const dispatch = useDispatch();
   const lots = useSelector(lotListSelector);
   const users = useSelector(usersListSelector);
+  const loadingStatus = useSelector((state) => state.lotList.loadingStatus);
   const adminInfo = useSelector((state) => state.usersList.userInfo);
   const [currLotId, setCurrLotId] = useState(null);
   const [rows, setRows] = useState([]);
@@ -162,7 +164,7 @@ export default function AdminLotsList() {
   };
 
   const viewDetailsCard = (lotId) => {
-    const path = generatePath(ROUTES.LOTS_DETAILS, {
+    const path = generatePath(LOTS_DETAILS, {
       id: lotId,
     });
 
@@ -201,27 +203,48 @@ export default function AdminLotsList() {
     }
   };
 
-  useEffect(() => {
-    dispatch(fetchUsers());
-  }, [dispatch]);
+  const getUsers = async () => {
+    const resultAction = await dispatch(fetchUsers());
 
-  useEffect(() => {
-    if (!selectedCurrency) return;
+    console.log(resultAction);
+    if (resultAction.error) {
+      navigate(NOT_FOUND);
+    }
+  };
 
-    dispatch(
+  const getLots = async () => {
+    const resultAction = await dispatch(
       getFilteredLots({
         params: { status: 'all' },
         currency: selectedCurrency,
       })
     );
+
+    if (resultAction.error) {
+      navigate(NOT_FOUND);
+    }
+  };
+
+  useEffect(() => {
+    getUsers();
+  }, []);
+
+  useEffect(() => {
+    if (!selectedCurrency) return;
+
+    getLots();
   }, [dispatch, selectedCurrency]);
 
   useEffect(() => {
+    if (_.isEmpty(lots) && loadingStatus === false) {
+      navigate(NOT_FOUND);
+    }
+
     if (_.every([lots, users], (item) => !_.isEmpty(item))) {
       const rows = getInitialRows(lots, users, adminInfo);
       setRows(rows);
     }
-  }, [lots, users]);
+  }, [loadingStatus, lots, users, adminInfo]);
 
   useEffect(() => {
     if (confirmModalData.confirmStatus) {
@@ -237,6 +260,7 @@ export default function AdminLotsList() {
     }
   }, [adminMessageModalData.adminMessage]);
 
+  console.log(rows);
   return (
     <>
       {rows && (
