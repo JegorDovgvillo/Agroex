@@ -40,9 +40,9 @@ const sseSlice = createSlice({
       state.messages = updatedMessages;
     },
     markAsReadFromLotId: (state, action) => {
-      const messageId = action.payload;
+      const lotId = action.payload;
       const updatedMessages = state.messages.map((message) => {
-        if (message.lotId === Number(messageId)) {
+        if (message.lotId === Number(lotId)) {
           return { ...message, readStatus: 'read' };
         }
 
