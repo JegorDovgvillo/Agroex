@@ -16,6 +16,7 @@ import { categoryTitleValidationSchema } from '@helpers/validationSchemes/lotVal
 
 import CustomTextField from '@customTextField';
 import CustomUploadButton from '../customUploadButton';
+import { CustomButton } from '@buttons/CustomButton';
 
 import bannerImage from '@assets/images/banner.png';
 
@@ -104,16 +105,25 @@ const ModalForUpdatingCategory = () => {
                   type="modalTextField"
                   setFieldValue={setFieldValue}
                 />
-                <div className={styles.buttonsWrapp}>
-                  <CustomUploadButton
-                    file={file}
-                    setFile={setFile}
-                    imageSrc={imageSrc}
-                    setImageSrc={setImageSrc}
-                    isValid={isValid}
-                    buttonName="Update"
+                {categoryFields.parentId !== 0 ? (
+                  <div className={styles.buttonsWrapp}>
+                    <CustomUploadButton
+                      file={file}
+                      setFile={setFile}
+                      imageSrc={imageSrc}
+                      setImageSrc={setImageSrc}
+                      isValid={isValid}
+                      buttonName="Update"
+                    />
+                  </div>
+                ) : (
+                  <CustomButton
+                    disabled={!isValid}
+                    text="Update"
+                    width="210px"
+                    typeOfButton="submit"
                   />
-                </div>
+                )}
               </Form>
             )}
           </Formik>

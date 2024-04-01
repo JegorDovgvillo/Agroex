@@ -27,11 +27,41 @@ const sseSlice = createSlice({
     clearMessages: (state) => {
       state.messages = [];
     },
+    markAMessageAsRead: (state, action) => {
+      const messageId = action.payload;
+      const updatedMessages = state.messages.map((message) => {
+        if (message.id === messageId) {
+          return { ...message, readStatus: 'read' };
+        }
+
+        return message;
+      });
+
+      state.messages = updatedMessages;
+    },
+    markAsReadFromLotId: (state, action) => {
+      const messageId = action.payload;
+      const updatedMessages = state.messages.map((message) => {
+        if (message.lotId === Number(messageId)) {
+          return { ...message, readStatus: 'read' };
+        }
+
+        return message;
+      });
+
+      state.messages = updatedMessages;
+    },
   },
 });
 
 const { reducer, actions } = sseSlice;
 
-export const { setMessage, deleteMessage, clearMessages } = actions;
+export const {
+  setMessage,
+  deleteMessage,
+  clearMessages,
+  markAMessageAsRead,
+  markAsReadFromLotId,
+} = actions;
 
 export default reducer;
