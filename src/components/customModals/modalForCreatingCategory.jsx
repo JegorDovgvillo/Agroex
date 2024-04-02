@@ -48,6 +48,8 @@ const ModalForCreatingCategory = () => {
   );
 
   const handleSubmit = async (values, { resetForm }) => {
+    if (!file) return;
+
     const formData = new FormData();
     const data = {
       parentId: values.parentId ? values.parentId : 0,
@@ -159,7 +161,7 @@ const ModalForCreatingCategory = () => {
                     setFile={setFile}
                     imageSrc={imageSrc}
                     setImageSrc={setImageSrc}
-                    isValid={isValid}
+                    isValid={isValid && file}
                     buttonName="Create"
                   />
                 </div>
