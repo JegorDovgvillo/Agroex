@@ -124,8 +124,9 @@ const UpdateUserDataModal = ({
           updateUser({ id: sub, userData: updateDataUser })
         );
         dispatch(toggleModal('updatingUserDataModal'));
+
         const resultTokenUpdate = await dispatch(updateToken());
-        console.log(resultTokenUpdate);
+
         if (resultTokenUpdate.error) {
           dispatch(
             setModalFields({

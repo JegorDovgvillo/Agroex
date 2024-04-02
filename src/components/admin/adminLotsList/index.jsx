@@ -259,7 +259,6 @@ export default function AdminLotsList() {
     }
   }, [adminMessageModalData.adminMessage]);
 
-  console.log(rows);
   return (
     <>
       {rows && (

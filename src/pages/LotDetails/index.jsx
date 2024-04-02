@@ -339,7 +339,7 @@ export const LotDetails = () => {
       }),
     });
   }
-  console.log(isLotFinished, isLotExpired);
+
   return (
     <div className={pageContainer}>
       <div className={breadCrumbs}>
