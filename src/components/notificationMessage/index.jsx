@@ -5,7 +5,7 @@ import { useNavigate, generatePath } from 'react-router-dom';
 import { markAsRead } from '@thunks/sse';
 import { fetchLotDetails } from '@thunks/fetchLots';
 
-import { deleteMessage } from '@slices/sseSlice';
+import { deleteMessage, markAMessageAsRead } from '@slices/sseSlice';
 import { getSelectedCurrency } from '@slices/currencySlice';
 
 import ROUTES from '@helpers/routeNames';
@@ -42,6 +42,7 @@ const NotificationMessage = ({
 
   const checkMessage = () => {
     dispatch(markAsRead(id));
+    dispatch(markAMessageAsRead(id));
     setIsRead(true);
   };
 

@@ -15,13 +15,16 @@ const Notifications = () => {
   const messages = useSelector((state) => state.sse.messages);
   const userInfo = useSelector((state) => state.usersList.userInfo);
 
+  const unreadedMessages = _.filter(messages, { readStatus: 'unread' });
   const maxMessages = 9;
-  const isEmpty = !_.isEmpty(messages) ? styles.active : styles.disabled;
+  const isEmpty = !_.isEmpty(unreadedMessages)
+    ? styles.active
+    : styles.disabled;
   const isVisible = active ? styles.visible : styles.invisible;
   const messageAmount =
-    !_.isEmpty(messages) && messages.length > maxMessages
+    !_.isEmpty(unreadedMessages) && unreadedMessages.length > maxMessages
       ? `${maxMessages}+`
-      : messages.length;
+      : unreadedMessages.length;
 
   const toggleNotifications = () => {
     setIsActive((active) => !active);
@@ -50,10 +53,10 @@ const Notifications = () => {
               onClick={toggleNotifications}
               className={isEmpty}
             />
-            <span>{!_.isEmpty(messages) ? messageAmount : null}</span>
+            <span>{!_.isEmpty(unreadedMessages) ? messageAmount : null}</span>
           </div>
           <div className={isVisible}>
-            {messages.map((item) => (
+            {unreadedMessages.map((item) => (
               <NotificationMessage
                 key={item.id}
                 id={item.id}

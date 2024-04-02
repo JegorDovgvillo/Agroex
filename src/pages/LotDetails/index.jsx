@@ -42,6 +42,7 @@ import { selectModal } from '@slices/modalSlice';
 import { betsSelector } from '@slices/betsSlice';
 import { selectUserById } from '@slices/usersListSlice';
 import { getSelectedCurrency } from '@slices/currencySlice';
+import { markAsReadFromLotId } from '@slices/sseSlice';
 
 import { fetchLotDetails } from '@thunks/fetchLots';
 import { fetchAllCategories } from '@thunks/fetchCategories';
@@ -121,6 +122,7 @@ export const LotDetails = () => {
 
   const handleEditClick = () => {
     handleEditLotButtonClick(navigate, lotId);
+    dispatch(markAsReadFromLotId(lotId));
   };
 
   const handleChangeStatusClick = () => {
