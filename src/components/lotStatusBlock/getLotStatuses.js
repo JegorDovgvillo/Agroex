@@ -22,7 +22,6 @@ export const getLotStatuses = ({
       break;
 
     case 'finished':
-      isLotExpired && lotStatuses.push('expired');
       isAuctionLot &&
         !isUserLotOwner &&
         lotStatuses.push(isUserWinner ? 'won' : 'lose');
@@ -43,7 +42,6 @@ export const getLotStatuses = ({
         lotStatuses.push(isUserWinner ? 'won' : 'lose');
 
       isDeactivatedByUser && lotStatuses.push(item.userStatus);
-      isLotExpired && lotStatuses.push('expired');
       break;
   }
 

@@ -78,11 +78,11 @@ export const PlaceBetForm = ({ lot, type }) => {
   };
 
   useEffect(() => {
-    if (loadingStatus === false && !errors) {
+    if (loadingStatus === false && !errors && lastBet) {
       resetFormFunc && resetFormFunc();
       setMinAmount(_.toNumber(lastBet) + 1);
     }
-  }, [loadingStatus, errors]);
+  }, [loadingStatus, errors, lastBet]);
 
   return (
     <Formik

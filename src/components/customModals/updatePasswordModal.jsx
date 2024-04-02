@@ -17,9 +17,11 @@ import CustomPasswordField from '@components/customPasswordField';
 import { CustomButton } from '@buttons/CustomButton';
 
 import { userPasswordsValidationSchema } from '@helpers/validationSchemes/userDataValidationSchemes';
+import { getFetchResultMessages } from '@helpers/getFetchResultMessages';
 
 import styles from './infoModal.module.scss';
 
+const { successPasswordUpdate } = getFetchResultMessages();
 const { passwordsBlock, buttonsWrapp, wrapp, title } = styles;
 
 const UpdatePasswordModal = ({ text }) => {
@@ -52,14 +54,32 @@ const UpdatePasswordModal = ({ text }) => {
 
   const handleUpdatePassword = async (oldPassword, newPassword) => {
     try {
-      await updatePassword({
+      const resultPasswordUpdate = await updatePassword({
         oldPassword,
         newPassword,
       });
 
-      setIsChanged(false);
+      if (!resultPasswordUpdate?.error) {
+        dispatch(
+          setModalFields({
+            modalId: 'snackbar',
+            message: successPasswordUpdate,
+            severity: 'success',
+            isOpen: true,
+            hideDuration: null,
+          })
+        );
+      }
     } catch (error) {
-      console.log(error);
+      dispatch(
+        setModalFields({
+          modalId: 'snackbar',
+          message: error?.message,
+          severity: 'error',
+          isOpen: true,
+          hideDuration: null,
+        })
+      );
     }
   };
 

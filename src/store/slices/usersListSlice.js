@@ -100,9 +100,8 @@ const usersListSlice = createSlice({
         state.userInfo = action.payload;
         state.userId = action.payload.id;
       })
-      .addCase(updateToken.rejected, (state, action) => {
+      .addCase(updateToken.rejected, (state) => {
         state.loadingStatus = false;
-        state.errors = action.payload;
       })
       .addCase(changeUserStatus.pending, (state) => {
         state.errors = null;
@@ -123,9 +122,8 @@ const usersListSlice = createSlice({
       .addCase(updateUser.fulfilled, (state) => {
         state.loadingStatus = false;
       })
-      .addCase(updateUser.rejected, (state, action) => {
+      .addCase(updateUser.rejected, (state) => {
         state.loadingStatus = false;
-        state.errors = action.payload;
       })
       .addCase(updateUsersInTheDataBase.pending, (state) => {
         state.errors = null;

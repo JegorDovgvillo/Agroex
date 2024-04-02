@@ -39,14 +39,13 @@ import {
 import { categoriesSelector } from '@slices/categoriesSlice';
 import { selectLotDetailById } from '@slices/lotListSlice';
 import { selectModal } from '@slices/modalSlice';
-import { betsSelector } from '@slices/betsSlice';
 import { selectUserById } from '@slices/usersListSlice';
 import { getSelectedCurrency } from '@slices/currencySlice';
 
 import { fetchLotDetails } from '@thunks/fetchLots';
 import { fetchAllCategories } from '@thunks/fetchCategories';
 import { fetchUser } from '@thunks/fetchUsers';
-import { fetchBetsByLotId } from '@thunks/fetchBets';
+import { fetchLastBetLotDetails } from '@thunks/fetchBets';
 import ROUTES from '@helpers/routeNames';
 
 import { ManageLotStatusBlock } from './manageLotStatusBlock';
@@ -100,13 +99,17 @@ export const LotDetails = () => {
 
   const [userType, setUserType] = useState('unregisteredUser');
   const [isUserLotOwner, setIsUserLotOwner] = useState(false);
+  const [isLotShouldUpdate, setIsLotShouldUpdate] = useState(null);
 
   const categories = useSelector(categoriesSelector);
   const confirmModalData = useSelector((state) =>
     selectModal(state, 'confirmModal')
   );
-  //const currentBets = useSelector(betsSelector);
+
   const [lastBet, setLastBet] = useState();
+  const betsLastBet = useSelector((state) => state.bets.lastBet);
+  const finishedLotStatuses = ['finished', 'inactive'];
+
   const betModalData = useSelector((state) =>
     selectModal(state, 'placeBetModal')
   );
@@ -132,19 +135,35 @@ export const LotDetails = () => {
   }, []);
 
   useEffect(() => {
-    if (!userInfo || !selectedLot) {
+    if (!selectedCurrency) return;
+
+    dispatch(fetchLastBetLotDetails({ id: lotId, currency: selectedCurrency }));
+  }, [selectedCurrency]);
+
+  useEffect(() => {
+    if (!selectedCurrency || !isLotShouldUpdate) return;
+
+    const intervalId = setInterval(() => {
+      dispatch(
+        fetchLastBetLotDetails({ id: lotId, currency: selectedCurrency })
+      );
+    }, 10000);
+
+    return () => clearInterval(intervalId);
+  }, [selectedCurrency, isLotShouldUpdate]);
+
+  useEffect(() => {
+    if (!betsLastBet || !selectedCurrency) return;
+
+    const { lastBet, status } = betsLastBet;
+
+    if (_.includes(finishedLotStatuses, status)) {
+      setIsLotShouldUpdate(false);
       return;
     }
 
-    !_.isEmpty(selectedLot) &&
-      setIsUserLotOwner(userInfo.id === selectedLot.userId);
-    setLastBet(selectedLot.lastBet);
-    setUserType(
-      userInfo['custom:role'] === 'admin' ? 'admin' : 'registeredUser'
-    );
-    selectedLot.lastBet &&
-      dispatch(fetchUser({ id: selectedLot.lastBet.userId }));
-  }, [userInfo, selectedLot]);
+    setLastBet(lastBet);
+  }, [selectedCurrency, betsLastBet]);
 
   useEffect(() => {
     const { confirmStatus, action, isOpen } = confirmModalData;
@@ -178,10 +197,31 @@ export const LotDetails = () => {
   }, [confirmModalData, betModalData]);
 
   useEffect(() => {
-    if (!selectedCurrency) return;
+    if (!selectedCurrency || isLotShouldUpdate) return;
 
     dispatch(fetchLotDetails({ id: lotId, currency: selectedCurrency }));
-  }, [selectedCurrency]);
+  }, [selectedCurrency, isLotShouldUpdate]);
+
+  useEffect(() => {
+    if (!userInfo || !selectedLot) {
+      return;
+    }
+
+    !_.isEmpty(selectedLot) &&
+      setIsUserLotOwner(userInfo.id === selectedLot.userId);
+    setLastBet(selectedLot.lastBet);
+    setUserType(
+      userInfo['custom:role'] === 'admin' ? 'admin' : 'registeredUser'
+    );
+    selectedLot.lastBet &&
+      dispatch(fetchUser({ id: selectedLot.lastBet.userId }));
+
+    if (_.isNull(isLotShouldUpdate)) {
+      setIsLotShouldUpdate(
+        !_.includes(finishedLotStatuses, selectedLot.status)
+      );
+    }
+  }, [userInfo, selectedLot, isLotShouldUpdate]);
 
   if (loadingStatus !== false) {
     return (
@@ -218,7 +258,6 @@ export const LotDetails = () => {
     originalCurrency
   );
   const buySellBtnText = getButtonText(lotType, originalPriceWithCurrency);
-  const isLastBetEqualPrice = lastBet?.amount === price;
 
   const {
     isAuctionLot,
@@ -300,7 +339,7 @@ export const LotDetails = () => {
       }),
     });
   }
-
+  console.log(isLotFinished, isLotExpired);
   return (
     <div className={pageContainer}>
       <div className={breadCrumbs}>
@@ -325,7 +364,7 @@ export const LotDetails = () => {
               </div>
             </div>
             <div className={rightSide}>
-              {userType === 'admin' && !isLotFinished && (
+              {userType === 'admin' && !isLotFinished && !isLotExpired && (
                 <div className={manageLotStatusBlock}>
                   <ManageLotStatusBlock {...selectedLot} />
                 </div>
@@ -333,7 +372,7 @@ export const LotDetails = () => {
               <div className={heading}>
                 <h4 className={title}>{title}</h4>
                 <div className={dateCounter}>
-                  {expirationDate && !isLotFinished && (
+                  {expirationDate && (!isLotFinished || isLotExpired) && (
                     <Timer
                       endDate={expirationDate}
                       userTimeZone={userInfo?.zoneinfo}
@@ -374,7 +413,7 @@ export const LotDetails = () => {
                   {isAuctionLot &&
                     userType === 'registeredUser' &&
                     !isUserLotOwner &&
-                    !isLastBetEqualPrice && <PlaceBetForm lot={selectedLot} />}
+                    !isLotFinished && <PlaceBetForm lot={selectedLot} />}
                   {isUserLotOwner &&
                     !isLotExpired &&
                     (isRejectedByAdminLot || !isLotTransaction) && (

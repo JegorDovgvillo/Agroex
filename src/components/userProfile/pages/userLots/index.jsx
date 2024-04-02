@@ -76,7 +76,7 @@ const UserLots = () => {
         case 'toggleUserLotStatus':
           changeLotStatusByUser({
             lotId: lot.id,
-            isActive: lot.userStatus,
+            userStatus: lot.userStatus,
           });
 
           break;

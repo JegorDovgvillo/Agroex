@@ -4,7 +4,11 @@ import {
   createSelector,
 } from '@reduxjs/toolkit';
 
-import { fetchPlaceBet, fetchBetsByLotId } from '@thunks/fetchBets';
+import {
+  fetchPlaceBet,
+  fetchBetsByLotId,
+  fetchLastBetLotDetails,
+} from '@thunks/fetchBets';
 
 const betsAdapter = createEntityAdapter();
 const stateId = 'bets';
@@ -14,6 +18,7 @@ const initialState = betsAdapter.getInitialState({
   loadingStatus: null,
   newBet: null,
   errors: null,
+  lastBet: null,
 });
 
 const betsSlice = createSlice({
@@ -47,6 +52,21 @@ const betsSlice = createSlice({
         betsAdapter.setMany(state, action.payload);
       })
       .addCase(fetchBetsByLotId.rejected, (state, action) => {
+        state.loadingStatus = false;
+        state.errors = action.payload;
+      })
+      .addCase(fetchLastBetLotDetails.pending, (state) => {
+        state.errors = null;
+        state.loadingStatus = true;
+      })
+      .addCase(fetchLastBetLotDetails.fulfilled, (state, action) => {
+        state.loadingStatus = false;
+        state.lastBet = {
+          lastBet: action.payload.lastBet,
+          status: action.payload.status,
+        };
+      })
+      .addCase(fetchLastBetLotDetails.rejected, (state, action) => {
         state.loadingStatus = false;
         state.errors = action.payload;
       });

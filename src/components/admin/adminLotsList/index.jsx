@@ -206,7 +206,6 @@ export default function AdminLotsList() {
   const getUsers = async () => {
     const resultAction = await dispatch(fetchUsers());
 
-    console.log(resultAction);
     if (resultAction.error) {
       navigate(NOT_FOUND);
     }
