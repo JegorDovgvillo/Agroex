@@ -14,11 +14,8 @@ const Notifications = () => {
 
   const messages = useSelector((state) => state.sse.messages);
   const userInfo = useSelector((state) => state.usersList.userInfo);
-  
-  const unreadedMessages = _.filter(
-    messages,
-    (message) => message.readStatus === 'unread'
-  );
+
+  const unreadedMessages = _.filter(messages, { readStatus: 'unread' });
   const maxMessages = 9;
   const isEmpty = !_.isEmpty(unreadedMessages)
     ? styles.active

@@ -105,7 +105,7 @@ const ModalForUpdatingCategory = () => {
                   type="modalTextField"
                   setFieldValue={setFieldValue}
                 />
-                {categoryFields.parentId !== 0 ? (
+                {categoryFields.parentId ? (
                   <div className={styles.buttonsWrapp}>
                     <CustomUploadButton
                       file={file}
