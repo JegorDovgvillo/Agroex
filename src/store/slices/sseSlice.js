@@ -18,12 +18,6 @@ const sseSlice = createSlice({
         state.messages = [...state.messages, newMessage];
       }
     },
-    deleteMessage: (state, action) => {
-      state.messages = _.filter(
-        state.messages,
-        (item) => item.id !== action.payload
-      );
-    },
     clearMessages: (state) => {
       state.messages = [];
     },
@@ -51,6 +45,9 @@ const sseSlice = createSlice({
 
       state.messages = updatedMessages;
     },
+    updateMessages: (state, action) => {
+      state.messages = action.payload;
+    },
   },
 });
 
@@ -58,10 +55,10 @@ const { reducer, actions } = sseSlice;
 
 export const {
   setMessage,
-  deleteMessage,
   clearMessages,
   markAMessageAsRead,
   markAsReadFromLotId,
+  updateMessages,
 } = actions;
 
 export default reducer;

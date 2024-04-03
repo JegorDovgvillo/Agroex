@@ -5,7 +5,7 @@ import { useNavigate, generatePath } from 'react-router-dom';
 import { markAsRead } from '@thunks/sse';
 import { fetchLotDetails } from '@thunks/fetchLots';
 
-import { deleteMessage, markAMessageAsRead } from '@slices/sseSlice';
+import { markAMessageAsRead } from '@slices/sseSlice';
 import { getSelectedCurrency } from '@slices/currencySlice';
 
 import ROUTES from '@helpers/routeNames';
@@ -23,6 +23,7 @@ const NotificationMessage = ({
   lotId,
   sendTime,
   messageType,
+  readStatus,
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -32,8 +33,8 @@ const NotificationMessage = ({
   const selectedCurrency = useSelector(getSelectedCurrency);
   const userInfo = useSelector((state) => state.usersList.userInfo);
 
-  const isDisabled = isRead ? styles.disabled : styles.active;
-  const buttonText = isRead ? 'Was read' : 'Mark as read';
+  const isDisabled = readStatus === 'read' ? styles.disabled : styles.active;
+  const buttonText = readStatus === 'read' ? 'Was read' : 'Mark as read';
   const messageIcon = getMessageType(messageType);
   const messageTime = getFormattedDate({
     date: sendTime,
@@ -53,10 +54,6 @@ const NotificationMessage = ({
       id: lotId,
     });
 
-    if (isRead) {
-      dispatch(deleteMessage(id));
-    }
-
     navigate(path);
   };
 
@@ -72,13 +69,15 @@ const NotificationMessage = ({
         </div>
         <p className={isDisabled}> {message} </p>
         <div className={styles.buttonsWrapp}>
-          <CustomButton
-            handleClick={checkMessage}
-            text={buttonText}
-            size="M"
-            type="secondary"
-            disabled={isRead}
-          />
+          {userInfo['custom:role'] !== 'admin' && (
+            <CustomButton
+              handleClick={checkMessage}
+              text={buttonText}
+              size="M"
+              type="secondary"
+              disabled={isRead}
+            />
+          )}
           <CustomButton
             handleClick={goToTheLotPage}
             text="Go to the lot"

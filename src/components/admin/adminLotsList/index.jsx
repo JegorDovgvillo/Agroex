@@ -13,6 +13,7 @@ import { CircularProgress } from '@mui/material';
 
 import { getFilteredLots } from '@thunks/fetchLots';
 import { fetchUsers } from '@thunks/fetchUsers';
+import { markAsRead } from '@thunks/sse';
 
 import {
   toggleModal,
@@ -23,6 +24,7 @@ import {
 import { lotListSelector, setLotId } from '@slices/lotListSlice';
 import { setUserId, usersListSelector } from '@slices/usersListSlice';
 import { getSelectedCurrency } from '@slices/currencySlice';
+import { markAsReadFromLotId } from '@slices/sseSlice';
 
 import getFormattedDate from '@helpers/getFormattedDate';
 import getNumberWithCurrency from '@helpers/getNumberWithCurrency';
@@ -110,6 +112,7 @@ export default function AdminLotsList() {
   const changeLotStatusByAdmin = useChangeLotStatusByAdmin();
 
   const selectedCurrency = useSelector(getSelectedCurrency);
+  const messages = useSelector((state) => state.sse.messages);
 
   const handleRowEditStop = (params, event) => {
     if (params.reason === GridRowEditStopReasons.rowFocusOut) {
@@ -224,6 +227,23 @@ export default function AdminLotsList() {
     }
   };
 
+  const handleMarkAsRead = (action) => {
+    switch (action) {
+      case 'markAsRead':
+        const messageByLotId = _.filter(messages, { lotId: currLotId });
+
+        if (!_.isEmpty(messageByLotId)) {
+          for (let i = 0; i <= messageByLotId.length - 1; i++) {
+            const messageId = messageByLotId[i].id;
+
+            dispatch(markAsRead(messageId));
+            dispatch(markAsReadFromLotId(currLotId));
+          }
+        }
+        break;
+    }
+  };
+
   useEffect(() => {
     getUsers();
   }, []);
@@ -245,12 +265,13 @@ export default function AdminLotsList() {
     if (confirmModalData.confirmStatus) {
       editedValue === 'rejected'
         ? dispatch(toggleModal('adminMessageModal'))
-        : fetchChangeLotStatus();
+        : fetchChangeLotStatus() && handleMarkAsRead('markAsRead');
     }
   }, [confirmModalData]);
 
   useEffect(() => {
     if (editedValue === 'rejected' && adminMessageModalData.adminMessage) {
+      handleMarkAsRead('markAsRead');
       fetchChangeLotStatus();
     }
   }, [adminMessageModalData.adminMessage]);

@@ -15,16 +15,14 @@ const Notifications = () => {
   const messages = useSelector((state) => state.sse.messages);
   const userInfo = useSelector((state) => state.usersList.userInfo);
 
-  const unreadedMessages = _.filter(messages, { readStatus: 'unread' });
   const maxMessages = 9;
-  const isEmpty = !_.isEmpty(unreadedMessages)
-    ? styles.active
-    : styles.disabled;
+  const isEmpty = !_.isEmpty(messages) ? styles.active : styles.disabled;
   const isVisible = active ? styles.visible : styles.invisible;
+  const unreadMessages = _.filter(messages, { readStatus: 'unread' });
   const messageAmount =
-    !_.isEmpty(unreadedMessages) && unreadedMessages.length > maxMessages
+    !_.isEmpty(messages) && unreadMessages.length > maxMessages
       ? `${maxMessages}+`
-      : unreadedMessages.length;
+      : unreadMessages.length;
 
   const toggleNotifications = () => {
     setIsActive((active) => !active);
@@ -53,10 +51,10 @@ const Notifications = () => {
               onClick={toggleNotifications}
               className={isEmpty}
             />
-            <span>{!_.isEmpty(unreadedMessages) ? messageAmount : null}</span>
+            <span>{!_.isEmpty(messageAmount) ? messageAmount : null}</span>
           </div>
           <div className={isVisible}>
-            {unreadedMessages.map((item) => (
+            {messages.map((item) => (
               <NotificationMessage
                 key={item.id}
                 id={item.id}
@@ -65,6 +63,7 @@ const Notifications = () => {
                 message={item.message}
                 sendTime={item.sendTime}
                 messageType={item.type}
+                readStatus={item.readStatus}
               />
             ))}
           </div>
