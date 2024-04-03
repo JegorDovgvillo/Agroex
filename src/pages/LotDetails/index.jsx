@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import _ from 'lodash';
+import { EventSource } from 'extended-eventsource';
+import { fetchAuthSession } from 'aws-amplify/auth';
 
 import CircularProgress from '@mui/material/CircularProgress';
 import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported';
@@ -48,6 +50,7 @@ import { fetchAllCategories } from '@thunks/fetchCategories';
 import { fetchUser } from '@thunks/fetchUsers';
 import { fetchLastBetLotDetails } from '@thunks/fetchBets';
 import ROUTES from '@helpers/routeNames';
+import ENDPOINTS, { BASE_URL } from '@helpers/endpoints';
 
 import { ManageLotStatusBlock } from './manageLotStatusBlock';
 import attentionIcon from '@icons/attention.svg';
@@ -131,6 +134,26 @@ export const LotDetails = () => {
   const handleChangeStatusClick = () => {
     handleToggleUserLotStatusBtnClick(dispatch);
   };
+
+  const openConnection = async () => {
+    const { idToken } = (await fetchAuthSession()).tokens ?? {};
+    const sse = new EventSource(`${BASE_URL}${ENDPOINTS.SSE_BETS}/${id}`, {
+      headers: {
+        Authorization: `Bearer ${idToken}`,
+      },
+    });
+
+    return sse;
+  };
+
+  useEffect(() => {
+    openConnection().then(
+      (data) =>
+        (data.onmessage = (event) => {
+          dispatch(setMessage(JSON.parse(event.data)));
+        })
+    );
+  }, []);
 
   useEffect(() => {
     dispatch(fetchAllCategories());
