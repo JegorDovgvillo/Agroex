@@ -11,18 +11,19 @@ export const getErrorMessage = (errors) => {
   if (!errors) return { title: badRequestError };
 
   const { status, data } = errors;
+  const errorMessage = data?.errors?.title || data?.message || null;
 
   switch (true) {
     case status === 400:
-      return { title: badRequestError, message: data?.message || null };
+      return { title: badRequestError, message: errorMessage };
 
     case status === 401:
       return { title: authError, message: login };
 
     case status >= 500 && status < 600:
-      return { title: serverError, message: data?.message || null };
+      return { title: serverError, message: errorMessage };
 
     default:
-      return { title: unknown, message: data?.message || null };
+      return { title: unknown, message: errorMessage };
   }
 };

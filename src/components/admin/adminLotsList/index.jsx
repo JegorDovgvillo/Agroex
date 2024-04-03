@@ -81,7 +81,8 @@ const getInitialRows = (lots, users, adminInfo) => {
 export default function AdminLotsList() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const lots = useSelector(lotListSelector);
+  //const lots = useSelector(lotListSelector);
+  const lots = [];
   const users = useSelector(usersListSelector);
   const loadingStatus = useSelector((state) => state.lotList.loadingStatus);
   const adminInfo = useSelector((state) => state.usersList.userInfo);
@@ -235,10 +236,6 @@ export default function AdminLotsList() {
   }, [dispatch, selectedCurrency]);
 
   useEffect(() => {
-    if (_.isEmpty(lots) && loadingStatus === false) {
-      navigate(NOT_FOUND);
-    }
-
     if (_.every([lots, users], (item) => !_.isEmpty(item))) {
       const rows = getInitialRows(lots, users, adminInfo);
       setRows(rows);
@@ -261,7 +258,9 @@ export default function AdminLotsList() {
 
   return (
     <>
-      {rows && (
+      {!rows || _.isEmpty(lots) ? (
+        <h5>No lots in the data base</h5>
+      ) : (
         <div className={container}>
           <DataGrid
             isCellEditable={(params) => params.row.status !== 'finished'}

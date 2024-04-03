@@ -70,7 +70,7 @@ const AdminReports = () => {
     const params = {
       actualStartDate: setCorrectedTimeZone(actualStartDate, userInfo.zoneinfo),
       expirationDate: setCorrectedTimeZone(expirationDate, userInfo.zoneinfo),
-      lotType: _.camelCase(lotType),
+      lotType: _.camelCase(lotType) || null,
       countryId: _.find(countries, { name: countryId })?.id || null,
     };
     const reportTypeToSubmit = _.find(reportsData, {

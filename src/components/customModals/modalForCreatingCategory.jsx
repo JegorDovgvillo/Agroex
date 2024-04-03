@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Box, Modal } from '@mui/material';
 import { Formik, Form } from 'formik';
 import CloseIcon from '@mui/icons-material/Close';
+import _ from 'lodash';
 
 import {
   toggleModal,
@@ -23,6 +24,7 @@ import {
   categoryTitleValidationSchema,
   subcategoryCreationValidationSchema,
 } from '@helpers/validationSchemes/lotValidationSchemes';
+import getSanitizedString from '@helpers/getSanitizedString';
 
 import CustomSelect from '../customSelect';
 import CustomAutocompleteField from '../customAutocomplete';
@@ -55,10 +57,16 @@ const ModalForCreatingCategory = () => {
   const handleSubmit = async (values, { resetForm }) => {
     if (!file) return;
 
+    const sanitizedTitle = getSanitizedString(values.title);
+    const existedTitle = _.find(
+      subcategories,
+      (item) => _.toLower(item.title) === _.toLower(sanitizedTitle)
+    )?.title;
     const formData = new FormData();
+
     const data = {
       parentId: values.parentId ? values.parentId : 0,
-      title: values.title,
+      title: existedTitle || sanitizedTitle,
     };
 
     formData.append('file', file);

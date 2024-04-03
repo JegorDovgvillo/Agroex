@@ -22,7 +22,7 @@ import ROUTES from './routeNames';
 const Router = () => {
   const router = createBrowserRouter([
     {
-      path: '/',
+      path: ROUTES.ROOT,
       element: <Layout />,
       children: [
         {

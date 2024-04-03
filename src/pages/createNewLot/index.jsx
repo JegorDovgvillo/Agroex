@@ -105,7 +105,7 @@ const CreateNewLot = () => {
       (item) => !_.isEmpty(item)
     );
 
-    isNoEmptyData ? setIsDataLoaded(isNoEmptyData) : navigate(`/${NOT_FOUND}`);
+    isNoEmptyData ? setIsDataLoaded(isNoEmptyData) : navigate(NOT_FOUND);
   }, [categories, tags, countries, isDataFetched]);
 
   return (

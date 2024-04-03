@@ -139,7 +139,7 @@ const UpdateLot = () => {
   useEffect(() => {
     if (!_.isEmpty(selectedLot) || _.isNull(isLotDetailsLoaded)) return;
 
-    !isLotDetailsLoaded && navigate(`/${NOT_FOUND}`);
+    !isLotDetailsLoaded && navigate(NOT_FOUND);
   }, [isLotDetailsLoaded]);
 
   useEffect(() => {
@@ -160,9 +160,7 @@ const UpdateLot = () => {
       (item) => !_.isEmpty(item)
     );
 
-    isAllDataLoaded
-      ? setIsDataLoaded(isAllDataLoaded)
-      : navigate(`/${NOT_FOUND}`);
+    isAllDataLoaded ? setIsDataLoaded(isAllDataLoaded) : navigate(NOT_FOUND);
   }, [selectedLot, categories, tags, countries, isDataFetched]);
 
   return (

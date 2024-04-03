@@ -232,7 +232,7 @@ export const LotDetails = () => {
       </div>
     );
   } else if (loadingStatus === false && !selectedLot) {
-    navigate(`/${NOT_FOUND}`);
+    navigate(NOT_FOUND);
   }
 
   const {
