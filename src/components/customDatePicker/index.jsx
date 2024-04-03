@@ -18,6 +18,7 @@ const CustomDatePicker = ({
   label = 'Expiration date',
 }) => {
   const [date, setDate] = useState(null);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     value ? setDate(DateTime.fromISO(value)) : setDate(null);
@@ -44,7 +45,7 @@ const CustomDatePicker = ({
           <DateTimePicker
             value={date}
             onChange={handleDateChange}
-            referenceDate={DateTime.fromISO('2024-01-01T15:30')}
+            referenceDate={DateTime.now()}
             slotProps={{
               popper: {
                 className: styles.popper,

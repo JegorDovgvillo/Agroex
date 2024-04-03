@@ -4,8 +4,15 @@ import { Box, Modal } from '@mui/material';
 import { Formik, Form } from 'formik';
 import CloseIcon from '@mui/icons-material/Close';
 
-import { toggleModal, selectModalState } from '@slices/modalSlice';
-import { fetchSubcategoryByParentId } from '@thunks/fetchCategories';
+import {
+  toggleModal,
+  selectModalState,
+  clearModalsFields,
+} from '@slices/modalSlice';
+import {
+  fetchSubcategoryByParentId,
+  createCategory,
+} from '@thunks/fetchCategories';
 
 import {
   selectRootCategories,
@@ -16,7 +23,6 @@ import {
   categoryTitleValidationSchema,
   subcategoryCreationValidationSchema,
 } from '@helpers/validationSchemes/lotValidationSchemes';
-import { useCreateCategory } from '@helpers/customHooks/categoriesHooks';
 
 import CustomSelect from '../customSelect';
 import CustomAutocompleteField from '../customAutocomplete';
@@ -26,7 +32,6 @@ import styles from './infoModal.module.scss';
 
 const ModalForCreatingCategory = () => {
   const dispatch = useDispatch();
-  const createCategory = useCreateCategory();
 
   const initialValues = {
     title: '',
@@ -59,9 +64,12 @@ const ModalForCreatingCategory = () => {
     formData.append('file', file);
     formData.append('data', JSON.stringify(data));
 
-    const resultAction = await createCategory({ dataCategory: formData });
+    dispatch(clearModalsFields('snackbar'));
+    const resultAction = await dispatch(
+      createCategory({ dataCategory: formData })
+    );
 
-    if (resultAction) {
+    if (!resultAction.error) {
       dispatch(toggleModal('creatingModal'));
       setFile(null);
       setImageSrc(null);

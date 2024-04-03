@@ -94,7 +94,7 @@ const lotListSlice = createSlice({
         state.loadingStatus = true;
       })
       .addCase(fetchLotDetails.fulfilled, (state, action) => {
-        lotListAdapter.setOne(state, action.payload);
+        lotListAdapter.upsertOne(state, action.payload);
         state.loadingStatus = false;
       })
       .addCase(fetchLotDetails.rejected, (state, action) => {

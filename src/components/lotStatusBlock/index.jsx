@@ -29,7 +29,6 @@ const getBadgeProps = (lotStatuses) => {
         return [{ type: 'success', text: getFormattedString(status) }];
       case 'approved':
         return [{ type: 'success', text: 'approved by admin' }];
-      case 'expired':
       case 'lose':
         return [{ type: 'warning', text: getFormattedString(status) }];
       default:

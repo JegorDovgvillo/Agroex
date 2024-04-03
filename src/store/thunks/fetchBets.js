@@ -40,3 +40,21 @@ export const fetchBetsByLotId = createAsyncThunk(
     }
   }
 );
+
+export const fetchLastBetLotDetails = createAsyncThunk(
+  'bets/fetchLastBetLotDetails',
+  async ({ id, currency }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.get(`${ENDPOINTS.LOTS}/${id}`, {
+        headers: { currency },
+      });
+
+      return response.data;
+    } catch (error) {
+      return rejectWithValue({
+        status: error?.response?.status,
+        data: error?.response?.data,
+      });
+    }
+  }
+);

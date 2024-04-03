@@ -1,24 +1,35 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import _ from 'lodash';
-import { updateUserAttributes } from 'aws-amplify/auth';
+import { updateUserAttributes, signOut } from 'aws-amplify/auth';
 import { TextField, Box, Modal, Autocomplete } from '@mui/material';
 import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
 
 import { updateToken, updateUser } from '@thunks/fetchUsers';
 
-import { toggleModal } from '@slices/modalSlice';
-import { selectModalState } from '@slices/modalSlice';
+import {
+  toggleModal,
+  selectModalState,
+  setModalFields,
+} from '@slices/modalSlice';
+import { deleteUserInfo } from '@slices/usersListSlice';
 
 import { CustomButton } from '@components/buttons/CustomButton';
 import ConfirmCodeModal from '@customModals/confirmCodeModal';
 
 import { updateUserValidationSchema } from '@helpers/validationSchemes/userDataValidationSchemes';
+import { getFetchResultMessages } from '@helpers/getFetchResultMessages';
+import ROUTES from '@helpers/routeNames';
 
 import timeZones from '../../data/timeZones';
 
 import styles from './infoModal.module.scss';
+
+const { successUpdateUserData, updateUserDataWarning, authError } =
+  getFetchResultMessages();
+const { LOG_IN } = ROUTES;
 
 const {
   wrapp,
@@ -42,6 +53,7 @@ const UpdateUserDataModal = ({
   text,
 }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [code, setCode] = useState();
 
@@ -70,8 +82,22 @@ const UpdateUserDataModal = ({
 
       handleUpdateUserAttributeNextSteps(output, updatedName, updatedZone);
     } catch (error) {
-      console.log(error);
+      dispatch(
+        setModalFields({
+          modalId: 'snackbar',
+          message: error.message,
+          severity: 'error',
+          isOpen: true,
+          hideDuration: null,
+        })
+      );
     }
+  };
+
+  const handleSignOut = () => {
+    navigate(LOG_IN);
+    signOut();
+    dispatch(deleteUserInfo());
   };
 
   const handleUpdateUserAttributeNextSteps = async (
@@ -94,9 +120,49 @@ const UpdateUserDataModal = ({
           username: updatedName,
         };
 
-        dispatch(updateUser({ id: sub, userData: updateDataUser }));
+        const resultUserUpdate = await dispatch(
+          updateUser({ id: sub, userData: updateDataUser })
+        );
         dispatch(toggleModal('updatingUserDataModal'));
-        dispatch(updateToken());
+
+        const resultTokenUpdate = await dispatch(updateToken());
+
+        if (resultTokenUpdate.error) {
+          dispatch(
+            setModalFields({
+              modalId: 'snackbar',
+              message: authError,
+              severity: 'error',
+              isOpen: true,
+              hideDuration: null,
+            })
+          );
+          handleSignOut();
+        }
+
+        if (resultUserUpdate.error) {
+          dispatch(
+            setModalFields({
+              modalId: 'snackbar',
+              message: `${successUpdateUserData}${updateUserDataWarning}`,
+              severity: 'warning',
+              isOpen: true,
+              hideDuration: null,
+            })
+          );
+        }
+
+        if (!resultUserUpdate.error && !resultTokenUpdate.error) {
+          dispatch(
+            setModalFields({
+              modalId: 'snackbar',
+              message: successUpdateUserData,
+              severity: 'success',
+              isOpen: true,
+              hideDuration: null,
+            })
+          );
+        }
         break;
     }
   };

@@ -26,8 +26,12 @@ import {
 } from '@slices/modalSlice';
 
 import getFormattedDate from '@helpers/getFormattedDate';
+import { getFetchResultMessages } from '@helpers/getFetchResultMessages';
 
 import styles from './usersList.module.scss';
+
+const { successUserStatusUpdate, successUserDBUpdate } =
+  getFetchResultMessages();
 
 const {
   verifiedIcon,
@@ -53,6 +57,44 @@ export default function UsersList() {
     selectModal(state, 'confirmModal')
   );
 
+  const handleUsersListAction = async (action) => {
+    dispatch(clearModalsFields('snackbar'));
+
+    switch (action) {
+      case 'changeUserStatus':
+        const resultAction = await dispatch(changeUserStatus({ id: userId }));
+
+        if (!resultAction.error) {
+          dispatch(
+            setModalFields({
+              modalId: 'snackbar',
+              message: successUserStatusUpdate,
+              severity: 'success',
+              isOpen: true,
+            })
+          );
+        }
+        break;
+
+      case 'updateDB':
+        const resultDataBaseUpdate = await dispatch(updateUsersInTheDataBase());
+
+        if (!resultDataBaseUpdate.error) {
+          dispatch(
+            setModalFields({
+              modalId: 'snackbar',
+              message: successUserDBUpdate,
+              severity: 'success',
+              isOpen: true,
+            })
+          );
+        }
+        break;
+    }
+
+    dispatch(clearModalsFields('confirmModal'));
+  };
+
   useEffect(() => {
     dispatch(fetchUsers());
   }, [dispatch]);
@@ -62,17 +104,7 @@ export default function UsersList() {
 
     if (!confirmStatus || isOpen) return;
 
-    switch (action) {
-      case 'changeUserStatus':
-        dispatch(changeUserStatus({ id: userId }));
-        break;
-
-      case 'updateDB':
-        dispatch(updateUsersInTheDataBase());
-        break;
-    }
-
-    dispatch(clearModalsFields('confirmModal'));
+    handleUsersListAction(action);
   }, [confirmModalData]);
 
   const toggleUserStatus = (id) => {

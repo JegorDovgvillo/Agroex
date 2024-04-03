@@ -95,7 +95,6 @@ export const updateToken = createAsyncThunk(
       const { idToken } =
         (await fetchAuthSession({ forceRefresh: true })).tokens ?? {};
       const userInfo = { ...idToken.payload, id: idToken.payload.sub };
-
       return userInfo;
     } catch (error) {
       return rejectWithValue({

@@ -46,18 +46,19 @@ export default function CategoriesList() {
   const confirmModalData = useSelector((state) =>
     selectModal(state, 'confirmModal')
   );
-  const { loading, errors } = useSelector((state) => state.categories);
 
   useEffect(() => {
     dispatch(fetchAllCategories());
   }, [dispatch]);
 
   const handleEditClick = (id) => {
+    dispatch(clearModalsFields('snackbar'));
     dispatch(toggleModal('updatingModal'));
     dispatch(setCategoryId(id));
   };
 
   const showConfirm = (id) => {
+    dispatch(clearModalsFields('snackbar'));
     dispatch(
       setModalFields({
         modalId: 'confirmModal',
@@ -69,9 +70,9 @@ export default function CategoriesList() {
   };
 
   const handleDeleteCategory = async (categoryId) => {
-    await dispatch(deleteCategory({ id: categoryId }));
+    const resultAction = await dispatch(deleteCategory({ id: categoryId }));
 
-    if (!loading && !errors) {
+    if (!resultAction.error) {
       dispatch(
         setModalFields({
           modalId: 'snackbar',
@@ -89,7 +90,6 @@ export default function CategoriesList() {
     if (!confirmStatus || isOpen) return;
 
     dispatch(clearModalsFields('confirmModal'));
-
     handleDeleteCategory(categoryId);
   }, [confirmModalData, categoryId, dispatch]);
 

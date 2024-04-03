@@ -4,6 +4,7 @@ import getFormattedDate from '@helpers/getFormattedDate';
 import getNumberWithCurrency from '@helpers/getNumberWithCurrency';
 import { IMAGE_URL } from '@helpers/endpoints';
 import { getCorrectedTimeZone } from '@helpers/getCorrectTime';
+import { getLotState } from '@helpers/lotHandlers/getLotState';
 
 import { TagsBlock } from '@components/tagsBlock';
 
@@ -13,7 +14,8 @@ import styles from './itemCard.module.scss';
 
 const ItemCardInfoBlock = ({ item, userTimeZone, children }) => {
   const image = item.images[0] || null;
-  const isLotFinished = item.status === 'finished';
+  const { isLotFinished, isLotExpired } = getLotState(item);
+
   const correctedExpirationDate = getCorrectedTimeZone(
     item.expirationDate,
     userTimeZone
@@ -42,7 +44,7 @@ const ItemCardInfoBlock = ({ item, userTimeZone, children }) => {
         </div>
 
         <div className={styles.technicalInfo}>
-          {!isLotFinished && item.expirationDate && (
+          {(isLotExpired || !isLotFinished) && item.expirationDate && (
             <Timer
               endDate={correctedExpirationDate}
               userTimeZone={userTimeZone}

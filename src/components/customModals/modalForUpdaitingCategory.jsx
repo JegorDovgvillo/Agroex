@@ -7,18 +7,21 @@ import CloseIcon from '@mui/icons-material/Close';
 
 import { updateCategory } from '@thunks/fetchCategories';
 
-import { toggleModal } from '@slices/modalSlice';
+import { toggleModal, setModalFields } from '@slices/modalSlice';
 import { selectModalState } from '@slices/modalSlice';
 import { selectCategoryById } from '@slices/categoriesSlice';
 
 import { IMAGE_URL } from '@helpers/endpoints';
 import { categoryTitleValidationSchema } from '@helpers/validationSchemes/lotValidationSchemes';
+import { getFetchResultMessages } from '@helpers/getFetchResultMessages';
 
 import CustomTextField from '@customTextField';
 import CustomUploadButton from '../customUploadButton';
 import { CustomButton } from '@buttons/CustomButton';
 
 import bannerImage from '@assets/images/banner.png';
+
+const { successCategoryUpdate } = getFetchResultMessages();
 
 import styles from './infoModal.module.scss';
 
@@ -42,7 +45,7 @@ const ModalForUpdatingCategory = () => {
     parentId: categoryFields?.parentId || '',
   };
 
-  const handleSubmitClick = (values, { resetForm }) => {
+  const handleSubmitClick = async (values, { resetForm }) => {
     const formData = new FormData();
     const data = {
       id: categoryFields.id,
@@ -53,9 +56,22 @@ const ModalForUpdatingCategory = () => {
 
     formData.append('file', file);
     formData.append('data', JSON.stringify(data));
-    dispatch(updateCategory({ id: categoryId, categoryData: formData }));
-    dispatch(toggleModal('updatingModal'));
-    resetForm();
+    const resultAction = await dispatch(
+      updateCategory({ id: categoryId, categoryData: formData })
+    );
+
+    if (!resultAction.error) {
+      dispatch(
+        setModalFields({
+          modalId: 'snackbar',
+          message: successCategoryUpdate,
+          severity: 'success',
+          isOpen: true,
+        })
+      );
+      dispatch(toggleModal('updatingModal'));
+      resetForm();
+    }
   };
 
   const closePopup = () => {

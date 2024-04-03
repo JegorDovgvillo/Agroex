@@ -27,7 +27,8 @@ export const getFetchResultMessages = (action) => {
     badRequestError: 'Bad request error',
     unknown: 'Error. Something went wrong',
     successUpdateUserData: 'Your data has been successfully updated.',
-    updateUserDataWarning: '\nAn issue occurred while updating our databases.',
+    updateUserDataWarning:
+      '\nAn issue occurred while updating our databases. No actions needed',
 
     unableToShowFilters: {
       title: 'Error. Unable to display the filter panel.',

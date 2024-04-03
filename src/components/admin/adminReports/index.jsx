@@ -23,21 +23,37 @@ import styles from './adminReports.module.scss';
 
 const { row } = styles;
 
-const defaultStatDate = '2000-01-01T00:00:01.647Z';
+const defaultStatDate = '2000-01-01T00:00:00.000Z';
 
 const AdminReports = () => {
   const dispatch = useDispatch();
 
   const userInfo = useSelector((state) => state.usersList.userInfo);
 
-  const dateNow = getCorrectedTimeZone(DateTime.now(), userInfo?.zoneinfo);
-  const startDate = setCorrectedTimeZone(defaultStatDate, userInfo?.zoneinfo);
+  const startDate = DateTime.fromISO(defaultStatDate)
+    .set({
+      hour: 0,
+      minute: 0,
+      second: 0,
+      millisecond: 0,
+    })
+    .setZone(userInfo?.zoneinfo);
+
+  const today = DateTime.now()
+    .set({
+      hour: 23,
+      minute: 59,
+      second: 59,
+      millisecond: 999,
+    })
+    .setZone(userInfo?.zoneinfo);
+
   const countries = useSelector(countrySelector);
 
   const initialValues = {
     reportType: null,
-    actualStartDate: startDate,
-    expirationDate: dateNow,
+    actualStartDate: startDate.toISO(),
+    expirationDate: today.toISO(),
     lotType: null,
     countryId: null,
   };
