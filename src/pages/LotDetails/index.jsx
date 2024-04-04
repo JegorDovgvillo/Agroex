@@ -198,7 +198,7 @@ export const LotDetails = () => {
   }, [confirmModalData, betModalData]);
 
   useEffect(() => {
-    if (!selectedCurrency || !isLotShouldUpdate) return;
+    if (!selectedCurrency) return;
 
     dispatch(fetchLotDetails({ id: lotId, currency: selectedCurrency }));
   }, [selectedCurrency, isLotShouldUpdate]);
