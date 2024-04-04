@@ -6,11 +6,8 @@ import { some, isEmpty, toLower, isNull } from 'lodash';
 
 import { fetchAllCategories } from '@thunks/fetchCategories';
 import { selectRootCategories } from '@slices/categoriesSlice';
-import { getSelectedCurrency } from '@slices/currencySlice';
 import { lotListSelector } from '@slices/lotListSlice';
 import { useLoadedWithoutErrorsSelector } from '@selectors';
-
-import { getFilteredLots } from '@thunks/fetchLots';
 
 import ROUTES from '@helpers/routeNames';
 
@@ -27,16 +24,14 @@ const HomePage = () => {
   const isCategoriesLoaded = useLoadedWithoutErrorsSelector(['categories']);
   const categories = useSelector(selectRootCategories);
   const lots = useSelector(lotListSelector);
-  const selectedCurrency = useSelector(getSelectedCurrency);
 
   useEffect(() => {
-    if (isNull(isCategoriesLoaded) && selectedCurrency) {
+    if (isNull(isCategoriesLoaded)) {
       dispatch(fetchAllCategories());
-      dispatch(getFilteredLots({ params: {}, currency: selectedCurrency }));
     } else {
       isCategoriesLoaded === false && setIsCategoriesFetched(true);
     }
-  }, [dispatch, isCategoriesLoaded, selectedCurrency]);
+  }, [dispatch, isCategoriesLoaded]);
 
   useEffect(() => {
     if (!categoriesFetched) return;

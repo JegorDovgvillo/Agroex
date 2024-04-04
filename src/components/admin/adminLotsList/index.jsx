@@ -81,8 +81,7 @@ const getInitialRows = (lots, users, adminInfo) => {
 export default function AdminLotsList() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  //const lots = useSelector(lotListSelector);
-  const lots = [];
+  const lots = useSelector(lotListSelector);
   const users = useSelector(usersListSelector);
   const loadingStatus = useSelector((state) => state.lotList.loadingStatus);
   const adminInfo = useSelector((state) => state.usersList.userInfo);
