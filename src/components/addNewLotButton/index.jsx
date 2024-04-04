@@ -25,6 +25,7 @@ export const AddNewLotButton = () => {
           typeOfButton="button"
           handleClick={handleAddLot}
           icon={<AddIcon />}
+          buttonClass="addNewLotButton"
         />
       )}
     </>

@@ -44,6 +44,7 @@ import { selectModal } from '@slices/modalSlice';
 import { selectUserById } from '@slices/usersListSlice';
 import { getSelectedCurrency } from '@slices/currencySlice';
 import { markAsReadFromLotId } from '@slices/sseSlice';
+import { setMessage } from '@slices/sseSlice';
 
 import { fetchLotDetails } from '@thunks/fetchLots';
 import { fetchAllCategories } from '@thunks/fetchCategories';
@@ -103,7 +104,7 @@ export const LotDetails = () => {
 
   const [userType, setUserType] = useState('unregisteredUser');
   const [isUserLotOwner, setIsUserLotOwner] = useState(false);
-  const [isLotShouldUpdate, setIsLotShouldUpdate] = useState(null);
+  const [isLotShouldUpdate, setIsLotShouldUpdate] = useState(true);
 
   const categories = useSelector(categoriesSelector);
   const confirmModalData = useSelector((state) =>
@@ -137,7 +138,8 @@ export const LotDetails = () => {
 
   const openConnection = async () => {
     const { idToken } = (await fetchAuthSession()).tokens ?? {};
-    const sse = new EventSource(`${BASE_URL}${ENDPOINTS.SSE_BETS}/${id}`, {
+
+    const sse = new EventSource(`${BASE_URL}${ENDPOINTS.SSE_BETS}/${lotId}`, {
       headers: {
         Authorization: `Bearer ${idToken}`,
       },
@@ -150,45 +152,19 @@ export const LotDetails = () => {
     openConnection().then(
       (data) =>
         (data.onmessage = (event) => {
-          dispatch(setMessage(JSON.parse(event.data)));
+          const lastBet = JSON.parse(event.data);
+          setLastBet(lastBet.bet);
+
+          setIsLotShouldUpdate(
+            _.includes(finishedLotStatuses, lastBet.lotStatus)
+          );
         })
     );
-  }, []);
+  }, [selectedCurrency]);
 
   useEffect(() => {
     dispatch(fetchAllCategories());
   }, []);
-
-  useEffect(() => {
-    if (!selectedCurrency) return;
-
-    dispatch(fetchLastBetLotDetails({ id: lotId, currency: selectedCurrency }));
-  }, [selectedCurrency]);
-
-  useEffect(() => {
-    if (!selectedCurrency || !isLotShouldUpdate) return;
-
-    const intervalId = setInterval(() => {
-      dispatch(
-        fetchLastBetLotDetails({ id: lotId, currency: selectedCurrency })
-      );
-    }, 10000);
-
-    return () => clearInterval(intervalId);
-  }, [selectedCurrency, isLotShouldUpdate]);
-
-  useEffect(() => {
-    if (!betsLastBet || !selectedCurrency) return;
-
-    const { lastBet, status } = betsLastBet;
-
-    if (_.includes(finishedLotStatuses, status)) {
-      setIsLotShouldUpdate(false);
-      return;
-    }
-
-    setLastBet(lastBet);
-  }, [selectedCurrency, betsLastBet]);
 
   useEffect(() => {
     const { confirmStatus, action, isOpen } = confirmModalData;
@@ -222,7 +198,7 @@ export const LotDetails = () => {
   }, [confirmModalData, betModalData]);
 
   useEffect(() => {
-    if (!selectedCurrency || isLotShouldUpdate) return;
+    if (!selectedCurrency || !isLotShouldUpdate) return;
 
     dispatch(fetchLotDetails({ id: lotId, currency: selectedCurrency }));
   }, [selectedCurrency, isLotShouldUpdate]);
@@ -240,13 +216,7 @@ export const LotDetails = () => {
     );
     selectedLot.lastBet &&
       dispatch(fetchUser({ id: selectedLot.lastBet.userId }));
-
-    if (_.isNull(isLotShouldUpdate)) {
-      setIsLotShouldUpdate(
-        !_.includes(finishedLotStatuses, selectedLot.status)
-      );
-    }
-  }, [userInfo, selectedLot, isLotShouldUpdate]);
+  }, [userInfo, selectedLot]);
 
   if (loadingStatus !== false) {
     return (

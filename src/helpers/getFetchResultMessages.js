@@ -19,7 +19,7 @@ export const getFetchResultMessages = (action) => {
     successCategoryUpdate: 'The category has been successfully updated.',
     successCategoryDelete: 'Category has been successfully deleted.',
 
-    successPlaceBet: 'Your bet has been successfully paced',
+    successPlaceBet: 'Your bet has been successfully placed',
     successPlaceDeal: 'Your order has been successfully placed!',
 
     authError: 'Authorization error',

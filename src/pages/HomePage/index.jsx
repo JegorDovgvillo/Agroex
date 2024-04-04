@@ -1,17 +1,22 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate, generatePath } from 'react-router-dom';
-
-import { some, isEmpty, toLower, isNull } from 'lodash';
+import _ from 'lodash';
 
 import { fetchAllCategories } from '@thunks/fetchCategories';
+import { getFilteredLots } from '@thunks/fetchLots';
 import { selectRootCategories } from '@slices/categoriesSlice';
-import { lotListSelector } from '@slices/lotListSlice';
-import { useLoadedWithoutErrorsSelector } from '@selectors';
+import { getSelectedCurrency } from '@slices/currencySlice';
+import { lotListSelector, clearLots } from '@slices/lotListSlice';
 
 import ROUTES from '@helpers/routeNames';
 
 import HomePageTabPanel from '@components/customTabPanels/homePageTabPanel';
+import imageSrc from '@assets/images/pic.jpg';
+
+import styles from './homePage.module.scss';
+
+const { pageWrapper, container, title, imageContainer } = styles;
 
 const { HOME_PAGE, NOT_FOUND } = ROUTES;
 
@@ -19,48 +24,77 @@ const HomePage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { category } = useParams();
-
-  const [categoriesFetched, setIsCategoriesFetched] = useState(false);
-  const isCategoriesLoaded = useLoadedWithoutErrorsSelector(['categories']);
   const categories = useSelector(selectRootCategories);
   const lots = useSelector(lotListSelector);
+  const selectedCurrency = useSelector(getSelectedCurrency);
+  const [renderedCategories, setRenderedCategories] = useState([]);
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
 
   useEffect(() => {
-    if (isNull(isCategoriesLoaded)) {
-      dispatch(fetchAllCategories());
-    } else {
-      isCategoriesLoaded === false && setIsCategoriesFetched(true);
-    }
-  }, [dispatch, isCategoriesLoaded]);
+    if (!selectedCurrency) return;
+
+    dispatch(getFilteredLots({ params: {}, currency: selectedCurrency }));
+  }, [selectedCurrency]);
 
   useEffect(() => {
-    if (!categoriesFetched) return;
+    dispatch(clearLots());
+    dispatch(fetchAllCategories());
+    setIsDataLoaded(true);
+  }, []);
 
-    if (isEmpty(categories)) {
+  useEffect(() => {
+    if (!categories || _.isEmpty(categories)) return;
+
+    const filteredCategories = _.filter(categories, (category) =>
+      _.some(lots, (lot) =>
+        _.includes(
+          [lot.productCategory.id, lot.productCategory.parentId],
+          category.id
+        )
+      )
+    );
+
+    if (
+      !_.isEmpty(filteredCategories) &&
+      !_.some(
+        filteredCategories,
+        (cat) => _.toLower(cat.title) === _.toLower(category)
+      )
+    ) {
       navigate(NOT_FOUND);
-
-      return;
     }
 
-    if (!category) {
-      const defaultCategory = toLower(categories[0].title);
+    setRenderedCategories(filteredCategories);
+
+    if (!category && !_.isEmpty(filteredCategories)) {
+      const defaultCategory = _.toLower(filteredCategories[0].title);
       const path = generatePath(HOME_PAGE, { category: defaultCategory });
 
       navigate(path);
     }
-
-    if (
-      category &&
-      !some(categories, (cat) => toLower(cat.title) === toLower(category))
-    ) {
-      navigate(NOT_FOUND);
-    }
-  }, [categories, categoriesFetched]);
+  }, [categories, lots]);
 
   return (
     <>
-      {!isEmpty(categories) && (
-        <HomePageTabPanel categories={categories} lots={lots} />
+      {isDataLoaded && (
+        <>
+          {!_.isEmpty(renderedCategories) ? (
+            <HomePageTabPanel categories={renderedCategories} />
+          ) : (
+            <>
+              <div className={pageWrapper}>
+                <div className={container}>
+                  <h3 className={title}>
+                    Sorry... no available lots right now
+                  </h3>
+                </div>
+                <div className={imageContainer}>
+                  <img src={imageSrc} alt="No lots image" />
+                </div>
+              </div>
+            </>
+          )}
+        </>
       )}
     </>
   );
