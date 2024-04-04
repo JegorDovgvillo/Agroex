@@ -1,13 +1,12 @@
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 
 export default ({ mode }) => {
-  const isProduction = mode === 'production';
+  const env = loadEnv(mode, process.cwd());
 
   return defineConfig({
-    base: isProduction
-      ? 'http://agroex-elb-446797069.us-east-1.elb.amazonaws.com/team1/'
-      : '',
+    base: env.VITE_BASE_URL,
+
     plugins: [react()],
     resolve: {
       alias: {
