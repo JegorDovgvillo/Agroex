@@ -19,6 +19,7 @@ const Notifications = () => {
   const isEmpty = !_.isEmpty(messages) ? styles.active : styles.disabled;
   const isVisible = active ? styles.visible : styles.invisible;
   const unreadMessages = _.filter(messages, { readStatus: 'unread' });
+
   const messageAmount =
     !_.isEmpty(messages) && unreadMessages.length > maxMessages
       ? `${maxMessages}+`
@@ -51,7 +52,7 @@ const Notifications = () => {
               onClick={toggleNotifications}
               className={isEmpty}
             />
-            <span>{!_.isEmpty(messageAmount) ? messageAmount : null}</span>
+            <span>{messageAmount ? messageAmount : null}</span>
           </div>
           <div className={isVisible}>
             {messages.map((item) => (

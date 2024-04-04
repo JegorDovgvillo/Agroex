@@ -72,16 +72,13 @@ export const ChangeStatusModal = (props) => {
   const handleMarkAsRead = (action) => {
     switch (action) {
       case 'markAsRead':
-        const messageByLotId = _.filter(messages, { lotId: props.lot.id });
-
-        if (!_.isEmpty(messageByLotId)) {
-          for (let i = 0; i <= messageByLotId.length - 1; i++) {
-            const messageId = messageByLotId[i].id;
-
+        _.chain(messages)
+          .filter({ lotId: props.lot.id })
+          .forEach((message) => {
+            const messageId = message.id;
             dispatch(markAsRead(messageId));
             dispatch(markAsReadFromLotId(props.lot.id));
-          }
-        }
+          });
         break;
     }
   };
