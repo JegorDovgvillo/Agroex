@@ -5,7 +5,7 @@ import _ from 'lodash';
 
 import { fetchAllCategories } from '@thunks/fetchCategories';
 import { getFilteredLots } from '@thunks/fetchLots';
-import { selectRootCategories } from '@slices/categoriesSlice';
+import { categoriesSelector } from '@slices/categoriesSlice';
 import { getSelectedCurrency } from '@slices/currencySlice';
 import { lotListSelector, clearLots } from '@slices/lotListSlice';
 
@@ -24,7 +24,7 @@ const HomePage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { category } = useParams();
-  const categories = useSelector(selectRootCategories);
+  const categories = useSelector(categoriesSelector);
   const lots = useSelector(lotListSelector);
   const selectedCurrency = useSelector(getSelectedCurrency);
   const [renderedCategories, setRenderedCategories] = useState([]);
@@ -44,7 +44,7 @@ const HomePage = () => {
 
   useEffect(() => {
     if (!categories || _.isEmpty(categories)) return;
-
+    console.log(categories);
     const filteredCategories = _.filter(categories, (category) =>
       _.some(lots, (lot) =>
         _.includes(

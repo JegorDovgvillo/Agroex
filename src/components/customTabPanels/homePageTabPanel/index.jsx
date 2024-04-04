@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import {
   useNavigate,
   generatePath,
@@ -11,8 +10,6 @@ import _ from 'lodash';
 
 import { Tabs, Tab, Box, Typography } from '@mui/material';
 import GrassOutlinedIcon from '@mui/icons-material/GrassOutlined';
-
-import { selectCategoryByParentId } from '@slices/categoriesSlice';
 
 import ROUTES from '@helpers/routeNames';
 
@@ -46,27 +43,28 @@ function a11yProps(index) {
 
 const HomePageTabPanel = ({ categories }) => {
   const { category } = useParams();
-
+  const parentCategories = _.filter(
+    categories,
+    (category) => category.parentId === 0
+  );
+  const subcategories = _.filter(
+    categories,
+    (category) => category.parentId !== 0
+  );
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-
-  const categoryIndex = _.findIndex(categories, (categoryEl) =>
+  const categoryIndex = _.findIndex(parentCategories, (categoryEl) =>
     _.isEqual(_.toLower(categoryEl.title), category)
   );
-
   const [currTabIndex, setCurrTabIndex] = useState(
     categoryIndex > -1 ? categoryIndex : 0
-  );
-
-  const subcategories = useSelector((state) =>
-    selectCategoryByParentId(state, categories?.[currTabIndex]?.id)
   );
 
   const handleChange = (event, newValue) => {
     setCurrTabIndex(newValue);
 
     const path = generatePath(HOME_PAGE, {
-      category: _.toLower(categories[newValue].title),
+      category: _.toLower(parentCategories[newValue].title),
     });
 
     navigate(path);
@@ -80,7 +78,7 @@ const HomePageTabPanel = ({ categories }) => {
 
   const handleCategoryLotsClick = (id) => {
     const targetSubcategories = _.filter(subcategories, ['parentId', id]);
-    const targetCategories = _.filter(categories, ['id', id]);
+    const targetCategories = _.filter(parentCategories, ['id', id]);
 
     navigate(LOTS);
     setSearchParams([
@@ -96,7 +94,7 @@ const HomePageTabPanel = ({ categories }) => {
   useEffect(() => {
     if (!category) {
       const path = generatePath(HOME_PAGE, {
-        category: _.toLower(categories[0].title),
+        category: _.toLower(parentCategories[0].title),
       });
 
       navigate(path);
@@ -116,10 +114,12 @@ const HomePageTabPanel = ({ categories }) => {
           aria-label="basic tabs example"
           className={categoriesTabsPanel}
         >
-          {categories.map((category) => (
+          {parentCategories.map((category) => (
             <Tab
               className={`${tabItem} ${
-                categories[currTabIndex].id === category.id ? tabItemActive : ''
+                parentCategories[currTabIndex].id === category.id
+                  ? tabItemActive
+                  : ''
               }`}
               key={category.id}
               label={<div>{category.title}</div>}
@@ -138,12 +138,12 @@ const HomePageTabPanel = ({ categories }) => {
         <div className={subcategoriesListContainer}>
           <Typography
             onClick={() =>
-              handleCategoryLotsClick(categories?.[currTabIndex]?.id)
+              handleCategoryLotsClick(parentCategories?.[currTabIndex]?.id)
             }
             className={`${listItem} ${listItemAllLink}`}
-            key={categories?.[currTabIndex]?.id}
+            key={parentCategories?.[currTabIndex]?.id}
           >
-            {`All ${categories?.[currTabIndex]?.title}`}
+            {`All ${parentCategories?.[currTabIndex]?.title}`}
           </Typography>
           {subcategories.map((subcategory) => (
             <Link
