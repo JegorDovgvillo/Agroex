@@ -153,8 +153,8 @@ export const LotDetails = () => {
       (data) =>
         (data.onmessage = (event) => {
           const lastBet = JSON.parse(event.data);
-          setLastBet(lastBet.bet);
 
+          setLastBet(lastBet.bet);
           setIsLotShouldUpdate(
             _.includes(finishedLotStatuses, lastBet.lotStatus)
           );

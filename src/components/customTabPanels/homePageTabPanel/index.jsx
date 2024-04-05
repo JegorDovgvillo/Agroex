@@ -43,14 +43,8 @@ function a11yProps(index) {
 
 const HomePageTabPanel = ({ categories }) => {
   const { category } = useParams();
-  const parentCategories = _.filter(
-    categories,
-    (category) => category.parentId === 0
-  );
-  const subcategories = _.filter(
-    categories,
-    (category) => category.parentId !== 0
-  );
+  const parentCategories = _.filter(categories, { parentId: 0 });
+  const subcategories = _.filter(categories, 'parentId');
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const categoryIndex = _.findIndex(parentCategories, (categoryEl) =>
