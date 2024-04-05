@@ -69,18 +69,15 @@ export const ChangeStatusModal = (props) => {
     onClose();
   };
 
-  const handleMarkAsRead = (action) => {
-    switch (action) {
-      case 'markAsRead':
-        _.chain(messages)
-          .filter({ lotId: props.lot.id })
-          .forEach((message) => {
-            const messageId = message.id;
-            dispatch(markAsRead(messageId));
-            dispatch(markAsReadFromLotId(props.lot.id));
-          });
-        break;
-    }
+  const handleMarkAsRead = () => {
+    _.chain(messages)
+      .filter({ lotId: props.lot.id })
+      .forEach((message) => {
+        const messageId = message.id;
+        dispatch(markAsRead(messageId));
+        dispatch(markAsReadFromLotId(props.lot.id));
+      })
+      .value();
   };
 
   const handleSave = () => {
@@ -111,7 +108,7 @@ export const ChangeStatusModal = (props) => {
     if (value === 'rejected') {
       dispatch(toggleModal('adminMessageModal'));
     } else {
-      handleMarkAsRead('markAsRead');
+      handleMarkAsRead();
       onClose(value);
       changeLotStatusByAdmin({
         lotId: lot.id,
@@ -126,7 +123,7 @@ export const ChangeStatusModal = (props) => {
     const { adminMessage } = adminMessageModalData;
 
     if (value === 'rejected' && adminMessage) {
-      handleMarkAsRead('markAsRead');
+      handleMarkAsRead();
       onClose(value);
       changeLotStatusByAdmin({
         lotId: lot.id,
