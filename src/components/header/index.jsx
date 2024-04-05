@@ -6,14 +6,16 @@ import { CurrencySelect } from '@components/currencySelect';
 import Search from '../search';
 import UserIconInHeader from '../userIconInHeader';
 import Notifications from '../notifications';
+import ROUTES from '@helpers/routeNames';
 
 import styles from './header.module.scss';
+const { ROOT } = ROUTES;
 
 const Header = () => {
   return (
     <header className={styles.header}>
       <div className={styles.wrapp}>
-        <NavLink to={'/'} className={styles.link}>
+        <NavLink to={ROOT} className={styles.link}>
           <div>
             <img src={AgroexLogo} alt="Agroex Logo" />
           </div>

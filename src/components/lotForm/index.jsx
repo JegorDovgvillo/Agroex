@@ -139,7 +139,11 @@ const LotForm = ({
 
   const handleSubmit = (values) => {
     const newValues = _.omit(values, ['days', 'hours', 'minutes']);
-    const subcategory = _.find(subcategories, { title: values.subcategory });
+    const sanitizedSubcategoryTitle = getSanitizedString(values.subcategory);
+    const subcategory = _.find(
+      subcategories,
+      (item) => _.toLower(item.title) === _.toLower(sanitizedSubcategoryTitle)
+    );
 
     if (subcategory) {
       newValues.subcategory = subcategory.id;

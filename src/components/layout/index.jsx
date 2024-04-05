@@ -15,7 +15,7 @@ import { CustomSnackbar } from '@components/customSnackbar';
 
 import { useErrorHandler } from '@helpers/customHooks/errorHandlerHook';
 
-import ENDPOINTS, { BASE_URL } from '@helpers/endpoints';
+import ENDPOINTS, { BASE_API_URL } from '@helpers/endpoints';
 
 import Header from '../header';
 import Footer from '../footer';
@@ -45,7 +45,7 @@ const Layout = () => {
 
   const openConnection = async () => {
     const { idToken } = (await fetchAuthSession()).tokens ?? {};
-    const sse = new EventSource(`${BASE_URL}${ENDPOINTS.SSE}`, {
+    const sse = new EventSource(`${BASE_API_URL}${ENDPOINTS.SSE}`, {
       headers: {
         Authorization: `Bearer ${idToken}`,
       },

@@ -1,21 +1,21 @@
+const isProd = import.meta.env.PROD;
+
+const prefix = isProd ? '/team1' : '';
+
 const ROUTES = {
-  HOME_PAGE: '/:category?',
-  LOTS: '/lots',
-  LOTS_DETAILS: '/lots/:id/details',
-
-  ADMIN: '/admin',
-  ADMIN_PAGE: '/admin/:page',
-
-  CREATE_NEW_LOT: '/new-lot',
-  UPDATE_LOT: '/update-lot/:id',
-
-  USER_PROFILE: '/user-profile',
-  USER_PROFILE_PAGE: '/user-profile/:page',
-  USER_PROFILE_PAGE_TAB: '/user-profile/:page/:tab',
-
-  LOG_IN: '/log-in',
-
-  NOT_FOUND: 'not-found',
+  ROOT: `${prefix}`,
+  HOME_PAGE: `${prefix}/:category?`,
+  LOTS: `${prefix}/lots`,
+  LOTS_DETAILS: `${prefix}/lots/:id/details`,
+  ADMIN: `${prefix}/admin`,
+  ADMIN_PAGE: `${prefix}/admin/:page`,
+  CREATE_NEW_LOT: `${prefix}/new-lot`,
+  UPDATE_LOT: `${prefix}/update-lot/:id`,
+  USER_PROFILE: `${prefix}/user-profile`,
+  USER_PROFILE_PAGE: `${prefix}/user-profile/:page`,
+  USER_PROFILE_PAGE_TAB: `${prefix}/user-profile/:page/:tab`,
+  LOG_IN: `${prefix}/log-in`,
+  NOT_FOUND: `${prefix}/not-found`,
 };
 
 export const ADMIN_PAGES = {

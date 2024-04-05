@@ -1,10 +1,10 @@
 import axios from 'axios';
 import { fetchAuthSession } from 'aws-amplify/auth';
 
-import { BASE_URL } from './endpoints';
+import { BASE_API_URL } from './endpoints';
 
 const axiosInstance = axios.create({
-  baseURL: BASE_URL,
+  baseURL: BASE_API_URL,
 });
 
 axiosInstance.interceptors.request.use(

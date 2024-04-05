@@ -76,13 +76,16 @@ export const getUserFromCognito = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const { idToken } = (await fetchAuthSession()).tokens ?? {};
-      const userInfo = { ...idToken.payload, id: idToken.payload.sub };
+
+      if (!idToken) return;
+
+      const userInfo = { ...idToken?.payload, id: idToken?.payload.sub };
 
       return userInfo;
     } catch (error) {
       return rejectWithValue({
         status: error?.response?.status,
-        data: error?.response?.data,
+        data: error?.message,
       });
     }
   }

@@ -6,6 +6,7 @@ import { some, isEmpty, toLower, isNull } from 'lodash';
 
 import { fetchAllCategories } from '@thunks/fetchCategories';
 import { selectRootCategories } from '@slices/categoriesSlice';
+import { lotListSelector } from '@slices/lotListSlice';
 import { useLoadedWithoutErrorsSelector } from '@selectors';
 
 import ROUTES from '@helpers/routeNames';
@@ -22,14 +23,13 @@ const HomePage = () => {
   const [categoriesFetched, setIsCategoriesFetched] = useState(false);
   const isCategoriesLoaded = useLoadedWithoutErrorsSelector(['categories']);
   const categories = useSelector(selectRootCategories);
+  const lots = useSelector(lotListSelector);
 
   useEffect(() => {
     if (isNull(isCategoriesLoaded)) {
       dispatch(fetchAllCategories());
     } else {
-      isCategoriesLoaded
-        ? setIsCategoriesFetched(true)
-        : navigate(`/${NOT_FOUND}`);
+      isCategoriesLoaded === false && setIsCategoriesFetched(true);
     }
   }, [dispatch, isCategoriesLoaded]);
 
@@ -37,7 +37,7 @@ const HomePage = () => {
     if (!categoriesFetched) return;
 
     if (isEmpty(categories)) {
-      navigate(`/${NOT_FOUND}`);
+      navigate(NOT_FOUND);
 
       return;
     }
@@ -53,12 +53,16 @@ const HomePage = () => {
       category &&
       !some(categories, (cat) => toLower(cat.title) === toLower(category))
     ) {
-      navigate(`/${NOT_FOUND}`);
+      navigate(NOT_FOUND);
     }
   }, [categories, categoriesFetched]);
 
   return (
-    <>{!isEmpty(categories) && <HomePageTabPanel categories={categories} />}</>
+    <>
+      {!isEmpty(categories) && (
+        <HomePageTabPanel categories={categories} lots={lots} />
+      )}
+    </>
   );
 };
 

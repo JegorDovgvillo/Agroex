@@ -14,6 +14,7 @@ import { selectCategoryById } from '@slices/categoriesSlice';
 import { IMAGE_URL } from '@helpers/endpoints';
 import { categoryTitleValidationSchema } from '@helpers/validationSchemes/lotValidationSchemes';
 import { getFetchResultMessages } from '@helpers/getFetchResultMessages';
+import getSanitizedString from '@helpers/getSanitizedString';
 
 import CustomTextField from '@customTextField';
 import CustomUploadButton from '../customUploadButton';
@@ -47,9 +48,10 @@ const ModalForUpdatingCategory = () => {
 
   const handleSubmitClick = async (values, { resetForm }) => {
     const formData = new FormData();
+    const sanitizedTitle = getSanitizedString(values.title);
     const data = {
       id: categoryFields.id,
-      title: values.title,
+      title: sanitizedTitle,
       parentId: categoryFields.parentId,
       image: categoryFields.image,
     };

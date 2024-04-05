@@ -4,6 +4,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router';
 import _ from 'lodash';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import * as L from 'leaflet';
+import markerIconUrl from '../../../node_modules/leaflet/dist/images/marker-icon.png';
+import markerIconRetinaUrl from '../../../node_modules/leaflet/dist/images/marker-icon-2x.png';
+import markerShadowUrl from '../../../node_modules/leaflet/dist/images/marker-shadow.png';
+
+const STANDMAPS_API_KEY = import.meta.env.VITE_BASE_STANDMAPS_API_KEY;
 
 import {
   fetchCountry,
@@ -25,6 +31,11 @@ const LocationMarker = ({ position, eventHandlers, draggable }) => {
     },
   });
 
+  L.Icon.Default.prototype.options.iconUrl = markerIconUrl;
+  L.Icon.Default.prototype.options.iconRetinaUrl = markerIconRetinaUrl;
+  L.Icon.Default.prototype.options.shadowUrl = markerShadowUrl;
+  L.Icon.Default.imagePath = '';
+  L.marker([45.0659, 7.67]).addTo(map);
   return (
     !_.isNil(position.latitude) &&
     !_.isNil(position.longitude) && (
@@ -171,7 +182,10 @@ const Map = ({
             scrollWheelZoom={true}
             className={styles.map}
           >
-            <TileLayer url="https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png" />
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              url={`https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png?api_key=${STANDMAPS_API_KEY}`}
+            />
             <LocationMarker
               position={{
                 latitude: markerCoordinate.lat,
