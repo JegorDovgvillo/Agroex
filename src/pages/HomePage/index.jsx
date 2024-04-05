@@ -44,7 +44,7 @@ const HomePage = () => {
 
   useEffect(() => {
     if (!categories || _.isEmpty(categories)) return;
-    console.log(categories);
+
     const filteredCategories = _.filter(categories, (category) =>
       _.some(lots, (lot) =>
         _.includes(
