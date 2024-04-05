@@ -73,7 +73,7 @@ const HomePageTabPanel = ({ categories }) => {
   };
 
   const getPath = (id) => {
-    const query = `?categories=${id}`;
+    const query = `?subcategories=${id}`;
 
     return `${LOTS}${query}`;
   };

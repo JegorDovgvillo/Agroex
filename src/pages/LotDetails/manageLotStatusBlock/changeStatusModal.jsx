@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import _ from 'lodash';
-
 import {
   DialogTitle,
   DialogContent,
@@ -14,8 +13,11 @@ import {
 
 import { CustomButton } from '@buttons/CustomButton';
 
+import { markAsRead } from '@thunks/sse';
+
 import { toggleModal, setModalFields, selectModal } from '@slices/modalSlice';
 import { getSelectedCurrency } from '@slices/currencySlice';
+import { markAsReadFromLotId } from '@slices/sseSlice';
 
 import { useChangeLotStatusByAdmin } from '@helpers/customHooks/lotsHooks';
 
@@ -55,6 +57,7 @@ export const ChangeStatusModal = (props) => {
     selectModal(state, 'confirmModal')
   );
   const selectedCurrency = useSelector(getSelectedCurrency);
+  const messages = useSelector((state) => state.sse.messages);
 
   const handleEntering = () => {
     if (radioGroupRef.current != null) {
@@ -64,6 +67,17 @@ export const ChangeStatusModal = (props) => {
 
   const handleCancel = () => {
     onClose();
+  };
+
+  const handleMarkAsRead = () => {
+    _.chain(messages)
+      .filter({ lotId: props.lot.id })
+      .forEach((message) => {
+        const messageId = message.id;
+        dispatch(markAsRead(messageId));
+        dispatch(markAsReadFromLotId(props.lot.id));
+      })
+      .value();
   };
 
   const handleSave = () => {
@@ -87,13 +101,14 @@ export const ChangeStatusModal = (props) => {
   }, [valueProp, isOpen]);
 
   useEffect(() => {
-    const { confirmStatus } = confirmModalData;
+    const { confirmStatus, isOpen } = confirmModalData;
 
-    if (!confirmStatus) return;
+    if (!confirmStatus || isOpen) return;
 
     if (value === 'rejected') {
       dispatch(toggleModal('adminMessageModal'));
     } else {
+      handleMarkAsRead();
       onClose(value);
       changeLotStatusByAdmin({
         lotId: lot.id,
@@ -108,6 +123,7 @@ export const ChangeStatusModal = (props) => {
     const { adminMessage } = adminMessageModalData;
 
     if (value === 'rejected' && adminMessage) {
+      handleMarkAsRead();
       onClose(value);
       changeLotStatusByAdmin({
         lotId: lot.id,

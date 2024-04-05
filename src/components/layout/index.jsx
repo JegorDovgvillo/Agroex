@@ -4,11 +4,14 @@ import { Outlet } from 'react-router';
 import _ from 'lodash';
 import { EventSource } from 'extended-eventsource';
 import { fetchAuthSession } from 'aws-amplify/auth';
+import { useLocation } from 'react-router-dom';
 
 import { getUserFromCognito } from '@thunks/fetchUsers';
 
 import { setMessage } from '@slices/sseSlice';
 import { selectModal, clearModalsFields } from '@slices/modalSlice';
+import { updateMessages } from '@slices/sseSlice';
+
 import ConfirmActionModal from '@customModals/confirmActionModal';
 import AdminMessageModal from '@customModals/adminMessageModal';
 import { CustomSnackbar } from '@components/customSnackbar';
@@ -24,6 +27,7 @@ import styles from './layout.module.scss';
 
 const Layout = () => {
   const dispatch = useDispatch();
+  const location = useLocation();
 
   const userInfo = useSelector((state) => state.usersList.userInfo);
   const errorHandler = useErrorHandler();
@@ -39,6 +43,7 @@ const Layout = () => {
   const betsState = useSelector((state) => state.bets);
   const countriesState = useSelector((state) => state.countries);
   const tagsState = useSelector((state) => state.tags);
+  const messages = useSelector((state) => state.sse.messages);
 
   const [text, setText] = useState('');
   const [sseConnection, setSseConnection] = useState(null);
@@ -55,6 +60,12 @@ const Layout = () => {
 
     return sse;
   };
+
+  useEffect(() => {
+    const unreadedMessages = _.filter(messages, { readStatus: 'unread' });
+
+    dispatch(updateMessages(unreadedMessages));
+  }, [location.pathname]);
 
   useEffect(() => {
     if (_.isEqual(text, confirmActionData.text)) return;

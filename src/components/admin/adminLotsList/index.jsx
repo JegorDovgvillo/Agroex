@@ -13,6 +13,7 @@ import { CircularProgress } from '@mui/material';
 
 import { getFilteredLots } from '@thunks/fetchLots';
 import { fetchUsers } from '@thunks/fetchUsers';
+import { markAsRead } from '@thunks/sse';
 
 import {
   toggleModal,
@@ -23,6 +24,7 @@ import {
 import { lotListSelector, setLotId } from '@slices/lotListSlice';
 import { setUserId, usersListSelector } from '@slices/usersListSlice';
 import { getSelectedCurrency } from '@slices/currencySlice';
+import { markAsReadFromLotId } from '@slices/sseSlice';
 
 import getFormattedDate from '@helpers/getFormattedDate';
 import getNumberWithCurrency from '@helpers/getNumberWithCurrency';
@@ -110,6 +112,7 @@ export default function AdminLotsList() {
   const changeLotStatusByAdmin = useChangeLotStatusByAdmin();
 
   const selectedCurrency = useSelector(getSelectedCurrency);
+  const messages = useSelector((state) => state.sse.messages);
 
   const handleRowEditStop = (params, event) => {
     if (params.reason === GridRowEditStopReasons.rowFocusOut) {
@@ -224,6 +227,17 @@ export default function AdminLotsList() {
     }
   };
 
+  const handleMarkAsRead = () => {
+    _.chain(messages)
+      .filter({ lotId: props.lot.id })
+      .forEach((message) => {
+        const messageId = message.id;
+        dispatch(markAsRead(messageId));
+        dispatch(markAsReadFromLotId(props.lot.id));
+      })
+      .value();
+  };
+
   useEffect(() => {
     getUsers();
   }, []);
@@ -245,12 +259,13 @@ export default function AdminLotsList() {
     if (confirmModalData.confirmStatus) {
       editedValue === 'rejected'
         ? dispatch(toggleModal('adminMessageModal'))
-        : fetchChangeLotStatus();
+        : fetchChangeLotStatus() && handleMarkAsRead();
     }
   }, [confirmModalData]);
 
   useEffect(() => {
     if (editedValue === 'rejected' && adminMessageModalData.adminMessage) {
+      handleMarkAsRead();
       fetchChangeLotStatus();
     }
   }, [adminMessageModalData.adminMessage]);
