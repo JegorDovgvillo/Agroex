@@ -44,14 +44,12 @@ import { selectModal } from '@slices/modalSlice';
 import { selectUserById } from '@slices/usersListSlice';
 import { getSelectedCurrency } from '@slices/currencySlice';
 import { markAsReadFromLotId } from '@slices/sseSlice';
-import { setMessage } from '@slices/sseSlice';
 
 import { fetchLotDetails } from '@thunks/fetchLots';
 import { fetchAllCategories } from '@thunks/fetchCategories';
 import { fetchUser } from '@thunks/fetchUsers';
-import { fetchLastBetLotDetails } from '@thunks/fetchBets';
 import ROUTES from '@helpers/routeNames';
-import ENDPOINTS, { BASE_URL } from '@helpers/endpoints';
+import ENDPOINTS, { BASE_API_URL } from '@helpers/endpoints';
 
 import { ManageLotStatusBlock } from './manageLotStatusBlock';
 import attentionIcon from '@icons/attention.svg';
@@ -112,7 +110,6 @@ export const LotDetails = () => {
   );
 
   const [lastBet, setLastBet] = useState();
-  const betsLastBet = useSelector((state) => state.bets.lastBet);
   const finishedLotStatuses = ['finished', 'inactive'];
 
   const betModalData = useSelector((state) =>
@@ -139,11 +136,14 @@ export const LotDetails = () => {
   const openConnection = async () => {
     const { idToken } = (await fetchAuthSession()).tokens ?? {};
 
-    const sse = new EventSource(`${BASE_URL}${ENDPOINTS.SSE_BETS}/${lotId}`, {
-      headers: {
-        Authorization: `Bearer ${idToken}`,
-      },
-    });
+    const sse = new EventSource(
+      `${BASE_API_URL}${ENDPOINTS.SSE_BETS}/${lotId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${idToken}`,
+        },
+      }
+    );
 
     return sse;
   };
