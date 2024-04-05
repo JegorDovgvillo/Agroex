@@ -227,21 +227,15 @@ export default function AdminLotsList() {
     }
   };
 
-  const handleMarkAsRead = (action) => {
-    switch (action) {
-      case 'markAsRead':
-        const messageByLotId = _.filter(messages, { lotId: currLotId });
-
-        if (!_.isEmpty(messageByLotId)) {
-          for (let i = 0; i <= messageByLotId.length - 1; i++) {
-            const messageId = messageByLotId[i].id;
-
-            dispatch(markAsRead(messageId));
-            dispatch(markAsReadFromLotId(currLotId));
-          }
-        }
-        break;
-    }
+  const handleMarkAsRead = () => {
+    _.chain(messages)
+      .filter({ lotId: props.lot.id })
+      .forEach((message) => {
+        const messageId = message.id;
+        dispatch(markAsRead(messageId));
+        dispatch(markAsReadFromLotId(props.lot.id));
+      })
+      .value();
   };
 
   useEffect(() => {
@@ -265,13 +259,13 @@ export default function AdminLotsList() {
     if (confirmModalData.confirmStatus) {
       editedValue === 'rejected'
         ? dispatch(toggleModal('adminMessageModal'))
-        : fetchChangeLotStatus() && handleMarkAsRead('markAsRead');
+        : fetchChangeLotStatus() && handleMarkAsRead();
     }
   }, [confirmModalData]);
 
   useEffect(() => {
     if (editedValue === 'rejected' && adminMessageModalData.adminMessage) {
-      handleMarkAsRead('markAsRead');
+      handleMarkAsRead();
       fetchChangeLotStatus();
     }
   }, [adminMessageModalData.adminMessage]);
