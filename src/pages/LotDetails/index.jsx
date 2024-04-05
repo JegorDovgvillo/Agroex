@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import _ from 'lodash';
+import { EventSource } from 'extended-eventsource';
+import { fetchAuthSession } from 'aws-amplify/auth';
 
 import CircularProgress from '@mui/material/CircularProgress';
 import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported';
@@ -46,8 +48,8 @@ import { markAsReadFromLotId } from '@slices/sseSlice';
 import { fetchLotDetails } from '@thunks/fetchLots';
 import { fetchAllCategories } from '@thunks/fetchCategories';
 import { fetchUser } from '@thunks/fetchUsers';
-import { fetchLastBetLotDetails } from '@thunks/fetchBets';
 import ROUTES from '@helpers/routeNames';
+import ENDPOINTS, { BASE_API_URL } from '@helpers/endpoints';
 
 import { ManageLotStatusBlock } from './manageLotStatusBlock';
 import attentionIcon from '@icons/attention.svg';
@@ -100,7 +102,7 @@ export const LotDetails = () => {
 
   const [userType, setUserType] = useState('unregisteredUser');
   const [isUserLotOwner, setIsUserLotOwner] = useState(false);
-  const [isLotShouldUpdate, setIsLotShouldUpdate] = useState(null);
+  const [isLotShouldUpdate, setIsLotShouldUpdate] = useState(true);
 
   const categories = useSelector(categoriesSelector);
   const confirmModalData = useSelector((state) =>
@@ -108,7 +110,6 @@ export const LotDetails = () => {
   );
 
   const [lastBet, setLastBet] = useState();
-  const betsLastBet = useSelector((state) => state.bets.lastBet);
   const finishedLotStatuses = ['finished', 'inactive'];
 
   const betModalData = useSelector((state) =>
@@ -132,40 +133,38 @@ export const LotDetails = () => {
     handleToggleUserLotStatusBtnClick(dispatch);
   };
 
-  useEffect(() => {
-    dispatch(fetchAllCategories());
-  }, []);
+  const openConnection = async () => {
+    const { idToken } = (await fetchAuthSession()).tokens ?? {};
+
+    const sse = new EventSource(
+      `${BASE_API_URL}${ENDPOINTS.SSE_BETS}/${lotId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${idToken}`,
+        },
+      }
+    );
+
+    return sse;
+  };
 
   useEffect(() => {
-    if (!selectedCurrency) return;
+    openConnection().then(
+      (data) =>
+        (data.onmessage = (event) => {
+          const lastBet = JSON.parse(event.data);
 
-    dispatch(fetchLastBetLotDetails({ id: lotId, currency: selectedCurrency }));
+          setLastBet(lastBet.bet);
+          setIsLotShouldUpdate(
+            _.includes(finishedLotStatuses, lastBet.lotStatus)
+          );
+        })
+    );
   }, [selectedCurrency]);
 
   useEffect(() => {
-    if (!selectedCurrency || !isLotShouldUpdate) return;
-
-    const intervalId = setInterval(() => {
-      dispatch(
-        fetchLastBetLotDetails({ id: lotId, currency: selectedCurrency })
-      );
-    }, 10000);
-
-    return () => clearInterval(intervalId);
-  }, [selectedCurrency, isLotShouldUpdate]);
-
-  useEffect(() => {
-    if (!betsLastBet || !selectedCurrency) return;
-
-    const { lastBet, status } = betsLastBet;
-
-    if (_.includes(finishedLotStatuses, status)) {
-      setIsLotShouldUpdate(false);
-      return;
-    }
-
-    setLastBet(lastBet);
-  }, [selectedCurrency, betsLastBet]);
+    dispatch(fetchAllCategories());
+  }, []);
 
   useEffect(() => {
     const { confirmStatus, action, isOpen } = confirmModalData;
@@ -199,7 +198,7 @@ export const LotDetails = () => {
   }, [confirmModalData, betModalData]);
 
   useEffect(() => {
-    if (!selectedCurrency || isLotShouldUpdate) return;
+    if (!selectedCurrency) return;
 
     dispatch(fetchLotDetails({ id: lotId, currency: selectedCurrency }));
   }, [selectedCurrency, isLotShouldUpdate]);
@@ -217,13 +216,7 @@ export const LotDetails = () => {
     );
     selectedLot.lastBet &&
       dispatch(fetchUser({ id: selectedLot.lastBet.userId }));
-
-    if (_.isNull(isLotShouldUpdate)) {
-      setIsLotShouldUpdate(
-        !_.includes(finishedLotStatuses, selectedLot.status)
-      );
-    }
-  }, [userInfo, selectedLot, isLotShouldUpdate]);
+  }, [userInfo, selectedLot]);
 
   if (loadingStatus !== false) {
     return (

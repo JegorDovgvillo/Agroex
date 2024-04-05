@@ -14,6 +14,7 @@ const ENDPOINTS = {
   UPDATE_DB: '/users/updatedb',
   BETS: '/bets',
   SSE: '/sse/open-sse-stream',
+  SSE_BETS: '/sse/open-sse-bets-stream',
   REPORTS: '/reports',
   MARK_AS_READ: 'sse/markRead',
 };
