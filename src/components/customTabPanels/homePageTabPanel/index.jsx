@@ -139,15 +139,19 @@ const HomePageTabPanel = ({ categories }) => {
           >
             {`All ${parentCategories?.[currTabIndex]?.title}`}
           </Typography>
-          {subcategories.map((subcategory) => (
-            <Link
-              to={`${getPath(subcategory.id)}`}
-              className={listItem}
-              key={subcategory.id}
-            >
-              {subcategory.title}
-            </Link>
-          ))}
+          {subcategories
+            .filter(
+              (cat) => cat.parentId === parentCategories?.[currTabIndex]?.id
+            )
+            .map((subcategory) => (
+              <Link
+                to={`${getPath(subcategory.id)}`}
+                className={listItem}
+                key={subcategory.id}
+              >
+                {subcategory.title}
+              </Link>
+            ))}
         </div>
         <div className={subcategoriesLinksContainer}>
           {subcategories.map((subcategory) => (
